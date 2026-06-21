@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# OS
+Thumbs.db
+
+# local dev / planning docs
+landing-page-brief.md
+
+# temp screenshot scripts
+screenshot*.mjs
