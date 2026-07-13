@@ -8,9 +8,11 @@ import { WipeButton } from "@/components/ui/wipe-button";
 // Template's shop-banner-items use punchy solid/gradient color-block backgrounds
 // (var(--theme) and a blue gradient), not neutral tones — matched via inline style
 // since the blue gradient isn't part of this project's brand token set.
+// Reuses the same "card" / "paper-box" product item seeds shown elsewhere
+// (Shop.tsx, category pages) rather than needing dedicated banner images.
 const banners = [
-  { href: "/products/marketing-collateral", seed: "vd-banner-card", background: "var(--brand-primary)" },
-  { href: "/products/packaging-carrier", seed: "vd-banner-box", background: "linear-gradient(90deg, #4971f9 0%, #2fabf7 100%)" },
+  { href: "/products/marketing", seed: "vd-item-card", background: "var(--brand-primary)" },
+  { href: "/products/packaging", seed: "vd-item-box", background: "linear-gradient(90deg, #4971f9 0%, #2fabf7 100%)" },
 ] as const;
 
 type BannerCopy = { eyebrow: string; title: string };
@@ -20,7 +22,7 @@ export default function ShopBanner() {
   const copy = t.raw("banners") as BannerCopy[];
 
   return (
-    <section className="relative w-full bg-white py-16 lg:py-24">
+    <section className="relative w-full bg-white py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-5">
         {banners.map((b, i) => {
           const { eyebrow, title } = copy[i];

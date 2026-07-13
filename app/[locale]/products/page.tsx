@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import {
-  Briefcase, Package, Tag, Calendar,
+  Briefcase, Package, Calendar, Gift,
   ArrowRight, type LucideIcon,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
@@ -10,7 +10,7 @@ import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import { productCategories, showcaseImages } from "@/data/categories";
 
-const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Tag, Calendar };
+const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift };
 
 export async function generateMetadata({
   params,

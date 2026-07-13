@@ -21,7 +21,7 @@ export default function Services() {
   return (
     <section
       id="services"
-      className="relative w-full bg-brand-soft flex items-center overflow-hidden py-20 lg:py-[120px]"
+      className="relative w-full bg-brand-soft flex items-center overflow-hidden py-14 lg:py-20"
     >
       <div className="max-w-7xl mx-auto px-6 w-full">
         <SectionHeading

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, Phone, Mail, MapPin } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { WipeButton } from "@/components/ui/wipe-button";
 import { cn } from "@/lib/utils";
 
 const linkHrefs = ["/products", "/blog", "/#services", "/#about", "/#cta"] as const;
@@ -143,15 +144,18 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Link
+            <WipeButton
               href="/#cta"
+              tone="primary"
+              size="sm"
+              arrow={false}
               className={cn(
-                "btn-wipe hidden lg:inline-flex items-center px-5 py-2.5 text-xs font-bold uppercase tracking-wide transition-colors duration-300",
-                transparent ? "bg-white text-brand-primary" : "bg-brand-primary text-white"
+                "hidden lg:inline-flex transition-colors duration-300",
+                transparent && "bg-white text-brand-primary"
               )}
             >
               {t("quote")}
-            </Link>
+            </WipeButton>
 
             {/* Hamburger — mobile & tablet */}
             <button
@@ -191,15 +195,18 @@ export default function Navbar() {
 
         <div className="px-6 pb-10">
           <LocaleSwitcher locale={locale} onSwitch={switchLocale} className="justify-center mb-5" />
-          <Link
+          <WipeButton
             href="/#cta"
+            tone="primary"
+            size="lg"
+            arrow={false}
+            className="w-full"
             onClick={() => setMenuOpen(false)}
-            className="btn-wipe flex items-center justify-center w-full px-6 py-4 bg-brand-primary text-white text-sm font-bold uppercase tracking-wide"
           >
             {t("quote")}
-          </Link>
-          <p className="text-center text-zinc-400 text-xs mt-4">
-            📞 {tContact("phone1")} · {tContact("email")}
+          </WipeButton>
+          <p className="flex items-center justify-center gap-1.5 text-center text-zinc-400 text-xs mt-4">
+            <Phone size={13} /> {tContact("phone1")} · <Mail size={13} /> {tContact("email")}
           </p>
         </div>
       </div>

@@ -13,12 +13,9 @@ export default function ShopCategories() {
   const locale = useLocale() as Locale;
 
   return (
-    <section className="relative w-full bg-white py-12 lg:py-16 border-y border-zinc-100">
+    <section className="relative w-full bg-white py-10 lg:py-12 border-y border-zinc-100">
       <div className="max-w-7xl mx-auto px-6">
-        <div
-          className="flex lg:grid lg:grid-cols-4 gap-4 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory pb-2 lg:pb-0"
-          style={{ scrollbarWidth: "none" }}
-        >
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
           {productCategories.map((cat, i) => {
             const name = pickLocale(locale, cat.nameVi, cat.nameEn);
             return (
@@ -28,7 +25,7 @@ export default function ShopCategories() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.45, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                className="shrink-0 w-40 sm:w-48 lg:w-auto snap-start"
+                className="w-full"
               >
                 <Link href={`/products/${cat.id}`} className="group flex flex-col items-center text-center gap-4">
                   <div className="relative w-full aspect-square rounded-full overflow-hidden ring-1 ring-zinc-100 group-hover:ring-brand-primary/40 transition-all">

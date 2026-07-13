@@ -47,7 +47,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-brand-soft text-brand-dark">
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
@@ -129,7 +129,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <IconBadge icon={MapPin} size="md" />
-                <span className="text-brand-dark/40 text-xs leading-relaxed">
+                <span className="leading-relaxed">
                   {tContact("address")}
                 </span>
               </li>

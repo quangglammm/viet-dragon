@@ -98,53 +98,12 @@
     "titleHighlight": "từng chi tiết.",
     "viewAll": "Tất cả sản phẩm",
     "items": [
-      { "label": "Danh Thiếp", "cat": "Marketing" },
+      { "label": "Danh Thiếp", "cat": "Tiếp Thị" },
       { "label": "Bao Bì", "cat": "Bao Bì" },
-      { "label": "Nhãn Mác", "cat": "Nhãn Mác" },
-      { "label": "Catalogue", "cat": "Marketing" },
-      { "label": "Menu Nhà Hàng", "cat": "Văn Phòng Phẩm" },
-      { "label": "Thiệp Mời", "cat": "Marketing" }
-    ]
-  },
-  "pricing": {
-    "eyebrow": "Gói Dịch Vụ",
-    "title": "Linh hoạt theo quy mô đơn hàng.",
-    "subtitle": "Mỗi đơn hàng in ấn đều khác nhau — báo giá luôn được tư vấn riêng, không có mức giá cố định.",
-    "priceLabel": "Liên hệ báo giá",
-    "cta": "Chọn gói này",
-    "plans": [
-      {
-        "name": "Cơ Bản",
-        "desc": "Phù hợp cho cá nhân & hộ kinh doanh nhỏ.",
-        "features": [
-          "Thời gian sản xuất 3–5 ngày",
-          "Thiết kế cơ bản miễn phí",
-          "In thử 1 lần",
-          "Hỗ trợ qua điện thoại"
-        ]
-      },
-      {
-        "name": "Phổ Biến",
-        "desc": "Phù hợp cho doanh nghiệp vừa & startup.",
-        "features": [
-          "Thời gian sản xuất 24–48 giờ",
-          "Thiết kế không giới hạn chỉnh sửa",
-          "In thử miễn phí không giới hạn",
-          "Giao hàng miễn phí TP.HCM & Bình Dương",
-          "Hỗ trợ ưu tiên"
-        ]
-      },
-      {
-        "name": "Doanh Nghiệp",
-        "desc": "Cho đơn hàng số lượng lớn & dài hạn.",
-        "features": [
-          "Ưu tiên lịch sản xuất",
-          "Quản lý đơn hàng riêng",
-          "Chiết khấu theo số lượng",
-          "Hợp đồng & thanh toán linh hoạt",
-          "Hỗ trợ 24/7"
-        ]
-      }
+      { "label": "Bao Lì Xì", "cat": "Ấn Phẩm Tết" },
+      { "label": "Catalogue", "cat": "Tiếp Thị" },
+      { "label": "Menu Nhà Hàng", "cat": "Văn Phòng" },
+      { "label": "Thiệp Mời", "cat": "Tiếp Thị" }
     ]
   },
   "testimonials": {
@@ -261,12 +220,12 @@
       "testimonials": "Đánh Giá",
       "faq": "Câu Hỏi Thường Gặp"
     },
-    "copyright": "© {year} Viet Dragon. Bảo lưu mọi quyền.",
+    "copyright": "© {year} Viet Dragon. All rights reserved.",
     "premium": "In ấn chất lượng cao"
   },
   "productsPage": {
     "metaTitle": "Sản Phẩm | Viet Dragon – In Ấn Chuyên Nghiệp",
-    "metaDescription": "Xem toàn bộ danh mục sản phẩm in ấn của Viet Dragon: danh thiếp, bao bì, nhãn mác, văn phòng phẩm và nhiều hơn nữa.",
+    "metaDescription": "Xem toàn bộ danh mục sản phẩm in ấn của Viet Dragon: tiếp thị, văn phòng, bao bì, ấn phẩm Tết và nhiều hơn nữa.",
     "breadcrumbHome": "Trang Chủ",
     "breadcrumbCurrent": "Sản Phẩm",
     "eyebrow": "Tất Cả Sản Phẩm",

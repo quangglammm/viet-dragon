@@ -17,7 +17,7 @@ export default function Quality() {
   return (
     <section
       id="quality"
-      className="relative w-full bg-brand-soft overflow-hidden py-20 lg:py-[120px]"
+      className="relative w-full bg-brand-soft overflow-hidden py-14 lg:py-20"
     >
       <div
         ref={ref}

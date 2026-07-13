@@ -11,7 +11,7 @@ export default function CtaBanner() {
   const t = useTranslations("ctaBanner");
 
   return (
-    <section className="relative w-full overflow-hidden py-16 lg:py-20">
+    <section className="relative w-full overflow-hidden py-12 lg:py-16">
       <Image
         src="https://picsum.photos/seed/vd-cta-banner/1600/500"
         alt=""

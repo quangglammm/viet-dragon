@@ -4,9 +4,9 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import { CheckCircle2, Phone, Award } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { IconBadge } from "@/components/ui/icon-badge";
+import { WipeButton } from "@/components/ui/wipe-button";
 import { useSectionInView } from "@/hooks/use-section-in-view";
 
 export default function About() {
@@ -16,7 +16,7 @@ export default function About() {
   const checklist = t.raw("checklist") as string[];
 
   return (
-    <section id="about" className="relative w-full bg-white overflow-hidden py-20 lg:py-[120px]">
+    <section id="about" className="relative w-full bg-white overflow-hidden py-14 lg:py-20">
       <div
         ref={ref}
         className="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center"
@@ -92,12 +92,9 @@ export default function About() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.5 }}
           >
-            <Link
-              href="/products"
-              className="btn-wipe inline-flex items-center gap-2 px-7 py-3.5 bg-zinc-900 text-white text-xs font-bold uppercase tracking-wide"
-            >
-              {t("discoverMore")} <span aria-hidden>→</span>
-            </Link>
+            <WipeButton href="/products" tone="primary" size="md">
+              {t("discoverMore")}
+            </WipeButton>
 
             <a href="tel:0901448377" className="inline-flex items-center gap-3">
               <IconBadge icon={Phone} size="md" />

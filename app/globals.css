@@ -195,6 +195,14 @@
   width: 100%;
 }
 
+/* WipeButton's `dark` tone (bg-zinc-900) fills white instead of brand-dark on
+   hover — zinc-900 and brand-dark read as near-identical, so the default fill
+   is invisible against it. Mirrors the `light` tone's dark fill, inverted. */
+.btn-wipe-invert.btn-wipe::before,
+.btn-wipe-invert.btn-wipe::after {
+  background-color: #fff;
+}
+
 /* Gradient-clipped text for sub-title pill labels above section headings */
 .text-gradient-brand {
   background: var(--gradient-brand);
@@ -227,6 +235,12 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+/* Gradient text loses contrast on brand-primary/dark backgrounds — solid white instead. */
+.eyebrow-pill-dark .eyebrow-pill-text {
+  background: none;
+  -webkit-text-fill-color: white;
+  color: white;
 }
 
 /* Elongating pagination dot: compact pill that widens + gains the brand gradient

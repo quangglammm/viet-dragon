@@ -31,9 +31,9 @@ export interface ProductCategory {
 
 export const productCategories: ProductCategory[] = [
   {
-    id: "marketing-collateral",
-    nameEn: "Marketing & Brand Collateral",
-    nameVi: "Ấn phẩm Marketing & Thương hiệu",
+    id: "marketing",
+    nameEn: "Marketing",
+    nameVi: "Tiếp thị",
     description:
       "Materials used to present the brand or product to a customer or partner — first-impression and sales-support items.",
     descriptionVi:
@@ -76,99 +76,9 @@ export const productCategories: ProductCategory[] = [
     ],
   },
   {
-    id: "packaging-carrier",
-    nameEn: "Packaging & Carrier Print",
-    nameVi: "Bao bì & Vật phẩm vận chuyển",
-    description:
-      "Items that hold, wrap, mail, or distribute a product or message.",
-    descriptionVi:
-      "Những vật phẩm dùng để chứa, bọc, gửi hoặc phân phối sản phẩm và thông điệp.",
-    icon: "Package",
-    coverImage: "https://picsum.photos/seed/vd-pkg-cover/1200/600",
-    items: [
-      {
-        id: "paper-box",
-        nameEn: "Paper Box",
-        nameVi: "Hộp giấy",
-        description: "Retail and gift packaging.",
-        descriptionVi: "Bao bì bán lẻ và quà tặng.",
-        image: "https://picsum.photos/seed/vd-item-box/600/400",
-      },
-      {
-        id: "paper-bag",
-        nameEn: "Paper Bag",
-        nameVi: "Túi giấy",
-        description: "Carry-out and shopping bags.",
-        descriptionVi: "Túi giấy mang đi và túi mua sắm.",
-        image: "https://picsum.photos/seed/vd-item-bag/600/400",
-      },
-      {
-        id: "envelope",
-        nameEn: "Envelope",
-        nameVi: "Bao thư",
-        description: "Document mailing envelopes.",
-        descriptionVi: "Bao thư gửi tài liệu.",
-        image: "https://picsum.photos/seed/vd-item-envelope/600/400",
-      },
-      {
-        id: "flyer",
-        nameEn: "Flyer",
-        nameVi: "Tờ rơi",
-        description: "Single-sheet mass handout or leaflet.",
-        descriptionVi: "Tờ rơi phát hàng loạt, một mặt giấy.",
-        image: "https://picsum.photos/seed/vd-item-flyer/600/400",
-      },
-    ],
-  },
-  {
-    id: "labels-identification",
-    nameEn: "Labels & Identification",
-    nameVi: "Nhãn mác & Định danh",
-    description:
-      "Adhesive or attached pieces that identify, seal, or authenticate a product or surface.",
-    descriptionVi:
-      "Những vật phẩm dán hoặc gắn dùng để định danh, niêm phong hoặc xác thực sản phẩm và bề mặt.",
-    icon: "Tag",
-    coverImage: "https://picsum.photos/seed/vd-lbl-cover/1200/600",
-    items: [
-      {
-        id: "decal",
-        nameEn: "Decal",
-        nameVi: "Decal các loại",
-        description: "Surface and product decals, various types.",
-        descriptionVi: "Decal bề mặt và sản phẩm, nhiều loại.",
-        image: "https://picsum.photos/seed/vd-item-decal/600/400",
-      },
-      {
-        id: "stamp",
-        nameEn: "Stamp / Sticker",
-        nameVi: "Tem",
-        description: "Seals and authentication stickers.",
-        descriptionVi: "Tem niêm phong và tem xác thực.",
-        image: "https://picsum.photos/seed/vd-item-stamp/600/400",
-      },
-      {
-        id: "label",
-        nameEn: "Label",
-        nameVi: "Nhãn",
-        description: "Product and packaging labels.",
-        descriptionVi: "Nhãn sản phẩm và bao bì.",
-        image: "https://picsum.photos/seed/vd-item-label/600/400",
-      },
-      {
-        id: "tag",
-        nameEn: "Tag",
-        nameVi: "Mác",
-        description: "Hang tags and garment tags.",
-        descriptionVi: "Mác treo và mác quần áo.",
-        image: "https://picsum.photos/seed/vd-item-tag/600/400",
-      },
-    ],
-  },
-  {
-    id: "stationery-operational",
-    nameEn: "Stationery & Operational Print",
-    nameVi: "Văn phòng phẩm & Ấn phẩm vận hành",
+    id: "office",
+    nameEn: "Office",
+    nameVi: "Văn phòng",
     description:
       "Everyday functional print used in daily business operation, internal or customer-facing.",
     descriptionVi:
@@ -210,6 +120,128 @@ export const productCategories: ProductCategory[] = [
       },
     ],
   },
+  {
+    id: "packaging",
+    nameEn: "Packaging",
+    nameVi: "Bao bì",
+    description:
+      "Items that hold, wrap, mail, distribute, or identify a product — from boxes and bags to labels and seals.",
+    descriptionVi:
+      "Những vật phẩm dùng để chứa, bọc, gửi, phân phối hoặc định danh sản phẩm — từ hộp, túi đến nhãn mác và tem.",
+    icon: "Package",
+    coverImage: "https://picsum.photos/seed/vd-pkg-cover/1200/600",
+    items: [
+      {
+        id: "paper-box",
+        nameEn: "Paper Box",
+        nameVi: "Hộp giấy",
+        description: "Retail and gift packaging.",
+        descriptionVi: "Bao bì bán lẻ và quà tặng.",
+        image: "https://picsum.photos/seed/vd-item-box/600/400",
+      },
+      {
+        id: "paper-bag",
+        nameEn: "Paper Bag",
+        nameVi: "Túi giấy",
+        description: "Carry-out and shopping bags.",
+        descriptionVi: "Túi giấy mang đi và túi mua sắm.",
+        image: "https://picsum.photos/seed/vd-item-bag/600/400",
+      },
+      {
+        id: "envelope",
+        nameEn: "Envelope",
+        nameVi: "Bao thư",
+        description: "Document mailing envelopes.",
+        descriptionVi: "Bao thư gửi tài liệu.",
+        image: "https://picsum.photos/seed/vd-item-envelope/600/400",
+      },
+      {
+        id: "flyer",
+        nameEn: "Flyer",
+        nameVi: "Tờ rơi",
+        description: "Single-sheet mass handout or leaflet.",
+        descriptionVi: "Tờ rơi phát hàng loạt, một mặt giấy.",
+        image: "https://picsum.photos/seed/vd-item-flyer/600/400",
+      },
+      {
+        id: "decal",
+        nameEn: "Decal",
+        nameVi: "Decal các loại",
+        description: "Surface and product decals, various types.",
+        descriptionVi: "Decal bề mặt và sản phẩm, nhiều loại.",
+        image: "https://picsum.photos/seed/vd-item-decal/600/400",
+      },
+      {
+        id: "stamp",
+        nameEn: "Stamp / Sticker",
+        nameVi: "Tem",
+        description: "Seals and authentication stickers.",
+        descriptionVi: "Tem niêm phong và tem xác thực.",
+        image: "https://picsum.photos/seed/vd-item-stamp/600/400",
+      },
+      {
+        id: "label",
+        nameEn: "Label",
+        nameVi: "Nhãn",
+        description: "Product and packaging labels.",
+        descriptionVi: "Nhãn sản phẩm và bao bì.",
+        image: "https://picsum.photos/seed/vd-item-label/600/400",
+      },
+      {
+        id: "tag",
+        nameEn: "Tag",
+        nameVi: "Mác",
+        description: "Hang tags and garment tags.",
+        descriptionVi: "Mác treo và mác quần áo.",
+        image: "https://picsum.photos/seed/vd-item-tag/600/400",
+      },
+    ],
+  },
+  {
+    id: "tet",
+    nameEn: "Tet Publications",
+    nameVi: "Ấn phẩm Tết",
+    description:
+      "Seasonal Lunar New Year print items — gifting, greeting, and festive packaging for the Tet season.",
+    descriptionVi:
+      "Ấn phẩm Tết theo mùa — quà tặng, thiệp chúc và bao bì mang không khí ngày Tết.",
+    icon: "Gift",
+    coverImage: "https://picsum.photos/seed/vd-tet-cover/1200/600",
+    items: [
+      {
+        id: "li-xi",
+        nameEn: "Lucky Money Envelope",
+        nameVi: "Bao lì xì",
+        description: "Red envelopes for Tet cash gifts, custom-printed with your brand.",
+        descriptionVi: "Bao lì xì đỏ dùng để mừng tuổi dịp Tết, in theo yêu cầu với thương hiệu riêng.",
+        image: "https://picsum.photos/seed/vd-item-lixi/600/400",
+      },
+      {
+        id: "thiep-tet",
+        nameEn: "Tet Greeting Card",
+        nameVi: "Thiệp chúc Tết",
+        description: "Printed New Year greeting cards for clients and partners.",
+        descriptionVi: "Thiệp chúc mừng năm mới gửi đến khách hàng và đối tác.",
+        image: "https://picsum.photos/seed/vd-item-thieptet/600/400",
+      },
+      {
+        id: "lich-tet",
+        nameEn: "Tet Calendar",
+        nameVi: "Lịch Tết",
+        description: "Desk and wall calendars themed for the Lunar New Year season.",
+        descriptionVi: "Lịch để bàn và lịch treo tường mang chủ đề Tết Nguyên Đán.",
+        image: "https://picsum.photos/seed/vd-item-lichtet/600/400",
+      },
+      {
+        id: "hop-qua-tet",
+        nameEn: "Tet Gift Box",
+        nameVi: "Hộp quà Tết",
+        description: "Festive gift boxes for Tet hampers and corporate gifting.",
+        descriptionVi: "Hộp quà mang không khí Tết dùng cho giỏ quà và quà tặng doanh nghiệp.",
+        image: "https://picsum.photos/seed/vd-item-hopquatet/600/400",
+      },
+    ],
+  },
 ];
 
 // Curated showcase images for the /products listing page hero gallery.
@@ -219,5 +251,5 @@ export const showcaseImages = [
   { seed: "vd-show-2", label: "Hộp giấy sang trọng", labelEn: "Luxury Packaging",       aspect: "square" },
   { seed: "vd-show-3", label: "Catalogue chuyên nghiệp", labelEn: "Professional Catalogue", aspect: "square" },
   { seed: "vd-show-4", label: "Nhãn mác tinh tế",    labelEn: "Premium Labels",         aspect: "wide" },
-  { seed: "vd-show-5", label: "Brochure ấn tượng",   labelEn: "Impactful Brochure",     aspect: "wide" },
+  { seed: "vd-show-5", label: "Bao lì xì Tết",       labelEn: "Tet Lucky Envelopes",    aspect: "wide" },
 ] as const;

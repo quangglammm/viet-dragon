@@ -19,7 +19,7 @@ export default function Shop() {
   const locale = useLocale() as Locale;
 
   return (
-    <section id="products" className="relative w-full bg-white py-20 lg:py-[120px]">
+    <section id="products" className="relative w-full bg-white py-14 lg:py-20">
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeading
           eyebrow={t("eyebrow")}

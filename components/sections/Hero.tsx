@@ -57,7 +57,7 @@ export default function Hero() {
 
   return (
     <section
-      className="relative w-full overflow-hidden pt-28 pb-14 lg:pt-40 lg:pb-20 transition-[background] duration-700"
+      className="relative w-full overflow-hidden pt-24 pb-10 lg:pt-32 lg:pb-16 transition-[background] duration-700"
       style={{ background: gradients[index] }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}

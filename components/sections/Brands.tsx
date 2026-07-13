@@ -9,7 +9,7 @@ export default function Brands() {
   const marqueeText = industries.join("   ·   ") + "   ·   ";
 
   return (
-    <section className="relative w-full bg-white py-14 lg:py-20 border-b border-zinc-100">
+    <section className="relative w-full bg-white py-10 lg:py-14 border-b border-zinc-100">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
           className="flex items-center justify-center gap-6 mb-8"
@@ -19,7 +19,7 @@ export default function Brands() {
           transition={{ duration: 0.5 }}
         >
           <span className="hidden sm:block h-px flex-1 max-w-[180px] bg-zinc-200" />
-          <p className="text-center text-xs font-semibold tracking-widest uppercase text-zinc-400 shrink-0">
+          <p className="text-center text-xs font-semibold tracking-widest uppercase text-zinc-700 shrink-0">
             {t("title")}
           </p>
           <span className="hidden sm:block h-px flex-1 max-w-[180px] bg-zinc-200" />
@@ -38,10 +38,10 @@ export default function Brands() {
           animate={{ x: ["0%", "-50%"] }}
           transition={{ duration: 26, repeat: Infinity, ease: "linear" }}
         >
-          <span className="text-2xl sm:text-3xl font-black text-zinc-200 tracking-tight pr-0">
+          <span className="text-2xl sm:text-3xl font-black text-zinc-400 tracking-tight pr-0">
             {marqueeText}
           </span>
-          <span className="text-2xl sm:text-3xl font-black text-zinc-200 tracking-tight pr-0">
+          <span className="text-2xl sm:text-3xl font-black text-zinc-400 tracking-tight pr-0">
             {marqueeText}
           </span>
         </motion.div>

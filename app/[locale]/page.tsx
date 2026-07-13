@@ -7,7 +7,6 @@ import Services from "@/components/sections/Services";
 import Shop from "@/components/sections/Shop";
 import CtaBanner from "@/components/sections/CtaBanner";
 import Portfolio from "@/components/sections/Portfolio";
-import Pricing from "@/components/sections/Pricing";
 import Testimonials from "@/components/sections/Testimonials";
 import FAQ from "@/components/sections/FAQ";
 import Quality from "@/components/sections/Quality";
@@ -29,7 +28,6 @@ export default function Home() {
       <Shop />
       <CtaBanner />
       <Portfolio />
-      <Pricing />
       <Testimonials />
       <FAQ />
       <Quality />

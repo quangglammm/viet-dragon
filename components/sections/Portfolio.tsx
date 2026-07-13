@@ -55,7 +55,7 @@ export default function Portfolio() {
 
   return (
     <section
-      className="relative w-full bg-brand-soft overflow-hidden py-20 lg:py-[120px]"
+      className="relative w-full bg-brand-soft overflow-hidden py-14 lg:py-20"
       ref={ref}
     >
       <div className="max-w-7xl mx-auto px-6 w-full">
@@ -75,7 +75,7 @@ export default function Portfolio() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="self-start"
           >
-            <WipeButton href="/products" tone="dark" size="md" className="whitespace-nowrap">
+            <WipeButton href="/products" tone="primary" size="md" className="whitespace-nowrap">
               {t("viewAll")}
             </WipeButton>
           </motion.div>

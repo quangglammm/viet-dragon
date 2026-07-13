@@ -100,51 +100,10 @@
     "items": [
       { "label": "Business Cards", "cat": "Marketing" },
       { "label": "Packaging", "cat": "Packaging" },
-      { "label": "Labels", "cat": "Labels" },
+      { "label": "Lucky Money Envelope", "cat": "Tet Publications" },
       { "label": "Catalogue", "cat": "Marketing" },
-      { "label": "Restaurant Menu", "cat": "Stationery" },
+      { "label": "Restaurant Menu", "cat": "Office" },
       { "label": "Invitation Cards", "cat": "Marketing" }
-    ]
-  },
-  "pricing": {
-    "eyebrow": "Pricing & Plans",
-    "title": "Flexible to fit your order size.",
-    "subtitle": "Every print job is different — pricing is always quoted individually, with no fixed rate card.",
-    "priceLabel": "Contact for pricing",
-    "cta": "Choose this plan",
-    "plans": [
-      {
-        "name": "Basic",
-        "desc": "Suited to individuals & small businesses.",
-        "features": [
-          "3–5 day production time",
-          "Free basic design",
-          "1 sample print",
-          "Phone support"
-        ]
-      },
-      {
-        "name": "Popular",
-        "desc": "Suited to mid-size businesses & startups.",
-        "features": [
-          "24–48 hour production time",
-          "Unlimited design revisions",
-          "Unlimited free sample prints",
-          "Free delivery in HCMC & Binh Duong",
-          "Priority support"
-        ]
-      },
-      {
-        "name": "Enterprise",
-        "desc": "For large-volume & long-term orders.",
-        "features": [
-          "Priority production scheduling",
-          "Dedicated order management",
-          "Volume-based discounts",
-          "Flexible contracts & payment terms",
-          "24/7 support"
-        ]
-      }
     ]
   },
   "testimonials": {
@@ -266,7 +225,7 @@
   },
   "productsPage": {
     "metaTitle": "Products | Viet Dragon – Professional Printing",
-    "metaDescription": "Browse Viet Dragon's full print product catalogue: business cards, packaging, labels, stationery, and more.",
+    "metaDescription": "Browse Viet Dragon's full print product catalogue: marketing, office, packaging, Tet publications, and more.",
     "breadcrumbHome": "Home",
     "breadcrumbCurrent": "Products",
     "eyebrow": "All Products",

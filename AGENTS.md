@@ -93,7 +93,7 @@ fires correctly on touch devices.
 
 **Section pattern:**
 ```tsx
-className="relative w-full bg-white overflow-hidden py-20 lg:py-[120px]"
+className="relative w-full bg-white overflow-hidden py-14 lg:py-20"
 ```
 No `h-screen`/`min-h-screen` requirement — sections size to content.
 
@@ -113,8 +113,10 @@ Flex siblings in a row container will compete for width and crush grid cells. Mo
 ---
 
 ## Data files
-- `data/categories.ts` — `ProductCategory[]` (4 categories × 4 items); exports `showcaseImages`.
-  Every name/description field is split `xVi`/`x` (English) — read with `pickLocale()`, never both at once.
+- `data/categories.ts` — `ProductCategory[]` (4 categories: Tiếp thị/Marketing, Văn phòng/Office,
+  Bao bì/Packaging, Ấn phẩm Tết/Tet Publications — item counts vary per category); exports
+  `showcaseImages`. Every name/description field is split `xVi`/`x` (English) — read with
+  `pickLocale()`, never both at once.
 - `data/posts.ts` — `BlogPost[]` (6 posts); exports `categoryColors`. Same split pattern,
   including full article bodies (`content` / `contentEn`).
 - All `coverImage` / `image` fields use `https://picsum.photos/seed/<seed>/<w>/<h>`

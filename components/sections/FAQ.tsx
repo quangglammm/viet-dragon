@@ -20,7 +20,7 @@ export default function FAQ() {
   const faqs = t.raw("items") as FaqItem[];
 
   return (
-    <section id="faq" className="relative w-full bg-white overflow-hidden py-20 lg:py-[120px]">
+    <section id="faq" className="relative w-full bg-white overflow-hidden py-14 lg:py-20">
       <div ref={ref} className="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* Image */}
         <motion.div

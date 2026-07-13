@@ -17,7 +17,7 @@ export default function Process() {
   const steps = (t.raw("steps") as Step[]).map((s, i) => ({ ...s, icon: icons[i] }));
 
   return (
-    <section id="process" className="relative w-full bg-white overflow-hidden py-20 lg:py-[120px]">
+    <section id="process" className="relative w-full bg-white overflow-hidden py-14 lg:py-20">
       <div ref={ref} className="max-w-7xl mx-auto px-6 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-5 items-center">
           {/* Intro column */}

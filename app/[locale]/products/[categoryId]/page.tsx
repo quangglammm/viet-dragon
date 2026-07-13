@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
-  Briefcase, Package, Tag, Calendar,
+  Briefcase, Package, Calendar, Gift,
   ArrowLeft, ArrowRight, type LucideIcon,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
@@ -11,7 +11,7 @@ import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import { productCategories } from "@/data/categories";
 
-const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Tag, Calendar };
+const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift };
 
 export function generateStaticParams() {
   return productCategories.map((cat) => ({ categoryId: cat.id }));

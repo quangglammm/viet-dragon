@@ -1,8 +1,11 @@
 "use client";
 
+import { Phone, Mail, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useSectionInView } from "@/hooks/use-section-in-view";
+import { IconBadge } from "@/components/ui/icon-badge";
+import { WipeButton } from "@/components/ui/wipe-button";
 
 export default function CTA() {
   const { ref, inView } = useSectionInView();
@@ -12,7 +15,7 @@ export default function CTA() {
   return (
     <section
       id="cta"
-      className="relative w-full bg-brand-primary flex items-center overflow-hidden py-24 lg:py-32"
+      className="relative w-full bg-brand-primary flex items-center overflow-hidden py-16 lg:py-24"
     >
       {/* Decorative circles */}
       <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-white/5" />
@@ -38,7 +41,7 @@ export default function CTA() {
         </motion.h2>
 
         <motion.p
-          className="text-white/70 text-lg max-w-xl mx-auto mb-10"
+          className="text-white/80 text-lg max-w-xl mx-auto mb-10"
           initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.3 }}
@@ -52,32 +55,35 @@ export default function CTA() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.55, delay: 0.4 }}
         >
-          <a
-            href="tel:0901448377"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-brand-primary font-black text-lg uppercase tracking-wide hover:scale-105 transition-transform shadow-2xl"
-          >
-            {t("getQuote")} <span aria-hidden>→</span>
-          </a>
-          <a
-            href="mailto:contact@vietdragon.vn"
-            className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white/40 text-white font-semibold text-base hover:border-white hover:bg-white/10 transition-colors"
-          >
+          <WipeButton href="tel:0901448377" tone="light" size="lg" className="text-brand-primary shadow-2xl">
+            {t("getQuote")}
+          </WipeButton>
+          <WipeButton href="mailto:contact@vietdragon.vn" tone="outline" size="lg" arrow={false}>
             {tContact("email")}
-          </a>
+          </WipeButton>
         </motion.div>
 
         {/* Contact details */}
         <motion.div
-          className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-8 text-white/50 text-sm"
+          className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-8 text-white/80 text-sm"
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.5, delay: 0.55 }}
         >
-          <span>📞 {tContact("phone1")} · {tContact("phone2")}</span>
+          <span className="flex items-center gap-2">
+            <IconBadge icon={Phone} size="sm" className="bg-white/15" />
+            {tContact("phone1")} · {tContact("phone2")}
+          </span>
           <span className="hidden sm:block">·</span>
-          <span>📧 {tContact("email")}</span>
+          <span className="flex items-center gap-2">
+            <IconBadge icon={Mail} size="sm" className="bg-white/15" />
+            {tContact("email")}
+          </span>
           <span className="hidden sm:block">·</span>
-          <span>📍 {tContact("address")}</span>
+          <span className="flex items-center gap-2">
+            <IconBadge icon={MapPin} size="sm" className="bg-white/15" />
+            {tContact("address")}
+          </span>
         </motion.div>
       </div>
     </section>
