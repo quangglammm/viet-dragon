@@ -1,21 +1,57 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Phone, Mail, MapPin } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
-const links = [
-  { label: "Sản Phẩm", href: "/products" },
-  { label: "Bài Viết", href: "/blog" },
-  { label: "Dịch Vụ", href: "/#services" },
-  { label: "Giới Thiệu", href: "/#vision" },
-  { label: "Liên Hệ", href: "/#cta" },
-];
+const linkHrefs = ["/products", "/blog", "/#services", "/#about", "/#cta"] as const;
+const linkKeys = ["products", "blog", "services", "about", "contact"] as const;
+
+function LocaleSwitcher({
+  locale,
+  onSwitch,
+  className,
+}: {
+  locale: string;
+  onSwitch: (next: "vi" | "en") => void;
+  className?: string;
+}) {
+  return (
+    <div className={cn("flex items-center gap-1.5", className)}>
+      <button
+        onClick={() => onSwitch("vi")}
+        aria-label="Tiếng Việt"
+        className={cn("text-lg leading-none transition-opacity", locale === "vi" ? "opacity-100" : "opacity-40 hover:opacity-70")}
+      >
+        🇻🇳
+      </button>
+      <button
+        onClick={() => onSwitch("en")}
+        aria-label="English"
+        className={cn("text-lg leading-none transition-opacity", locale === "en" ? "opacity-100" : "opacity-40 hover:opacity-70")}
+      >
+        🇬🇧
+      </button>
+    </div>
+  );
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const t = useTranslations("nav");
+  const tContact = useTranslations("contact");
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Template's header-1.style-3 sits transparent/white-text over the hero and only
+  // turns solid on scroll — only the homepage has a hero behind it to be transparent
+  // over, so inner pages (Products/Blog) always render the solid nav.
+  const isHome = pathname === "/";
+  const transparent = isHome && !scrolled && !menuOpen;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -35,34 +71,73 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
+  const switchLocale = (next: "vi" | "en") => {
+    router.replace(pathname, { locale: next });
+  };
+
   return (
     <>
-      <header
-        className={cn(
-          "fixed top-0 inset-x-0 z-50 transition-all duration-300",
-          scrolled || menuOpen
-            ? "bg-white/95 backdrop-blur-sm border-b border-zinc-100 shadow-sm"
-            : "bg-transparent"
-        )}
-      >
+      <header className="fixed top-0 inset-x-0 z-50">
+        {/* Top info bar — desktop only, permanent brand-gradient band (matches the
+            template's header-top-section, which sits outside the sticky-toggled
+            element and never changes with scroll). Height is constant so page
+            content padding-top never has to change and never overlaps it. */}
+        <div className="hidden lg:block text-white" style={{ background: "var(--gradient-brand)" }}>
+          <div className="max-w-7xl mx-auto px-6 h-10 flex items-center justify-between text-xs text-white/80">
+            <ul className="flex items-center gap-6">
+              <li className="flex items-center gap-2">
+                <Mail size={13} /> {tContact("email")}
+              </li>
+              <li className="flex items-center gap-2">
+                <MapPin size={13} /> {tContact("address")}
+              </li>
+            </ul>
+            <div className="flex items-center gap-6">
+              <a href="tel:0901448377" className="flex items-center gap-2 hover:text-white transition-colors">
+                <Phone size={13} /> {tContact("phone1")}
+              </a>
+              <LocaleSwitcher locale={locale} onSwitch={switchLocale} />
+            </div>
+          </div>
+        </div>
+
+        {/* Main nav row — transparent with white text over the homepage hero,
+            solid white with a shadow once scrolled (or on any non-home page,
+            which has no dark hero behind it to be transparent over). */}
+        <div
+          className={cn(
+            "transition-colors duration-300",
+            transparent
+              ? "bg-transparent border-b border-transparent"
+              : "bg-white border-b border-zinc-100 shadow-sm"
+          )}
+        >
         <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link
             href="/"
-            className="text-xl font-black tracking-tight text-zinc-900"
+            className={cn(
+              "text-xl font-black tracking-tight transition-colors duration-300",
+              transparent ? "text-white" : "text-zinc-900"
+            )}
             onClick={() => setMenuOpen(false)}
           >
-            VIET <span className="text-brand-red">DRAGON</span>
+            VIET <span className={transparent ? "text-white/80" : "text-brand-primary"}>DRAGON</span>
           </Link>
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-1">
-            {links.map((l) => (
+            {linkHrefs.map((href, i) => (
               <Link
-                key={l.href}
-                href={l.href}
-                className="px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 rounded-full hover:bg-zinc-100 transition-colors"
+                key={href}
+                href={href}
+                className={cn(
+                  "px-4 py-2 text-sm font-medium rounded-full transition-colors duration-300",
+                  transparent
+                    ? "text-white/90 hover:text-white hover:bg-white/10"
+                    : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
+                )}
               >
-                {l.label}
+                {t(`links.${linkKeys[i]}`)}
               </Link>
             ))}
           </div>
@@ -70,21 +145,28 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <Link
               href="/#cta"
-              className="hidden lg:inline-flex items-center px-5 py-2.5 bg-brand-red text-white text-sm font-semibold rounded-full hover:opacity-90 transition-opacity"
+              className={cn(
+                "btn-wipe hidden lg:inline-flex items-center px-5 py-2.5 text-xs font-bold uppercase tracking-wide transition-colors duration-300",
+                transparent ? "bg-white text-brand-primary" : "bg-brand-primary text-white"
+              )}
             >
-              Nhận báo giá
+              {t("quote")}
             </Link>
 
             {/* Hamburger — mobile & tablet */}
             <button
-              className="lg:hidden p-2 -mr-1 rounded-lg text-zinc-700 hover:bg-zinc-100 transition-colors"
+              className={cn(
+                "lg:hidden p-2 -mr-1 rounded-lg transition-colors duration-300",
+                transparent ? "text-white hover:bg-white/10" : "text-zinc-700 hover:bg-zinc-100"
+              )}
               onClick={() => setMenuOpen((o) => !o)}
-              aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
+              aria-label={menuOpen ? t("closeMenu") : t("openMenu")}
             >
               {menuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </nav>
+        </div>
       </header>
 
       {/* Mobile full-screen menu */}
@@ -95,28 +177,29 @@ export default function Navbar() {
         )}
       >
         <nav className="flex flex-col px-6 py-8 gap-1 flex-1">
-          {links.map((l) => (
+          {linkHrefs.map((href, i) => (
             <Link
-              key={l.href}
-              href={l.href}
+              key={href}
+              href={href}
               onClick={() => setMenuOpen(false)}
               className="px-4 py-3.5 text-xl font-semibold text-zinc-800 rounded-2xl hover:bg-zinc-50 transition-colors"
             >
-              {l.label}
+              {t(`links.${linkKeys[i]}`)}
             </Link>
           ))}
         </nav>
 
         <div className="px-6 pb-10">
+          <LocaleSwitcher locale={locale} onSwitch={switchLocale} className="justify-center mb-5" />
           <Link
             href="/#cta"
             onClick={() => setMenuOpen(false)}
-            className="flex items-center justify-center w-full px-6 py-4 bg-brand-red text-white text-base font-semibold rounded-full hover:opacity-90 transition-opacity"
+            className="btn-wipe flex items-center justify-center w-full px-6 py-4 bg-brand-primary text-white text-sm font-bold uppercase tracking-wide"
           >
-            Nhận Báo Giá
+            {t("quote")}
           </Link>
           <p className="text-center text-zinc-400 text-xs mt-4">
-            📞 0901 448 377 · contact@vietdragon.vn
+            📞 {tContact("phone1")} · {tContact("email")}
           </p>
         </div>
       </div>

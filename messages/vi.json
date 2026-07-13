@@ -1,0 +1,329 @@
+{
+  "contact": {
+    "phone1": "0901 448 377",
+    "phone2": "0919 510 543",
+    "email": "contact@vietdragon.vn",
+    "address": "TP. Hồ Chí Minh & Bình Dương"
+  },
+  "nav": {
+    "links": {
+      "products": "Sản Phẩm",
+      "blog": "Bài Viết",
+      "services": "Dịch Vụ",
+      "about": "Giới Thiệu",
+      "contact": "Liên Hệ"
+    },
+    "quote": "Nhận Báo Giá",
+    "openMenu": "Mở menu",
+    "closeMenu": "Đóng menu"
+  },
+  "hero": {
+    "slides": [
+      {
+        "tag": "Ấn phẩm marketing",
+        "titleLine1": "In ấn đẳng cấp,",
+        "titleLine2": "chuyên nghiệp.",
+        "desc": "Từ danh thiếp tinh tế đến catalogue hoàn chỉnh — mỗi ấn phẩm đều mang dấu ấn thương hiệu của bạn."
+      },
+      {
+        "tag": "Bao bì & vật phẩm",
+        "titleLine1": "Bao bì ấn tượng,",
+        "titleLine2": "thương hiệu bứt phá.",
+        "desc": "Hộp giấy, túi giấy, decal — đóng gói sản phẩm của bạn bằng chất lượng in ấn cao cấp."
+      },
+      {
+        "tag": "Giao hàng nhanh",
+        "titleLine1": "Từ ý tưởng đến sản phẩm,",
+        "titleLine2": "chỉ trong 48 giờ.",
+        "desc": "In thử miễn phí, sản xuất nhanh, giao tận nơi tại TP. Hồ Chí Minh & Bình Dương."
+      }
+    ],
+    "cta": "Nhận báo giá",
+    "viewSlide": "Xem slide {number}"
+  },
+  "shopCategories": {
+    "itemCount": "{count} sản phẩm"
+  },
+  "shopBanner": {
+    "banners": [
+      { "eyebrow": "Bán chạy nhất", "title": "Danh Thiếp Cao Cấp" },
+      { "eyebrow": "Xu hướng mới", "title": "Hộp Giấy Sang Trọng" }
+    ],
+    "cta": "Xem ngay"
+  },
+  "about": {
+    "eyebrow": "Về Chúng Tôi",
+    "title": "Sản xuất ấn phẩm nổi bật cho doanh nghiệp của bạn.",
+    "body": "Từ danh thiếp nhỏ bé đến hộp giấy sang trọng, từ brochure tinh tế đến decal cá tính — mỗi sản phẩm đều mang dấu ấn chất lượng của Viet Dragon.",
+    "checklist": [
+      "Chăm chút từng chi tiết",
+      "Quy trình đạt chuẩn",
+      "Tiết kiệm chi phí",
+      "Tư vấn miễn phí"
+    ],
+    "discoverMore": "Khám phá thêm",
+    "callExpert": "Gọi Chuyên Gia",
+    "statNumber": "10+",
+    "statLabel": "Năm kinh nghiệm",
+    "imageAlt": "Xưởng in Viet Dragon"
+  },
+  "services": {
+    "eyebrow": "Dịch Vụ Đi Kèm",
+    "title": "Bốn dịch vụ đi kèm, hoàn toàn miễn phí.",
+    "subtitle": "Bốn dịch vụ đi kèm mỗi đơn hàng, không phát sinh chi phí.",
+    "items": [
+      { "title": "Tư Vấn", "desc": "Đội ngũ chuyên viên tư vấn tận tâm, hỗ trợ từ ý tưởng đến lựa chọn vật liệu phù hợp nhất." },
+      { "title": "Thiết Kế", "desc": "Thiết kế chuyên nghiệp theo yêu cầu, phối hợp chỉnh sửa không giới hạn đến khi ưng ý." },
+      { "title": "In Thử", "desc": "In thử miễn phí trước khi đặt hàng số lượng lớn — bạn thấy sản phẩm thực tế trước khi quyết định." },
+      { "title": "Giao Hàng", "desc": "Giao tận nơi nhanh chóng tại TP. Hồ Chí Minh và Bình Dương, không phụ phí giao hàng." }
+    ],
+    "cta": "Nhận báo giá"
+  },
+  "shop": {
+    "eyebrow": "Sản Phẩm Nổi Bật",
+    "title": "Khám phá danh mục sản phẩm.",
+    "viewDetail": "Xem chi tiết",
+    "requestQuote": "Nhận báo giá",
+    "requestQuoteArrow": "Nhận báo giá →"
+  },
+  "ctaBanner": {
+    "title": "Sẵn sàng bắt đầu?",
+    "subtitle": "In ấn và giao hàng đúng tiến độ",
+    "ctaQuote": "Nhận báo giá",
+    "ctaProducts": "Xem sản phẩm"
+  },
+  "portfolio": {
+    "eyebrow": "Tác Phẩm",
+    "titleLine1": "Từng sản phẩm,",
+    "titleHighlight": "từng chi tiết.",
+    "viewAll": "Tất cả sản phẩm",
+    "items": [
+      { "label": "Danh Thiếp", "cat": "Marketing" },
+      { "label": "Bao Bì", "cat": "Bao Bì" },
+      { "label": "Nhãn Mác", "cat": "Nhãn Mác" },
+      { "label": "Catalogue", "cat": "Marketing" },
+      { "label": "Menu Nhà Hàng", "cat": "Văn Phòng Phẩm" },
+      { "label": "Thiệp Mời", "cat": "Marketing" }
+    ]
+  },
+  "pricing": {
+    "eyebrow": "Gói Dịch Vụ",
+    "title": "Linh hoạt theo quy mô đơn hàng.",
+    "subtitle": "Mỗi đơn hàng in ấn đều khác nhau — báo giá luôn được tư vấn riêng, không có mức giá cố định.",
+    "priceLabel": "Liên hệ báo giá",
+    "cta": "Chọn gói này",
+    "plans": [
+      {
+        "name": "Cơ Bản",
+        "desc": "Phù hợp cho cá nhân & hộ kinh doanh nhỏ.",
+        "features": [
+          "Thời gian sản xuất 3–5 ngày",
+          "Thiết kế cơ bản miễn phí",
+          "In thử 1 lần",
+          "Hỗ trợ qua điện thoại"
+        ]
+      },
+      {
+        "name": "Phổ Biến",
+        "desc": "Phù hợp cho doanh nghiệp vừa & startup.",
+        "features": [
+          "Thời gian sản xuất 24–48 giờ",
+          "Thiết kế không giới hạn chỉnh sửa",
+          "In thử miễn phí không giới hạn",
+          "Giao hàng miễn phí TP.HCM & Bình Dương",
+          "Hỗ trợ ưu tiên"
+        ]
+      },
+      {
+        "name": "Doanh Nghiệp",
+        "desc": "Cho đơn hàng số lượng lớn & dài hạn.",
+        "features": [
+          "Ưu tiên lịch sản xuất",
+          "Quản lý đơn hàng riêng",
+          "Chiết khấu theo số lượng",
+          "Hợp đồng & thanh toán linh hoạt",
+          "Hỗ trợ 24/7"
+        ]
+      }
+    ]
+  },
+  "testimonials": {
+    "eyebrow": "Khách Hàng Nói Gì",
+    "title": "Được khách hàng tin tưởng lựa chọn.",
+    "items": [
+      {
+        "name": "Nguyễn Thị Minh Anh",
+        "role": "Chủ quán cà phê",
+        "quote": "Viet Dragon in ly giấy và túi giấy cho quán mình rất đẹp, màu chuẩn và giao đúng hẹn. Sẽ tiếp tục đặt hàng dài lâu."
+      },
+      {
+        "name": "Trần Quốc Bảo",
+        "role": "Giám đốc marketing",
+        "quote": "Bộ nhận diện thương hiệu công ty mình được thiết kế và in ấn rất chuyên nghiệp. Đội ngũ tư vấn nhiệt tình, chỉnh sửa nhanh."
+      },
+      {
+        "name": "Lê Thu Hà",
+        "role": "Chủ shop thời trang",
+        "quote": "Đặt hộp giấy và thẻ treo sản phẩm số lượng lớn, chất lượng in đồng đều từng lô. Giá cả hợp lý so với thị trường."
+      }
+    ],
+    "viewReview": "Xem đánh giá {number}"
+  },
+  "faq": {
+    "eyebrow": "Câu Hỏi Thường Gặp",
+    "titleLine1": "Khách hàng thường hỏi",
+    "titleHighlight": "về Viet Dragon.",
+    "items": [
+      {
+        "q": "Số lượng đặt hàng tối thiểu là bao nhiêu?",
+        "a": "Tuỳ sản phẩm, số lượng tối thiểu thường từ 50–100 sản phẩm. Với đơn hàng nhỏ hơn, vui lòng liên hệ để được tư vấn phương án phù hợp."
+      },
+      {
+        "q": "Thời gian giao hàng mất bao lâu?",
+        "a": "Đơn hàng tiêu chuẩn giao trong 24–48 giờ tại TP. Hồ Chí Minh & Bình Dương. Đơn hàng số lượng lớn hoặc yêu cầu đặc biệt có thể mất 3–5 ngày."
+      },
+      {
+        "q": "Tôi cần chuẩn bị file thiết kế như thế nào?",
+        "a": "Chúng tôi nhận file AI, PDF, PSD ở chế độ CMYK, độ phân giải tối thiểu 300dpi. Nếu bạn chưa có file thiết kế, đội ngũ thiết kế miễn phí của chúng tôi sẽ hỗ trợ."
+      },
+      {
+        "q": "Có giao hàng ngoài khu vực TP.HCM & Bình Dương không?",
+        "a": "Có. Chúng tôi giao hàng toàn quốc qua đối tác vận chuyển, phí và thời gian giao sẽ tuỳ thuộc vào khu vực nhận hàng."
+      },
+      {
+        "q": "Phương thức thanh toán nào được chấp nhận?",
+        "a": "Chúng tôi hỗ trợ chuyển khoản ngân hàng, tiền mặt khi nhận hàng, và thanh toán theo hợp đồng đối với khách hàng doanh nghiệp."
+      }
+    ]
+  },
+  "quality": {
+    "eyebrow": "Chất Lượng Là Ưu Tiên",
+    "titleLine1": "Chất lượng tốt",
+    "titleHighlight": "theo tiêu chuẩn nào?",
+    "subtitle": "Mỗi đơn hàng đều trải qua quy trình kiểm tra chất lượng nghiêm ngặt trước khi giao đến tay bạn.",
+    "checklist": [
+      "Đúng Kích Thước",
+      "Màu Sắc Chính Xác",
+      "Vật Liệu Bền",
+      "Hoàn Thiện Tinh Xảo",
+      "Tỉ Mỉ Từng Chi Tiết",
+      "Kiểm Tra Trước Giao"
+    ],
+    "cta": "Yêu Cầu Báo Giá"
+  },
+  "process": {
+    "titleLine1": "Quy Trình",
+    "titleHighlight": "Làm Việc?",
+    "subtitle": "Từ ý tưởng đến sản phẩm hoàn thiện — ba bước đơn giản.",
+    "cta": "Bắt Đầu Ngay",
+    "steps": [
+      { "title": "Tư Vấn & Báo Giá", "desc": "Chia sẻ nhu cầu, nhận báo giá minh bạch trong vòng 30 phút." },
+      { "title": "Thiết Kế & Duyệt Mẫu", "desc": "Đội ngũ thiết kế dựng bản mẫu, in thử trước khi sản xuất hàng loạt." },
+      { "title": "In Ấn & Giao Hàng", "desc": "Sản xuất nhanh, giao tận nơi tại TP. Hồ Chí Minh & Bình Dương." }
+    ]
+  },
+  "blogPreview": {
+    "eyebrow": "Bài Viết",
+    "titleLine1": "Mẹo, dự án &",
+    "titleHighlight": "tin tức.",
+    "readMore": "Đọc tiếp",
+    "viewAll": "Xem tất cả bài viết",
+    "minute": "phút"
+  },
+  "brands": {
+    "title": "Được tin dùng bởi nhiều ngành nghề",
+    "industries": [
+      "F&B · Nhà Hàng",
+      "Thời Trang",
+      "Startup Công Nghệ",
+      "Bán Lẻ",
+      "Sự Kiện & Cưới Hỏi",
+      "Giáo Dục",
+      "Làm Đẹp & Spa",
+      "Nội Thất"
+    ]
+  },
+  "cta": {
+    "eyebrow": "Bắt Đầu Ngay",
+    "title": "Sẵn sàng in ấn?",
+    "subtitle": "Liên hệ ngay để nhận báo giá miễn phí trong vòng 30 phút.",
+    "getQuote": "Nhận báo giá ngay"
+  },
+  "footer": {
+    "tagline": "Công ty in ấn chuyên nghiệp tại TP. Hồ Chí Minh & Bình Dương.",
+    "productsLabel": "Sản Phẩm",
+    "usefulLabel": "Hữu Ích",
+    "contactLabel": "Liên Hệ",
+    "usefulLinks": {
+      "about": "Về Chúng Tôi",
+      "services": "Dịch Vụ",
+      "process": "Quy Trình",
+      "testimonials": "Đánh Giá",
+      "faq": "Câu Hỏi Thường Gặp"
+    },
+    "copyright": "© {year} Viet Dragon. Bảo lưu mọi quyền.",
+    "premium": "In ấn chất lượng cao"
+  },
+  "productsPage": {
+    "metaTitle": "Sản Phẩm | Viet Dragon – In Ấn Chuyên Nghiệp",
+    "metaDescription": "Xem toàn bộ danh mục sản phẩm in ấn của Viet Dragon: danh thiếp, bao bì, nhãn mác, văn phòng phẩm và nhiều hơn nữa.",
+    "breadcrumbHome": "Trang Chủ",
+    "breadcrumbCurrent": "Sản Phẩm",
+    "eyebrow": "Tất Cả Sản Phẩm",
+    "titleLine1": "Mọi thứ bạn cần,",
+    "titleHighlight": "chúng tôi in được.",
+    "subtitle": "Bốn nhóm sản phẩm hoàn chỉnh từ danh thiếp đến văn phòng phẩm.",
+    "galleryCaption": "Ảnh minh hoạ — hình ảnh thực tế sản phẩm sẽ được cập nhật sớm.",
+    "browseByCategory": "Khám phá theo danh mục",
+    "viewDetail": "Xem chi tiết →",
+    "ctaTitleLine1": "Không tìm thấy sản phẩm",
+    "ctaTitleHighlight": "phù hợp?",
+    "ctaSubtitle": "Liên hệ ngay — miễn phí tư vấn & thiết kế, báo giá trong 30 phút.",
+    "ctaButton": "Liên hệ ngay"
+  },
+  "categoryPage": {
+    "breadcrumbHome": "Trang Chủ",
+    "breadcrumbProducts": "Sản Phẩm",
+    "eyebrow": "Danh Mục Sản Phẩm",
+    "getQuote": "Nhận báo giá",
+    "itemCount": "{count} sản phẩm trong danh mục này",
+    "referenceGallery": "Hình ảnh tham khảo",
+    "ctaTitleLine1": "Cần báo giá cho",
+    "ctaSubtitle": "Liên hệ ngay — miễn phí tư vấn & thiết kế, báo giá trong 30 phút.",
+    "ctaButton": "Nhận báo giá ngay",
+    "prevShort": "Trước",
+    "allProducts": "Tất Cả Sản Phẩm",
+    "viewAll": "Xem tất cả",
+    "nextShort": "Tiếp"
+  },
+  "blogPage": {
+    "metaTitle": "Bài viết | Viet Dragon – In Ấn Chuyên Nghiệp",
+    "metaDescription": "Mẹo in ấn, case study dự án và tin tức mới nhất từ Viet Dragon.",
+    "breadcrumbHome": "Trang Chủ",
+    "breadcrumbCurrent": "Bài Viết",
+    "eyebrow": "Bài Viết",
+    "titleLine1": "Mẹo, dự án &",
+    "titleHighlight": "tin tức.",
+    "subtitle": "Cập nhật kiến thức in ấn, xem case study thực tế và theo dõi những gì mới nhất từ Viet Dragon.",
+    "readArticle": "Đọc bài viết",
+    "allPosts": "Tất cả bài viết",
+    "readMore": "Đọc tiếp →",
+    "minuteRead": "phút đọc",
+    "minute": "phút",
+    "ctaTitleLine1": "Sẵn sàng bắt đầu",
+    "ctaTitleHighlight": "dự án in ấn?",
+    "ctaSubtitle": "Miễn phí tư vấn & thiết kế — báo giá trong 30 phút.",
+    "ctaButton": "Nhận báo giá ngay"
+  },
+  "blogPostPage": {
+    "breadcrumbHome": "Trang Chủ",
+    "breadcrumbBlog": "Bài Viết",
+    "minuteRead": "phút đọc",
+    "needHelp": "Cần tư vấn thêm?",
+    "needHelpDesc": "Đội ngũ Viet Dragon sẵn sàng tư vấn miễn phí và báo giá trong 30 phút.",
+    "contactNow": "Liên hệ ngay",
+    "allPosts": "Tất Cả Bài Viết",
+    "viewAll": "Xem tất cả",
+    "getQuote": "Nhận Báo Giá"
+  }
+}

@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   Briefcase, Package, Tag, Calendar,
   ArrowLeft, ArrowRight, type LucideIcon,
 } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { pickLocale } from "@/lib/locale";
+import type { Locale } from "@/i18n/routing";
 import { productCategories } from "@/data/categories";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Tag, Calendar };
@@ -17,26 +20,28 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ categoryId: string }>;
+  params: Promise<{ locale: Locale; categoryId: string }>;
 }): Promise<Metadata> {
-  const { categoryId } = await params;
+  const { locale, categoryId } = await params;
   const cat = productCategories.find((c) => c.id === categoryId);
   if (!cat) return {};
   return {
-    title: `${cat.nameVi} | Viet Dragon`,
-    description: cat.description,
+    title: `${pickLocale(locale, cat.nameVi, cat.nameEn)} | Viet Dragon`,
+    description: pickLocale(locale, cat.descriptionVi, cat.description),
   };
 }
 
 export default async function CategoryPage({
   params,
 }: {
-  params: Promise<{ categoryId: string }>;
+  params: Promise<{ locale: Locale; categoryId: string }>;
 }) {
-  const { categoryId } = await params;
+  const { locale, categoryId } = await params;
+  const t = await getTranslations({ locale, namespace: "categoryPage" });
   const cat = productCategories.find((c) => c.id === categoryId);
   if (!cat) notFound();
 
+  const name = pickLocale(locale, cat.nameVi, cat.nameEn);
   const Icon = iconMap[cat.icon] ?? Briefcase;
   const idx = productCategories.findIndex((c) => c.id === categoryId);
   const prev = idx > 0 ? productCategories[idx - 1] : null;
@@ -48,7 +53,7 @@ export default async function CategoryPage({
       <div className="relative h-[420px] lg:h-[520px] w-full overflow-hidden">
         <Image
           src={cat.coverImage}
-          alt={cat.nameVi}
+          alt={name}
           fill
           className="object-cover"
           priority
@@ -60,11 +65,11 @@ export default async function CategoryPage({
           <div className="max-w-7xl mx-auto px-6 pb-12 w-full">
             {/* Breadcrumb over image */}
             <nav aria-label="breadcrumb" className="flex items-center gap-2 text-sm text-white/50 mb-6">
-              <Link href="/" className="hover:text-white transition-colors">Trang Chủ</Link>
+              <Link href="/" className="hover:text-white transition-colors">{t("breadcrumbHome")}</Link>
               <span>/</span>
-              <Link href="/products" className="hover:text-white transition-colors">Sản Phẩm</Link>
+              <Link href="/products" className="hover:text-white transition-colors">{t("breadcrumbProducts")}</Link>
               <span>/</span>
-              <span className="text-white/80">{cat.nameVi}</span>
+              <span className="text-white/80">{name}</span>
             </nav>
 
             <div className="flex items-end gap-5">
@@ -73,12 +78,11 @@ export default async function CategoryPage({
               </span>
               <div>
                 <p className="text-white/60 text-sm font-semibold tracking-widest uppercase mb-1">
-                  Danh Mục Sản Phẩm · Product Category
+                  {t("eyebrow")}
                 </p>
                 <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight">
-                  {cat.nameVi}
+                  {name}
                 </h1>
-                <p className="text-white/50 text-base mt-1">{cat.nameEn}</p>
               </div>
             </div>
           </div>
@@ -88,12 +92,14 @@ export default async function CategoryPage({
       {/* ── Category description ── */}
       <div className="border-b border-zinc-100">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <p className="text-zinc-500 leading-relaxed max-w-2xl">{cat.description}</p>
+          <p className="text-zinc-500 leading-relaxed max-w-2xl">
+            {pickLocale(locale, cat.descriptionVi, cat.description)}
+          </p>
           <Link
             href="/#cta"
-            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-brand-red text-white text-sm font-semibold rounded-full hover:opacity-90 transition-opacity whitespace-nowrap"
+            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-brand-primary text-white text-sm font-bold uppercase tracking-wide btn-wipe whitespace-nowrap"
           >
-            Nhận báo giá <ArrowRight size={14} />
+            {t("getQuote")} <ArrowRight size={14} />
           </Link>
         </div>
       </div>
@@ -101,55 +107,59 @@ export default async function CategoryPage({
       {/* ── Product items ── */}
       <div className="max-w-7xl mx-auto px-6 py-16">
         <p className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-8">
-          {cat.items.length} sản phẩm trong danh mục này · {cat.items.length} products in this category
+          {t("itemCount", { count: cat.items.length })}
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {cat.items.map((item) => (
-            <div
-              key={item.id}
-              className="group flex flex-col rounded-2xl border border-zinc-100 overflow-hidden hover:border-zinc-200 hover:shadow-md transition-all duration-300"
-            >
-              {/* Item image */}
-              <div className="relative h-44 overflow-hidden bg-zinc-100">
-                <Image
-                  src={item.image}
-                  alt={item.nameVi}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  unoptimized
-                />
-              </div>
-
-              {/* Item info */}
-              <div className="flex flex-col gap-2 p-5 flex-1 bg-white">
-                <div>
-                  <p className="font-black text-zinc-900 text-base">{item.nameVi}</p>
-                  <p className="text-zinc-400 text-sm">{item.nameEn}</p>
+          {cat.items.map((item) => {
+            const itemName = pickLocale(locale, item.nameVi, item.nameEn);
+            return (
+              <div
+                key={item.id}
+                className="group flex flex-col rounded-2xl border border-zinc-100 overflow-hidden hover:border-zinc-200 hover:shadow-md transition-all duration-300"
+              >
+                {/* Item image */}
+                <div className="relative h-44 overflow-hidden bg-zinc-100">
+                  <Image
+                    src={item.image}
+                    alt={itemName}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    unoptimized
+                  />
                 </div>
-                <p className="text-zinc-500 text-sm leading-relaxed flex-1">{item.description}</p>
-                <Link
-                  href="/#cta"
-                  className="text-xs font-semibold text-brand-red hover:opacity-70 transition-opacity self-start mt-1"
-                >
-                  Nhận báo giá →
-                </Link>
+
+                {/* Item info */}
+                <div className="flex flex-col gap-2 p-5 flex-1 bg-white">
+                  <div>
+                    <p className="font-black text-zinc-900 text-base">{itemName}</p>
+                  </div>
+                  <p className="text-zinc-500 text-sm leading-relaxed flex-1">
+                    {pickLocale(locale, item.descriptionVi, item.description)}
+                  </p>
+                  <Link
+                    href="/#cta"
+                    className="text-xs font-semibold text-brand-primary hover:opacity-70 transition-opacity self-start mt-1"
+                  >
+                    {t("getQuote")} →
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* ── Sample gallery strip ── */}
         <div className="mt-16">
           <p className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-5">
-            Hình ảnh tham khảo · Reference gallery
+            {t("referenceGallery")}
           </p>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {cat.items.map((item, i) => (
               <div key={item.id} className="relative rounded-xl overflow-hidden group h-36 sm:h-44 lg:h-[200px]">
                 <Image
                   src={`https://picsum.photos/seed/${item.id}-gallery-${i}/400/300`}
-                  alt={item.nameVi}
+                  alt={pickLocale(locale, item.nameVi, item.nameEn)}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                   unoptimized
@@ -173,18 +183,18 @@ export default async function CategoryPage({
           <div className="relative px-10 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div>
               <h3 className="font-black text-white text-2xl">
-                Cần báo giá cho{" "}
-                <span className="text-brand-red">{cat.nameVi}</span>?
+                {t("ctaTitleLine1")}{" "}
+                <span className="text-brand-primary">{name}</span>?
               </h3>
               <p className="text-white/50 text-sm mt-1">
-                Liên hệ ngay — miễn phí tư vấn &amp; thiết kế, báo giá trong 30 phút.
+                {t("ctaSubtitle")}
               </p>
             </div>
             <Link
               href="/#cta"
-              className="shrink-0 inline-flex items-center gap-2 px-7 py-3.5 bg-brand-red text-white font-semibold rounded-full hover:opacity-90 transition-opacity whitespace-nowrap text-sm"
+              className="shrink-0 inline-flex items-center gap-2 px-7 py-3.5 bg-brand-primary text-white font-bold uppercase tracking-wide btn-wipe whitespace-nowrap text-sm"
             >
-              Nhận báo giá ngay <ArrowRight size={16} />
+              {t("ctaButton")} <ArrowRight size={16} />
             </Link>
           </div>
         </div>
@@ -199,8 +209,8 @@ export default async function CategoryPage({
               className="flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group"
             >
               <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-              <span className="hidden sm:inline">{prev.nameVi}</span>
-              <span className="sm:hidden">Trước</span>
+              <span className="hidden sm:inline">{pickLocale(locale, prev.nameVi, prev.nameEn)}</span>
+              <span className="sm:hidden">{t("prevShort")}</span>
             </Link>
           ) : (
             <Link
@@ -208,12 +218,12 @@ export default async function CategoryPage({
               className="flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group"
             >
               <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-              <span>Tất Cả Sản Phẩm</span>
+              <span>{t("allProducts")}</span>
             </Link>
           )}
 
           <Link href="/products" className="text-xs text-zinc-400 hover:text-zinc-700 transition-colors">
-            Xem tất cả
+            {t("viewAll")}
           </Link>
 
           {next ? (
@@ -221,16 +231,16 @@ export default async function CategoryPage({
               href={`/products/${next.id}`}
               className="flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group"
             >
-              <span className="hidden sm:inline">{next.nameVi}</span>
-              <span className="sm:hidden">Tiếp</span>
+              <span className="hidden sm:inline">{pickLocale(locale, next.nameVi, next.nameEn)}</span>
+              <span className="sm:hidden">{t("nextShort")}</span>
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           ) : (
             <Link
               href="/#cta"
-              className="flex items-center gap-2 text-sm font-semibold text-brand-red hover:opacity-80 transition-opacity group"
+              className="flex items-center gap-2 text-sm font-semibold text-brand-primary hover:opacity-80 transition-opacity group"
             >
-              <span>Nhận báo giá</span>
+              <span>{t("getQuote")}</span>
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           )}

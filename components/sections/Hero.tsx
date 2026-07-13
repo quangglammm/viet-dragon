@@ -1,163 +1,168 @@
 "use client";
 
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { WipeButton } from "@/components/ui/wipe-button";
+import { cn } from "@/lib/utils";
 
-const headline = ["In", "ấn", "đẳng", "cấp,", "chuyên", "nghiệp."];
+const SLIDE_DURATION = 6000;
+const seeds = ["vd-hero-1", "vd-hero-2", "vd-hero-3"];
 
-// Cards share the same bottom-center anchor; rotation fans them out.
-// originY: 1 means each card rotates around its own bottom center,
-// so all five pivot from the same fixed point — a true hand-of-cards fan.
-const cards = [
-  { id: 1, label: "Danh Thiếp",    en: "Business Cards",       seed: "vdc1", rotate: -22, zIndex: 1, delay: 0.55 },
-  { id: 2, label: "Catalogue",     en: "Catalogue & Brochure", seed: "vdc2", rotate: -11, zIndex: 2, delay: 0.68 },
-  { id: 3, label: "Hộp Giấy",     en: "Packaging",            seed: "vdc3", rotate:   0, zIndex: 3, delay: 0.81 },
-  { id: 4, label: "Decal & Nhãn", en: "Stickers & Labels",    seed: "vdc4", rotate:  11, zIndex: 4, delay: 0.94 },
-  { id: 5, label: "Lịch / Sổ Tay",en: "Calendar & Notebook",  seed: "vdc5", rotate:  22, zIndex: 5, delay: 1.07 },
+// Template's actual hero is a full-bleed saturated gradient (not a photo), alternated
+// per slide — built from this project's existing brand tokens rather than the
+// template's literal blue/teal hex values, to stay on-brand.
+const gradients = [
+  "linear-gradient(135deg, var(--brand-dark) 0%, var(--brand-primary) 100%)",
+  "var(--gradient-brand)",
+  "linear-gradient(135deg, var(--brand-primary) 0%, #ae34e8 100%)",
 ];
 
-const CARD_W = 220;
-const CARD_H = 340;
+// Scattered dot decoration echoing the template's bottom-left dot cluster.
+const decorDots = [
+  { left: "8%", top: "58%", size: 10 },
+  { left: "18%", top: "72%", size: 14 },
+  { left: "4%", top: "82%", size: 8 },
+  { left: "26%", top: "62%", size: 8 },
+  { left: "14%", top: "90%", size: 10 },
+  { left: "32%", top: "84%", size: 6 },
+];
+
+type Slide = { tag: string; titleLine1: string; titleLine2: string; desc: string };
 
 export default function Hero() {
+  const t = useTranslations("hero");
+  const tContact = useTranslations("contact");
+  const slides = t.raw("slides") as Slide[];
+
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const goTo = useCallback((i: number) => setIndex(i % slides.length), [slides.length]);
+
+  useEffect(() => {
+    if (paused) return;
+    timerRef.current = setInterval(() => {
+      setIndex((i) => (i + 1) % slides.length);
+    }, SLIDE_DURATION);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [paused, slides.length]);
+
+  const slide = slides[index];
+  const seed = seeds[index];
+
   return (
-    <section className="scroll-panel relative flex min-h-screen lg:h-screen w-full items-center bg-white overflow-hidden pt-20 pb-12 lg:pt-16 lg:pb-0">
-      <div className="max-w-7xl mx-auto w-full px-6 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center">
+    <section
+      className="relative w-full overflow-hidden pt-28 pb-14 lg:pt-40 lg:pb-20 transition-[background] duration-700"
+      style={{ background: gradients[index] }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* The gradient itself gives the fixed navbar's white text enough contrast —
+          no separate scrim needed (unlike a white/photo hero). */}
 
-        {/* ── Left: text ── */}
-        <div className="flex flex-col gap-6 z-10">
-          <motion.span
-            className="inline-flex items-center gap-2 self-start px-4 py-1.5 bg-zinc-100 text-zinc-500 text-[10px] font-semibold rounded-full tracking-wide uppercase whitespace-nowrap"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-red shrink-0" />
-            In Ấn Chuyên Nghiệp · TP. HCM &amp; Bình Dương
-          </motion.span>
+      {/* Soft decorative blob, echoing the abstract shape behind the template's
+          floating product mockups. */}
+      <div className="absolute top-1/3 -right-24 w-[560px] h-[560px] rounded-full bg-white/5 blur-3xl" />
+      <div className="absolute -bottom-32 left-1/4 w-[420px] h-[420px] rounded-full bg-white/5 blur-3xl" />
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-black leading-tight tracking-tight text-zinc-900">
-            {headline.map((word, i) => (
-              <motion.span
-                key={i}
-                className={`inline-block mr-[0.2em] ${i >= headline.length - 2 ? "text-brand-red" : ""}`}
-                initial={{ opacity: 0, y: 32 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.25 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              >
-                {word}
-              </motion.span>
-            ))}
-          </h1>
+      {/* Scattered dot cluster, bottom-left. */}
+      {decorDots.map((d, i) => (
+        <span
+          key={i}
+          className="absolute rounded-full bg-white/25"
+          style={{ left: d.left, top: d.top, width: d.size, height: d.size }}
+        />
+      ))}
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.9 }}
-          >
-            <p className="text-base sm:text-lg text-zinc-500 leading-relaxed">
-              Từ danh thiếp tinh tế đến bộ nhận diện thương hiệu hoàn chỉnh —
-              chúng tôi biến ý tưởng thành sản phẩm in ấn chất lượng cao.
-            </p>
-            <p className="text-sm text-zinc-400 mt-1">
-              From business cards to full brand identity — we make ideas print-ready.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="flex items-center gap-4"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.1 }}
-          >
-            <a
-              href="/#cta"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-brand-red text-white font-semibold rounded-full hover:opacity-90 transition-opacity shadow-lg shadow-brand-red/20"
+      <div className="relative max-w-7xl mx-auto w-full px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center min-h-[420px] lg:min-h-[480px]">
+          {/* ── Left: slide copy ── */}
+          {/* Reveal choreography mirrors the template's hero-3: content falls in from
+              above while the image (below) rises from below — opposing directions that
+              converge into place, on a slower transition than the crossfade itself. */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={index}
+              className="flex flex-col gap-6 z-10"
+              initial={{ opacity: 0, y: -60 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
             >
-              Nhận báo giá <span aria-hidden>→</span>
-            </a>
-            <a href="tel:0901448377" className="text-sm text-zinc-400 hover:text-zinc-700 transition-colors">
-              0901 448 377
-            </a>
-          </motion.div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/90">
+                {slide.tag}
+              </p>
 
-          {/* ── Mobile card strip (inside text column to avoid flex-row collision) ── */}
-          <div className="md:hidden overflow-x-auto flex gap-3 pb-2 snap-x snap-mandatory" style={{ scrollbarWidth: "none" }}>
-            {cards.map((card) => (
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white">
+                {slide.titleLine1}
+                <br />
+                {slide.titleLine2}
+              </h1>
+
+              <p className="text-base sm:text-lg text-white/75 leading-relaxed max-w-md">
+                {slide.desc}
+              </p>
+
+              <div className="flex items-center gap-4 mt-2">
+                <WipeButton href="/#cta" tone="light" size="lg">
+                  {t("cta")}
+                </WipeButton>
+                <a href="tel:0901448377" className="text-sm text-white/70 hover:text-white transition-colors">
+                  {tContact("phone1")}
+                </a>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* ── Right: slide image ── */}
+          <div className="relative h-[280px] sm:h-[360px] lg:h-[440px]">
+            <AnimatePresence mode="wait">
               <motion.div
-                key={card.id}
-                className="relative shrink-0 w-36 h-48 rounded-2xl overflow-hidden shadow-lg snap-start"
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: card.delay - 0.3, ease: [0.16, 1, 0.3, 1] }}
+                key={index}
+                className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl"
+                initial={{ opacity: 0, y: 60 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
               >
                 <Image
-                  src={`https://picsum.photos/seed/${card.seed}/440/680`}
-                  alt={card.label}
+                  src={`https://picsum.photos/seed/${seed}/1000/900`}
+                  alt={`${slide.titleLine1} ${slide.titleLine2}`}
                   fill
+                  priority={index === 0}
                   className="object-cover"
                   unoptimized
                 />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                  <p className="text-white font-bold text-xs">{card.label}</p>
-                  <p className="text-white/60 text-[10px]">{card.en}</p>
-                </div>
               </motion.div>
-            ))}
+            </AnimatePresence>
           </div>
         </div>
 
-        {/* ── Right: hand-of-cards fan (tablet and desktop) ── */}
-        <div className="relative hidden md:block" style={{ height: 500 }}>
-          {cards.map((card) => (
-            <motion.div
-              key={card.id}
-              className="absolute rounded-2xl overflow-hidden shadow-2xl cursor-pointer"
-              style={{
-                width: CARD_W,
-                height: CARD_H,
-                left: "50%",
-                bottom: 32,
-                marginLeft: -CARD_W / 2,
-                zIndex: card.zIndex,
-                originX: 0.5,
-                originY: 1,
-              }}
-              initial={{ x: 640, rotate: card.rotate + 28, opacity: 0 }}
-              animate={{ x: 0, rotate: card.rotate, opacity: 1 }}
-              transition={{ duration: 0.85, delay: card.delay, ease: [0.16, 1, 0.3, 1] }}
-              whileHover={{ y: -28, zIndex: 20, transition: { duration: 0.2, ease: "easeOut" } }}
-            >
-              <Image
-                src={`https://picsum.photos/seed/${card.seed}/440/680`}
-                alt={card.label}
-                fill
-                className="object-cover"
-                unoptimized
-              />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                <p className="text-white font-bold text-sm">{card.label}</p>
-                <p className="text-white/60 text-xs">{card.en}</p>
-              </div>
-            </motion.div>
+        {/* ── Dot navigation ── */}
+        {/* Ring-style pagination, mirroring the template's swiper-dot-2: solid fill
+            when inactive, hollow ring when active — an inverted convention from the
+            usual "active dot fills in" pattern. */}
+        <div className="flex items-center gap-3 mt-10 lg:mt-14">
+          {slides.map((s, i) => (
+            <button
+              key={s.tag}
+              onClick={() => goTo(i)}
+              aria-label={t("viewSlide", { number: i + 1 })}
+              className={cn(
+                "h-3 w-3 rounded-full border-2 transition-all duration-500",
+                i === index
+                  ? "bg-transparent border-white scale-110"
+                  : "bg-white/70 border-white/70 hover:border-white",
+              )}
+            />
           ))}
         </div>
       </div>
-
-      {/* Scroll hint */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.8, duration: 0.6 }}
-      >
-        <span className="text-[10px] text-zinc-400 tracking-[0.2em] uppercase">Cuộn xuống</span>
-        <motion.div
-          className="w-px h-8 bg-zinc-300 origin-top"
-          animate={{ scaleY: [1, 0.3, 1] }}
-          transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
-        />
-      </motion.div>
     </section>
   );
 }

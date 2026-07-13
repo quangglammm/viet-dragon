@@ -1,0 +1,329 @@
+{
+  "contact": {
+    "phone1": "0901 448 377",
+    "phone2": "0919 510 543",
+    "email": "contact@vietdragon.vn",
+    "address": "Ho Chi Minh City & Binh Duong"
+  },
+  "nav": {
+    "links": {
+      "products": "Products",
+      "blog": "Blog",
+      "services": "Services",
+      "about": "About",
+      "contact": "Contact"
+    },
+    "quote": "Get a Quote",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "hero": {
+    "slides": [
+      {
+        "tag": "Marketing collateral",
+        "titleLine1": "Premium printing,",
+        "titleLine2": "done right.",
+        "desc": "From refined business cards to complete catalogues — every piece carries your brand's mark."
+      },
+      {
+        "tag": "Packaging & carriers",
+        "titleLine1": "Packaging that stands out,",
+        "titleLine2": "brands that break through.",
+        "desc": "Paper boxes, bags, decals — wrap your product in premium print quality."
+      },
+      {
+        "tag": "Fast delivery",
+        "titleLine1": "From idea to product,",
+        "titleLine2": "in just 48 hours.",
+        "desc": "Free sample prints, fast production, delivered across Ho Chi Minh City & Binh Duong."
+      }
+    ],
+    "cta": "Get a quote",
+    "viewSlide": "View slide {number}"
+  },
+  "shopCategories": {
+    "itemCount": "{count} products"
+  },
+  "shopBanner": {
+    "banners": [
+      { "eyebrow": "Best seller", "title": "Premium Business Cards" },
+      { "eyebrow": "Trending", "title": "Luxury Paper Boxes" }
+    ],
+    "cta": "View now"
+  },
+  "about": {
+    "eyebrow": "About Us",
+    "title": "We produce standout printing for your business.",
+    "body": "From small business cards to luxury paper boxes, from refined brochures to bold decals — every product carries Viet Dragon's mark of quality.",
+    "checklist": [
+      "Perfect Detailing",
+      "Certified Process",
+      "Budget-Friendly",
+      "Free Consultations"
+    ],
+    "discoverMore": "Discover more",
+    "callExpert": "Call an Expert",
+    "statNumber": "10+",
+    "statLabel": "Years of experience",
+    "imageAlt": "Viet Dragon print workshop"
+  },
+  "services": {
+    "eyebrow": "Our Services",
+    "title": "Four bundled services, completely free.",
+    "subtitle": "Four services bundled with every order, at no extra cost.",
+    "items": [
+      { "title": "Consultation", "desc": "A dedicated team of consultants, guiding you from concept to the right materials for the job." },
+      { "title": "Design", "desc": "Professional design on request, with unlimited revisions until you're happy with the result." },
+      { "title": "Sample Print", "desc": "Free sample printing before you commit to a large order — see the real product before deciding." },
+      { "title": "Delivery", "desc": "Fast, free local delivery across Ho Chi Minh City and Binh Duong." }
+    ],
+    "cta": "Get a quote"
+  },
+  "shop": {
+    "eyebrow": "Featured Products",
+    "title": "Explore our product range.",
+    "viewDetail": "View detail",
+    "requestQuote": "Get a quote",
+    "requestQuoteArrow": "Get a quote →"
+  },
+  "ctaBanner": {
+    "title": "Ready to get started?",
+    "subtitle": "Printed and delivered on your schedule",
+    "ctaQuote": "Get a quote",
+    "ctaProducts": "View products"
+  },
+  "portfolio": {
+    "eyebrow": "Our Work",
+    "titleLine1": "Every product,",
+    "titleHighlight": "every detail.",
+    "viewAll": "All products",
+    "items": [
+      { "label": "Business Cards", "cat": "Marketing" },
+      { "label": "Packaging", "cat": "Packaging" },
+      { "label": "Labels", "cat": "Labels" },
+      { "label": "Catalogue", "cat": "Marketing" },
+      { "label": "Restaurant Menu", "cat": "Stationery" },
+      { "label": "Invitation Cards", "cat": "Marketing" }
+    ]
+  },
+  "pricing": {
+    "eyebrow": "Pricing & Plans",
+    "title": "Flexible to fit your order size.",
+    "subtitle": "Every print job is different — pricing is always quoted individually, with no fixed rate card.",
+    "priceLabel": "Contact for pricing",
+    "cta": "Choose this plan",
+    "plans": [
+      {
+        "name": "Basic",
+        "desc": "Suited to individuals & small businesses.",
+        "features": [
+          "3–5 day production time",
+          "Free basic design",
+          "1 sample print",
+          "Phone support"
+        ]
+      },
+      {
+        "name": "Popular",
+        "desc": "Suited to mid-size businesses & startups.",
+        "features": [
+          "24–48 hour production time",
+          "Unlimited design revisions",
+          "Unlimited free sample prints",
+          "Free delivery in HCMC & Binh Duong",
+          "Priority support"
+        ]
+      },
+      {
+        "name": "Enterprise",
+        "desc": "For large-volume & long-term orders.",
+        "features": [
+          "Priority production scheduling",
+          "Dedicated order management",
+          "Volume-based discounts",
+          "Flexible contracts & payment terms",
+          "24/7 support"
+        ]
+      }
+    ]
+  },
+  "testimonials": {
+    "eyebrow": "What Clients Say",
+    "title": "Trusted by customers who keep coming back.",
+    "items": [
+      {
+        "name": "Nguyễn Thị Minh Anh",
+        "role": "Cafe Owner",
+        "quote": "Viet Dragon printed our paper cups and bags beautifully — accurate colors and delivered right on time. We'll keep ordering from them long-term."
+      },
+      {
+        "name": "Trần Quốc Bảo",
+        "role": "Marketing Director",
+        "quote": "Our company's brand identity set was designed and printed to a very professional standard. The team was responsive and revisions were fast."
+      },
+      {
+        "name": "Lê Thu Hà",
+        "role": "Fashion Shop Owner",
+        "quote": "We ordered a large batch of paper boxes and hang tags — print quality was consistent across every batch, and pricing was fair for the market."
+      }
+    ],
+    "viewReview": "View review {number}"
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "titleLine1": "Common questions",
+    "titleHighlight": "about Viet Dragon.",
+    "items": [
+      {
+        "q": "What's the minimum order quantity?",
+        "a": "It depends on the product, but the minimum is typically 50–100 units. For smaller orders, please get in touch and we'll help find a suitable option."
+      },
+      {
+        "q": "How long does turnaround take?",
+        "a": "Standard orders are delivered within 24–48 hours across Ho Chi Minh City & Binh Duong. Large-volume or custom orders may take 3–5 days."
+      },
+      {
+        "q": "What file formats do you accept?",
+        "a": "We accept AI, PDF, and PSD files in CMYK, at a minimum resolution of 300dpi. If you don't have a design file yet, our free design team can help."
+      },
+      {
+        "q": "Do you deliver outside Ho Chi Minh City & Binh Duong?",
+        "a": "Yes. We deliver nationwide through shipping partners — cost and delivery time depend on the destination."
+      },
+      {
+        "q": "What payment methods are accepted?",
+        "a": "We accept bank transfer, cash on delivery, and contract-based billing for corporate clients."
+      }
+    ]
+  },
+  "quality": {
+    "eyebrow": "Quality At Its Best",
+    "titleLine1": "What quality standard",
+    "titleHighlight": "do we hold ourselves to?",
+    "subtitle": "Every order goes through a strict quality-control process before it reaches you.",
+    "checklist": [
+      "Precise Sizing",
+      "Accurate Colors",
+      "Durable Material",
+      "Edge Perfection",
+      "Attention to Detail",
+      "Quality Checked"
+    ],
+    "cta": "Request a Quote"
+  },
+  "process": {
+    "titleLine1": "How We",
+    "titleHighlight": "Work",
+    "subtitle": "From idea to finished product — three simple steps.",
+    "cta": "Get Started",
+    "steps": [
+      { "title": "Consultation & Quote", "desc": "Tell us what you need and get a transparent quote within 30 minutes." },
+      { "title": "Design & Approval", "desc": "Our design team builds a mockup and a sample print before mass production." },
+      { "title": "Printing & Delivery", "desc": "Fast production, delivered across Ho Chi Minh City & Binh Duong." }
+    ]
+  },
+  "blogPreview": {
+    "eyebrow": "From the Blog",
+    "titleLine1": "Tips, projects &",
+    "titleHighlight": "news.",
+    "readMore": "Read more",
+    "viewAll": "View all posts",
+    "minute": "min"
+  },
+  "brands": {
+    "title": "Trusted across industries",
+    "industries": [
+      "F&B · Restaurants",
+      "Fashion",
+      "Tech Startups",
+      "Retail",
+      "Events & Weddings",
+      "Education",
+      "Beauty & Spa",
+      "Interior Design"
+    ]
+  },
+  "cta": {
+    "eyebrow": "Get Started",
+    "title": "Ready to print?",
+    "subtitle": "Contact us for a free quote within 30 minutes.",
+    "getQuote": "Get a quote now"
+  },
+  "footer": {
+    "tagline": "Professional printing services in Ho Chi Minh City & Binh Duong.",
+    "productsLabel": "Products",
+    "usefulLabel": "Useful Links",
+    "contactLabel": "Contact",
+    "usefulLinks": {
+      "about": "About Us",
+      "services": "Services",
+      "process": "Process",
+      "testimonials": "Testimonials",
+      "faq": "FAQ"
+    },
+    "copyright": "© {year} Viet Dragon. All rights reserved.",
+    "premium": "Premium Printing Services"
+  },
+  "productsPage": {
+    "metaTitle": "Products | Viet Dragon – Professional Printing",
+    "metaDescription": "Browse Viet Dragon's full print product catalogue: business cards, packaging, labels, stationery, and more.",
+    "breadcrumbHome": "Home",
+    "breadcrumbCurrent": "Products",
+    "eyebrow": "All Products",
+    "titleLine1": "Whatever you need,",
+    "titleHighlight": "we can print it.",
+    "subtitle": "Four complete product categories, from business cards to stationery.",
+    "galleryCaption": "Placeholder imagery — real product photos coming soon.",
+    "browseByCategory": "Browse by category",
+    "viewDetail": "View detail →",
+    "ctaTitleLine1": "Can't find the",
+    "ctaTitleHighlight": "right product?",
+    "ctaSubtitle": "Get in touch — free consultation & design, quoted within 30 minutes.",
+    "ctaButton": "Contact us"
+  },
+  "categoryPage": {
+    "breadcrumbHome": "Home",
+    "breadcrumbProducts": "Products",
+    "eyebrow": "Product Category",
+    "getQuote": "Get a quote",
+    "itemCount": "{count} products in this category",
+    "referenceGallery": "Reference gallery",
+    "ctaTitleLine1": "Need a quote for",
+    "ctaSubtitle": "Get in touch — free consultation & design, quoted within 30 minutes.",
+    "ctaButton": "Get a quote now",
+    "prevShort": "Prev",
+    "allProducts": "All Products",
+    "viewAll": "View all",
+    "nextShort": "Next"
+  },
+  "blogPage": {
+    "metaTitle": "Blog | Viet Dragon – Professional Printing",
+    "metaDescription": "Printing tips, project case studies, and the latest news from Viet Dragon.",
+    "breadcrumbHome": "Home",
+    "breadcrumbCurrent": "Blog",
+    "eyebrow": "From the Blog",
+    "titleLine1": "Tips, projects &",
+    "titleHighlight": "news.",
+    "subtitle": "Printing know-how, real project case studies, and the latest from Viet Dragon.",
+    "readArticle": "Read article",
+    "allPosts": "All Posts",
+    "readMore": "Read more →",
+    "minuteRead": "min read",
+    "minute": "min",
+    "ctaTitleLine1": "Ready to start your",
+    "ctaTitleHighlight": "print project?",
+    "ctaSubtitle": "Free consultation & design — quoted within 30 minutes.",
+    "ctaButton": "Get a quote now"
+  },
+  "blogPostPage": {
+    "breadcrumbHome": "Home",
+    "breadcrumbBlog": "Blog",
+    "minuteRead": "min read",
+    "needHelp": "Need more guidance?",
+    "needHelpDesc": "The Viet Dragon team is ready to consult for free and quote within 30 minutes.",
+    "contactNow": "Contact us",
+    "allPosts": "All Posts",
+    "viewAll": "View all",
+    "getQuote": "Get a Quote"
+  }
+}

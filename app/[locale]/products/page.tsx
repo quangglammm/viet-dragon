@@ -1,49 +1,60 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import {
   Briefcase, Package, Tag, Calendar,
   ArrowRight, type LucideIcon,
 } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { pickLocale } from "@/lib/locale";
+import type { Locale } from "@/i18n/routing";
 import { productCategories, showcaseImages } from "@/data/categories";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Tag, Calendar };
 
-export const metadata: Metadata = {
-  title: "Sản Phẩm | Viet Dragon – In Ấn Chuyên Nghiệp",
-  description:
-    "Xem toàn bộ danh mục sản phẩm in ấn của Viet Dragon: danh thiếp, bao bì, nhãn mác, văn phòng phẩm và nhiều hơn nữa.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "productsPage" });
+  return { title: t("metaTitle"), description: t("metaDescription") };
+}
 
-export default function ProductsPage() {
+export default async function ProductsPage({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "productsPage" });
   const [s1, s2, s3, s4, s5] = showcaseImages;
+  const showcaseLabel = (s: (typeof showcaseImages)[number]) =>
+    pickLocale(locale, s.label, s.labelEn);
 
   return (
     <div className="bg-white">
       {/* ── Page header ── */}
       <div className="max-w-7xl mx-auto px-6 pt-14 pb-10">
         <nav aria-label="breadcrumb" className="flex items-center gap-2 text-sm text-zinc-400 mb-10">
-          <Link href="/" className="hover:text-zinc-700 transition-colors">Trang Chủ</Link>
+          <Link href="/" className="hover:text-zinc-700 transition-colors">{t("breadcrumbHome")}</Link>
           <span>/</span>
-          <span className="text-zinc-700 font-medium">Sản Phẩm</span>
+          <span className="text-zinc-700 font-medium">{t("breadcrumbCurrent")}</span>
         </nav>
 
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
           <div>
-            <p className="text-brand-red text-sm font-semibold tracking-widest uppercase mb-3">
-              Tất Cả Sản Phẩm · All Products
+            <p className="text-brand-primary text-sm font-semibold tracking-widest uppercase mb-3">
+              {t("eyebrow")}
             </p>
             <h1 className="text-5xl lg:text-6xl font-black text-zinc-900 leading-tight">
-              Mọi thứ bạn cần,{" "}
-              <span className="text-brand-red">chúng tôi in được.</span>
+              {t("titleLine1")}{" "}
+              <span className="text-brand-primary">{t("titleHighlight")}</span>
             </h1>
           </div>
           <p className="text-zinc-500 max-w-sm leading-relaxed lg:text-right text-sm">
-            Bốn nhóm sản phẩm hoàn chỉnh từ danh thiếp đến văn phòng phẩm.
-            <br />
-            <span className="text-zinc-400">
-              Four complete product categories.
-            </span>
+            {t("subtitle")}
           </p>
         </div>
       </div>
@@ -60,15 +71,14 @@ export default function ProductsPage() {
             >
               <Image
                 src={`https://picsum.photos/seed/${s.seed}/800/500`}
-                alt={s.label}
+                alt={showcaseLabel(s)}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <div className="absolute bottom-3 left-3">
-                <p className="text-white font-black text-sm">{s.label}</p>
-                <p className="text-white/60 text-xs">{s.labelEn}</p>
+                <p className="text-white font-black text-sm">{showcaseLabel(s)}</p>
               </div>
             </div>
           ))}
@@ -82,15 +92,14 @@ export default function ProductsPage() {
             <div className="col-span-1 relative rounded-2xl overflow-hidden group">
               <Image
                 src={`https://picsum.photos/seed/${s1.seed}/600/900`}
-                alt={s1.label}
+                alt={showcaseLabel(s1)}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <div className="absolute bottom-5 left-5">
-                <p className="text-white font-black text-base">{s1.label}</p>
-                <p className="text-white/60 text-xs">{s1.labelEn}</p>
+                <p className="text-white font-black text-base">{showcaseLabel(s1)}</p>
               </div>
             </div>
 
@@ -100,15 +109,14 @@ export default function ProductsPage() {
                 <div key={s.seed} className="relative rounded-2xl overflow-hidden group">
                   <Image
                     src={`https://picsum.photos/seed/${s.seed}/900/400`}
-                    alt={s.label}
+                    alt={showcaseLabel(s)}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     unoptimized
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/10 to-transparent" />
                   <div className="absolute bottom-4 left-5">
-                    <p className="text-white font-black text-sm">{s.label}</p>
-                    <p className="text-white/60 text-xs">{s.labelEn}</p>
+                    <p className="text-white font-black text-sm">{showcaseLabel(s)}</p>
                   </div>
                 </div>
               ))}
@@ -121,15 +129,14 @@ export default function ProductsPage() {
               <div key={s.seed} className="relative rounded-2xl overflow-hidden group">
                 <Image
                   src={`https://picsum.photos/seed/${s.seed}/800/400`}
-                  alt={s.label}
+                  alt={showcaseLabel(s)}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   unoptimized
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 <div className="absolute bottom-4 left-5">
-                  <p className="text-white font-black text-sm">{s.label}</p>
-                  <p className="text-white/60 text-xs">{s.labelEn}</p>
+                  <p className="text-white font-black text-sm">{showcaseLabel(s)}</p>
                 </div>
               </div>
             ))}
@@ -138,7 +145,7 @@ export default function ProductsPage() {
 
         {/* Gallery caption */}
         <p className="text-center text-xs text-zinc-400 mt-4">
-          Ảnh minh hoạ — hình ảnh thực tế sản phẩm sẽ được cập nhật sớm.
+          {t("galleryCaption")}
         </p>
       </div>
 
@@ -146,12 +153,14 @@ export default function ProductsPage() {
       <div className="border-t border-zinc-100">
         <div className="max-w-7xl mx-auto px-6 py-16">
           <p className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-8">
-            Khám phá theo danh mục · Browse by category
+            {t("browseByCategory")}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {productCategories.map((cat) => {
               const Icon = iconMap[cat.icon] ?? Briefcase;
+              const name = pickLocale(locale, cat.nameVi, cat.nameEn);
+              const description = pickLocale(locale, cat.descriptionVi, cat.description);
               return (
                 <Link key={cat.id} href={`/products/${cat.id}`} className="group block">
                   <div className="h-full rounded-2xl border border-zinc-100 overflow-hidden hover:border-zinc-300 hover:shadow-lg transition-all duration-300">
@@ -159,7 +168,7 @@ export default function ProductsPage() {
                     <div className="relative h-52 overflow-hidden">
                       <Image
                         src={cat.coverImage}
-                        alt={cat.nameVi}
+                        alt={name}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         unoptimized
@@ -170,8 +179,7 @@ export default function ProductsPage() {
                           <Icon size={18} strokeWidth={1.5} />
                         </span>
                         <div>
-                          <p className="text-white font-black text-base leading-snug">{cat.nameVi}</p>
-                          <p className="text-white/60 text-xs">{cat.nameEn}</p>
+                          <p className="text-white font-black text-base leading-snug">{name}</p>
                         </div>
                       </div>
                       <ArrowRight
@@ -182,19 +190,19 @@ export default function ProductsPage() {
 
                     {/* Card body */}
                     <div className="p-6 bg-white flex flex-col gap-4">
-                      <p className="text-zinc-500 text-sm leading-relaxed">{cat.description}</p>
+                      <p className="text-zinc-500 text-sm leading-relaxed">{description}</p>
                       <div className="flex flex-wrap gap-2">
                         {cat.items.map((item) => (
                           <span
                             key={item.id}
                             className="px-3 py-1 bg-zinc-50 border border-zinc-200 text-zinc-600 text-xs font-medium rounded-full"
                           >
-                            {item.nameVi}
+                            {pickLocale(locale, item.nameVi, item.nameEn)}
                           </span>
                         ))}
                       </div>
-                      <p className="text-brand-red text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
-                        Xem chi tiết →
+                      <p className="text-brand-primary text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                        {t("viewDetail")}
                       </p>
                     </div>
                   </div>
@@ -218,18 +226,18 @@ export default function ProductsPage() {
         <div className="relative max-w-7xl mx-auto px-6 py-16 flex flex-col sm:flex-row items-center justify-between gap-8">
           <div>
             <h3 className="text-2xl font-black text-white">
-              Không tìm thấy sản phẩm{" "}
-              <span className="text-brand-red">phù hợp?</span>
+              {t("ctaTitleLine1")}{" "}
+              <span className="text-brand-primary">{t("ctaTitleHighlight")}</span>
             </h3>
             <p className="text-white/50 mt-1 text-sm">
-              Liên hệ ngay — miễn phí tư vấn &amp; thiết kế, báo giá trong 30 phút.
+              {t("ctaSubtitle")}
             </p>
           </div>
           <Link
             href="/#cta"
-            className="shrink-0 inline-flex items-center gap-2 px-7 py-3.5 bg-brand-red text-white font-semibold rounded-full hover:opacity-90 transition-opacity whitespace-nowrap text-sm"
+            className="shrink-0 inline-flex items-center gap-2 px-7 py-3.5 bg-brand-primary text-white font-bold uppercase tracking-wide btn-wipe whitespace-nowrap text-sm"
           >
-            Liên hệ ngay <ArrowRight size={16} />
+            {t("ctaButton")} <ArrowRight size={16} />
           </Link>
         </div>
       </div>

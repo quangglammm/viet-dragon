@@ -13,6 +13,7 @@ export interface BlogPost {
   categoryEn: string;
   readTime: number;
   content: string;
+  contentEn: string;
 }
 
 export const blogPosts: BlogPost[] = [
@@ -45,6 +46,21 @@ Màu nâu tự nhiên, ấm áp và có cá tính. Phù hợp cho bao bì, túi 
 Chống nước, bền màu, không rách — lý tưởng cho nhãn hàng hoá, decal ngoài trời và thực đơn quán ăn.
 
 Khi chưa chắc về lựa chọn, hãy liên hệ với đội ngũ Viet Dragon để được tư vấn miễn phí và nhận mẫu thử trước khi in số lượng lớn.`,
+    contentEn: `Choosing the right print material doesn't just affect the look of a piece — it determines the durability and function of the final product. Here's an overview of the most popular materials today.
+
+**Coated Paper**
+A smooth surface that reproduces color accurately, ideal for catalogues, brochures, and premium business cards. Common weights range from 100gsm to 350gsm.
+
+**Art Paper**
+A light, textured surface with a pleasant tactile feel, often used for pieces that want a natural, approachable character. Great for restaurant menus and organic-style brochures.
+
+**Kraft Paper**
+A natural brown tone with warmth and character. Well suited to packaging, paper bags, and brands built around sustainability.
+
+**Synthetic PP**
+Waterproof, colorfast, and tear-resistant — ideal for product labels, outdoor decals, and restaurant menus.
+
+If you're unsure which to choose, reach out to the Viet Dragon team for a free consultation and a sample before committing to a large print run.`,
   },
   {
     slug: "bao-bi-fnb-local-brand",
@@ -70,6 +86,16 @@ Chúng tôi tư vấn sử dụng giấy kraft tự nhiên kết hợp in 1 màu
 
 **Kết quả**
 Bộ bao bì hoàn chỉnh được sản xuất trong 5 ngày làm việc. Khách hàng nhận phản hồi tích cực từ người dùng cuối và đặt thêm đơn hàng trong tháng tiếp theo.`,
+    contentEn: `The client is a craft beverage brand in Ho Chi Minh City, looking for a packaging set that could carry across their natural, eco-conscious brand spirit.
+
+**The Challenge**
+The brand had a limited budget but high expectations for visual consistency across every touchpoint: paper boxes, take-out bags, seal stickers, and thank-you cards.
+
+**The Solution**
+We recommended natural kraft paper combined with single-color (black ink) printing instead of full 4-color printing, cutting costs significantly while keeping the aesthetic intact. The round seal sticker was printed larger so it could double as a brand accent.
+
+**The Result**
+The full packaging set was produced in 5 working days. The client received positive feedback from end customers and placed a follow-up order the next month.`,
   },
   {
     slug: "viet-dragon-mo-rong-binh-duong",
@@ -95,6 +121,16 @@ Cơ sở Bình Dương được trang bị máy in offset tờ rời, máy in k�
 
 **Dịch vụ không đổi**
 Tư vấn, thiết kế và báo giá vẫn hoàn toàn miễn phí. Liên hệ ngay để được ưu tiên đặt lịch sản xuất từ cơ sở mới.`,
+    contentEn: `We're excited to announce that Viet Dragon will officially open its second production facility in Binh Duong in early July 2026.
+
+**Why Binh Duong?**
+Binh Duong is the largest industrial hub in southern Vietnam, home to thousands of small and mid-size businesses with regular printing needs. The new facility will shorten delivery times for customers in the area to just 1–2 working days.
+
+**New Production Capacity**
+The Binh Duong facility is equipped with sheet-fed offset presses, large-format digital printers, and a full finishing line (foil stamping, film lamination, die-cutting) — all under one roof.
+
+**Same Service, New Location**
+Consultation, design, and quotes remain completely free. Contact us now to get priority scheduling at the new facility.`,
   },
   {
     slug: "5-loi-thuong-gap-khi-chuan-bi-file-in",
@@ -126,6 +162,22 @@ Font không được nhúng vào file có thể bị thay thế bởi font mặc
 
 **5. Không để ý đến vùng an toàn (safe zone)**
 Nội dung quan trọng (chữ, logo) nên cách mép cắt ít nhất 5mm để tránh bị cắt nhầm. Đây là vùng safe zone cần tuân thủ.`,
+    contentEn: `After years of working with hundreds of clients, here are the most common mistakes Viet Dragon sees in print-ready files.
+
+**1. Using RGB Instead of CMYK**
+Screens display in RGB — printers work in CMYK. Without converting beforehand, printed colors can come out noticeably duller or shifted. Always convert to CMYK before exporting your file.
+
+**2. Missing Bleed**
+Any element that touches the edge of the page needs to extend at least 3mm past the trim line. Without bleed, a few millimeters of cutting error will expose an unwanted white edge.
+
+**3. Fonts Not Outlined**
+Fonts that aren't embedded in the file can get silently replaced by the printer's default font. Always create outlines (Create Outlines in Illustrator) or fully embed your fonts.
+
+**4. Resolution Too Low**
+Images that look fine on screen (72 dpi) will look pixelated when printed. The minimum requirement is 300 dpi at actual print size.
+
+**5. Ignoring the Safe Zone**
+Important content — text, logos — should stay at least 5mm from the trim edge to avoid being cut off by mistake. This margin is the safe zone, and it should always be respected.`,
   },
   {
     slug: "bo-nhan-dien-thuong-hieu-startup",
@@ -154,6 +206,19 @@ Mã QR trên danh thiếp được thiết kế kết hợp với logo, vẫn đ
 
 **Kết quả**
 Toàn bộ bộ ấn phẩm được hoàn thiện trong 8 ngày làm việc. Startup đã sử dụng danh thiếp tại Demo Day và nhận được nhiều lời khen về chất lượng in.`,
+    contentEn: `A 12-person SaaS startup was preparing for a product launch and needed a stationery set that reflected a professional, tech-forward image.
+
+**Project Scope**
+The full identity set included: foil-stamped business cards with QR codes, envelopes, letterheads, presentation folders, internal notebooks, and event display banners.
+
+**Technical Challenge**
+The business cards called for gold foil stamping on a matte black background — a technique that demands precise alignment and specific temperature conditions. We ran three test prints before reaching the desired result.
+
+**A Standout Detail**
+The QR code on the business card was designed to merge with the logo — still scannable, but reading as a graphic element in its own right. A small detail that made a big impression on the startup's own clients.
+
+**The Result**
+The full stationery set was completed in 8 working days. The startup used the cards at their Demo Day and received strong compliments on print quality.`,
   },
   {
     slug: "may-in-uv-the-he-moi",
@@ -182,6 +247,19 @@ Với số lượng nhỏ (dưới 100 tờ), máy UV có thể hoàn thành tro
 
 **Báo giá**
 Liên hệ đội ngũ Viet Dragon để nhận báo giá cho dự án in UV của bạn. Chúng tôi cung cấp mẫu thử miễn phí cho đơn hàng từ 500 tờ trở lên.`,
+    contentEn: `Viet Dragon has just completed installation of a new-generation flatbed UV printing system, opening up capabilities that previously required outsourcing or long wait times.
+
+**What's Now Possible**
+Direct printing onto: acrylic, MDF wood, PVC, rigid canvas, glass, and metal. No intermediary decal needed — the design prints straight onto the material.
+
+**Special Effects**
+Raised 3D spot UV: a clear, textured layer built up on the print surface — ideal for business cards and premium gift boxes. White ink can also act as an underbase for printing color on dark or transparent surfaces.
+
+**Turnaround Time**
+For small runs (under 100 sheets), the UV printer can complete same-day — no need to wait for plates like traditional offset printing.
+
+**Get a Quote**
+Contact the Viet Dragon team for a quote on your UV printing project. We offer free sample prints for orders of 500 sheets or more.`,
   },
 ];
 

@@ -5,15 +5,15 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-brand-red: var(--brand-red);
-  --color-brand-warm: var(--brand-warm);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-soft: var(--brand-soft);
   --color-brand-dark: var(--brand-dark);
-  --color-brand-cream: var(--brand-cream);
+  --color-brand-border: var(--brand-border);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-heading);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -50,13 +50,33 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --animate-accordion-down: accordion-down 0.3s ease-out;
+  --animate-accordion-up: accordion-up 0.3s ease-out;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
 }
 
 :root {
-  --brand-red: oklch(0.45 0.22 20);
-  --brand-warm: oklch(0.97 0.01 80);
-  --brand-dark: oklch(0.13 0 0);
-  --brand-cream: oklch(0.985 0.005 80);
+  --brand-primary: #7000fe;
+  --brand-soft: #f3f5ff;
+  --brand-dark: #09052f;
+  --brand-border: #eeeff4;
+  --gradient-brand: linear-gradient(90deg, #ff4e8d 0%, #ae34e8 55%, #7000fe 100%);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -135,4 +155,93 @@
   html {
     @apply font-sans;
   }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+/* Signature CTA button: sharp corners + two-corner diagonal wipe fill on hover,
+   deliberately contrasted against the rounded cards/pills used everywhere else. */
+.btn-wipe {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+.btn-wipe::before,
+.btn-wipe::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 50%;
+  background-color: var(--brand-dark);
+  transition: width 0.3s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  z-index: -1;
+}
+.btn-wipe::before {
+  top: 0;
+  left: 0;
+}
+.btn-wipe::after {
+  bottom: 0;
+  right: 0;
+}
+.btn-wipe:hover::before,
+.btn-wipe:hover::after {
+  width: 100%;
+}
+
+/* Gradient-clipped text for sub-title pill labels above section headings */
+.text-gradient-brand {
+  background: var(--gradient-brand);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Eyebrow pill: soft gradient-tinted pill background + gradient-clipped label text,
+   used above every section heading (mirrors the reference theme's .sub-title pattern). */
+.eyebrow-pill {
+  padding: 0.4rem 1.25rem;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 78, 141, 0.1),
+    rgba(174, 52, 232, 0.1),
+    rgba(112, 0, 254, 0.1)
+  );
+}
+.eyebrow-pill.eyebrow-pill-dark {
+  background: rgba(255, 255, 255, 0.08);
+}
+.eyebrow-pill-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: var(--gradient-brand);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Elongating pagination dot: compact pill that widens + gains the brand gradient
+   when active (mirrors the reference theme's swiper-pagination-bullet pattern). */
+.dot-nav-item {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--brand-border);
+  transition: width 0.4s ease, background 0.4s ease, opacity 0.4s ease;
+}
+.dot-nav-item:hover {
+  opacity: 0.7;
+}
+.dot-nav-item.is-active {
+  width: 2rem;
+  background: var(--gradient-brand);
 }

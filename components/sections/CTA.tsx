@@ -1,47 +1,41 @@
 "use client";
 
-import { motion, useInView } from "motion/react";
-import { useRef } from "react";
+import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
+import { useSectionInView } from "@/hooks/use-section-in-view";
 
 export default function CTA() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const { ref, inView } = useSectionInView();
+  const t = useTranslations("cta");
+  const tContact = useTranslations("contact");
 
   return (
     <section
       id="cta"
-      className="relative min-h-screen w-full bg-brand-red flex items-center overflow-hidden py-20 lg:py-0"
+      className="relative w-full bg-brand-primary flex items-center overflow-hidden py-24 lg:py-32"
     >
       {/* Decorative circles */}
       <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-white/5" />
       <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] rounded-full bg-white/5" />
 
       <div ref={ref} className="max-w-7xl mx-auto px-6 w-full text-center">
-        <motion.p
-          className="text-white/60 text-sm font-semibold tracking-widest uppercase mb-6"
+        <motion.div
+          className="inline-block eyebrow-pill eyebrow-pill-dark mb-6"
           initial={{ opacity: 0, y: 12 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
         >
-          Bắt Đầu Ngay · Get Started
-        </motion.p>
+          <span className="eyebrow-pill-text">{t("eyebrow")}</span>
+        </motion.div>
 
         <motion.h2
-          className="text-5xl lg:text-7xl font-black text-white leading-tight mb-4"
+          className="text-5xl lg:text-7xl font-black text-white leading-tight mb-10"
           initial={{ opacity: 0, y: 28 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          Sẵn sàng in ấn?
+          {t("title")}
         </motion.h2>
-        <motion.p
-          className="text-4xl lg:text-5xl font-light text-white/50 mb-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55, delay: 0.2 }}
-        >
-          Ready to print?
-        </motion.p>
 
         <motion.p
           className="text-white/70 text-lg max-w-xl mx-auto mb-10"
@@ -49,11 +43,7 @@ export default function CTA() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          Liên hệ ngay để nhận báo giá miễn phí trong vòng 30 phút.
-          <br />
-          <span className="text-white/40 text-base">
-            Contact us for a free quote within 30 minutes.
-          </span>
+          {t("subtitle")}
         </motion.p>
 
         <motion.div
@@ -64,15 +54,15 @@ export default function CTA() {
         >
           <a
             href="tel:0901448377"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-brand-red font-black text-lg rounded-full hover:scale-105 transition-transform shadow-2xl"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-brand-primary font-black text-lg uppercase tracking-wide hover:scale-105 transition-transform shadow-2xl"
           >
-            Nhận báo giá ngay <span aria-hidden>→</span>
+            {t("getQuote")} <span aria-hidden>→</span>
           </a>
           <a
             href="mailto:contact@vietdragon.vn"
-            className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white/40 text-white font-semibold text-base rounded-full hover:border-white hover:bg-white/10 transition-colors"
+            className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white/40 text-white font-semibold text-base hover:border-white hover:bg-white/10 transition-colors"
           >
-            contact@vietdragon.vn
+            {tContact("email")}
           </a>
         </motion.div>
 
@@ -83,11 +73,11 @@ export default function CTA() {
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.5, delay: 0.55 }}
         >
-          <span>📞 0901 448 377 · 0919 510 543</span>
+          <span>📞 {tContact("phone1")} · {tContact("phone2")}</span>
           <span className="hidden sm:block">·</span>
-          <span>📧 contact@vietdragon.vn</span>
+          <span>📧 {tContact("email")}</span>
           <span className="hidden sm:block">·</span>
-          <span>📍 TP. Hồ Chí Minh &amp; Bình Dương</span>
+          <span>📍 {tContact("address")}</span>
         </motion.div>
       </div>
     </section>
