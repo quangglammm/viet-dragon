@@ -8,11 +8,11 @@ import { WipeButton } from "@/components/ui/wipe-button";
 // Template's shop-banner-items use punchy solid/gradient color-block backgrounds
 // (var(--theme) and a blue gradient), not neutral tones — matched via inline style
 // since the blue gradient isn't part of this project's brand token set.
-// Reuses the same "card" / "paper-box" product item seeds shown elsewhere
+// Reuses the same "card" / "paper-box" product photos shown elsewhere
 // (Shop.tsx, category pages) rather than needing dedicated banner images.
 const banners = [
-  { href: "/products/marketing", seed: "vd-item-card", background: "var(--brand-primary)" },
-  { href: "/products/packaging", seed: "vd-item-box", background: "linear-gradient(90deg, #4971f9 0%, #2fabf7 100%)" },
+  { href: "/products/marketing", src: "/images/product/vd-item-card.jpeg", background: "var(--brand-primary)" },
+  { href: "/products/packaging", src: "/images/product/vd-item-box.jpg", background: "linear-gradient(90deg, #4971f9 0%, #2fabf7 100%)" },
 ] as const;
 
 type BannerCopy = { eyebrow: string; title: string };
@@ -70,11 +70,10 @@ export default function ShopBanner() {
                   }}
                 >
                   <Image
-                    src={`https://picsum.photos/seed/${b.seed}/600/600`}
+                    src={b.src}
                     alt={title}
                     fill
                     className="object-cover"
-                    unoptimized
                   />
                 </motion.div>
               </div>

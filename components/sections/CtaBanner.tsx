@@ -13,11 +13,10 @@ export default function CtaBanner() {
   return (
     <section className="relative w-full overflow-hidden py-12 lg:py-16">
       <Image
-        src="https://picsum.photos/seed/vd-cta-banner/1600/500"
+        src="/images/cta/vd-cta-banner.jpg"
         alt=""
         fill
         className="object-cover"
-        unoptimized
       />
       <div className="absolute inset-0 bg-brand-dark/85" />
 

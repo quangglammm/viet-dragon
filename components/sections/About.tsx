@@ -30,11 +30,10 @@ export default function About() {
         >
           <div className="relative h-[360px] sm:h-[440px] lg:h-[520px] rounded-2xl overflow-hidden">
             <Image
-              src="https://picsum.photos/seed/vdabout/700/900"
+              src="/images/about/vdabout.jpg"
               alt={t("imageAlt")}
               fill
               className="object-cover"
-              unoptimized
             />
           </div>
 

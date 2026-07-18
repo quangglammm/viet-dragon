@@ -70,11 +70,10 @@ export default async function ProductsPage({
               className={`relative rounded-2xl overflow-hidden group ${i === 0 ? "col-span-2 h-52" : "h-40"}`}
             >
               <Image
-                src={`https://picsum.photos/seed/${s.seed}/800/500`}
+                src={s.src}
                 alt={showcaseLabel(s)}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
-                unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <div className="absolute bottom-3 left-3">
@@ -91,11 +90,10 @@ export default async function ProductsPage({
             {/* Large portrait */}
             <div className="col-span-1 relative rounded-2xl overflow-hidden group">
               <Image
-                src={`https://picsum.photos/seed/${s1.seed}/600/900`}
+                src={s1.src}
                 alt={showcaseLabel(s1)}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
-                unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <div className="absolute bottom-5 left-5">
@@ -108,11 +106,10 @@ export default async function ProductsPage({
               {[s2, s3].map((s) => (
                 <div key={s.seed} className="relative rounded-2xl overflow-hidden group">
                   <Image
-                    src={`https://picsum.photos/seed/${s.seed}/900/400`}
+                    src={s.src}
                     alt={showcaseLabel(s)}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    unoptimized
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/10 to-transparent" />
                   <div className="absolute bottom-4 left-5">
@@ -128,11 +125,10 @@ export default async function ProductsPage({
             {[s4, s5].map((s) => (
               <div key={s.seed} className="relative rounded-2xl overflow-hidden group">
                 <Image
-                  src={`https://picsum.photos/seed/${s.seed}/800/400`}
+                  src={s.src}
                   alt={showcaseLabel(s)}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  unoptimized
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 <div className="absolute bottom-4 left-5">
@@ -171,7 +167,6 @@ export default async function ProductsPage({
                         alt={name}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        unoptimized
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/70 to-transparent" />
                       <div className="absolute bottom-4 left-5 flex items-center gap-3">
@@ -216,11 +211,10 @@ export default async function ProductsPage({
       {/* ── Bottom CTA ── */}
       <div className="relative overflow-hidden">
         <Image
-          src="https://picsum.photos/seed/vd-products-cta/1400/400"
+          src="/images/cta/vd-cta-banner.jpg"
           alt=""
           fill
           className="object-cover"
-          unoptimized
         />
         <div className="absolute inset-0 bg-brand-dark/85" />
         <div className="relative max-w-7xl mx-auto px-6 py-16 flex flex-col sm:flex-row items-center justify-between gap-8">

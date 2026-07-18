@@ -17,22 +17,17 @@ type PortfolioItem = { label: string; cat: string; seed: string };
 function Tile({
   item,
   className,
-  w,
-  h,
 }: {
   item: PortfolioItem;
   className?: string;
-  w: number;
-  h: number;
 }) {
   return (
     <div className={`group relative rounded-2xl overflow-hidden ${className ?? ""}`}>
       <Image
-        src={`https://picsum.photos/seed/${item.seed}/${w}/${h}`}
+        src={`/images/portfolio/${item.seed}.jpeg`}
         alt={item.label}
         fill
         className="object-cover transition-transform duration-500 group-hover:scale-105"
-        unoptimized
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col items-start gap-1.5 translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
@@ -91,7 +86,7 @@ export default function Portfolio() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.45, delay: i * 0.06 }}
             >
-              <Tile item={item} className="h-40" w={400} h={400} />
+              <Tile item={item} className="h-40" />
             </motion.div>
           ))}
         </div>
@@ -105,20 +100,20 @@ export default function Portfolio() {
         >
           {/* Left: tall top + 2 small below */}
           <div className="col-span-3 flex flex-col gap-4 h-full">
-            <Tile item={t1} className="flex-[3]" w={400} h={600} />
+            <Tile item={t1} className="flex-[3]" />
             <div className="flex-[2] grid grid-cols-2 gap-4">
-              <Tile item={t2} w={300} h={280} />
-              <Tile item={t3} w={300} h={280} />
+              <Tile item={t2} />
+              <Tile item={t3} />
             </div>
           </div>
 
           {/* Center: single large tile */}
-          <Tile item={t4} className="col-span-6 h-full" w={800} h={1100} />
+          <Tile item={t4} className="col-span-6 h-full" />
 
           {/* Right: 2 stacked */}
           <div className="col-span-3 flex flex-col gap-4 h-full">
-            <Tile item={t5} className="flex-1" w={400} h={400} />
-            <Tile item={t6} className="flex-1" w={400} h={400} />
+            <Tile item={t5} className="flex-1" />
+            <Tile item={t6} className="flex-1" />
           </div>
         </motion.div>
       </div>

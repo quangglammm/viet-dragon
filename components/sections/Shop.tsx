@@ -65,7 +65,6 @@ export default function Shop() {
                       alt={itemName}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      unoptimized
                     />
                     {/* Hover overlay actions */}
                     <div className="absolute inset-0 bg-zinc-900/0 group-hover:bg-zinc-900/30 transition-colors duration-300" />

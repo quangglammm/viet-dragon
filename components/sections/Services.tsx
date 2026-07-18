@@ -42,11 +42,10 @@ export default function Services() {
             >
               <div className="relative w-full sm:w-32 h-40 sm:h-auto shrink-0 rounded-xl overflow-hidden">
                 <Image
-                  src={`https://picsum.photos/seed/${seeds[i]}/300/300`}
+                  src={`/images/service/${seeds[i]}.jpg`}
                   alt={s.title}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  unoptimized
                 />
               </div>
               <div className="flex flex-col gap-2 py-1">

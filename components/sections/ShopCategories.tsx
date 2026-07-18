@@ -34,7 +34,6 @@ export default function ShopCategories() {
                       alt={name}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
-                      unoptimized
                     />
                   </div>
                   <div>

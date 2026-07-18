@@ -57,7 +57,6 @@ export default async function CategoryPage({
           fill
           className="object-cover"
           priority
-          unoptimized
         />
         {/* Dark overlay + content */}
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-zinc-950/30 to-zinc-950/10" />
@@ -125,7 +124,6 @@ export default async function CategoryPage({
                     alt={itemName}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    unoptimized
                   />
                 </div>
 
@@ -155,14 +153,13 @@ export default async function CategoryPage({
             {t("referenceGallery")}
           </p>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            {cat.items.map((item, i) => (
+            {cat.items.map((item) => (
               <div key={item.id} className="relative rounded-xl overflow-hidden group h-36 sm:h-44 lg:h-[200px]">
                 <Image
-                  src={`https://picsum.photos/seed/${item.id}-gallery-${i}/400/300`}
+                  src={item.image}
                   alt={pickLocale(locale, item.nameVi, item.nameEn)}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  unoptimized
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
               </div>
@@ -173,11 +170,10 @@ export default async function CategoryPage({
         {/* ── Quote CTA ── */}
         <div className="mt-16 relative rounded-2xl overflow-hidden">
           <Image
-            src={`https://picsum.photos/seed/${cat.id}-cta/1400/400`}
+            src="/images/cta/vd-cta-banner.jpg"
             alt=""
             fill
             className="object-cover"
-            unoptimized
           />
           <div className="absolute inset-0 bg-brand-dark/85" />
           <div className="relative px-10 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">

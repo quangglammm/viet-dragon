@@ -39,7 +39,7 @@ export const productCategories: ProductCategory[] = [
     descriptionVi:
       "Những ấn phẩm giúp giới thiệu thương hiệu hoặc sản phẩm đến khách hàng và đối tác — tạo ấn tượng đầu tiên và hỗ trợ bán hàng.",
     icon: "Briefcase",
-    coverImage: "https://picsum.photos/seed/vd-mkt-cover/1200/600",
+    coverImage: "/images/category/vd-mkt-cover.jpg",
     items: [
       {
         id: "card",
@@ -47,7 +47,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Danh thiếp / Thẻ",
         description: "Business cards, membership and loyalty cards.",
         descriptionVi: "Danh thiếp, thẻ thành viên và thẻ tích điểm.",
-        image: "https://picsum.photos/seed/vd-item-card/600/400",
+        image: "/images/product/vd-item-card.jpeg",
       },
       {
         id: "folder",
@@ -55,7 +55,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Bìa hồ sơ",
         description: "Presentation folders for proposals and press kits.",
         descriptionVi: "Bìa hồ sơ dùng cho bản đề xuất và tài liệu báo chí.",
-        image: "https://picsum.photos/seed/vd-item-folder/600/400",
+        image: "/images/product/vd-item-folder.jpeg",
       },
       {
         id: "catalogue",
@@ -63,7 +63,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Catalogue / Cẩm nang sản phẩm",
         description: "Multi-page product showcases.",
         descriptionVi: "Ấn phẩm nhiều trang giới thiệu sản phẩm.",
-        image: "https://picsum.photos/seed/vd-item-catalogue/600/400",
+        image: "/images/product/vd-item-catalogue.jpeg",
       },
       {
         id: "brochure",
@@ -71,7 +71,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Tờ gấp giới thiệu",
         description: "Folded single-piece company or product introduction.",
         descriptionVi: "Tờ gấp giới thiệu công ty hoặc sản phẩm.",
-        image: "https://picsum.photos/seed/vd-item-brochure/600/400",
+        image: "/images/product/vd-item-brochure.jpeg",
       },
     ],
   },
@@ -84,7 +84,7 @@ export const productCategories: ProductCategory[] = [
     descriptionVi:
       "Ấn phẩm chức năng dùng hằng ngày trong vận hành doanh nghiệp, cả nội bộ lẫn đối ngoại.",
     icon: "Calendar",
-    coverImage: "https://picsum.photos/seed/vd-sta-cover/1200/600",
+    coverImage: "/images/category/vd-sta-cover.jpg",
     items: [
       {
         id: "calendar",
@@ -92,7 +92,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Lịch",
         description: "Desk and wall calendars.",
         descriptionVi: "Lịch để bàn và lịch treo tường.",
-        image: "https://picsum.photos/seed/vd-item-calendar/600/400",
+        image: "/images/product/vd-item-calendar.jpeg",
       },
       {
         id: "menu",
@@ -100,7 +100,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Menu",
         description: "Restaurant and café menus.",
         descriptionVi: "Menu nhà hàng và quán cà phê.",
-        image: "https://picsum.photos/seed/vd-item-menu/600/400",
+        image: "/images/product/vd-item-menu.jpeg",
       },
       {
         id: "notepad",
@@ -108,7 +108,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Note",
         description: "Note pads and sticky notes.",
         descriptionVi: "Sổ note và giấy ghi chú.",
-        image: "https://picsum.photos/seed/vd-item-notepad/600/400",
+        image: "/images/product/vd-item-notepad.jpeg",
       },
       {
         id: "form",
@@ -116,7 +116,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Biểu mẫu",
         description: "Internal forms, order sheets, receipts.",
         descriptionVi: "Biểu mẫu nội bộ, phiếu đặt hàng, biên nhận.",
-        image: "https://picsum.photos/seed/vd-item-form/600/400",
+        image: "/images/product/vd-item-form.jpg",
       },
     ],
   },
@@ -129,7 +129,7 @@ export const productCategories: ProductCategory[] = [
     descriptionVi:
       "Những vật phẩm dùng để chứa, bọc, gửi, phân phối hoặc định danh sản phẩm — từ hộp, túi đến nhãn mác và tem.",
     icon: "Package",
-    coverImage: "https://picsum.photos/seed/vd-pkg-cover/1200/600",
+    coverImage: "/images/category/vd-pkg-cover.jpg",
     items: [
       {
         id: "paper-box",
@@ -137,7 +137,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Hộp giấy",
         description: "Retail and gift packaging.",
         descriptionVi: "Bao bì bán lẻ và quà tặng.",
-        image: "https://picsum.photos/seed/vd-item-box/600/400",
+        image: "/images/product/vd-item-box.jpg",
       },
       {
         id: "paper-bag",
@@ -145,7 +145,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Túi giấy",
         description: "Carry-out and shopping bags.",
         descriptionVi: "Túi giấy mang đi và túi mua sắm.",
-        image: "https://picsum.photos/seed/vd-item-bag/600/400",
+        image: "/images/product/vd-item-bag.jpeg",
       },
       {
         id: "envelope",
@@ -153,7 +153,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Bao thư",
         description: "Document mailing envelopes.",
         descriptionVi: "Bao thư gửi tài liệu.",
-        image: "https://picsum.photos/seed/vd-item-envelope/600/400",
+        image: "/images/product/vd-item-envelope.jpeg",
       },
       {
         id: "flyer",
@@ -161,7 +161,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Tờ rơi",
         description: "Single-sheet mass handout or leaflet.",
         descriptionVi: "Tờ rơi phát hàng loạt, một mặt giấy.",
-        image: "https://picsum.photos/seed/vd-item-flyer/600/400",
+        image: "/images/product/vd-item-flyer.jpeg",
       },
       {
         id: "decal",
@@ -169,7 +169,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Decal các loại",
         description: "Surface and product decals, various types.",
         descriptionVi: "Decal bề mặt và sản phẩm, nhiều loại.",
-        image: "https://picsum.photos/seed/vd-item-decal/600/400",
+        image: "/images/product/vd-item-decal.jpeg",
       },
       {
         id: "stamp",
@@ -177,7 +177,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Tem",
         description: "Seals and authentication stickers.",
         descriptionVi: "Tem niêm phong và tem xác thực.",
-        image: "https://picsum.photos/seed/vd-item-stamp/600/400",
+        image: "/images/product/vd-item-stamp.jpg",
       },
       {
         id: "label",
@@ -185,7 +185,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Nhãn",
         description: "Product and packaging labels.",
         descriptionVi: "Nhãn sản phẩm và bao bì.",
-        image: "https://picsum.photos/seed/vd-item-label/600/400",
+        image: "/images/product/vd-item-label.jpeg",
       },
       {
         id: "tag",
@@ -193,7 +193,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Mác",
         description: "Hang tags and garment tags.",
         descriptionVi: "Mác treo và mác quần áo.",
-        image: "https://picsum.photos/seed/vd-item-tag/600/400",
+        image: "/images/product/vd-item-tag.jpeg",
       },
     ],
   },
@@ -206,7 +206,7 @@ export const productCategories: ProductCategory[] = [
     descriptionVi:
       "Ấn phẩm Tết theo mùa — quà tặng, thiệp chúc và bao bì mang không khí ngày Tết.",
     icon: "Gift",
-    coverImage: "https://picsum.photos/seed/vd-tet-cover/1200/600",
+    coverImage: "/images/category/vd-tet-cover.jpg",
     items: [
       {
         id: "li-xi",
@@ -214,7 +214,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Bao lì xì",
         description: "Red envelopes for Tet cash gifts, custom-printed with your brand.",
         descriptionVi: "Bao lì xì đỏ dùng để mừng tuổi dịp Tết, in theo yêu cầu với thương hiệu riêng.",
-        image: "https://picsum.photos/seed/vd-item-lixi/600/400",
+        image: "/images/product/vd-item-lixi.jpeg",
       },
       {
         id: "thiep-tet",
@@ -222,7 +222,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Thiệp chúc Tết",
         description: "Printed New Year greeting cards for clients and partners.",
         descriptionVi: "Thiệp chúc mừng năm mới gửi đến khách hàng và đối tác.",
-        image: "https://picsum.photos/seed/vd-item-thieptet/600/400",
+        image: "/images/product/vd-item-thieptet.jpg",
       },
       {
         id: "lich-tet",
@@ -230,7 +230,7 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Lịch Tết",
         description: "Desk and wall calendars themed for the Lunar New Year season.",
         descriptionVi: "Lịch để bàn và lịch treo tường mang chủ đề Tết Nguyên Đán.",
-        image: "https://picsum.photos/seed/vd-item-lichtet/600/400",
+        image: "/images/product/vd-item-lichtet.jpg",
       },
       {
         id: "hop-qua-tet",
@@ -238,18 +238,18 @@ export const productCategories: ProductCategory[] = [
         nameVi: "Hộp quà Tết",
         description: "Festive gift boxes for Tet hampers and corporate gifting.",
         descriptionVi: "Hộp quà mang không khí Tết dùng cho giỏ quà và quà tặng doanh nghiệp.",
-        image: "https://picsum.photos/seed/vd-item-hopquatet/600/400",
+        image: "/images/product/vd-item-hopquatet.jpeg",
       },
     ],
   },
 ];
 
 // Curated showcase images for the /products listing page hero gallery.
-// Replace with real printed-product photos before launch.
+// Reuses real product photos whose subject matches the showcase label.
 export const showcaseImages = [
-  { seed: "vd-show-1", label: "Danh thiếp cao cấp", labelEn: "Premium Business Cards", aspect: "tall" },
-  { seed: "vd-show-2", label: "Hộp giấy sang trọng", labelEn: "Luxury Packaging",       aspect: "square" },
-  { seed: "vd-show-3", label: "Catalogue chuyên nghiệp", labelEn: "Professional Catalogue", aspect: "square" },
-  { seed: "vd-show-4", label: "Nhãn mác tinh tế",    labelEn: "Premium Labels",         aspect: "wide" },
-  { seed: "vd-show-5", label: "Bao lì xì Tết",       labelEn: "Tet Lucky Envelopes",    aspect: "wide" },
+  { seed: "vd-show-1", src: "/images/product/vd-item-card.jpeg", label: "Danh thiếp cao cấp", labelEn: "Premium Business Cards", aspect: "tall" },
+  { seed: "vd-show-2", src: "/images/product/vd-item-box.jpg", label: "Hộp giấy sang trọng", labelEn: "Luxury Packaging",       aspect: "square" },
+  { seed: "vd-show-3", src: "/images/product/vd-item-catalogue.jpeg", label: "Catalogue chuyên nghiệp", labelEn: "Professional Catalogue", aspect: "square" },
+  { seed: "vd-show-4", src: "/images/product/vd-item-label.jpeg", label: "Nhãn mác tinh tế",    labelEn: "Premium Labels",         aspect: "wide" },
+  { seed: "vd-show-5", src: "/images/product/vd-item-lixi.jpeg", label: "Bao lì xì Tết",       labelEn: "Tet Lucky Envelopes",    aspect: "wide" },
 ] as const;

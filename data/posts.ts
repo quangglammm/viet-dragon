@@ -25,7 +25,7 @@ export const blogPosts: BlogPost[] = [
       "Giấy couche, mỹ thuật, kraft hay PP tổng hợp — mỗi loại chất liệu có ưu điểm riêng. Hướng dẫn thực tế để bạn chọn đúng ngay từ đầu.",
     excerptEn:
       "Coated, art, kraft, or synthetic PP — each material has its strengths. A practical guide to picking the right one from the start.",
-    coverImage: "https://picsum.photos/seed/vd-blog-1/1200/600",
+    coverImage: "/images/blog/vd-blog-1.jpeg",
     date: "2026-06-10",
     category: "tips",
     categoryVi: "Mẹo In Ấn",
@@ -70,7 +70,7 @@ If you're unsure which to choose, reach out to the Viet Dragon team for a free c
       "Từ hộp giấy thủ công đến túi giấy kraf có tem niêm phong — câu chuyện đằng sau bộ bao bì đồng bộ cho một thương hiệu đồ uống tại TP.HCM.",
     excerptEn:
       "From handcrafted paper boxes to kraft bags with seal stickers — the story behind a cohesive packaging set for a Ho Chi Minh City beverage brand.",
-    coverImage: "https://picsum.photos/seed/vd-blog-2/1200/600",
+    coverImage: "/images/blog/vd-blog-2.jpeg",
     date: "2026-05-28",
     category: "case-study",
     categoryVi: "Case Study",
@@ -105,7 +105,7 @@ The full packaging set was produced in 5 working days. The client received posit
       "Nhằm đáp ứng nhu cầu ngày càng tăng từ các khu công nghiệp, Viet Dragon mở thêm cơ sở sản xuất thứ hai tại Bình Dương từ tháng 7/2026.",
     excerptEn:
       "To meet growing demand from industrial zones, Viet Dragon opens its second production facility in Bình Dương from July 2026.",
-    coverImage: "https://picsum.photos/seed/vd-blog-3/1200/600",
+    coverImage: "/images/blog/vd-blog-3.jpeg",
     date: "2026-06-01",
     category: "news",
     categoryVi: "Tin Tức",
@@ -140,7 +140,7 @@ Consultation, design, and quotes remain completely free. Contact us now to get p
       "Màu RGB thay vì CMYK, thiếu bleed, font chưa outline — những lỗi nhỏ có thể khiến toàn bộ lô hàng phải in lại. Đừng để điều đó xảy ra.",
     excerptEn:
       "RGB instead of CMYK, missing bleed, unoutlined fonts — small mistakes that can ruin an entire print run. Don't let that happen.",
-    coverImage: "https://picsum.photos/seed/vd-blog-4/1200/600",
+    coverImage: "/images/blog/vd-blog-4.jpg",
     date: "2026-05-15",
     category: "tips",
     categoryVi: "Mẹo In Ấn",
@@ -187,7 +187,7 @@ Important content — text, logos — should stay at least 5mm from the trim edg
       "Từ danh thiếp kim loại đến bộ tài liệu văn phòng đồng bộ — dự án nhận diện thương hiệu full-stack cho một startup SaaS tại TP.HCM.",
     excerptEn:
       "From metallic business cards to a unified stationery set — a full-stack brand identity project for a SaaS startup in Ho Chi Minh City.",
-    coverImage: "https://picsum.photos/seed/vd-blog-5/1200/600",
+    coverImage: "/images/blog/vd-blog-5.jpg",
     date: "2026-04-20",
     category: "case-study",
     categoryVi: "Case Study",
@@ -228,7 +228,7 @@ The full stationery set was completed in 8 working days. The startup used the ca
       "Máy in UV mới cho phép in trực tiếp lên bề mặt cứng, phủ màng 3D và hiệu ứng spot UV chính xác hơn bao giờ hết. Xem những gì có thể làm được.",
     excerptEn:
       "Our new UV printer enables direct printing on rigid surfaces, 3D lamination, and more precise spot UV effects than ever. See what's now possible.",
-    coverImage: "https://picsum.photos/seed/vd-blog-6/1200/600",
+    coverImage: "/images/blog/vd-blog-6.jpg",
     date: "2026-03-10",
     category: "news",
     categoryVi: "Tin Tức",

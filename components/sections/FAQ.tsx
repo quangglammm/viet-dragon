@@ -30,11 +30,10 @@ export default function FAQ() {
           transition={{ duration: 0.6 }}
         >
           <Image
-            src="https://picsum.photos/seed/vdfaq/700/900"
+            src="/images/faq/vdfaq.jpg"
             alt="Viet Dragon"
             fill
             className="object-cover"
-            unoptimized
           />
         </motion.div>
 

@@ -8,7 +8,11 @@ import { WipeButton } from "@/components/ui/wipe-button";
 import { cn } from "@/lib/utils";
 
 const SLIDE_DURATION = 6000;
-const seeds = ["vd-hero-1", "vd-hero-2", "vd-hero-3"];
+const slideImages = [
+  "/images/hero/slide-1.jpg",
+  "/images/hero/slide-2.jpeg",
+  "/images/hero/slide-3.jpg",
+];
 
 // Template's actual hero is a full-bleed saturated gradient (not a photo), alternated
 // per slide — built from this project's existing brand tokens rather than the
@@ -53,7 +57,6 @@ export default function Hero() {
   }, [paused, slides.length]);
 
   const slide = slides[index];
-  const seed = seeds[index];
 
   return (
     <section
@@ -131,12 +134,11 @@ export default function Hero() {
                 transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
               >
                 <Image
-                  src={`https://picsum.photos/seed/${seed}/1000/900`}
+                  src={slideImages[index]}
                   alt={`${slide.titleLine1} ${slide.titleLine2}`}
                   fill
                   priority={index === 0}
                   className="object-cover"
-                  unoptimized
                 />
               </motion.div>
             </AnimatePresence>

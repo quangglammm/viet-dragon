@@ -65,7 +65,6 @@ export default async function BlogPostPage({
           fill
           className="object-cover"
           priority
-          unoptimized
         />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/40 to-zinc-950/10" />
         <div className="absolute inset-0 flex items-end">

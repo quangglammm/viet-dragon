@@ -73,7 +73,6 @@ export default async function BlogPage({
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               priority
-              unoptimized
             />
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/30 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10">
@@ -118,7 +117,6 @@ export default async function BlogPage({
                       alt={title(post)}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      unoptimized
                     />
                     <div className="absolute top-3 left-3">
                       <span className={`px-2.5 py-1 rounded-full text-[11px] font-semibold ${categoryColors[post.category].bg} ${categoryColors[post.category].text}`}>
@@ -153,11 +151,10 @@ export default async function BlogPage({
       {/* ── Bottom CTA ── */}
       <div className="relative overflow-hidden">
         <Image
-          src="https://picsum.photos/seed/vd-blog-cta/1400/400"
+          src="/images/cta/vd-cta-banner.jpg"
           alt=""
           fill
           className="object-cover"
-          unoptimized
         />
         <div className="absolute inset-0 bg-brand-dark/85" />
         <div className="relative max-w-7xl mx-auto px-6 py-16 flex flex-col sm:flex-row items-center justify-between gap-8">

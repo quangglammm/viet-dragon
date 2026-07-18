@@ -32,11 +32,10 @@ export default function Quality() {
           transition={{ duration: 0.6 }}
         >
           <Image
-            src="https://picsum.photos/seed/vdquality/900/1000"
+            src="/images/quality/vdquality.jpg"
             alt=""
             fill
             className="object-cover"
-            unoptimized
           />
         </motion.div>
 
