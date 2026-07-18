@@ -63,8 +63,9 @@ export default async function BlogPostPage({
           src={post.coverImage}
           alt={title}
           fill
+          sizes="100vw"
           className="object-cover"
-          priority
+          preload
         />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/40 to-zinc-950/10" />
         <div className="absolute inset-0 flex items-end">

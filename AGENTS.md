@@ -31,7 +31,13 @@ for the current architecture.
   **Internationalization** below.
 - Primary CTA everywhere: **"Nhận Báo Giá" / "Get a Quote"** → `/#cta`
 - Visual direction: white/neutral backgrounds, printed product images take the spotlight
-- All images are picsum placeholders (`unoptimized` prop required) — real photos come later
+- Real photos live under `public/images/<section>/` (hero, about, category, product,
+  portfolio, service, quality, cta, faq, blog) — the picsum-placeholder migration is done
+  and `unoptimized` has been removed from those `<Image>`s. One holdout remains:
+  **testimonial avatars** (`Testimonials.tsx`) still hit
+  `picsum.photos/seed/vdt{1,2,3}/80/80`, so `next.config.ts`'s `images.remotePatterns`
+  entry for `picsum.photos` must stay until those are replaced too. See
+  `docs/image-shotlist.md` for the generation prompts if regenerating/replacing any shot.
 
 ---
 
@@ -119,8 +125,11 @@ Flex siblings in a row container will compete for width and crush grid cells. Mo
   `pickLocale()`, never both at once.
 - `data/posts.ts` — `BlogPost[]` (6 posts); exports `categoryColors`. Same split pattern,
   including full article bodies (`content` / `contentEn`).
-- All `coverImage` / `image` fields use `https://picsum.photos/seed/<seed>/<w>/<h>`
-- Add `unoptimized` to every `<Image>` using picsum — remove when real images are provided
+- `coverImage` / `image` fields are real local paths (`/images/category/...`,
+  `/images/product/...`, `/images/blog/...`) served straight from `public/` — no
+  `unoptimized` prop needed on those `<Image>`s. The only remaining picsum reference in the
+  codebase is the testimonial avatar seeds in `Testimonials.tsx` (not a `data/*.ts` field —
+  those live inline in the component, zipped with `messages/*.json` `t.raw("items")`).
 - **`data/*.ts` vs `messages/*.json`**: structured records with a stable shape (categories,
   products, blog posts) live in `data/` with `xVi`/`x` field pairs. Pure UI copy (headings,
   buttons, FAQ, checklists, pricing plans) lives in `messages/vi.json` + `messages/en.json` —

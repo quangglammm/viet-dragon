@@ -137,7 +137,8 @@ export default function Hero() {
                   src={slideImages[index]}
                   alt={`${slide.titleLine1} ${slide.titleLine2}`}
                   fill
-                  priority={index === 0}
+                  preload={index === 0}
+                  sizes="(min-width: 1024px) 50vw, 100vw"
                   className="object-cover"
                 />
               </motion.div>

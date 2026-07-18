@@ -71,8 +71,9 @@ export default async function BlogPage({
               src={featured.coverImage}
               alt={title(featured)}
               fill
+              sizes="100vw"
               className="object-cover transition-transform duration-700 group-hover:scale-105"
-              priority
+              preload
             />
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/30 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10">
@@ -116,6 +117,7 @@ export default async function BlogPage({
                       src={post.coverImage}
                       alt={title(post)}
                       fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute top-3 left-3">
@@ -154,6 +156,7 @@ export default async function BlogPage({
           src="/images/cta/vd-cta-banner.jpg"
           alt=""
           fill
+          sizes="100vw"
           className="object-cover"
         />
         <div className="absolute inset-0 bg-brand-dark/85" />

@@ -17,9 +17,11 @@ type PortfolioItem = { label: string; cat: string; seed: string };
 function Tile({
   item,
   className,
+  sizes = "50vw",
 }: {
   item: PortfolioItem;
   className?: string;
+  sizes?: string;
 }) {
   return (
     <div className={`group relative rounded-2xl overflow-hidden ${className ?? ""}`}>
@@ -27,6 +29,7 @@ function Tile({
         src={`/images/portfolio/${item.seed}.jpeg`}
         alt={item.label}
         fill
+        sizes={sizes}
         className="object-cover transition-transform duration-500 group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -100,20 +103,20 @@ export default function Portfolio() {
         >
           {/* Left: tall top + 2 small below */}
           <div className="col-span-3 flex flex-col gap-4 h-full">
-            <Tile item={t1} className="flex-[3]" />
+            <Tile item={t1} className="flex-[3]" sizes="25vw" />
             <div className="flex-[2] grid grid-cols-2 gap-4">
-              <Tile item={t2} />
-              <Tile item={t3} />
+              <Tile item={t2} sizes="13vw" />
+              <Tile item={t3} sizes="13vw" />
             </div>
           </div>
 
           {/* Center: single large tile */}
-          <Tile item={t4} className="col-span-6 h-full" />
+          <Tile item={t4} className="col-span-6 h-full" sizes="50vw" />
 
           {/* Right: 2 stacked */}
           <div className="col-span-3 flex flex-col gap-4 h-full">
-            <Tile item={t5} className="flex-1" />
-            <Tile item={t6} className="flex-1" />
+            <Tile item={t5} className="flex-1" sizes="25vw" />
+            <Tile item={t6} className="flex-1" sizes="25vw" />
           </div>
         </motion.div>
       </div>

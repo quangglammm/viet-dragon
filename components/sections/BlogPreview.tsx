@@ -61,8 +61,8 @@ export default function BlogPreview() {
                       src={post.coverImage}
                       alt={title}
                       fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      unoptimized
                     />
                     <span className={`absolute bottom-3 right-4 px-3 py-1 rounded-full text-[11px] font-semibold ${categoryColors[post.category].bg} ${categoryColors[post.category].text}`}>
                       {category}

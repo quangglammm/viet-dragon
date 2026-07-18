@@ -2,7 +2,6 @@
 // Product category data for the Products/Catalogue section.
 // Map over `productCategories` for the parent grid, and `.items` for each
 // category's sub-item tag list (pairs well with shadcn `card` + `badge`).
-// Replace coverImage / items[].image with real URLs before launch.
 
 export interface ProductItem {
   id: string;
@@ -11,7 +10,7 @@ export interface ProductItem {
   /** English description */
   description: string;
   descriptionVi: string;
-  /** Placeholder image URL – swap with real product photo */
+  /** Local product photo path, e.g. /images/product/vd-item-card.jpeg */
   image: string;
 }
 

@@ -73,6 +73,7 @@ export default function ShopBanner() {
                     src={b.src}
                     alt={title}
                     fill
+                    sizes="(min-width: 768px) 30vw, 60vw"
                     className="object-cover"
                   />
                 </motion.div>

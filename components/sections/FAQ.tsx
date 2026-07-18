@@ -33,6 +33,7 @@ export default function FAQ() {
             src="/images/faq/vdfaq.jpg"
             alt="Viet Dragon"
             fill
+            sizes="50vw"
             className="object-cover"
           />
         </motion.div>

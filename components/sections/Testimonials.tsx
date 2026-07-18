@@ -92,7 +92,7 @@ export default function Testimonials() {
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
                         <Avatar size="lg">
-                          <AvatarImage src={`https://picsum.photos/seed/${seed}/80/80`} alt={tItem.name} />
+                          <AvatarImage src={`https://picsum.photos/seed/${seed}/80/80`} alt={tItem.name} loading="lazy" />
                           <AvatarFallback>{tItem.name[0]}</AvatarFallback>
                         </Avatar>
                         <div className="text-left">

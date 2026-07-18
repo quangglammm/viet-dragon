@@ -55,8 +55,9 @@ export default async function CategoryPage({
           src={cat.coverImage}
           alt={name}
           fill
+          sizes="100vw"
           className="object-cover"
-          priority
+          preload
         />
         {/* Dark overlay + content */}
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-zinc-950/30 to-zinc-950/10" />
@@ -123,6 +124,7 @@ export default async function CategoryPage({
                     src={item.image}
                     alt={itemName}
                     fill
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
@@ -159,6 +161,7 @@ export default async function CategoryPage({
                   src={item.image}
                   alt={pickLocale(locale, item.nameVi, item.nameEn)}
                   fill
+                  sizes="(min-width: 1024px) 25vw, 50vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
@@ -173,6 +176,7 @@ export default async function CategoryPage({
             src="/images/cta/vd-cta-banner.jpg"
             alt=""
             fill
+            sizes="100vw"
             className="object-cover"
           />
           <div className="absolute inset-0 bg-brand-dark/85" />

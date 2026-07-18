@@ -16,6 +16,7 @@ export default function CtaBanner() {
         src="/images/cta/vd-cta-banner.jpg"
         alt=""
         fill
+        sizes="100vw"
         className="object-cover"
       />
       <div className="absolute inset-0 bg-brand-dark/85" />
