@@ -246,10 +246,12 @@
 /* Elongating pagination dot: compact pill that widens + gains the brand gradient
    when active (mirrors the reference theme's swiper-pagination-bullet pattern). */
 .dot-nav-item {
+  display: inline-block;
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 9999px;
   background-color: var(--brand-border);
+  cursor: pointer;
   transition: width 0.4s ease, background 0.4s ease, opacity 0.4s ease;
 }
 .dot-nav-item:hover {
@@ -258,4 +260,49 @@
 .dot-nav-item.is-active {
   width: 2rem;
   background: var(--gradient-brand);
+}
+
+/* Hero carousel (Swiper) pagination: ring-style dots — solid fill when inactive,
+   hollow ring when active (mirrors the reference theme's swiper-dot-2, inverted
+   from Swiper's own default active/inactive convention). */
+.hero-swiper .swiper-pagination {
+  position: static;
+  margin-top: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.hero-swiper .swiper-pagination-bullet {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin: 0;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.7);
+  opacity: 1;
+  transition: all 0.5s ease;
+}
+.hero-swiper .swiper-pagination-bullet:hover {
+  border-color: #fff;
+}
+.hero-swiper .swiper-pagination-bullet-active {
+  background-color: transparent;
+  border-color: #fff;
+  transform: scale(1.1);
+}
+@media (min-width: 1024px) {
+  .hero-swiper .swiper-pagination {
+    margin-top: 3.5rem;
+  }
+}
+
+/* Testimonials carousel (Swiper) pagination: reuses .dot-nav-item/.is-active
+   (via bulletClass/bulletActiveClass) — only the container needs repositioning
+   from Swiper's default absolute layout to sit statically below the cards. */
+.testimonials-swiper .swiper-pagination {
+  position: static;
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }

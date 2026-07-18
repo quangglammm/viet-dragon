@@ -1,13 +1,18 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperInstance } from "swiper";
+import { A11y, Autoplay, EffectFade, Pagination } from "swiper/modules";
 import { WipeButton } from "@/components/ui/wipe-button";
-import { cn } from "@/lib/utils";
 
-const SLIDE_DURATION = 6000;
+import "swiper/css";
+import "swiper/css/effect-fade";
+import "swiper/css/pagination";
+
+const SLIDE_DURATION = 4000;
 const slideImages = [
   "/images/hero/slide-1.jpg",
   "/images/hero/slide-2.jpeg",
@@ -41,29 +46,11 @@ export default function Hero() {
   const slides = t.raw("slides") as Slide[];
 
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const goTo = useCallback((i: number) => setIndex(i % slides.length), [slides.length]);
-
-  useEffect(() => {
-    if (paused) return;
-    timerRef.current = setInterval(() => {
-      setIndex((i) => (i + 1) % slides.length);
-    }, SLIDE_DURATION);
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [paused, slides.length]);
-
-  const slide = slides[index];
 
   return (
     <section
       className="relative w-full overflow-hidden pt-24 pb-10 lg:pt-32 lg:pb-16 transition-[background] duration-700"
       style={{ background: gradients[index] }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
     >
       {/* The gradient itself gives the fixed navbar's white text enough contrast —
           no separate scrim needed (unlike a white/photo hero). */}
@@ -83,88 +70,66 @@ export default function Hero() {
       ))}
 
       <div className="relative max-w-7xl mx-auto w-full px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center min-h-[420px] lg:min-h-[480px]">
-          {/* ── Left: slide copy ── */}
-          {/* Reveal choreography mirrors the template's hero-3: content falls in from
-              above while the image (below) rises from below — opposing directions that
-              converge into place, on a slower transition than the crossfade itself. */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={index}
-              className="flex flex-col gap-6 z-10"
-              initial={{ opacity: 0, y: -60 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
-            >
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/90">
-                {slide.tag}
-              </p>
+        <Swiper
+          modules={[Autoplay, EffectFade, Pagination, A11y]}
+          effect="fade"
+          fadeEffect={{ crossFade: true }}
+          speed={1000}
+          loop
+          autoplay={{
+            delay: SLIDE_DURATION,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: false,
+          }}
+          pagination={{ clickable: true }}
+          a11y={{ paginationBulletMessage: t("viewSlide", { number: "{{index}}" }) }}
+          onSlideChange={(swiper: SwiperInstance) => setIndex(swiper.realIndex)}
+          className="hero-swiper"
+        >
+          {slides.map((slide, i) => (
+            <SwiperSlide key={slide.tag}>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center min-h-[420px] lg:min-h-[480px]">
+                {/* ── Left: slide copy ── */}
+                <div className="flex flex-col gap-6 z-10">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/90">
+                    {slide.tag}
+                  </p>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white">
-                {slide.titleLine1}
-                <br />
-                {slide.titleLine2}
-              </h1>
+                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white">
+                    {slide.titleLine1}
+                    <br />
+                    {slide.titleLine2}
+                  </h1>
 
-              <p className="text-base sm:text-lg text-white/75 leading-relaxed max-w-md">
-                {slide.desc}
-              </p>
+                  <p className="text-base sm:text-lg text-white/75 leading-relaxed max-w-md">
+                    {slide.desc}
+                  </p>
 
-              <div className="flex items-center gap-4 mt-2">
-                <WipeButton href="/#cta" tone="light" size="lg">
-                  {t("cta")}
-                </WipeButton>
-                <a href="tel:0901448377" className="text-sm text-white/70 hover:text-white transition-colors">
-                  {tContact("phone1")}
-                </a>
+                  <div className="flex items-center gap-4 mt-2">
+                    <WipeButton href="/#cta" tone="light" size="lg">
+                      {t("cta")}
+                    </WipeButton>
+                    <a href="tel:0901448377" className="text-sm text-white/70 hover:text-white transition-colors">
+                      {tContact("phone1")}
+                    </a>
+                  </div>
+                </div>
+
+                {/* ── Right: slide image ── */}
+                <div className="relative h-[280px] sm:h-[360px] lg:h-[440px] rounded-3xl overflow-hidden shadow-2xl">
+                  <Image
+                    src={slideImages[i]}
+                    alt={`${slide.titleLine1} ${slide.titleLine2}`}
+                    fill
+                    preload={i === 0}
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
               </div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* ── Right: slide image ── */}
-          <div className="relative h-[280px] sm:h-[360px] lg:h-[440px]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={index}
-                className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl"
-                initial={{ opacity: 0, y: 60 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
-              >
-                <Image
-                  src={slideImages[index]}
-                  alt={`${slide.titleLine1} ${slide.titleLine2}`}
-                  fill
-                  preload={index === 0}
-                  sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="object-cover"
-                />
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* ── Dot navigation ── */}
-        {/* Ring-style pagination, mirroring the template's swiper-dot-2: solid fill
-            when inactive, hollow ring when active — an inverted convention from the
-            usual "active dot fills in" pattern. */}
-        <div className="flex items-center gap-3 mt-10 lg:mt-14">
-          {slides.map((s, i) => (
-            <button
-              key={s.tag}
-              onClick={() => goTo(i)}
-              aria-label={t("viewSlide", { number: i + 1 })}
-              className={cn(
-                "h-3 w-3 rounded-full border-2 transition-all duration-500",
-                i === index
-                  ? "bg-transparent border-white scale-110"
-                  : "bg-white/70 border-white/70 hover:border-white",
-              )}
-            />
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
       </div>
     </section>
   );
