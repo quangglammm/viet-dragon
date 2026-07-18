@@ -1,16 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "motion/react";
 import Image from "next/image";
-import { CheckCircle2, Phone, Award } from "lucide-react";
+import { CheckCircle2, Phone, Award, Play } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { IconBadge } from "@/components/ui/icon-badge";
 import { WipeButton } from "@/components/ui/wipe-button";
 import { useSectionInView } from "@/hooks/use-section-in-view";
 
+const ABOUT_VIDEO_SRC = "/videos/about.mp4";
+
 export default function About() {
   const { ref, inView } = useSectionInView();
+  const [isPlaying, setIsPlaying] = useState(false);
   const t = useTranslations("about");
   const tContact = useTranslations("contact");
   const checklist = t.raw("checklist") as string[];
@@ -21,35 +25,61 @@ export default function About() {
         ref={ref}
         className="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center"
       >
-        {/* Image + floating stat card */}
+        {/* Video + floating stat card */}
         <motion.div
           className="relative"
           initial={{ opacity: 0, scale: 0.96 }}
           animate={inView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <div className="relative h-[360px] sm:h-[440px] lg:h-[520px] rounded-2xl overflow-hidden">
-            <Image
-              src="/images/about/vdabout.jpg"
-              alt={t("imageAlt")}
-              fill
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-            />
+          <div className="relative h-[360px] sm:h-[440px] lg:h-[520px] rounded-2xl overflow-hidden bg-brand-dark">
+            {isPlaying ? (
+              <video
+                src={ABOUT_VIDEO_SRC}
+                className="absolute inset-0 w-full h-full object-cover"
+                controls
+                autoPlay
+                playsInline
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsPlaying(true)}
+                className="group absolute inset-0 w-full h-full cursor-pointer"
+                aria-label={t("playVideo")}
+              >
+                <Image
+                  src="/images/about/vdabout.jpg"
+                  alt={t("imageAlt")}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <span className="absolute inset-0 bg-black/20 transition-colors duration-300 group-hover:bg-black/30" />
+                <span className="absolute inset-0 flex items-center justify-center">
+                  <span className="relative flex items-center justify-center w-20 h-20 rounded-full bg-white/95 text-brand-primary shadow-xl transition-transform duration-300 group-hover:scale-110">
+                    <span className="absolute inset-0 rounded-full bg-white animate-ping opacity-25" />
+                    <Play size={26} className="translate-x-0.5" fill="currentColor" />
+                  </span>
+                </span>
+              </button>
+            )}
           </div>
 
-          <motion.div
-            className="absolute -bottom-6 -right-4 sm:right-6 flex items-center gap-4 bg-white rounded-2xl shadow-xl p-5 max-w-[240px]"
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            <IconBadge icon={Award} size="lg" />
-            <div>
-              <p className="text-2xl font-black text-zinc-900 leading-none">{t("statNumber")}</p>
-              <p className="text-zinc-400 text-xs mt-1">{t("statLabel")}</p>
-            </div>
-          </motion.div>
+          {!isPlaying && (
+            <motion.div
+              className="absolute -bottom-6 -right-4 sm:right-6 flex items-center gap-4 bg-white rounded-2xl shadow-xl p-5 max-w-[240px]"
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <IconBadge icon={Award} size="lg" />
+              <div>
+                <p className="text-2xl font-black text-zinc-900 leading-none">{t("statNumber")}</p>
+                <p className="text-zinc-400 text-xs mt-1">{t("statLabel")}</p>
+              </div>
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Content */}

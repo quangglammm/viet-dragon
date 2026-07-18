@@ -65,7 +65,8 @@
     "callExpert": "Call an Expert",
     "statNumber": "10+",
     "statLabel": "Years of experience",
-    "imageAlt": "Viet Dragon print workshop"
+    "imageAlt": "Viet Dragon print workshop",
+    "playVideo": "Watch intro video"
   },
   "services": {
     "eyebrow": "Our Services",
