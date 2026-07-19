@@ -5,6 +5,10 @@
     "email": "contact@vietdragon.vn",
     "address": "Ho Chi Minh City & Binh Duong"
   },
+  "floatingContact": {
+    "zalo": "Chat on Zalo",
+    "call": "Call phone"
+  },
   "nav": {
     "links": {
       "products": "Products",
@@ -255,6 +259,21 @@
     "allProducts": "All Products",
     "viewAll": "View all",
     "nextShort": "Next"
+  },
+  "productDetailPage": {
+    "breadcrumbHome": "Home",
+    "breadcrumbProducts": "Products",
+    "optionUseCaseLabel": "Best For",
+    "optionViewImage": "View material photo",
+    "optionBackToDetails": "Back to details",
+    "getQuote": "Get a quote",
+    "ctaTitleLine1": "Need a quote for",
+    "ctaSubtitle": "Get in touch — free consultation & design, quoted within 30 minutes.",
+    "ctaButton": "Get a quote now",
+    "prevShort": "Prev",
+    "nextShort": "Next",
+    "backToCategory": "Back to category",
+    "viewAllInCategory": "View all in category"
   },
   "blogPage": {
     "metaTitle": "Blog | Viet Dragon – Professional Printing",

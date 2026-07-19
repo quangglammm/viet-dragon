@@ -15,7 +15,7 @@ export default function CTA() {
   return (
     <section
       id="cta"
-      className="relative w-full bg-brand-primary flex items-center overflow-hidden py-16 lg:py-24"
+      className="relative w-full bg-brand-primary flex items-center overflow-hidden py-16 lg:py-24 scroll-mt-16 lg:scroll-mt-[104px]"
     >
       {/* Decorative circles */}
       <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-white/5" />

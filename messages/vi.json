@@ -5,6 +5,10 @@
     "email": "contact@vietdragon.vn",
     "address": "TP. Hồ Chí Minh & Bình Dương"
   },
+  "floatingContact": {
+    "zalo": "Chat qua Zalo",
+    "call": "Gọi điện thoại"
+  },
   "nav": {
     "links": {
       "products": "Sản Phẩm",
@@ -255,6 +259,21 @@
     "allProducts": "Tất Cả Sản Phẩm",
     "viewAll": "Xem tất cả",
     "nextShort": "Tiếp"
+  },
+  "productDetailPage": {
+    "breadcrumbHome": "Trang Chủ",
+    "breadcrumbProducts": "Sản Phẩm",
+    "optionUseCaseLabel": "Phù Hợp Cho",
+    "optionViewImage": "Xem hình chất liệu",
+    "optionBackToDetails": "Quay lại chi tiết",
+    "getQuote": "Nhận báo giá",
+    "ctaTitleLine1": "Cần báo giá cho",
+    "ctaSubtitle": "Liên hệ ngay — miễn phí tư vấn & thiết kế, báo giá trong 30 phút.",
+    "ctaButton": "Nhận báo giá ngay",
+    "prevShort": "Trước",
+    "nextShort": "Tiếp",
+    "backToCategory": "Quay lại danh mục",
+    "viewAllInCategory": "Xem tất cả trong danh mục"
   },
   "blogPage": {
     "metaTitle": "Bài viết | Viet Dragon – In Ấn Chuyên Nghiệp",

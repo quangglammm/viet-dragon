@@ -5,6 +5,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import "../globals.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
+import { FloatingContact } from "@/components/ui/floating-contact";
 import { routing } from "@/i18n/routing";
 
 const sans = Be_Vietnam_Pro({
@@ -71,6 +72,7 @@ export default async function RootLayout({
       <body>
         <NextIntlClientProvider>
           <SmoothScroll>{children}</SmoothScroll>
+          <FloatingContact />
         </NextIntlClientProvider>
       </body>
     </html>

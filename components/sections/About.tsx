@@ -20,7 +20,7 @@ export default function About() {
   const checklist = t.raw("checklist") as string[];
 
   return (
-    <section id="about" className="relative w-full bg-white overflow-hidden py-14 lg:py-20">
+    <section id="about" className="relative w-full bg-white overflow-hidden py-14 lg:py-20 scroll-mt-16 lg:scroll-mt-[104px]">
       <div
         ref={ref}
         className="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center"

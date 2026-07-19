@@ -76,6 +76,16 @@ export default function Navbar() {
     router.replace(pathname, { locale: next });
   };
 
+  // Clicking the logo while already on "/" is a no-op for Next's router (same
+  // URL, no navigation fires), so it would otherwise do nothing when scrolled
+  // down — scroll to top explicitly in that case.
+  const handleBrandClick = () => {
+    setMenuOpen(false);
+    if (isHome) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <>
       <header className="fixed top-0 inset-x-0 z-50">
@@ -120,7 +130,7 @@ export default function Navbar() {
               "text-xl font-black tracking-tight transition-colors duration-300",
               transparent ? "text-white" : "text-zinc-900"
             )}
-            onClick={() => setMenuOpen(false)}
+            onClick={handleBrandClick}
           >
             VIET <span className={transparent ? "text-white/80" : "text-brand-primary"}>DRAGON</span>
           </Link>

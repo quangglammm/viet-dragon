@@ -3,6 +3,35 @@
 // Map over `productCategories` for the parent grid, and `.items` for each
 // category's sub-item tag list (pairs well with shadcn `card` + `badge`).
 
+/**
+ * A selectable variant of the product (e.g. a paper stock) with a one-sentence
+ * use-case summary, rendered as a flashcard on the product detail page. Not
+ * paper-specific — reusable for any future per-product option grouping
+ * (finish types, size options, etc.).
+ */
+export interface ProductOption {
+  /** lucide-react icon name for the flashcard header. Falls back to a generic layers icon. */
+  icon?: string;
+  name: string;
+  nameVi: string;
+  /** One-sentence summary of what this option is best used for — the flashcard's main content. */
+  useCase: string;
+  useCaseVi: string;
+  /**
+   * Optional photo for the flashcard's flip-to-reveal back face (e.g. a shot of
+   * this specific paper stock). Falls back to the parent product's `image` when
+   * omitted — no distinct per-material photography exists yet.
+   */
+  image?: string;
+}
+
+/** A titled row of option flashcards (e.g. "Paper Options", "Finishing"). */
+export interface ProductOptionGroup {
+  title: string;
+  titleVi: string;
+  options: ProductOption[];
+}
+
 export interface ProductItem {
   id: string;
   nameEn: string;
@@ -12,6 +41,8 @@ export interface ProductItem {
   descriptionVi: string;
   /** Local product photo path, e.g. /images/product/vd-item-card.jpeg */
   image: string;
+  /** Optional flashcard groups — reserve this for capability dimensions worth a real use-case summary. */
+  optionGroups?: ProductOptionGroup[];
 }
 
 export interface ProductCategory {
@@ -47,6 +78,41 @@ export const productCategories: ProductCategory[] = [
         description: "Business cards, membership and loyalty cards.",
         descriptionVi: "Danh thiếp, thẻ thành viên và thẻ tích điểm.",
         image: "/images/product/vd-item-card.jpeg",
+        optionGroups: [
+          {
+            title: "Paper Options",
+            titleVi: "Tùy Chọn Chất Liệu Giấy",
+            options: [
+              {
+                icon: "Layers",
+                name: "C300",
+                nameVi: "C300",
+                useCase: "A glossy, vivid finish — e.g. for restaurants and luxury venues — that makes cards and foil details pop.",
+                useCaseVi: "Bề mặt bóng, lên màu sống động — ví dụ phù hợp với nhà hàng và không gian sang trọng — giúp danh thiếp và chi tiết ép kim thêm nổi bật.",
+              },
+              {
+                icon: "Feather",
+                name: "Ford 300",
+                nameVi: "Ford 300",
+                useCase: "A natural matte stock that's handwritable — e.g. for office workers — and suited to minimalist, understated card designs.",
+                useCaseVi: "Bề mặt nhám tự nhiên, viết tay được — ví dụ phù hợp với dân văn phòng — và hợp phong cách danh thiếp tối giản.",
+              },
+            ],
+          },
+          {
+            title: "Finishing",
+            titleVi: "Gia Công",
+            options: [
+              {
+                icon: "Stamp",
+                name: "Foil Stamping",
+                nameVi: "Ép Kim",
+                useCase: "A durable, reflective metallic accent — e.g. for partner-facing business cards and branded gifts — that makes a logo stand out.",
+                useCaseVi: "Lớp ép kim ánh kim, bền đẹp — ví dụ phù hợp cho danh thiếp đối tác và quà tặng thương hiệu — giúp logo thêm nổi bật.",
+              },
+            ],
+          },
+        ],
       },
       {
         id: "folder",

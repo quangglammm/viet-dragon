@@ -119,7 +119,7 @@ export default async function CategoryPage({
                 className="group flex flex-col rounded-2xl border border-zinc-100 overflow-hidden hover:border-zinc-200 hover:shadow-md transition-all duration-300"
               >
                 {/* Item image */}
-                <div className="relative h-44 overflow-hidden bg-zinc-100">
+                <Link href={`/products/${cat.id}/${item.id}`} className="relative h-44 overflow-hidden bg-zinc-100 block">
                   <Image
                     src={item.image}
                     alt={itemName}
@@ -127,12 +127,14 @@ export default async function CategoryPage({
                     sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                </div>
+                </Link>
 
                 {/* Item info */}
                 <div className="flex flex-col gap-2 p-5 flex-1 bg-white">
                   <div>
-                    <p className="font-black text-zinc-900 text-base">{itemName}</p>
+                    <Link href={`/products/${cat.id}/${item.id}`} className="font-black text-zinc-900 text-base hover:text-brand-primary transition-colors">
+                      {itemName}
+                    </Link>
                   </div>
                   <p className="text-zinc-500 text-sm leading-relaxed flex-1">
                     {pickLocale(locale, item.descriptionVi, item.description)}

@@ -71,7 +71,7 @@ export default function Shop() {
                     <div className="absolute inset-0 bg-zinc-900/0 group-hover:bg-zinc-900/30 transition-colors duration-300" />
                     <div className="absolute inset-x-0 bottom-3 flex justify-center gap-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
                       <Link
-                        href={`/products/${cat.id}`}
+                        href={`/products/${cat.id}/${item.id}`}
                         aria-label={t("viewDetail")}
                         className="flex items-center justify-center w-10 h-10 rounded-full bg-white text-zinc-700 hover:bg-brand-primary hover:text-white transition-colors"
                       >
@@ -88,7 +88,7 @@ export default function Shop() {
                   </div>
                   <div className="pt-4">
                     <h3 className="font-black text-zinc-900 text-sm">
-                      <Link href={`/products/${cat.id}`} className="hover:text-brand-primary transition-colors">
+                      <Link href={`/products/${cat.id}/${item.id}`} className="hover:text-brand-primary transition-colors">
                         {itemName}
                       </Link>
                     </h3>
