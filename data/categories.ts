@@ -3,20 +3,29 @@
 // Map over `productCategories` for the parent grid, and `.items` for each
 // category's sub-item tag list (pairs well with shadcn `card` + `badge`).
 
+import type { MaterialTraitKey } from "./material-traits";
+
 /**
- * A selectable variant of the product (e.g. a paper stock) with a one-sentence
- * use-case summary, rendered as a flashcard on the product detail page. Not
- * paper-specific — reusable for any future per-product option grouping
- * (finish types, size options, etc.).
+ * A selectable variant of the product (e.g. a paper stock), rendered as a
+ * flashcard on the product detail page. Not paper-specific — reusable for any
+ * future per-product option grouping (finish types, size options, etc.).
  */
 export interface ProductOption {
   /** lucide-react icon name for the flashcard header. Falls back to a generic layers icon. */
   icon?: string;
   name: string;
   nameVi: string;
-  /** One-sentence summary of what this option is best used for — the flashcard's main content. */
-  useCase: string;
-  useCaseVi: string;
+  /** Short second-person hook rendered above the flashcard (e.g. "Need a card that stands out?") — helps a customer self-select before reading the bullets. */
+  tagline: string;
+  taglineVi: string;
+  /** Bullet points describing the material's physical characteristics. */
+  description: string[];
+  descriptionVi: string[];
+  /** Trait key per `description` bullet (same index) — looked up in data/material-traits.ts for that bullet's icon. */
+  descriptionTraits: MaterialTraitKey[];
+  /** Bullet points describing the application contexts this option suits best. */
+  bestFor: string[];
+  bestForVi: string[];
   /**
    * Optional photo for the flashcard's flip-to-reveal back face (e.g. a shot of
    * this specific paper stock). Falls back to the parent product's `image` when
@@ -25,10 +34,8 @@ export interface ProductOption {
   image?: string;
 }
 
-/** A titled row of option flashcards (e.g. "Paper Options", "Finishing"). */
+/** A row of option flashcards (e.g. the paper-stock choices for a product). */
 export interface ProductOptionGroup {
-  title: string;
-  titleVi: string;
   options: ProductOption[];
 }
 
@@ -80,35 +87,64 @@ export const productCategories: ProductCategory[] = [
         image: "/images/product/vd-item-card.jpeg",
         optionGroups: [
           {
-            title: "Paper Options",
-            titleVi: "Tùy Chọn Chất Liệu Giấy",
             options: [
               {
                 icon: "Layers",
                 name: "C300",
                 nameVi: "C300",
-                useCase: "A glossy, vivid finish — e.g. for restaurants and luxury venues — that makes cards and foil details pop.",
-                useCaseVi: "Bề mặt bóng, lên màu sống động — ví dụ phù hợp với nhà hàng và không gian sang trọng — giúp danh thiếp và chi tiết ép kim thêm nổi bật.",
+                tagline: "Need a business card that feels premium and stands out?",
+                taglineVi: "Bạn đang cần danh thiếp sang trọng, nổi bật?",
+                description: [
+                  "Glossy coated surface with sharp, mirror-like light reflections",
+                  "Smooth ivory-white base with no visible paper grain",
+                  "Gold foil stamping sits crisp and bright against the glossy coat",
+                ],
+                descriptionVi: [
+                  "Bề mặt tráng phủ bóng, phản chiếu ánh sáng rõ nét",
+                  "Nền trắng ngà mịn, không lộ vân giấy",
+                  "Chi tiết ép kim vàng sắc nét, nổi bật trên nền bóng",
+                ],
+                descriptionTraits: ["glossy-coat", "smooth-base", "foil-accent"],
+                bestFor: [
+                  "Premium business cards and invitations built around a foil accent",
+                  "Restaurant, hospitality, and luxury event branding",
+                  "Logos or monograms meant to catch the light",
+                ],
+                bestForVi: [
+                  "Danh thiếp, thiệp mời cao cấp lấy chi tiết ép kim làm điểm nhấn",
+                  "Thương hiệu nhà hàng, khách sạn, sự kiện sang trọng",
+                  "Logo hoặc monogram cần bắt sáng, gây ấn tượng",
+                ],
+                image: "/images/product/vd-card-c300.png",
               },
               {
                 icon: "Feather",
                 name: "Ford 300",
                 nameVi: "Ford 300",
-                useCase: "A natural matte stock that's handwritable — e.g. for office workers — and suited to minimalist, understated card designs.",
-                useCaseVi: "Bề mặt nhám tự nhiên, viết tay được — ví dụ phù hợp với dân văn phòng — và hợp phong cách danh thiếp tối giản.",
-              },
-            ],
-          },
-          {
-            title: "Finishing",
-            titleVi: "Gia Công",
-            options: [
-              {
-                icon: "Stamp",
-                name: "Foil Stamping",
-                nameVi: "Ép Kim",
-                useCase: "A durable, reflective metallic accent — e.g. for partner-facing business cards and branded gifts — that makes a logo stand out.",
-                useCaseVi: "Lớp ép kim ánh kim, bền đẹp — ví dụ phù hợp cho danh thiếp đối tác và quà tặng thương hiệu — giúp logo thêm nổi bật.",
+                tagline: "Need a minimalist, refined card for everyday work?",
+                taglineVi: "Bạn đang cần danh thiếp tối giản, tinh tế cho công việc hằng ngày?",
+                description: [
+                  "Natural matte surface with a fine, visible paper grain",
+                  "Diffused light with no glare or reflection",
+                  "Gold foil still stands out, but with a more understated, refined tone",
+                ],
+                descriptionVi: [
+                  "Bề mặt nhám tự nhiên, có vân giấy mịn",
+                  "Ánh sáng khuếch tán đều, không chói, không phản quang",
+                  "Chi tiết ép kim vàng vẫn nổi bật nhưng mang tông trầm, tinh tế hơn",
+                ],
+                descriptionTraits: ["natural-grain", "soft-light", "foil-accent"],
+                bestFor: [
+                  "Corporate and office cards with a minimalist feel",
+                  "Premium brands that want an understated, non-flashy look",
+                  "Designs pairing a subtle foil detail with a natural paper base",
+                ],
+                bestForVi: [
+                  "Danh thiếp doanh nghiệp, văn phòng theo phong cách tối giản",
+                  "Thương hiệu cao cấp muốn vẻ ngoài tinh tế, không phô trương",
+                  "Thiết kế kết hợp chi tiết ép kim tinh giản trên nền giấy tự nhiên",
+                ],
+                image: "/images/product/vd-card-f300.png",
               },
             ],
           },

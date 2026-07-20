@@ -12,6 +12,7 @@ import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import { productCategories } from "@/data/categories";
 import { MaterialFlashcard } from "@/components/ui/material-flashcard";
+import { MaterialGlossaryFab } from "@/components/ui/material-glossary-fab";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift };
 
@@ -101,24 +102,24 @@ export default async function ProductDetailPage({
             {item.optionGroups && item.optionGroups.length > 0 && (
               <div className="flex flex-col gap-8 mt-2">
                 {item.optionGroups.map((group, gi) => (
-                  <div key={gi}>
-                    <p className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-4">
-                      {pickLocale(locale, group.titleVi, group.title)}
-                    </p>
-                    <div className="flex flex-col gap-5">
-                      {group.options.map((opt, i) => (
+                  <div key={gi} className="flex flex-col gap-6">
+                    {group.options.map((opt, i) => (
+                      <div key={i}>
+                        <p className="font-black text-zinc-900 text-[15px] leading-snug mb-2.5">
+                          {pickLocale(locale, opt.taglineVi, opt.tagline)}
+                        </p>
                         <MaterialFlashcard
-                          key={i}
                           option={opt}
                           locale={locale}
                           productName={name}
                           fallbackImage={item.image}
-                          useCaseLabel={t("optionUseCaseLabel")}
-                          viewImageLabel={t("optionViewImage")}
-                          backToDetailsLabel={t("optionBackToDetails")}
+                          descriptionLabel={t("optionDescriptionLabel")}
+                          bestForLabel={t("optionBestForLabel")}
+                          viewImageHint={t("optionViewImageHint")}
+                          backToDetailsHint={t("optionBackToDetailsHint")}
                         />
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>
@@ -126,6 +127,8 @@ export default async function ProductDetailPage({
           </div>
         </div>
       </div>
+
+      {item.optionGroups && item.optionGroups.length > 0 && <MaterialGlossaryFab />}
 
       {/* ── Quote CTA ── */}
       <div className="max-w-7xl mx-auto px-6 pb-16">

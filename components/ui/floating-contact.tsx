@@ -30,7 +30,7 @@ export function FloatingContact() {
   const t = useTranslations("floatingContact");
 
   return (
-    <div className="fixed bottom-5 right-4 z-30 flex flex-col items-center gap-3 sm:bottom-8 sm:right-6">
+    <div className="fixed bottom-4 right-3 z-30 flex flex-col items-center gap-2 sm:bottom-8 sm:right-6 sm:gap-3">
       <motion.a
         href={`https://zalo.me/${ZALO_PHONE}`}
         target="_blank"
@@ -41,9 +41,9 @@ export function FloatingContact() {
         transition={{ delay: 0.6, duration: 0.35, ease: "easeOut" }}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
-        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0068ff] shadow-lg shadow-[#0068ff]/35"
+        className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#0068ff] shadow-lg shadow-[#0068ff]/35 sm:h-14 sm:w-14 sm:rounded-2xl"
       >
-        <ZaloIcon className="h-8 w-8" />
+        <ZaloIcon className="h-6 w-6 sm:h-8 sm:w-8" />
       </motion.a>
 
       <motion.a
@@ -54,10 +54,10 @@ export function FloatingContact() {
         transition={{ delay: 0.75, duration: 0.35, ease: "easeOut" }}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
-        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-brand-primary shadow-lg shadow-brand-primary/35"
+        className="relative flex h-11 w-11 items-center justify-center rounded-full bg-brand-primary shadow-lg shadow-brand-primary/35 sm:h-14 sm:w-14"
       >
         <span className="absolute inset-0 rounded-full bg-brand-primary animate-ping opacity-40" />
-        <Phone className="relative h-6 w-6 text-white" strokeWidth={2.25} />
+        <Phone className="relative h-5 w-5 text-white sm:h-6 sm:w-6" strokeWidth={2.25} />
       </motion.a>
     </div>
   );

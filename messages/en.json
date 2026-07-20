@@ -9,6 +9,11 @@
     "zalo": "Chat on Zalo",
     "call": "Call phone"
   },
+  "materialGlossary": {
+    "title": "Material Glossary",
+    "openLabel": "View material glossary",
+    "closeLabel": "Close material glossary"
+  },
   "nav": {
     "links": {
       "products": "Products",
@@ -263,9 +268,10 @@
   "productDetailPage": {
     "breadcrumbHome": "Home",
     "breadcrumbProducts": "Products",
-    "optionUseCaseLabel": "Best For",
-    "optionViewImage": "View material photo",
-    "optionBackToDetails": "Back to details",
+    "optionDescriptionLabel": "Characteristics",
+    "optionBestForLabel": "Best For",
+    "optionViewImageHint": "Tap to view material photo",
+    "optionBackToDetailsHint": "Tap to go back to details",
     "getQuote": "Get a quote",
     "ctaTitleLine1": "Need a quote for",
     "ctaSubtitle": "Get in touch — free consultation & design, quoted within 30 minutes.",
