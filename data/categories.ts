@@ -32,6 +32,13 @@ export interface ProductOption {
    * omitted — no distinct per-material photography exists yet.
    */
   image?: string;
+  /**
+   * Photo of the same stock with no foil accent — shown on the back face when
+   * the "Ép kim" (foil stamping) checkbox is unchecked. Only present for options
+   * that actually offer a foil add-on; when omitted, no checkbox is rendered
+   * and `image` is shown as-is.
+   */
+  pureImage?: string;
 }
 
 /** A row of option flashcards (e.g. the paper-stock choices for a product). */
@@ -116,6 +123,7 @@ export const productCategories: ProductCategory[] = [
                   "Logo hoặc monogram cần bắt sáng, gây ấn tượng",
                 ],
                 image: "/images/product/vd-card-c300.png",
+                pureImage: "/images/product/vd-card-c300-pure.png",
               },
               {
                 icon: "Feather",
@@ -145,6 +153,7 @@ export const productCategories: ProductCategory[] = [
                   "Thiết kế kết hợp chi tiết ép kim tinh giản trên nền giấy tự nhiên",
                 ],
                 image: "/images/product/vd-card-f300.png",
+                pureImage: "/images/product/vd-card-f300-pure.png",
               },
             ],
           },

@@ -117,6 +117,7 @@ export default async function ProductDetailPage({
                           bestForLabel={t("optionBestForLabel")}
                           viewImageHint={t("optionViewImageHint")}
                           backToDetailsHint={t("optionBackToDetailsHint")}
+                          foilCheckboxLabel={t("optionFoilCheckboxLabel")}
                         />
                       </div>
                     ))}
