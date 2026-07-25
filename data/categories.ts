@@ -39,6 +39,12 @@ export interface ProductOption {
    * and `image` is shown as-is.
    */
   pureImage?: string;
+  /**
+   * Whether this option offers double-sided printing ("In 2 mặt") as a
+   * selectable add-on. When true, a checkbox is rendered on the flashcard;
+   * it's a preference toggle only — no back-face image swap.
+   */
+  doubleSided?: boolean;
 }
 
 /** A row of option flashcards (e.g. the paper-stock choices for a product). */
@@ -122,8 +128,9 @@ export const productCategories: ProductCategory[] = [
                   "Thương hiệu nhà hàng, khách sạn, sự kiện sang trọng",
                   "Logo hoặc monogram cần bắt sáng, gây ấn tượng",
                 ],
-                image: "/images/product/vd-card-c300.png",
+                image: "/images/product/vd-card-c300-foil.png",
                 pureImage: "/images/product/vd-card-c300-pure.png",
+                doubleSided: true,
               },
               {
                 icon: "Feather",
@@ -152,8 +159,9 @@ export const productCategories: ProductCategory[] = [
                   "Thương hiệu cao cấp muốn vẻ ngoài tinh tế, không phô trương",
                   "Thiết kế kết hợp chi tiết ép kim tinh giản trên nền giấy tự nhiên",
                 ],
-                image: "/images/product/vd-card-f300.png",
+                image: "/images/product/vd-card-f300-foil.png",
                 pureImage: "/images/product/vd-card-f300-pure.png",
+                doubleSided: true,
               },
             ],
           },

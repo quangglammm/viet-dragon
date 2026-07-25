@@ -28,6 +28,7 @@ interface MaterialFlashcardProps {
   viewImageHint: string;
   backToDetailsHint: string;
   foilCheckboxLabel: string;
+  doubleSidedCheckboxLabel: string;
 }
 
 export function MaterialFlashcard({
@@ -40,9 +41,11 @@ export function MaterialFlashcard({
   viewImageHint,
   backToDetailsHint,
   foilCheckboxLabel,
+  doubleSidedCheckboxLabel,
 }: MaterialFlashcardProps) {
   const [flipped, setFlipped] = useState(false);
   const [foilChecked, setFoilChecked] = useState(false);
+  const [doubleSidedChecked, setDoubleSidedChecked] = useState(false);
   const OptIcon = optionIconMap[option.icon ?? ""] ?? Layers;
   const name = pickLocale(locale, option.nameVi, option.name);
   const description = pickLocale(locale, option.descriptionVi, option.description);
@@ -109,20 +112,39 @@ export function MaterialFlashcard({
                 ))}
               </ul>
             </div>
-            {option.pureImage && (
-              <label
-                className="flex items-center gap-2.5 text-sm font-semibold text-zinc-700 cursor-pointer select-none"
-                onClick={(e) => e.stopPropagation()}
-                onKeyDown={(e) => e.stopPropagation()}
-              >
-                <input
-                  type="checkbox"
-                  checked={foilChecked}
-                  onChange={(e) => setFoilChecked(e.target.checked)}
-                  className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
-                />
-                {foilCheckboxLabel}
-              </label>
+            {(option.pureImage || option.doubleSided) && (
+              <div className="flex flex-col gap-2.5">
+                {option.pureImage && (
+                  <label
+                    className="flex items-center gap-2.5 text-sm font-semibold text-zinc-700 cursor-pointer select-none"
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={foilChecked}
+                      onChange={(e) => setFoilChecked(e.target.checked)}
+                      className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
+                    />
+                    {foilCheckboxLabel}
+                  </label>
+                )}
+                {option.doubleSided && (
+                  <label
+                    className="flex items-center gap-2.5 text-sm font-semibold text-zinc-700 cursor-pointer select-none"
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={doubleSidedChecked}
+                      onChange={(e) => setDoubleSidedChecked(e.target.checked)}
+                      className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
+                    />
+                    {doubleSidedCheckboxLabel}
+                  </label>
+                )}
+              </div>
             )}
           </div>
         </div>
