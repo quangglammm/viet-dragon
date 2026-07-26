@@ -33,9 +33,9 @@ export async function generateMetadata({
 
 export default async function CategoryPage({
   params,
-}: {
+}: Readonly<{
   params: Promise<{ locale: Locale; categoryId: string }>;
-}) {
+}>) {
   const { locale, categoryId } = await params;
   const t = await getTranslations({ locale, namespace: "categoryPage" });
   const cat = productCategories.find((c) => c.id === categoryId);

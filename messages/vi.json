@@ -7,9 +7,7 @@
   },
   "floatingContact": {
     "zalo": "Chat qua Zalo",
-    "call": "Gọi điện thoại",
-    "productInquiryMessage": "Tôi muốn tư vấn về sản phẩm: {product} ({url})",
-    "copiedToast": "Đã sao chép nội dung tư vấn — dán vào khung chat Zalo nhé!"
+    "call": "Gọi điện thoại"
   },
   "materialGlossary": {
     "title": "Chú Giải Chất Liệu",
@@ -276,6 +274,14 @@
     "optionBackToDetailsHint": "Nhấn để quay lại chi tiết",
     "optionFoilCheckboxLabel": "Ép kim",
     "optionDoubleSidedCheckboxLabel": "In 2 mặt",
+    "optionConsultLabel": "Tư vấn lựa chọn này qua Zalo",
+    "optionConsultCopiedToast": "Đã sao chép — đang mở Zalo…",
+    "optionConsultMessage": "Tôi muốn tư vấn về sản phẩm: {product} ({url})",
+    "optionConsultMaterialLine": "Chất liệu giấy: {option}",
+    "optionConsultFoilLine": "Ép kim: {status}",
+    "optionConsultDoubleSidedLine": "In 2 mặt: {status}",
+    "optionConsultYes": "Có",
+    "optionConsultNo": "Không",
     "getQuote": "Nhận báo giá",
     "ctaTitleLine1": "Cần báo giá cho",
     "ctaSubtitle": "Liên hệ ngay — miễn phí tư vấn & thiết kế, báo giá trong 30 phút.",

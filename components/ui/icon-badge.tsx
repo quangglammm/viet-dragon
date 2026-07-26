@@ -25,7 +25,7 @@ export function IconBadge({
   rounded = "full",
   strokeWidth,
   className,
-}: IconBadgeProps) {
+}: Readonly<IconBadgeProps>) {
   return (
     <span
       className={cn(

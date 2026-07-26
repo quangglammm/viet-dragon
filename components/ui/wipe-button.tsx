@@ -48,7 +48,7 @@ export function WipeButton({
   arrow = true,
   className,
   ...rest
-}: WipeButtonProps) {
+}: Readonly<WipeButtonProps>) {
   const classes = cn(
     "btn-wipe inline-flex items-center justify-center gap-2 font-bold uppercase tracking-wide whitespace-nowrap text-center",
     toneClasses[tone],

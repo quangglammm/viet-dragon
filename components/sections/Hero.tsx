@@ -61,9 +61,9 @@ export default function Hero() {
       <div className="absolute -bottom-32 left-1/4 w-[420px] h-[420px] rounded-full bg-white/5 blur-3xl" />
 
       {/* Scattered dot cluster, bottom-left. */}
-      {decorDots.map((d, i) => (
+      {decorDots.map((d) => (
         <span
-          key={i}
+          key={d.left}
           className="absolute rounded-full bg-white/25"
           style={{ left: d.left, top: d.top, width: d.size, height: d.size }}
         />

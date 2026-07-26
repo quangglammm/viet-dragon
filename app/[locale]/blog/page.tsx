@@ -27,9 +27,9 @@ function formatDate(iso: string, locale: Locale) {
 
 export default async function BlogPage({
   params,
-}: {
+}: Readonly<{
   params: Promise<{ locale: Locale }>;
-}) {
+}>) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "blogPage" });
   const [featured, ...rest] = blogPosts;

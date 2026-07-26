@@ -24,9 +24,9 @@ export async function generateMetadata({
 
 export default async function ProductsPage({
   params,
-}: {
+}: Readonly<{
   params: Promise<{ locale: Locale }>;
-}) {
+}>) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "productsPage" });
   const [s1, s2, s3, s4, s5] = showcaseImages;

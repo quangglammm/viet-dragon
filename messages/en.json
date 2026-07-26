@@ -7,9 +7,7 @@
   },
   "floatingContact": {
     "zalo": "Chat on Zalo",
-    "call": "Call phone",
-    "productInquiryMessage": "I'd like to ask about this product: {product} ({url})",
-    "copiedToast": "Message copied — paste it into the Zalo chat!"
+    "call": "Call phone"
   },
   "materialGlossary": {
     "title": "Material Glossary",
@@ -276,6 +274,14 @@
     "optionBackToDetailsHint": "Tap to go back to details",
     "optionFoilCheckboxLabel": "Foil stamping",
     "optionDoubleSidedCheckboxLabel": "Double-sided printing",
+    "optionConsultLabel": "Consult this option on Zalo",
+    "optionConsultCopiedToast": "Copied — opening Zalo…",
+    "optionConsultMessage": "I'd like to ask about this product: {product} ({url})",
+    "optionConsultMaterialLine": "Paper stock: {option}",
+    "optionConsultFoilLine": "Foil stamping: {status}",
+    "optionConsultDoubleSidedLine": "Double-sided printing: {status}",
+    "optionConsultYes": "Yes",
+    "optionConsultNo": "No",
     "getQuote": "Get a quote",
     "ctaTitleLine1": "Need a quote for",
     "ctaSubtitle": "Get in touch — free consultation & design, quoted within 30 minutes.",

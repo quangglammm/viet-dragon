@@ -18,11 +18,11 @@ function Tile({
   item,
   className,
   sizes = "50vw",
-}: {
+}: Readonly<{
   item: PortfolioItem;
   className?: string;
   sizes?: string;
-}) {
+}>) {
   return (
     <div className={`group relative rounded-2xl overflow-hidden ${className ?? ""}`}>
       <Image

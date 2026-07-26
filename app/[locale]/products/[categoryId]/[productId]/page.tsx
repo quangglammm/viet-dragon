@@ -39,9 +39,9 @@ export async function generateMetadata({
 
 export default async function ProductDetailPage({
   params,
-}: {
+}: Readonly<{
   params: Promise<{ locale: Locale; categoryId: string; productId: string }>;
-}) {
+}>) {
   const { locale, categoryId, productId } = await params;
   const t = await getTranslations({ locale, namespace: "productDetailPage" });
   const cat = productCategories.find((c) => c.id === categoryId);
@@ -101,10 +101,13 @@ export default async function ProductDetailPage({
 
             {item.optionGroups && item.optionGroups.length > 0 && (
               <div className="flex flex-col gap-8 mt-2">
-                {item.optionGroups.map((group, gi) => (
-                  <div key={gi} className="flex flex-col gap-6">
-                    {group.options.map((opt, i) => (
-                      <div key={i}>
+                {item.optionGroups.map((group) => (
+                  <div
+                    key={group.options.map((opt) => opt.name).join("-")}
+                    className="flex flex-col gap-6"
+                  >
+                    {group.options.map((opt) => (
+                      <div key={opt.name}>
                         <p className="font-black text-zinc-900 text-[15px] leading-snug mb-2.5">
                           {pickLocale(locale, opt.taglineVi, opt.tagline)}
                         </p>

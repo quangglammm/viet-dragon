@@ -23,7 +23,7 @@ export function SectionHeading({
   dark = false,
   className,
   titleClassName,
-}: SectionHeadingProps) {
+}: Readonly<SectionHeadingProps>) {
   return (
     <div className={className}>
       <motion.div

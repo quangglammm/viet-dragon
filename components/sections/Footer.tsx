@@ -12,14 +12,14 @@ const usefulLinkHrefs = ["/#about", "/#services", "/#process", "/#testimonials",
 const usefulLinkKeys = ["about", "services", "process", "testimonials", "faq"] as const;
 
 // lucide-react dropped brand/social marks — minimal inline glyphs instead.
-function FacebookIcon({ size = 15 }: { size?: number }) {
+function FacebookIcon({ size = 15 }: Readonly<{ size?: number }>) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
       <path d="M13.5 21v-8.5H16l.5-3.5h-3V6.8c0-1 .3-1.7 1.7-1.7H16.5V1.4C16.2 1.3 15.2 1.2 14 1.2c-2.5 0-4.2 1.5-4.2 4.3V9H7.3v3.5h2.5V21h3.7z" />
     </svg>
   );
 }
-function InstagramIcon({ size = 15 }: { size?: number }) {
+function InstagramIcon({ size = 15 }: Readonly<{ size?: number }>) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
       <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -28,7 +28,7 @@ function InstagramIcon({ size = 15 }: { size?: number }) {
     </svg>
   );
 }
-function YoutubeIcon({ size = 15 }: { size?: number }) {
+function YoutubeIcon({ size = 15 }: Readonly<{ size?: number }>) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
       <rect x="2" y="5" width="20" height="14" rx="4" />
@@ -58,9 +58,9 @@ export default function Footer() {
               {t("tagline")}
             </p>
             <div className="flex items-center gap-3">
-              {socialLinks.map((Icon, i) => (
+              {socialLinks.map((Icon) => (
                 <a
-                  key={i}
+                  key={Icon.name}
                   href="#"
                   className="flex items-center justify-center w-9 h-9 rounded-full bg-white text-brand-dark hover:bg-brand-primary hover:text-white transition-colors"
                 >

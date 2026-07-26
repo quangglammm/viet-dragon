@@ -34,17 +34,11 @@ export interface ProductOption {
   image?: string;
   /**
    * Photo of the same stock with no foil accent — shown on the back face when
-   * the "Ép kim" (foil stamping) checkbox is unchecked. Only present for options
-   * that actually offer a foil add-on; when omitted, no checkbox is rendered
-   * and `image` is shown as-is.
+   * the "Ép kim" (foil stamping) checkbox is unchecked. The foil/double-sided
+   * checkboxes are offered on every flashcard regardless of this field; when
+   * omitted, checking foil has no back-face image swap and `image` is shown as-is.
    */
   pureImage?: string;
-  /**
-   * Whether this option offers double-sided printing ("In 2 mặt") as a
-   * selectable add-on. When true, a checkbox is rendered on the flashcard;
-   * it's a preference toggle only — no back-face image swap.
-   */
-  doubleSided?: boolean;
 }
 
 /** A row of option flashcards (e.g. the paper-stock choices for a product). */
@@ -130,7 +124,6 @@ export const productCategories: ProductCategory[] = [
                 ],
                 image: "/images/product/vd-card-c300-foil.png",
                 pureImage: "/images/product/vd-card-c300-pure.png",
-                doubleSided: true,
               },
               {
                 icon: "Feather",
@@ -161,7 +154,6 @@ export const productCategories: ProductCategory[] = [
                 ],
                 image: "/images/product/vd-card-f300-foil.png",
                 pureImage: "/images/product/vd-card-f300-pure.png",
-                doubleSided: true,
               },
             ],
           },

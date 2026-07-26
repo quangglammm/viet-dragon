@@ -14,11 +14,11 @@ function LocaleSwitcher({
   locale,
   onSwitch,
   className,
-}: {
+}: Readonly<{
   locale: string;
   onSwitch: (next: "vi" | "en") => void;
   className?: string;
-}) {
+}>) {
   return (
     <div className={cn("flex items-center gap-1.5", className)}>
       <button

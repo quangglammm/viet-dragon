@@ -36,9 +36,9 @@ function formatDate(iso: string, locale: Locale) {
 
 export default async function BlogPostPage({
   params,
-}: {
+}: Readonly<{
   params: Promise<{ locale: Locale; slug: string }>;
-}) {
+}>) {
   const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: "blogPostPage" });
   const post = blogPosts.find((p) => p.slug === slug);
@@ -104,20 +104,20 @@ export default async function BlogPostPage({
         </p>
 
         <div className="prose prose-zinc prose-base max-w-none">
-          {paragraphs.map((para, i) => {
+          {paragraphs.map((para) => {
             if (para.startsWith("**") && para.endsWith("**")) {
               return (
-                <h3 key={i} className="text-xl font-black text-zinc-900 mt-8 mb-3">
+                <h3 key={para} className="text-xl font-black text-zinc-900 mt-8 mb-3">
                   {para.slice(2, -2)}
                 </h3>
               );
             }
             const parts = para.split(/(\*\*[^*]+\*\*)/g);
             return (
-              <p key={i} className="text-zinc-600 leading-relaxed mb-4">
-                {parts.map((part, j) =>
+              <p key={para} className="text-zinc-600 leading-relaxed mb-4">
+                {parts.map((part) =>
                   part.startsWith("**") && part.endsWith("**") ? (
-                    <strong key={j} className="text-zinc-900 font-bold">
+                    <strong key={part} className="text-zinc-900 font-bold">
                       {part.slice(2, -2)}
                     </strong>
                   ) : (
