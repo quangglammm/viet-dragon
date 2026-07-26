@@ -48,9 +48,6 @@ next-env.d.ts
 # OS
 Thumbs.db
 
-# local dev / planning docs
-landing-page-brief.md
-
 # third-party theme reference (ModinaTheme PrintNow, not for commit)
 /template
 
