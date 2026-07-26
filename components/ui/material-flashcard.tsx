@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import {
   Layers, Sparkles, Palette, Award, Gem, Feather, PenLine, Minimize2, StickyNote,
-  Stamp, ShieldCheck, Briefcase, Gift, ArrowLeftRight, MessageCircle,
+  Stamp, ShieldCheck, Briefcase, Gift, ArrowLeftRight, Copy, MessageCircle,
   type LucideIcon,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -20,10 +20,9 @@ const optionIconMap: Record<string, LucideIcon> = {
   Stamp, ShieldCheck, Briefcase, Gift,
 };
 
-// How long the "copied" toast stays visible. Purely informational — it no
-// longer gates opening Zalo, since deferring window.open() past the click's
-// call stack gets it silently blocked by popup blockers (Safari especially).
-const CONSULT_TOAST_DURATION_MS = 2000;
+// How long the "copied, click again" toast (and its matching icon swap) stays
+// up before auto-reverting to the copy step, in case the user never clicks again.
+const CONSULT_TOAST_DURATION_MS = 5000;
 
 interface MaterialFlashcardProps {
   option: ProductOption;
@@ -54,7 +53,12 @@ export function MaterialFlashcard({
   const [flipped, setFlipped] = useState(false);
   const [foilChecked, setFoilChecked] = useState(false);
   const [doubleSidedChecked, setDoubleSidedChecked] = useState(false);
-  const [showCopiedToast, setShowCopiedToast] = useState(false);
+  // Two-step consult flow: first click copies the message (and shows a toast
+  // asking to click again), second click opens Zalo. Each step's window.open
+  // (when it happens) runs synchronously inside that click's own handler, so
+  // neither step is a deferred call that popup blockers would flag.
+  const [awaitingZaloOpen, setAwaitingZaloOpen] = useState(false);
+  const toastTimeoutRef = useRef<number | null>(null);
   const OptIcon = optionIconMap[option.icon ?? ""] ?? Layers;
   const name = pickLocale(locale, option.nameVi, option.name);
   const description = pickLocale(locale, option.descriptionVi, option.description);
@@ -65,13 +69,33 @@ export function MaterialFlashcard({
     backImage = option.pureImage;
   }
 
-  const handleConsultClick = () => {
-    // Open synchronously, in the same tick as the click, so browsers treat it
-    // as a direct result of user interaction instead of blocking it as a popup.
-    window.open(ZALO_CHAT_URL, "_blank", "noopener,noreferrer");
+  const clearToastTimeout = () => {
+    if (toastTimeoutRef.current !== null) {
+      window.clearTimeout(toastTimeoutRef.current);
+      toastTimeoutRef.current = null;
+    }
+  };
 
+  // Clear any pending auto-revert timeout if the card unmounts first.
+  useEffect(() => clearToastTimeout, []);
+
+  const handleConsultClick = () => {
+    // Step 2: previous click already copied the message — this click opens
+    // Zalo, synchronously inside its own handler, so it isn't blocked as a popup.
+    if (awaitingZaloOpen) {
+      window.open(ZALO_CHAT_URL, "_blank", "noopener,noreferrer");
+      clearToastTimeout();
+      setAwaitingZaloOpen(false);
+      return;
+    }
+
+    // Step 1: copy the message. If clipboard access isn't available, fall back
+    // to opening Zalo directly since there's nothing left to copy for the user.
     const clipboard = typeof navigator !== "undefined" ? navigator.clipboard : undefined;
-    if (!clipboard) return;
+    if (!clipboard) {
+      window.open(ZALO_CHAT_URL, "_blank", "noopener,noreferrer");
+      return;
+    }
 
     const yesNo = (checked: boolean) => (checked ? t("optionConsultYes") : t("optionConsultNo"));
     const message = [
@@ -84,12 +108,17 @@ export function MaterialFlashcard({
     clipboard
       .writeText(message)
       .then(() => {
-        setShowCopiedToast(true);
-        window.setTimeout(() => setShowCopiedToast(false), CONSULT_TOAST_DURATION_MS);
+        setAwaitingZaloOpen(true);
+        clearToastTimeout();
+        toastTimeoutRef.current = window.setTimeout(() => {
+          setAwaitingZaloOpen(false);
+          toastTimeoutRef.current = null;
+        }, CONSULT_TOAST_DURATION_MS);
       })
       .catch(() => {
-        // Clipboard write can be denied (permissions, insecure context); the Zalo
-        // tab is already open, so silently skipping the toast is an acceptable fallback.
+        // Clipboard write denied (permissions, insecure context) — open Zalo
+        // directly since prompting to "click again" wouldn't have anything copied.
+        window.open(ZALO_CHAT_URL, "_blank", "noopener,noreferrer");
       });
   };
 
@@ -180,7 +209,11 @@ export function MaterialFlashcard({
             <input
               type="checkbox"
               checked={foilChecked}
-              onChange={(e) => setFoilChecked(e.target.checked)}
+              onChange={(e) => {
+                setFoilChecked(e.target.checked);
+                clearToastTimeout();
+                setAwaitingZaloOpen(false);
+              }}
               className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
             />
             {foilCheckboxLabel}
@@ -189,7 +222,11 @@ export function MaterialFlashcard({
             <input
               type="checkbox"
               checked={doubleSidedChecked}
-              onChange={(e) => setDoubleSidedChecked(e.target.checked)}
+              onChange={(e) => {
+                setDoubleSidedChecked(e.target.checked);
+                clearToastTimeout();
+                setAwaitingZaloOpen(false);
+              }}
               className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
             />
             {doubleSidedCheckboxLabel}
@@ -198,7 +235,7 @@ export function MaterialFlashcard({
 
         <div className="relative shrink-0">
           <AnimatePresence>
-            {showCopiedToast && (
+            {awaitingZaloOpen && (
               <motion.div
                 initial={{ opacity: 0, y: 6, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -213,13 +250,17 @@ export function MaterialFlashcard({
           </AnimatePresence>
           <motion.button
             type="button"
-            aria-label={t("optionConsultLabel")}
+            aria-label={awaitingZaloOpen ? t("optionConsultOpenLabel") : t("optionConsultCopyLabel")}
             onClick={handleConsultClick}
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.94 }}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0068ff] shadow-md shadow-[#0068ff]/30"
           >
-            <MessageCircle className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
+            {awaitingZaloOpen ? (
+              <MessageCircle className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
+            ) : (
+              <Copy className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
+            )}
           </motion.button>
         </div>
       </div>
