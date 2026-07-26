@@ -7,7 +7,9 @@
   },
   "floatingContact": {
     "zalo": "Chat qua Zalo",
-    "call": "Gọi điện thoại"
+    "call": "Gọi điện thoại",
+    "productInquiryMessage": "Tôi muốn tư vấn về sản phẩm: {product} ({url})",
+    "copiedToast": "Đã sao chép nội dung tư vấn — dán vào khung chat Zalo nhé!"
   },
   "materialGlossary": {
     "title": "Chú Giải Chất Liệu",

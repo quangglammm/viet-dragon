@@ -7,7 +7,9 @@
   },
   "floatingContact": {
     "zalo": "Chat on Zalo",
-    "call": "Call phone"
+    "call": "Call phone",
+    "productInquiryMessage": "I'd like to ask about this product: {product} ({url})",
+    "copiedToast": "Message copied — paste it into the Zalo chat!"
   },
   "materialGlossary": {
     "title": "Material Glossary",
