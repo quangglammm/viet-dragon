@@ -16,10 +16,28 @@ Most important breaking change: **`params` is now `Promise<{...}>`** — always 
 | Motion | 12.x | Import from `"motion/react"` — NOT `"framer-motion"` |
 | next-intl | 4.13.x | `/[locale]` routing — see Internationalization below |
 | Lenis | 1.3.x | Smooth scroll — desktop only (see below) |
+| Swiper | 14.x | Hero and Testimonials carousels — `swiper/react` + `swiper/modules` |
 
 GSAP/ScrollTrigger and the old pin/cover scroll rig (`PanelContainer.tsx`) were removed —
 do not reintroduce them or look for that file; see **Scroll & entrance animation** below
 for the current architecture.
+
+---
+
+## Package manager
+This project uses **pnpm** (pinned via `packageManager` in `package.json`) — not npm or yarn.
+- Install deps: `pnpm install` — never `npm install`/`yarn install`. Running the wrong tool
+  regenerates `package-lock.json`/`yarn.lock` as a second, conflicting lockfile.
+- Add a dependency: `pnpm add <pkg>` · dev dependency: `pnpm add -D <pkg>`
+- Run scripts: `pnpm dev`, `pnpm build`, `pnpm start`, `pnpm lint`
+- `pnpm-lock.yaml` is the only lockfile committed — if `package-lock.json` or `yarn.lock`
+  ever reappear (e.g. an editor auto-ran `npm install`), delete them, don't commit them.
+- `pnpm-workspace.yaml` holds `allowBuilds` approvals for deps with native build scripts
+  (`@parcel/watcher`, `@swc/core`, `sharp`, `unrs-resolver`). If `pnpm install` reports
+  `ERR_PNPM_IGNORED_BUILDS` after adding a new dependency, run `pnpm approve-builds` from
+  an interactive terminal (not a non-TTY/agent shell — it writes unresolved
+  `set this to true or false` placeholders there instead of prompting) and commit the
+  updated file.
 
 ---
 
@@ -32,12 +50,17 @@ for the current architecture.
 - Primary CTA everywhere: **"Nhận Báo Giá" / "Get a Quote"** → `/#cta`
 - Visual direction: white/neutral backgrounds, printed product images take the spotlight
 - Real photos live under `public/images/<section>/` (hero, about, category, product,
-  portfolio, service, quality, cta, faq, blog) — the picsum-placeholder migration is done
-  and `unoptimized` has been removed from those `<Image>`s. One holdout remains:
-  **testimonial avatars** (`Testimonials.tsx`) still hit
+  portfolio, service, quality, cta, faq, blog) — these `<Image>`s render without an
+  `unoptimized` prop. Exception: **testimonial avatars** (`Testimonials.tsx`) still hit
   `picsum.photos/seed/vdt{1,2,3}/80/80`, so `next.config.ts`'s `images.remotePatterns`
-  entry for `picsum.photos` must stay until those are replaced too. See
+  entry for `picsum.photos` must stay until those are replaced. See
   `docs/image-shotlist.md` for the generation prompts if regenerating/replacing any shot.
+- `public/videos/about.mp4` — background/loop video used by the About section.
+- Floating chrome rendered outside the section stack: `FloatingContact` (Zalo + phone
+  buttons, bottom-right, global in `app/[locale]/layout.tsx`) and `MaterialGlossaryFab`
+  (bottom-left icon-legend popover, product detail page only, when the product has
+  `optionGroups`). Shared phone/Zalo constants live in `lib/contact.ts` — reuse those
+  instead of re-hardcoding the number.
 
 ---
 
@@ -47,13 +70,15 @@ Every route is nested under `app/[locale]/` — `locale` is `"vi"` (default, unp
 
 | Route | Type | Notes |
 |---|---|---|
-| `/[locale]` | Server | 18 stacked sections (Hero → Footer), no scroll pinning |
+| `/[locale]` | Server | 16 stacked sections (Hero → Footer), no scroll pinning |
 | `/[locale]/products` | Server async | `await params` for `{ locale }` |
 | `/[locale]/products/[categoryId]` | Server async | `await params`; `generateStaticParams` pre-generates all 4 categories (locales handled by the parent layout) |
+| `/[locale]/products/[categoryId]/[productId]` | Server async | `await params`; `generateStaticParams` pre-generates every product across all categories; renders `MaterialFlashcard` per option and, when the product has `optionGroups`, `MaterialGlossaryFab` |
 | `/[locale]/blog` | Server async | `await params` for `{ locale }` |
 | `/[locale]/blog/[slug]` | Server async | `await params`; `generateStaticParams` pre-generates all 6 posts |
 
-Both `/products` and `/blog` have their own `layout.tsx` that wraps Navbar + Footer.
+Both `/products` and `/blog` have their own `layout.tsx` that wraps Navbar + Footer
+(the `[categoryId]/[productId]` detail page nests under the `/products` layout).
 Root `app/[locale]/layout.tsx` calls `generateStaticParams` for both locales and
 `setRequestLocale` — every nested page/layout under it is statically generated per locale.
 
@@ -78,7 +103,8 @@ Reusable animation/theme utility classes (also in `globals.css`, ported from the
 reference theme — reuse these instead of re-implementing):
 - `.btn-wipe` — two-corner diagonal fill on hover (signature CTA button treatment)
 - `.eyebrow-pill` / `.eyebrow-pill-dark` / `.eyebrow-pill-text` — gradient-tinted pill label above section headings
-- `.dot-nav-item` / `.is-active` — elongating pagination dot (8px → 32px, gradient fill when active)
+- `.dot-nav-item` / `.is-active` — elongating pagination dot (8px → 32px, gradient fill when active);
+  wired into Testimonials' Swiper instance via `pagination={{ bulletClass, bulletActiveClass }}`
 - `imageWipeReveal` (in `lib/motion.ts`) — Motion variant for the clip-path "wipe down" image reveal; pair with `initial="hidden"` + `whileInView="visible"`
 
 Font: **Be Vietnam Pro** via `--font-sans` — subsets: `latin`, `vietnamese`.
@@ -104,7 +130,8 @@ className="relative w-full bg-white overflow-hidden py-14 lg:py-20"
 No `h-screen`/`min-h-screen` requirement — sections size to content.
 
 **Do NOT add siblings after closing `</div>` of the inner grid inside a `flex` section.**
-Flex siblings in a row container will compete for width and crush grid cells. Mobile card strip in Hero is placed *inside* the text column div to avoid this.
+Flex siblings in a row container will compete for width and crush grid cells — nest a new
+element inside the existing column/grid div instead of appending it as a row sibling.
 
 ---
 
@@ -113,7 +140,9 @@ Flex siblings in a row container will compete for width and crush grid cells. Mo
   for elements that animate independently (this is what `SectionHeading` uses internally)
 - `useSectionInView()` (in `hooks/`) + `animate={inView ? {...} : {}}` for a section where
   multiple sibling elements must reveal off the *same* trigger — see Reusable UI primitives
-- Hero cards: `originX: 0.5, originY: 1` (bottom-center pivot) creates the hand-of-cards fan
+- Hero: Swiper (`effect="fade"`, `crossFade: true`, autoplay) cross-fades slides *and* the
+  section's own gradient background together (`gradients[index]` keyed off `onSlideChange`)
+- Testimonials: Swiper autoplay carousel, pagination styled via `.dot-nav-item`/`.is-active`
 - Marquee: `animate={{ x: ["0%", "-50%"] }}` with **2 identical text spans** for seamless loop
 
 ---
@@ -125,14 +154,17 @@ Flex siblings in a row container will compete for width and crush grid cells. Mo
   `pickLocale()`, never both at once.
 - `data/posts.ts` — `BlogPost[]` (6 posts); exports `categoryColors`. Same split pattern,
   including full article bodies (`content` / `contentEn`).
+- `data/material-traits.ts` — `Record<MaterialTraitKey, MaterialTrait>` icon glossary for
+  `ProductOption.descriptionTraits` bullets (in `data/categories.ts`); consumed by
+  `MaterialFlashcard` (per-bullet icon) and `MaterialGlossaryFab` (full legend popover).
 - `coverImage` / `image` fields are real local paths (`/images/category/...`,
   `/images/product/...`, `/images/blog/...`) served straight from `public/` — no
-  `unoptimized` prop needed on those `<Image>`s. The only remaining picsum reference in the
+  `unoptimized` prop needed on those `<Image>`s. The one picsum reference in the
   codebase is the testimonial avatar seeds in `Testimonials.tsx` (not a `data/*.ts` field —
   those live inline in the component, zipped with `messages/*.json` `t.raw("items")`).
 - **`data/*.ts` vs `messages/*.json`**: structured records with a stable shape (categories,
-  products, blog posts) live in `data/` with `xVi`/`x` field pairs. Pure UI copy (headings,
-  buttons, FAQ, checklists, pricing plans) lives in `messages/vi.json` + `messages/en.json` —
+  products, blog posts, material traits) live in `data/` with `xVi`/`x` field pairs. Pure UI
+  copy (headings, buttons, FAQ, checklists) lives in `messages/vi.json` + `messages/en.json` —
   see Internationalization below. Don't move one into the other's convention.
 
 ---
@@ -146,21 +178,21 @@ in `i18n/routing.ts`.
   links/navigation — never `next/link` or `next/navigation`. Using the plain Next.js versions
   is the single easiest way to break EN-locale navigation (links silently drop the `/en`
   prefix). `WipeButton` already does this internally.
-- **UI copy** (headings, buttons, checklists, FAQ, pricing plans, etc.) lives in
-  `messages/vi.json` / `messages/en.json`, namespaced per section (`about`, `pricing`, `faq`, …).
+- **UI copy** (headings, buttons, checklists, FAQ, etc.) lives in
+  `messages/vi.json` / `messages/en.json`, namespaced per section (`about`, `shop`, `faq`, …).
   Read with `useTranslations("namespace")` (client components) or
   `getTranslations({ locale, namespace })` (server/async). Both files must stay in sync —
   diff their flattened key sets after editing either one (a missing key throws at runtime).
-- **List content** (arrays of translated objects — FAQ items, pricing features, process
-  steps) — use `t.raw("key")`, which returns the JSON array/object unprocessed. Keep
-  non-translatable metadata (icons, hrefs, image seeds, `highlighted` flags) in the
-  component as a locale-agnostic array and zip it with `t.raw()` by index — see
-  `Pricing.tsx` or `Portfolio.tsx` for the pattern.
+- **List content** (arrays of translated objects — FAQ items, process steps) — use
+  `t.raw("key")`, which returns the JSON array/object unprocessed. Keep non-translatable
+  metadata (icons, hrefs, image seeds, `highlighted` flags) in the component as a
+  locale-agnostic array and zip it with `t.raw()` by index — see `Portfolio.tsx` for the
+  pattern.
 - **`data/*.ts` fields** (not UI copy) — read via `pickLocale(locale, viValue, enValue)`
   from `lib/locale.ts`, with `locale` from `useLocale()` (client) or the page's own
   `params.locale` (server).
-- **Never render both languages inline** (`"VI · EN"` or `{vi} / {en}`) — that pattern is
-  what this migration removed; one locale renders at a time.
+- **Never render both languages inline** (`"VI · EN"` or `{vi} / {en}`) — one locale
+  renders at a time.
 - Date formatting: `toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {...})` — see
   `formatDate()` in the blog pages.
 - `proxy.ts` (project root, **not** `middleware.ts` — Next 16 renamed the convention)
@@ -177,6 +209,9 @@ writing a new eyebrow/heading/button/badge block:
 - `hooks/use-section-in-view.ts` — the `useRef` + `useInView(ref, { once: true, margin: "-80px" })`
   pair, for sections where multiple children must reveal off one shared trigger.
 - `lib/locale.ts` — `pickLocale(locale, vi, en)` for `data/*.ts` field selection.
+- `lib/contact.ts` — `PHONE_NUMBER` / `ZALO_CHAT_URL` constants; reuse these instead of
+  re-hardcoding the phone/Zalo number in a new component (`FloatingContact` and
+  `MaterialFlashcard` already do).
 
 Not extracted (checked, not worth it): the "white card + rounded-2xl + border" shell
 differs enough per section (row vs column, dark variant, floating card) that a shared
@@ -186,6 +221,36 @@ wrapper would need as many props as it saves.
 - Hash links must always be absolute: `/#cta`, `/#services`, `/#vision` — never bare `#cta`
 - Bare hashes (e.g. `#cta`) resolve relative to the current URL, breaking navigation from `/products` or `/blog`
 - Navbar breakpoint: `lg` (1024px) — hamburger shows on mobile AND tablet; full nav at desktop only
+
+---
+
+## Code quality conventions
+No SonarQube/SonarCloud instance is wired into this repo yet — these are the "Sonar way"
+style rules to hand-follow regardless, so a future `sonar-project.properties` finds a
+codebase that already passes clean. Run `pnpm lint` before every PR; it should report
+zero warnings.
+
+- **No `any`** — `tsconfig.json` has `strict: true`; keep it that way, type properly or use
+  generics instead of widening to `any`.
+- **Cognitive complexity** — if a function/component needs more than ~3 levels of nested
+  conditionals or branches on more than ~10 distinct paths, extract a helper or sub-component.
+- **No duplicated blocks** — the same JSX/logic repeated 3+ times belongs in a shared
+  component/hook/util (see **Reusable UI primitives** above for the existing extraction bar).
+- **No dead code** — no unused imports/vars/exports, no commented-out blocks left behind;
+  delete, don't comment out.
+- **Naming** — `PascalCase` for components/types, `camelCase` for functions/variables/hooks
+  (`useXyz`), `SCREAMING_SNAKE_CASE` for module-level constants.
+- **Prop types** — destructure component props as `Readonly<Props>` (e.g.
+  `function Foo({ x }: Readonly<FooProps>)`) — improves accessibility/immutability lint
+  compliance; every component in `components/` already follows this.
+- **No magic numbers/strings** for values used more than once — extract a named constant.
+- **No stray `console.log`** in committed code — fine while debugging locally, strip before
+  opening a PR.
+- **`===`/`!==` only**, and prefer optional chaining (`?.`) / nullish coalescing (`??`) over
+  manual null checks.
+- **File/function size** — split a component file once it passes ~250-300 lines, or a
+  function once it passes ~50 lines.
+- Any `TODO`/`FIXME` left in a PR must reference a tracked issue, not stand alone.
 
 ---
 
@@ -202,22 +267,27 @@ hooks/
   use-section-in-view.ts    Shared useRef + useInView(once, margin -80px)
 lib/
   locale.ts                 pickLocale(locale, vi, en) for data/*.ts fields
+  contact.ts                PHONE_NUMBER, ZALO_CHAT_URL constants
+  motion.ts                 imageWipeReveal Motion variant (clip-path wipe-down reveal)
   utils.ts                  cn()
+data/
+  categories.ts             ProductCategory[] (4 categories) + showcaseImages
+  posts.ts                  BlogPost[] (6 posts) + categoryColors
+  material-traits.ts        MaterialTrait icon glossary for product-option bullets
 components/
   providers/
     SmoothScroll.tsx        Lenis init (desktop only, ≥1024px) — no GSAP, no pinning
   sections/                 all "use client"; landing page order = page.tsx import order
     Navbar.tsx              Fixed top nav, mobile hamburger drawer, VI/EN flag switcher
-    Hero.tsx                3-slide autoplay carousel, word-highlight headline
+    Hero.tsx                Swiper fade-effect autoplay carousel, per-slide gradient bg
     ShopCategories.tsx      Horizontal category rail (scroll-snap on mobile)
     ShopBanner.tsx          2-up promo banner
-    About.tsx               Image + stat card, checklist, CTA
+    About.tsx               Looping video + stat card, checklist, CTA
     Services.tsx            4 free-service cards
     Shop.tsx                 Tabbed product grid by category
     CtaBanner.tsx            Full-bleed image banner, 2 CTAs
     Portfolio.tsx            Asymmetric project mosaic (desktop) / 2×3 grid (mobile)
-    Pricing.tsx              3-tier plan cards
-    Testimonials.tsx         Autoplay quote carousel, dot-nav
+    Testimonials.tsx         Swiper autoplay carousel, dot-nav pagination
     FAQ.tsx                  Accordion + image
     Quality.tsx              Dark bg, quality checklist
     Process.tsx              3-step process cards
@@ -228,4 +298,8 @@ components/
   ui/
     section-heading.tsx, wipe-button.tsx, icon-badge.tsx   Reusable primitives — see above
     accordion.tsx, avatar.tsx, badge.tsx, button.tsx, card.tsx, separator.tsx, tabs.tsx   shadcn/ui primitives
+    floating-contact.tsx      Global Zalo/phone floating buttons (root layout)
+    material-flashcard.tsx    Per-option flip card on product detail — image/traits, foil &
+                               double-sided checkboxes, copy-to-Zalo consult flow
+    material-glossary-fab.tsx Bottom-left icon-legend popover for material-flashcard traits
 ```
