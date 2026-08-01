@@ -162,10 +162,10 @@ export default async function ProductsPage({
               const name = pickLocale(locale, cat.nameVi, cat.nameEn);
               const description = pickLocale(locale, cat.descriptionVi, cat.description);
               return (
-                <Link key={cat.id} href={`/products/${cat.id}`} className="group block">
-                  <div className="h-full rounded-2xl border border-zinc-100 overflow-hidden hover:border-zinc-300 hover:shadow-lg transition-all duration-300">
+                <div key={cat.id} className="group block">
+                  <div className="h-full rounded-2xl border border-zinc-100 overflow-hidden hover:border-zinc-300 hover:shadow-lg transition-all duration-300 bg-white flex flex-col">
                     {/* Cover image */}
-                    <div className="relative h-52 overflow-hidden">
+                    <Link href={`/products/${cat.id}`} className="block relative h-52 overflow-hidden shrink-0">
                       <Image
                         src={cat.coverImage}
                         alt={name}
@@ -186,27 +186,45 @@ export default async function ProductsPage({
                         size={18}
                         className="absolute top-4 right-4 text-white/40 group-hover:text-white group-hover:translate-x-1 transition-all duration-200"
                       />
-                    </div>
+                    </Link>
 
                     {/* Card body */}
-                    <div className="p-6 bg-white flex flex-col gap-4">
-                      <p className="text-zinc-500 text-sm leading-relaxed">{description}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {cat.items.map((item) => (
-                          <span
-                            key={item.id}
-                            className="px-3 py-1 bg-zinc-50 border border-zinc-200 text-zinc-600 text-xs font-medium rounded-full"
-                          >
-                            {pickLocale(locale, item.nameVi, item.nameEn)}
-                          </span>
-                        ))}
+                    <div className="p-6 flex flex-col justify-between gap-6 flex-1">
+                      <div className="flex flex-col gap-4">
+                        <Link
+                          href={`/products/${cat.id}`}
+                          className="block text-zinc-500 text-sm leading-relaxed hover:text-zinc-800 transition-colors"
+                        >
+                          {description}
+                        </Link>
+                        {/* Subcategory buttons: visible on mobile, smooth slide-up reveal on desktop hover */}
+                        <div className="flex flex-wrap gap-2 pt-1 opacity-100 lg:opacity-0 lg:-translate-y-2 lg:pointer-events-none lg:group-hover:opacity-100 lg:group-hover:translate-y-0 lg:group-hover:pointer-events-auto transition-all duration-300">
+                          {cat.items.map((item) => (
+                            <Link
+                              key={item.id}
+                              href={`/products/${cat.id}/${item.id}`}
+                              className="px-3.5 py-1.5 bg-zinc-50 hover:bg-brand-soft hover:text-brand-primary border border-zinc-200 hover:border-brand-primary/30 text-zinc-700 text-xs font-semibold rounded-full transition-all duration-200"
+                            >
+                              {pickLocale(locale, item.nameVi, item.nameEn)}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
-                      <p className="text-brand-primary text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
-                        {t("viewDetail")}
-                      </p>
+
+                      <div className="pt-2 border-t border-zinc-100 flex items-center justify-between">
+                        <Link
+                          href={`/products/${cat.id}`}
+                          className="text-brand-primary text-sm font-semibold hover:underline"
+                        >
+                          {t("viewDetail")}
+                        </Link>
+                        <span className="text-xs text-zinc-400 font-medium">
+                          {cat.items.length} {locale === "vi" ? "sản phẩm" : "products"}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>
