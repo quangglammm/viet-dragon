@@ -98,7 +98,7 @@ export const productCategories: ProductCategory[] = [
               {
                 icon: "Layers",
                 name: "C300",
-                nameVi: "C300",
+                nameVi: "C300 (Chuẩn)",
                 tagline: "Need a business card that feels premium and stands out?",
                 taglineVi: "Bạn đang cần danh thiếp sang trọng, nổi bật?",
                 description: [
@@ -154,6 +154,156 @@ export const productCategories: ProductCategory[] = [
                 ],
                 image: "/images/product/vd-card-f300-foil.png",
                 pureImage: "/images/product/vd-card-f300-pure.png",
+              },
+              {
+                icon: "Palette",
+                name: "Art Paper",
+                nameVi: "Giấy Mỹ Thuật",
+                tagline: "Need a tactile, artistic card that conveys craftsmanship?",
+                taglineVi: "Bạn muốn danh thiếp mang đậm chất nghệ thuật và cảm giác xúc giác đặc biệt?",
+                description: [
+                  "Distinct textured surface with luxury European art paper feel",
+                  "Rich ink absorption that gives colors a deep, matte aesthetic",
+                  "Pairs beautifully with minimal typography and foil stamping",
+                ],
+                descriptionVi: [
+                  "Bề mặt có vân giấy đặc trưng, mang lại cảm giác sang trọng khi chạm",
+                  "Độ thấm hút mực cao, giúp màu sắc hiển thị sâu và trầm ấm",
+                  "Kết hợp tuyệt vời với thiết kế tối giản và ép kim điểm nhấn",
+                ],
+                descriptionTraits: ["textured-art", "natural-grain", "foil-accent"],
+                bestFor: [
+                  "Creative directors, architects, and luxury boutique brands",
+                  "High-end corporate executives seeking a distinctive tactile card",
+                  "Minimalist designs where the paper texture itself is the highlight",
+                ],
+                bestForVi: [
+                  "Giám đốc sáng tạo, kiến trúc sư và thương hiệu cao cấp",
+                  "Lãnh đạo doanh nghiệp muốn danh thiếp tạo ấn tượng xúc giác khác biệt",
+                  "Thiết kế tối giản lấy chính vân giấy làm điểm nhấn chủ đạo",
+                ],
+                image: "/images/product/vd-card-c300-foil.png",
+                pureImage: "/images/product/vd-card-c300-pure.png",
+              },
+              {
+                icon: "Zap",
+                name: "Digital Print (Fast)",
+                nameVi: "Kỹ Thuật Số (In Nhanh)",
+                tagline: "Need high-quality business cards in small quantities or urgent turnaround?",
+                taglineVi: "Bạn cần in danh thiếp số lượng ít hoặc cần lấy gấp trong ngày?",
+                description: [
+                  "High-precision digital laser output with vibrant CMYK accuracy",
+                  "Ideal for small batches from 2 boxes without offset setup delay",
+                  "Flexible paper stock options including smooth C300 and Ford 300",
+                ],
+                descriptionVi: [
+                  "Công nghệ in kỹ thuật số laser độ phân giải cao, chuẩn màu CMYK",
+                  "Phù hợp cho số lượng ít từ 2 hộp mà không cần chờ ghép bài offset",
+                  "Tùy chọn đa dạng trên nhiều nền giấy như C300 mịn hoặc Ford 300",
+                ],
+                descriptionTraits: ["digital-precision", "smooth-base", "soft-light"],
+                bestFor: [
+                  "Urgent business travel, events, or newly onboarded staff",
+                  "Small startups or freelancers needing small quantities",
+                  "Testing multiple card designs before mass offset printing",
+                ],
+                bestForVi: [
+                  "Cần gấp cho chuyến công tác, sự kiện hoặc nhân sự mới",
+                  "Startup hoặc freelancer cần in số lượng ít, tiết kiệm chi phí",
+                  "In thử nhiều mẫu thiết kế trước khi đặt sản xuất offset hàng loạt",
+                ],
+                image: "/images/product/vd-card-f300-foil.png",
+                pureImage: "/images/product/vd-card-f300-pure.png",
+              },
+              {
+                icon: "Sparkles",
+                name: "Pearl Metallic Paper",
+                nameVi: "Giấy Ngọc Trai",
+                tagline: "Want your card to shimmer with a sophisticated pearlescent glow?",
+                taglineVi: "Bạn muốn danh thiếp lấp lánh ánh ngọc trai sang trọng dưới ánh sáng?",
+                description: [
+                  "Infused with metallic mica particles for a radiant pearlescent sheen",
+                  "Shifts luminosity and color tone depending on the viewing angle",
+                  "Elevates logos and minimalist artwork without needing extra foil",
+                ],
+                descriptionVi: [
+                  "Bề mặt phủ tinh thể vi mica tạo ánh lấp lánh như ngọc trai",
+                  "Hiệu ứng chuyển đổi độ sáng và sắc độ tùy thuộc vào góc nhìn",
+                  "Tôn vinh logo và thiết kế sang trọng mà không cần thêm ép kim",
+                ],
+                descriptionTraits: ["metallic-shine", "smooth-base", "soft-light"],
+                bestFor: [
+                  "Beauty brands, jewelry boutiques, and luxury spas",
+                  "VIP membership cards and upscale event invitations",
+                  "Brands looking for a radiant, feminine, or opulent aesthetic",
+                ],
+                bestForVi: [
+                  "Thương hiệu mỹ phẩm, trang sức, viện thẩm mỹ và spa cao cấp",
+                  "Thẻ thành viên VIP và thiệp mời sự kiện thượng lưu",
+                  "Doanh nghiệp hướng tới phong cách sang trọng, tinh tế và rực rỡ",
+                ],
+                image: "/images/product/vd-card-c300-foil.png",
+                pureImage: "/images/product/vd-card-c300-pure.png",
+              },
+              {
+                icon: "Shield",
+                name: "Waterproof Plastic Card",
+                nameVi: "Giấy Nhựa (Siêu Bền)",
+                tagline: "Need an indestructible card that won't tear, wrinkle, or absorb water?",
+                taglineVi: "Bạn cần danh thiếp chống nước 100%, không bao giờ rách hay phai màu?",
+                description: [
+                  "100% waterproof synthetic PVC/PET film that never absorbs moisture",
+                  "Ultra-durable and tear-resistant against bending and heavy wear",
+                  "Crisp, modern surface with optional frosted or translucent finishes",
+                ],
+                descriptionVi: [
+                  "Chất liệu nhựa PVC/PET tổng hợp chống thấm nước 100%",
+                  "Độ bền vượt trội, không thể xé rách hay gấp nếp trong quá trình sử dụng",
+                  "Bề mặt hiện đại, sắc nét với tùy chọn trong mờ hoặc trắng sứ",
+                ],
+                descriptionTraits: ["waterproof-durability", "smooth-base", "glossy-coat"],
+                bestFor: [
+                  "Hospitality, bars, poolside clubs, and marine industries",
+                  "Long-lasting membership, VIP, or warranty cards",
+                  "Professionals wanting a unique, conversation-starting material",
+                ],
+                bestForVi: [
+                  "Nhà hàng, quán bar, câu lạc bộ và môi trường thường xuyên tiếp xúc nước",
+                  "Thẻ thành viên dài hạn, thẻ VIP hoặc thẻ bảo hành cao cấp",
+                  "Khách hàng muốn sở hữu tấm thẻ độc đáo, không bao giờ bị hỏng",
+                ],
+                image: "/images/product/vd-card-f300-foil.png",
+                pureImage: "/images/product/vd-card-f300-pure.png",
+              },
+              {
+                icon: "Layers",
+                name: "Embossed / Debossed",
+                nameVi: "Dập Nổi / Dập Chìm",
+                tagline: "Want your brand emblem to stand out in dramatic 3D relief?",
+                taglineVi: "Bạn muốn logo hoặc biểu tượng thương hiệu nổi bật với độ sâu 3D?",
+                description: [
+                  "Precision die-stamping creates raised (embossed) or recessed (debossed) elements",
+                  "Adds sculptural depth and premium tactile emphasis to logos",
+                  "Can be combined with foil stamping or left blind for subtle elegance",
+                ],
+                descriptionVi: [
+                  "Kỹ thuật dập khuôn tạo ra chi tiết nổi (emboss) hoặc lõm sâu (deboss)",
+                  "Tạo chiều sâu 3D và xúc giác mạnh mẽ cho logo hoặc hoa văn",
+                  "Có thể kết hợp cùng ép kim hoặc dập không màu (blind emboss) tinh tế",
+                ],
+                descriptionTraits: ["embossed-depth", "natural-grain", "foil-accent"],
+                bestFor: [
+                  "Logos, monograms, and crests on premium business cards",
+                  "Architectural, fashion, and luxury interior design firms",
+                  "High-impact tactile cards designed to leave an unforgettable impression",
+                ],
+                bestForVi: [
+                  "Logo, monogram, biểu tượng gia tộc trên danh thiếp cao cấp",
+                  "Công ty kiến trúc, thời trang và thiết kế nội thất hạng sang",
+                  "Danh thiếp tạo điểm nhấn xúc giác mạnh mẽ, khó quên khi trao tay",
+                ],
+                image: "/images/product/vd-card-c300-foil.png",
+                pureImage: "/images/product/vd-card-c300-pure.png",
               },
             ],
           },
@@ -363,3 +513,25 @@ export const showcaseImages = [
   { seed: "vd-show-4", src: "/images/product/vd-item-label.jpeg", label: "Nhãn mác tinh tế",    labelEn: "Premium Labels",         aspect: "wide" },
   { seed: "vd-show-5", src: "/images/product/vd-item-lixi.jpeg", label: "Bao lì xì Tết",       labelEn: "Tet Lucky Envelopes",    aspect: "wide" },
 ] as const;
+
+export function isFastPrint(id: string): boolean {
+  return ["card", "flyer", "voucher", "envelope", "letterhead", "decal", "li-xi"].includes(id);
+}
+
+export function getStartingPrice(id: string, locale: string): string {
+  const isVi = locale === "vi";
+  const prices: Record<string, { vi: string; en: string }> = {
+    card: { vi: "Chỉ từ 200.000đ/Hộp", en: "From 200,000đ/Box" },
+    folder: { vi: "Chỉ từ 8.000đ/Cái", en: "From 8,000đ/Pcs" },
+    catalogue: { vi: "Chỉ từ 25.000đ/Cuốn", en: "From 25,000đ/Book" },
+    letterhead: { vi: "Chỉ từ 180.000đ/Ram", en: "From 180,000đ/Ream" },
+    envelope: { vi: "Chỉ từ 150.000đ/Hộp", en: "From 150,000đ/Box" },
+    "paper-bag": { vi: "Chỉ từ 12.000đ/Túi", en: "From 12,000đ/Bag" },
+    box: { vi: "Chỉ từ 15.000đ/Hộp", en: "From 15,000đ/Box" },
+    decal: { vi: "Chỉ từ 500đ/Tem", en: "From 500đ/Stamp" },
+    "li-xi": { vi: "Chỉ từ 1.500đ/Cái", en: "From 1,500đ/Pcs" },
+  };
+  const match = prices[id];
+  if (match) return isVi ? match.vi : match.en;
+  return isVi ? "Nhận báo giá trong 30 phút" : "Get a quote in 30 mins";
+}

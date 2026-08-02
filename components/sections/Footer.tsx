@@ -21,24 +21,25 @@ function FacebookIcon({ size = 15 }: Readonly<{ size?: number }>) {
 }
 function InstagramIcon({ size = 15 }: Readonly<{ size?: number }>) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-      <rect x="3" y="3" width="18" height="18" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.9c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.9.1s-3.6 0-4.9-.1c-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.9c.1-3.2 1.7-4.8 4.9-4.9 1.3-.1 1.6-.1 4.9-.1zm0-2.2C8.7 0 8.3 0 7 .1 2.7.3.3 2.7.1 7 0 8.3 0 8.7 0 12s0 3.7.1 5c.2 4.3 2.6 6.7 6.9 6.9 1.3.1 1.7.1 5 .1s3.7 0 5-.1c4.3-.2 6.7-2.6 6.9-6.9.1-1.3.1-1.7.1-5s0-3.7-.1-5C23.7 2.7 21.3.3 17 .1 15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z" />
     </svg>
   );
 }
 function YoutubeIcon({ size = 15 }: Readonly<{ size?: number }>) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-      <rect x="2" y="5" width="20" height="14" rx="4" />
-      <path d="M10 9.5v5l4.5-2.5z" fill="currentColor" stroke="none" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M23.5 6.2c-.3-1-1-1.8-2-2.1C19.7 3.5 12 3.5 12 3.5s-7.7 0-9.5.6c-1 .3-1.7 1.1-2 2.1C0 8 0 12 0 12s0 4 .5 5.8c.3 1 1 1.8 2 2.1 1.8.6 9.5.6 9.5.6s7.7 0 9.5-.6c1-.3 1.7-1.1 2-2.1.5-1.8.5-5.8.5-5.8s0-4-.5-5.8zM9.5 15.5V8.5l6.4 3.5-6.4 3.5z" />
     </svg>
   );
 }
 
 // Placeholder social hrefs — swap for real profile URLs once they exist.
-const socialLinks = [FacebookIcon, InstagramIcon, YoutubeIcon];
+const socialLinks = [
+  { icon: FacebookIcon, href: "https://facebook.com", name: "Facebook" },
+  { icon: InstagramIcon, href: "https://instagram.com", name: "Instagram" },
+  { icon: YoutubeIcon, href: "https://youtube.com", name: "YouTube" },
+];
 
 export default function Footer() {
   const t = useTranslations("footer");
@@ -58,10 +59,13 @@ export default function Footer() {
               {t("tagline")}
             </p>
             <div className="flex items-center gap-3">
-              {socialLinks.map((Icon) => (
+              {socialLinks.map(({ icon: Icon, href, name }) => (
                 <a
-                  key={Icon.name}
-                  href="#"
+                  key={name}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={name}
                   className="flex items-center justify-center w-9 h-9 rounded-full bg-white text-brand-dark hover:bg-brand-primary hover:text-white transition-colors"
                 >
                   <Icon size={15} />
@@ -79,8 +83,8 @@ export default function Footer() {
               {productCategories.map((cat) => (
                 <li key={cat.id}>
                   <Link
-                    href="/products"
-                    className="text-sm text-brand-dark/60 hover:text-brand-primary transition-colors"
+                    href={`/products#${cat.id}`}
+                    className="inline-block text-sm text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 transition-all duration-200 py-1 font-medium"
                   >
                     {pickLocale(locale, cat.nameVi, cat.nameEn)}
                   </Link>

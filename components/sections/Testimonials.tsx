@@ -35,7 +35,7 @@ export default function Testimonials() {
           modules={[Autoplay, Pagination, A11y]}
           slidesPerView={1}
           spaceBetween={24}
-          loop
+          loop={testimonials.length > 3}
           autoplay={{
             delay: SLIDE_DURATION,
             disableOnInteraction: false,
