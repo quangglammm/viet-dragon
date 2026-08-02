@@ -1,15 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { productCategories, isFastPrint, getStartingPrice, type ProductItem, type ProductCategory } from "@/data/categories";
+import { productCategories } from "@/data/categories";
 import { IconBadge } from "@/components/ui/icon-badge";
-import { cn } from "@/lib/utils";
 
 const usefulLinkHrefs = ["/#about", "/#services", "/#process", "/#testimonials", "/#faq"] as const;
 const usefulLinkKeys = ["about", "services", "process", "testimonials", "faq"] as const;
@@ -44,97 +41,10 @@ const socialLinks = [
   { icon: YoutubeIcon, href: "https://youtube.com", name: "YouTube" },
 ];
 
-interface FooterCategoryItemProps {
-  cat: ProductCategory;
-  locale: Locale;
-  activeItem: ProductItem;
-  onHoverItem: (catId: string, item: ProductItem) => void;
-}
-
-function FooterCategoryItem({
-  cat,
-  locale,
-  activeItem,
-  onHoverItem,
-}: Readonly<FooterCategoryItemProps>) {
-  return (
-    <li className="group relative w-max">
-      <Link
-        href={`/products#${cat.id}`}
-        className="inline-block text-sm text-brand-dark/60 group-hover:text-brand-primary group-hover:translate-x-1 transition-all duration-200 py-1 font-medium"
-      >
-        {pickLocale(locale, cat.nameVi, cat.nameEn)}
-      </Link>
-
-      {/* Hover Sub-categories Card (Sample Image 2 Style) */}
-      <div className="absolute left-0 lg:left-full bottom-full lg:bottom-auto lg:-top-6 mb-2 lg:mb-0 lg:ml-3 w-[460px] bg-white rounded-2xl shadow-2xl border border-zinc-100 p-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-50 text-zinc-800 flex gap-4">
-        {/* Left Side Preview */}
-        <div className="w-44 shrink-0 bg-zinc-50 border border-zinc-200/60 rounded-xl p-3 text-center flex flex-col items-center justify-between">
-          <div className="w-full">
-            <div className="relative w-full h-28 rounded-lg overflow-hidden mb-2 bg-white shadow-xs">
-              <Image
-                src={activeItem.image}
-                alt={pickLocale(locale, activeItem.nameVi, activeItem.nameEn)}
-                fill
-                sizes="176px"
-                className="object-cover"
-              />
-            </div>
-            <h5 className="text-[11px] font-bold text-emerald-700 uppercase leading-snug">
-              {pickLocale(locale, activeItem.nameVi, activeItem.nameEn)}
-            </h5>
-            <p className="text-[10px] text-zinc-500 italic mt-0.5 line-clamp-2">
-              {pickLocale(locale, activeItem.descriptionVi, activeItem.description)}
-            </p>
-          </div>
-          <p className="text-[11px] font-semibold text-emerald-700 italic mt-2">
-            {getStartingPrice(activeItem.id, locale)}
-          </p>
-        </div>
-
-        {/* Right Side Items List */}
-        <div className="flex-1 min-w-0">
-          <ul className="flex flex-col gap-1.5 max-h-52 overflow-y-auto pr-1">
-            {cat.items.map((item) => {
-              const isHovered = activeItem.id === item.id;
-              return (
-                <li key={item.id}>
-                  <Link
-                    href={`/products/${cat.id}/${item.id}`}
-                    onMouseEnter={() => onHoverItem(cat.id, item)}
-                    className={cn(
-                      "inline-flex items-center gap-1.5 text-xs py-0.5 rounded transition-all",
-                      isHovered
-                        ? "text-emerald-700 font-bold translate-x-0.5"
-                        : "text-zinc-600 hover:text-emerald-700 hover:font-medium"
-                    )}
-                  >
-                    <span>{pickLocale(locale, item.nameVi, item.nameEn)}</span>
-                    {isFastPrint(item.id) && (
-                      <span className="px-1.5 py-0.5 text-[9px] font-bold text-white bg-amber-500 rounded leading-none shadow-xs shrink-0">
-                        {locale === "vi" ? "in nhanh" : "fast"}
-                      </span>
-                    )}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
-    </li>
-  );
-}
-
 export default function Footer() {
-  const [footerPreview, setFooterPreview] = useState<Record<string, ProductItem>>({});
   const t = useTranslations("footer");
   const tContact = useTranslations("contact");
   const locale = useLocale() as Locale;
-
-  const handleHoverItem = (catId: string, item: ProductItem) => {
-    setFooterPreview((prev) => ({ ...prev, [catId]: item }));
-  };
 
   return (
     <footer className="bg-brand-soft text-brand-dark">
@@ -171,13 +81,14 @@ export default function Footer() {
             </p>
             <ul className="flex flex-col gap-2">
               {productCategories.map((cat) => (
-                <FooterCategoryItem
-                  key={cat.id}
-                  cat={cat}
-                  locale={locale}
-                  activeItem={footerPreview[cat.id] ?? cat.items[0]}
-                  onHoverItem={handleHoverItem}
-                />
+                <li key={cat.id}>
+                  <Link
+                    href={`/products#${cat.id}`}
+                    className="inline-block text-sm text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 transition-all duration-200 py-1 font-medium"
+                  >
+                    {pickLocale(locale, cat.nameVi, cat.nameEn)}
+                  </Link>
+                </li>
               ))}
             </ul>
           </div>

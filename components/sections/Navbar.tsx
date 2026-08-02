@@ -7,7 +7,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { WipeButton } from "@/components/ui/wipe-button";
 import { cn } from "@/lib/utils";
-import { productCategories, isFastPrint, getStartingPrice } from "@/data/categories";
+import { productCategories, isFastPrint, type ProductCategory, type ProductItem } from "@/data/categories";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 
@@ -46,6 +46,57 @@ function LocaleSwitcher({
   );
 }
 
+interface NavbarCategoryColumnProps {
+  cat: ProductCategory;
+  locale: Locale;
+  previewItem: ProductItem;
+  onHoverItem: (item: ProductItem) => void;
+}
+
+function NavbarCategoryColumn({
+  cat,
+  locale,
+  previewItem,
+  onHoverItem,
+}: Readonly<NavbarCategoryColumnProps>) {
+  return (
+    <div className="flex flex-col">
+      <Link
+        href={`/products#${cat.id}`}
+        className="text-xs font-bold uppercase tracking-wider text-brand-primary mb-2.5 pb-1 border-b border-zinc-100 hover:text-brand-dark transition-colors"
+      >
+        {pickLocale(locale, cat.nameVi, cat.nameEn)}
+      </Link>
+      <ul className="flex flex-col gap-1.5">
+        {cat.items.map((item) => {
+          const isHovered = previewItem.id === item.id;
+          return (
+            <li key={item.id}>
+              <Link
+                href={`/products/${cat.id}/${item.id}`}
+                onMouseEnter={() => onHoverItem(item)}
+                className={cn(
+                  "inline-flex items-center gap-1.5 text-xs py-0.5 rounded transition-all",
+                  isHovered
+                    ? "text-brand-primary font-bold translate-x-0.5"
+                    : "text-zinc-600 hover:text-brand-primary hover:font-medium"
+                )}
+              >
+                <span>{pickLocale(locale, item.nameVi, item.nameEn)}</span>
+                {isFastPrint(item.id) && (
+                  <span className="px-1.5 py-0.5 text-[9px] font-bold text-white bg-amber-500 rounded leading-none shadow-xs shrink-0">
+                    {locale === "vi" ? "in nhanh" : "fast"}
+                  </span>
+                )}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -56,6 +107,10 @@ export default function Navbar() {
   const locale = useLocale() as Locale;
   const pathname = usePathname();
   const router = useRouter();
+
+  const handleHoverItem = (item: ProductItem) => {
+    setPreviewItem(item);
+  };
 
   // Template's header-1.style-3 sits transparent/white-text over the hero and only
   // turns solid on scroll — only the homepage has a hero behind it to be transparent
@@ -137,7 +192,7 @@ export default function Navbar() {
               : "bg-white border-b border-zinc-100 shadow-sm"
           )}
         >
-        <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative">
           <Link
             href="/"
             className={cn(
@@ -155,7 +210,7 @@ export default function Navbar() {
               const isProducts = href === "/products";
               if (isProducts) {
                 return (
-                  <div key={href} className="group relative py-2">
+                  <div key={href} className="group py-2">
                     <Link
                       href={href}
                       className={cn(
@@ -169,9 +224,9 @@ export default function Navbar() {
                     </Link>
 
                     {/* Desktop Mega Menu Dropdown (Sample Image 2 Style) */}
-                    <div className="absolute top-full left-0 mt-1 w-[940px] max-w-[90vw] bg-white rounded-2xl shadow-2xl border border-zinc-100 p-6 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-50 text-zinc-800 flex gap-6">
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[940px] max-w-[90vw] bg-white rounded-2xl shadow-2xl border border-zinc-100 p-6 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-50 text-zinc-800 flex gap-6">
                       {/* Left side: Dynamic Preview Card */}
-                      <div className="w-64 shrink-0 bg-zinc-100/90 border border-zinc-200/60 rounded-2xl p-4 text-center flex flex-col items-center justify-between shadow-xs">
+                      <div className="w-64 shrink-0 bg-zinc-100/90 border border-zinc-200/60 rounded-2xl p-4 text-center flex flex-col items-center justify-start shadow-xs">
                         <div className="w-full">
                           <div className="relative w-full h-44 rounded-xl overflow-hidden mb-3.5 bg-white shadow-xs">
                             <Image
@@ -182,55 +237,25 @@ export default function Navbar() {
                               className="object-cover"
                             />
                           </div>
-                          <h4 className="text-xs font-bold text-emerald-700 uppercase tracking-wide leading-snug">
+                          <h4 className="text-xs font-bold text-brand-primary uppercase tracking-wide leading-snug">
                             {pickLocale(locale, previewItem.nameVi, previewItem.nameEn)}
                           </h4>
                           <p className="text-[11px] text-zinc-500 italic mt-1 leading-relaxed line-clamp-2">
                             {pickLocale(locale, previewItem.descriptionVi, previewItem.description)}
                           </p>
                         </div>
-                        <p className="text-xs font-semibold text-emerald-700 italic mt-2.5">
-                          {getStartingPrice(previewItem.id, locale)}
-                        </p>
                       </div>
 
                       {/* Right side: Multi-column Categories */}
                       <div className="grid grid-cols-4 gap-5 flex-1 pl-1">
                         {productCategories.map((cat) => (
-                          <div key={cat.id} className="flex flex-col">
-                            <Link
-                              href={`/products#${cat.id}`}
-                              className="text-xs font-bold uppercase tracking-wider text-emerald-700 mb-2.5 pb-1 border-b border-zinc-100 hover:text-brand-dark transition-colors"
-                            >
-                              {pickLocale(locale, cat.nameVi, cat.nameEn)}
-                            </Link>
-                            <ul className="flex flex-col gap-1.5">
-                              {cat.items.map((item) => {
-                                const isHovered = previewItem.id === item.id;
-                                return (
-                                  <li key={item.id}>
-                                    <Link
-                                      href={`/products/${cat.id}/${item.id}`}
-                                      onMouseEnter={() => setPreviewItem(item)}
-                                      className={cn(
-                                        "inline-flex items-center gap-1.5 text-xs py-0.5 rounded transition-all",
-                                        isHovered
-                                          ? "text-emerald-700 font-bold translate-x-0.5"
-                                          : "text-zinc-600 hover:text-emerald-700 hover:font-medium"
-                                      )}
-                                    >
-                                      <span>{pickLocale(locale, item.nameVi, item.nameEn)}</span>
-                                      {isFastPrint(item.id) && (
-                                        <span className="px-1.5 py-0.5 text-[9px] font-bold text-white bg-amber-500 rounded leading-none shadow-xs shrink-0">
-                                          {locale === "vi" ? "in nhanh" : "fast"}
-                                        </span>
-                                      )}
-                                    </Link>
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                          </div>
+                          <NavbarCategoryColumn
+                            key={cat.id}
+                            cat={cat}
+                            locale={locale}
+                            previewItem={previewItem}
+                            onHoverItem={handleHoverItem}
+                          />
                         ))}
                       </div>
                     </div>
@@ -298,18 +323,18 @@ export default function Navbar() {
             if (isProducts) {
               return (
                 <div key={href} className="flex flex-col">
-                  <div className="flex items-center justify-between rounded-2xl hover:bg-zinc-50 transition-colors">
+                  <div className="flex items-center gap-1 rounded-2xl hover:bg-zinc-50 transition-colors">
                     <Link
                       href={href}
                       onClick={closeAllMenu}
-                      className="px-4 py-3.5 text-xl font-semibold text-zinc-800 flex-1"
+                      className="pl-4 py-3.5 text-xl font-semibold text-zinc-800"
                     >
                       {t(`links.${linkKeys[i]}`)}
                     </Link>
                     <button
                       onClick={() => setProductsOpen((o) => !o)}
                       aria-label="Toggle subcategories"
-                      className="p-3.5 mr-1 text-zinc-600 hover:text-brand-primary transition-colors"
+                      className="p-2 text-zinc-600 hover:text-brand-primary transition-colors"
                     >
                       <ChevronDown
                         size={22}
