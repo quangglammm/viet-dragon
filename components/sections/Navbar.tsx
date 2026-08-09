@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Menu, X, Phone, Mail, MapPin, ChevronDown } from "lucide-react";
+import { Menu, X, Phone, Mail, MapPin, ChevronDown, Briefcase, Package, Calendar, Gift, type LucideIcon } from "lucide-react";
+
+const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift };
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { WipeButton } from "@/components/ui/wipe-button";
@@ -212,23 +214,27 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center justify-center flex-1 gap-4 xl:gap-8 px-4">
-            {productCategories.map((cat) => (
-              <div key={cat.id} className="group py-2 relative">
-                <Link
-                  href={`/products#${cat.id}`}
-                  className={cn(
-                    "py-2 text-[13px] xl:text-sm font-bold uppercase tracking-wider transition-colors duration-300",
-                    transparent
-                      ? "text-white/90 hover:text-white"
-                      : "text-zinc-800 hover:text-brand-primary"
-                  )}
-                >
-                  {pickLocale(locale, cat.nameVi, cat.nameEn)}
-                </Link>
+            {productCategories.map((cat) => {
+              const Icon = iconMap[cat.icon] ?? Briefcase;
+              return (
+                <div key={cat.id} className="group py-2 relative">
+                  <Link
+                    href={`/products#${cat.id}`}
+                    className={cn(
+                      "flex items-center gap-1.5 py-2 text-[13px] xl:text-sm font-bold uppercase tracking-wider transition-colors duration-300",
+                      transparent
+                        ? "text-white/90 hover:text-white"
+                        : "text-zinc-800 hover:text-brand-primary"
+                    )}
+                  >
+                    <Icon size={14} strokeWidth={2.5} />
+                    {pickLocale(locale, cat.nameVi, cat.nameEn)}
+                  </Link>
 
-                <DesktopCategoryDropdown cat={cat} locale={locale} />
-              </div>
-            ))}
+                  <DesktopCategoryDropdown cat={cat} locale={locale} />
+                </div>
+              );
+            })}
           </div>
 
           <div className="flex items-center gap-3">
@@ -269,16 +275,19 @@ export default function Navbar() {
         )}
       >
         <nav className="flex flex-col px-6 py-8 gap-2 flex-1 overflow-y-auto">
-          {productCategories.map((cat) => (
-            <div key={cat.id} className="flex flex-col">
-              <div className="flex items-center justify-between rounded-2xl hover:bg-zinc-50 transition-colors">
-                <Link
-                  href={`/products#${cat.id}`}
-                  onClick={closeAllMenu}
-                  className="pl-4 py-3.5 text-xl font-semibold text-zinc-800 flex-1"
-                >
-                  {pickLocale(locale, cat.nameVi, cat.nameEn)}
-                </Link>
+          {productCategories.map((cat) => {
+            const Icon = iconMap[cat.icon] ?? Briefcase;
+            return (
+              <div key={cat.id} className="flex flex-col">
+                <div className="flex items-center justify-between rounded-2xl hover:bg-zinc-50 transition-colors">
+                  <Link
+                    href={`/products#${cat.id}`}
+                    onClick={closeAllMenu}
+                    className="flex items-center gap-2.5 pl-4 py-3.5 text-xl font-semibold text-zinc-800 flex-1"
+                  >
+                    <Icon size={22} className="text-brand-primary" />
+                    {pickLocale(locale, cat.nameVi, cat.nameEn)}
+                  </Link>
                 <button
                   onClick={() => setOpenMobileCat((current) => current === cat.id ? null : cat.id)}
                   aria-label="Toggle subcategories"
@@ -310,7 +319,8 @@ export default function Navbar() {
                 </div>
               )}
             </div>
-          ))}
+          );
+        })}
         </nav>
 
         <div className="px-6 pb-10">
