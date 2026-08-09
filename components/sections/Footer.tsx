@@ -8,11 +8,11 @@ import type { Locale } from "@/i18n/routing";
 import { productCategories } from "@/data/categories";
 import { IconBadge } from "@/components/ui/icon-badge";
 
-const usefulLinkHrefs = ["/#about", "/#services", "/#process", "/#testimonials", "/#faq"] as const;
-const usefulLinkKeys = ["about", "services", "process", "testimonials", "faq"] as const;
+const usefulLinkHrefs = ["/#services", "/#process", "/#testimonials", "/#faq"] as const;
+const usefulLinkKeys = ["services", "process", "testimonials", "faq"] as const;
 
-const companyLinkHrefs = ["/blog", "/#services", "/#about", "/#cta"] as const;
-const companyLinkKeys = ["blog", "services", "about", "contact"] as const;
+const companyLinkHrefs = ["/#about", "/blog", "/#cta"] as const;
+const companyLinkKeys = ["about", "blog", "contact"] as const;
 
 // lucide-react dropped brand/social marks — minimal inline glyphs instead.
 function FacebookIcon({ size = 15 }: Readonly<{ size?: number }>) {
@@ -84,10 +84,18 @@ export default function Footer() {
               {t("productsLabel")}
             </p>
             <ul className="flex flex-col gap-2">
+              <li key="all-products">
+                <Link
+                  href="/products"
+                  className="inline-block text-sm text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 transition-all duration-200 py-1 font-medium"
+                >
+                  {locale === "vi" ? "Tất cả sản phẩm" : "All Products"}
+                </Link>
+              </li>
               {productCategories.map((cat) => (
                 <li key={cat.id}>
                   <Link
-                    href={`/products#${cat.id}`}
+                    href={`/products/${cat.id}`}
                     className="inline-block text-sm text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 transition-all duration-200 py-1 font-medium"
                   >
                     {pickLocale(locale, cat.nameVi, cat.nameEn)}

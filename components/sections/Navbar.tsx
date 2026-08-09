@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Menu, X, Phone, Mail, MapPin, ChevronDown, Briefcase, Package, Calendar, Gift, type LucideIcon } from "lucide-react";
 
@@ -50,14 +50,22 @@ function LocaleSwitcher({
 function DesktopCategoryDropdown({
   cat,
   locale,
+  isOpen,
 }: Readonly<{
   cat: ProductCategory;
   locale: Locale;
+  isOpen: boolean;
 }>) {
-  const [previewItem, setPreviewItem] = useState<ProductItem>(cat.items[0]);
+  const pathname = usePathname();
+  const [previewItem, setPreviewItem] = useState<ProductItem>(() => {
+    return cat.items.find((i) => pathname === `/products/${cat.id}/${i.id}`) || cat.items[0];
+  });
 
   return (
-    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[600px] bg-white rounded-2xl shadow-2xl border border-zinc-100 p-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-50 flex gap-5 text-zinc-800">
+    <div className={cn(
+      "absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[600px] bg-white rounded-2xl shadow-2xl border border-zinc-100 p-4 transition-all duration-200 z-50 flex gap-5 text-zinc-800",
+      isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+    )}>
       {/* Left side: Preview card */}
       <div className="w-1/2 bg-zinc-50 border border-zinc-100 rounded-xl p-3 text-center flex flex-col items-center justify-start shadow-sm">
         <div className="w-full">
@@ -82,6 +90,7 @@ function DesktopCategoryDropdown({
       {/* Right side: List of items */}
       <div className="w-1/2 flex flex-col gap-1">
         {cat.items.map((item) => {
+          const isActive = pathname === `/products/${cat.id}/${item.id}`;
           const isHovered = previewItem.id === item.id;
           return (
             <Link
@@ -90,12 +99,12 @@ function DesktopCategoryDropdown({
               onMouseEnter={() => setPreviewItem(item)}
               className={cn(
                 "px-3 py-2.5 text-[14px] font-medium rounded-lg transition-colors flex items-center justify-between",
-                isHovered
+                (isHovered || isActive)
                   ? "bg-brand-soft text-brand-primary"
                   : "text-zinc-600 hover:text-brand-primary hover:bg-zinc-50"
               )}
             >
-              <span>{pickLocale(locale, item.nameVi, item.nameEn)}</span>
+              <span className={cn(isActive && "font-bold")}>{pickLocale(locale, item.nameVi, item.nameEn)}</span>
               {isFastPrint(item.id) && (
                 <span className="px-1.5 py-0.5 text-[10px] font-bold text-white bg-amber-500 rounded leading-none shadow-xs shrink-0 ml-2">
                   {locale === "vi" ? "in nhanh" : "fast"}
@@ -113,12 +122,27 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openMobileCat, setOpenMobileCat] = useState<string | null>(null);
+  const [activeDesktopCat, setActiveDesktopCat] = useState<string | null>(null);
+  const catTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const t = useTranslations("nav");
   const tContact = useTranslations("contact");
   const locale = useLocale() as Locale;
   const pathname = usePathname();
   const router = useRouter();
 
+  const handleCatMouseEnter = (catId: string) => {
+    if (catTimeoutRef.current) {
+      clearTimeout(catTimeoutRef.current);
+      catTimeoutRef.current = null;
+    }
+    setActiveDesktopCat(catId);
+  };
+
+  const handleCatMouseLeave = () => {
+    catTimeoutRef.current = setTimeout(() => {
+      setActiveDesktopCat(null);
+    }, 500);
+  };
 
   // Template's header-1.style-3 sits transparent/white-text over the hero and only
   // turns solid on scroll — only the homepage has a hero behind it to be transparent
@@ -216,22 +240,30 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center justify-center flex-1 gap-4 xl:gap-8 px-4">
             {productCategories.map((cat) => {
               const Icon = iconMap[cat.icon] ?? Briefcase;
+              const isActiveCat = pathname.startsWith(`/products/${cat.id}`);
               return (
-                <div key={cat.id} className="group py-2 relative">
+                <div
+                  key={cat.id}
+                  className="py-2 relative"
+                  onMouseEnter={() => handleCatMouseEnter(cat.id)}
+                  onMouseLeave={handleCatMouseLeave}
+                >
                   <Link
-                    href={`/products#${cat.id}`}
+                    href={`/products/${cat.id}`}
                     className={cn(
                       "flex items-center gap-1.5 py-2 text-[13px] xl:text-sm font-bold uppercase tracking-wider transition-colors duration-300",
                       transparent
                         ? "text-white/90 hover:text-white"
-                        : "text-zinc-800 hover:text-brand-primary"
+                        : "text-zinc-800 hover:text-brand-primary",
+                      (activeDesktopCat === cat.id || isActiveCat) && !transparent && "text-brand-primary",
+                      (activeDesktopCat === cat.id || isActiveCat) && transparent && "text-white"
                     )}
                   >
                     <Icon size={14} strokeWidth={2.5} />
                     {pickLocale(locale, cat.nameVi, cat.nameEn)}
                   </Link>
 
-                  <DesktopCategoryDropdown cat={cat} locale={locale} />
+                  <DesktopCategoryDropdown cat={cat} locale={locale} isOpen={activeDesktopCat === cat.id} />
                 </div>
               );
             })}
@@ -277,15 +309,19 @@ export default function Navbar() {
         <nav className="flex flex-col px-6 py-8 gap-2 flex-1 overflow-y-auto">
           {productCategories.map((cat) => {
             const Icon = iconMap[cat.icon] ?? Briefcase;
+            const isActiveCat = pathname.startsWith(`/products/${cat.id}`);
             return (
               <div key={cat.id} className="flex flex-col">
                 <div className="flex items-center justify-between rounded-2xl hover:bg-zinc-50 transition-colors">
                   <Link
-                    href={`/products#${cat.id}`}
+                    href={`/products/${cat.id}`}
                     onClick={closeAllMenu}
-                    className="flex items-center gap-2.5 pl-4 py-3.5 text-xl font-semibold text-zinc-800 flex-1"
+                    className={cn(
+                      "flex items-center gap-2.5 pl-4 py-3.5 text-xl font-semibold flex-1 transition-colors",
+                      isActiveCat ? "text-brand-primary" : "text-zinc-800"
+                    )}
                   >
-                    <Icon size={22} className="text-brand-primary" />
+                    <Icon size={22} className={isActiveCat ? "text-brand-primary" : "text-brand-primary/80"} />
                     {pickLocale(locale, cat.nameVi, cat.nameEn)}
                   </Link>
                 <button
@@ -304,17 +340,23 @@ export default function Navbar() {
               {openMobileCat === cat.id && (
                 <div className="pl-6 pr-4 py-2 flex flex-col gap-2 border-l-2 border-brand-primary/20 ml-4 my-1">
                   <ul className="flex flex-col gap-1">
-                    {cat.items.map((item) => (
-                      <li key={item.id}>
-                        <Link
-                          href={`/products/${cat.id}/${item.id}`}
-                          onClick={closeAllMenu}
-                          className="block py-2 text-base font-medium text-zinc-700 hover:text-brand-primary transition-colors"
-                        >
-                          {pickLocale(locale, item.nameVi, item.nameEn)}
-                        </Link>
-                      </li>
-                    ))}
+                    {cat.items.map((item) => {
+                      const isActive = pathname === `/products/${cat.id}/${item.id}`;
+                      return (
+                        <li key={item.id}>
+                          <Link
+                            href={`/products/${cat.id}/${item.id}`}
+                            onClick={closeAllMenu}
+                            className={cn(
+                              "block py-2 text-base font-medium transition-colors hover:text-brand-primary",
+                              isActive ? "text-brand-primary font-bold" : "text-zinc-700"
+                            )}
+                          >
+                            {pickLocale(locale, item.nameVi, item.nameEn)}
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               )}

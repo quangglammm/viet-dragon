@@ -74,7 +74,7 @@ export default async function ProductDetailPage({
       {/* ── Product panel ── */}
       <div className="max-w-7xl mx-auto px-6 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
-          <div className="aspect-square lg:aspect-[4/5] rounded-2xl border border-zinc-100 overflow-hidden bg-zinc-100 lg:sticky lg:top-28">
+          <div className="aspect-square rounded-2xl border border-zinc-100 overflow-hidden bg-zinc-100 lg:sticky lg:top-28">
             <div className="relative w-full h-full">
               <Image
                 src={item.image}
