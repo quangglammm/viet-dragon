@@ -73,68 +73,62 @@ export function MaterialFlashcard({
   const description = pickLocale(locale, option.descriptionVi, option.description);
   const bestFor = pickLocale(locale, option.bestForVi, option.bestFor);
 
-  let basePrice = 50000;
-  let doubleSidedAddon = 15000;
-  let foilAddon1Side = 20000;
-  let foilAddon2Sides = 35000;
+  let basePriceMin = 150000;
+  let basePriceMax = 200000;
+  let doubleSidedAddon = 25000;
+  let foilAddon1Side = 40000;
+  let foilAddon2Sides = 70000;
 
   const n = option.nameVi.toLowerCase();
 
-  // Heuristic pricing based on material name
+  // Heuristic pricing based on material name (adjusted to user's logic e.g., 150k-200k for standard)
   if (n.includes("c300") || n.includes("c250") || n.includes("couche")) {
-    basePrice = 45000;
-    doubleSidedAddon = 15000;
+    basePriceMin = 150000; basePriceMax = 200000;
   } else if (n.includes("ford")) {
-    basePrice = 50000;
-    doubleSidedAddon = 15000;
+    basePriceMin = 150000; basePriceMax = 200000;
   } else if (n.includes("mỹ thuật") || n.includes("art")) {
-    basePrice = 120000;
-    doubleSidedAddon = 30000;
-    foilAddon1Side = 25000;
-    foilAddon2Sides = 45000;
+    basePriceMin = 250000; basePriceMax = 350000;
   } else if (n.includes("ngọc trai") || n.includes("pearl")) {
-    basePrice = 140000;
-    doubleSidedAddon = 35000;
+    basePriceMin = 280000; basePriceMax = 380000;
   } else if (n.includes("nhựa") || n.includes("plastic") || n.includes("siêu bền")) {
-    basePrice = 250000;
-    doubleSidedAddon = 50000;
+    basePriceMin = 450000; basePriceMax = 600000;
   } else if (n.includes("dập nổi") || n.includes("dập chìm") || n.includes("embossed")) {
-    basePrice = 180000;
-    doubleSidedAddon = 30000;
+    basePriceMin = 300000; basePriceMax = 450000;
   } else if (n.includes("in nhanh") || n.includes("kỹ thuật số")) {
-    basePrice = 80000;
-    doubleSidedAddon = 20000;
+    basePriceMin = 180000; basePriceMax = 250000;
   } else if (n.includes("đóng ghim")) {
-    basePrice = 30000;
+    basePriceMin = 40000; basePriceMax = 60000;
   } else if (n.includes("keo nhiệt") || n.includes("pur")) {
-    basePrice = 120000;
+    basePriceMin = 150000; basePriceMax = 220000;
   } else if (n.includes("lò xo") || n.includes("wire")) {
-    basePrice = 85000;
+    basePriceMin = 90000; basePriceMax = 140000;
   } else if (n.includes("bìa cứng") || n.includes("carton")) {
-    basePrice = 450000;
-    foilAddon1Side = 50000;
-    foilAddon2Sides = 90000;
+    basePriceMin = 450000; basePriceMax = 650000;
   } else if (n.includes("tay gấp") || n.includes("gáy hộp")) {
-    basePrice = 90000;
+    basePriceMin = 120000; basePriceMax = 180000;
   } else if (n.includes("uv")) {
-    basePrice = 150000;
-    foilAddon1Side = 30000;
+    basePriceMin = 220000; basePriceMax = 320000;
   }
 
-  const currentBasePrice = basePrice + (doubleSidedChecked ? doubleSidedAddon : 0);
+  const currentDoubleSidedPrice = doubleSidedChecked ? doubleSidedAddon : 0;
   const currentFoilPrice = foilChecked 
     ? (doubleSidedChecked ? foilAddon2Sides : foilAddon1Side) 
     : 0;
 
   const hasPages = productName.toLowerCase().includes("catalogue") || productName.toLowerCase().includes("cẩm nang") || productName.toLowerCase().includes("book") || productName.toLowerCase().includes("sách");
     
-  let unitPrice = currentBasePrice + currentFoilPrice;
+  let unitMin = basePriceMin + currentDoubleSidedPrice + currentFoilPrice;
+  let unitMax = basePriceMax + currentDoubleSidedPrice + currentFoilPrice;
+  
   if (hasPages) {
-    const pricePerPage = 2000;
-    unitPrice += pages * pricePerPage;
+    const pricePerPageMin = 1500;
+    const pricePerPageMax = 2500;
+    unitMin += pages * pricePerPageMin;
+    unitMax += pages * pricePerPageMax;
   }
   
-  const totalPrice = unitPrice * quantity;
+  const totalPriceMin = unitMin * quantity;
+  const totalPriceMax = unitMax * quantity;
 
   let defaultUnitVi = "Cái";
   let defaultUnitEn = "Pieces";
@@ -319,85 +313,10 @@ export function MaterialFlashcard({
 
       {/* Footer — foil/double-sided add-ons + Zalo consult, always visible regardless of flip state */}
       <div className="flex flex-col border-t border-zinc-100 bg-zinc-50/30">
-        <div className="flex items-start justify-between gap-3 px-5 py-4">
-          <div className="flex flex-col gap-3 flex-1">
-            {!hideFoilCheckbox && (
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2.5 text-sm font-semibold text-zinc-700 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={foilChecked}
-                    onChange={(e) => {
-                      setFoilChecked(e.target.checked);
-                      clearToastTimeout();
-                      setAwaitingZaloOpen(false);
-                    }}
-                    className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
-                  />
-                  {foilCheckboxLabel}
-                </label>
-                <span className="text-xs font-medium text-brand-primary">
-                  + {(doubleSidedChecked ? foilAddon2Sides : foilAddon1Side).toLocaleString("vi-VN")}đ
-                </span>
-              </div>
-            )}
-            {!hideDoubleSidedCheckbox && (
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2.5 text-sm font-semibold text-zinc-700 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={doubleSidedChecked}
-                    onChange={(e) => {
-                      setDoubleSidedChecked(e.target.checked);
-                      clearToastTimeout();
-                      setAwaitingZaloOpen(false);
-                    }}
-                    className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
-                  />
-                  {doubleSidedCheckboxLabel}
-                </label>
-                <span className="text-xs font-medium text-brand-primary">
-                  + {doubleSidedAddon.toLocaleString("vi-VN")}đ
-                </span>
-              </div>
-            )}
-          </div>
-
-          <div className="relative shrink-0 ml-2">
-            <AnimatePresence>
-              {awaitingZaloOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 6, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 6, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  role="status"
-                  className="absolute bottom-full right-0 mb-2 w-44 rounded-lg bg-brand-dark px-3 py-2 text-xs leading-snug text-white shadow-lg z-10"
-                >
-                  {t("optionConsultCopiedToast")}
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <motion.button
-              type="button"
-              aria-label={awaitingZaloOpen ? t("optionConsultOpenLabel") : t("optionConsultCopyLabel")}
-              onClick={handleConsultClick}
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.94 }}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0068ff] shadow-md shadow-[#0068ff]/30"
-            >
-              {awaitingZaloOpen ? (
-                <MessageCircle className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
-              ) : (
-                <Copy className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
-              )}
-            </motion.button>
-          </div>
-        </div>
-
+        
         {/* Optional Pages Row (e.g. for Catalogues) */}
         {hasPages && (
-          <div className="flex items-center justify-between px-5 py-3 border-t border-zinc-100/60 bg-white">
+          <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-100/60 bg-white">
             <span className="text-sm font-semibold text-zinc-700">
               {locale === "vi" ? "Số trang:" : "Pages:"}
             </span>
@@ -439,8 +358,11 @@ export function MaterialFlashcard({
           </div>
         )}
 
-        {/* Quantity and Price row */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-t border-zinc-100/60 bg-zinc-50/50">
+        {/* Quantity row */}
+        <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-100/60 bg-white">
+          <span className="text-sm font-semibold text-zinc-700">
+            {locale === "vi" ? "Số lượng:" : "Quantity:"}
+          </span>
           <div className="flex items-center gap-3">
             <div className="flex items-center h-8 bg-white border border-zinc-200 rounded-md overflow-hidden">
               <button
@@ -450,19 +372,19 @@ export function MaterialFlashcard({
               >
                 <Minus size={14} />
               </button>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={quantity || ""}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, "");
-                    setQuantity(val ? parseInt(val, 10) : 0);
-                  }}
-                  onBlur={() => {
-                    if (quantity < 1) setQuantity(1);
-                  }}
-                  className="w-12 h-full text-center text-sm font-semibold text-zinc-700 bg-transparent focus:outline-none"
-                />
+              <input
+                type="text"
+                inputMode="numeric"
+                value={quantity || ""}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, "");
+                  setQuantity(val ? parseInt(val, 10) : 0);
+                }}
+                onBlur={() => {
+                  if (quantity < 1) setQuantity(1);
+                }}
+                className="w-12 h-full text-center text-sm font-semibold text-zinc-700 bg-transparent focus:outline-none"
+              />
               <button
                 type="button"
                 onClick={() => setQuantity((q) => q + 1)}
@@ -471,16 +393,97 @@ export function MaterialFlashcard({
                 <Plus size={14} />
               </button>
             </div>
-            <span className="text-sm font-medium text-zinc-500">{unitLabel}</span>
+            <span className="text-sm font-medium text-zinc-500 min-w-10">{unitLabel}</span>
+          </div>
+        </div>
+
+        {/* 3-Column Layout: Price Range | Checkboxes | Copy & Chat */}
+        <div className="flex items-stretch px-5 py-4">
+          
+          {/* Cột 1: Giá */}
+          <div className="flex flex-col justify-center flex-1">
+            <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1">
+              {locale === "vi" ? "Thành tiền" : "Total Amount"}
+            </div>
+            <div className="text-[15px] font-black text-brand-primary leading-tight">
+              {totalPriceMin.toLocaleString("vi-VN")}đ <span className="text-zinc-400 font-normal mx-0.5">~</span> {totalPriceMax.toLocaleString("vi-VN")}đ
+            </div>
           </div>
 
-          <div className="text-right">
-            <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-0.5">
-              {locale === "vi" ? "Tổng" : "Total"}
-            </div>
-            <div className="text-lg font-black text-brand-primary">
-              {totalPrice.toLocaleString("vi-VN")}đ
-            </div>
+          {/* Cột 2: Checkbox */}
+          <div className="flex flex-col justify-center gap-3 px-4 border-l border-zinc-200/60 min-w-[170px]">
+            {!hideFoilCheckbox && (
+              <label className="flex items-center justify-between gap-4 text-sm font-semibold text-zinc-700 cursor-pointer select-none">
+                <div className="flex items-center gap-2.5">
+                  <input
+                    type="checkbox"
+                    checked={foilChecked}
+                    onChange={(e) => {
+                      setFoilChecked(e.target.checked);
+                      clearToastTimeout();
+                      setAwaitingZaloOpen(false);
+                    }}
+                    className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
+                  />
+                  {foilCheckboxLabel}
+                </div>
+                <span className="text-xs font-medium text-brand-primary whitespace-nowrap">
+                  + {(doubleSidedChecked ? foilAddon2Sides : foilAddon1Side).toLocaleString("vi-VN")}đ
+                </span>
+              </label>
+            )}
+            {!hideDoubleSidedCheckbox && (
+              <label className="flex items-center justify-between gap-4 text-sm font-semibold text-zinc-700 cursor-pointer select-none">
+                <div className="flex items-center gap-2.5">
+                  <input
+                    type="checkbox"
+                    checked={doubleSidedChecked}
+                    onChange={(e) => {
+                      setDoubleSidedChecked(e.target.checked);
+                      clearToastTimeout();
+                      setAwaitingZaloOpen(false);
+                    }}
+                    className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
+                  />
+                  {doubleSidedCheckboxLabel}
+                </div>
+                <span className="text-xs font-medium text-brand-primary whitespace-nowrap">
+                  + {doubleSidedAddon.toLocaleString("vi-VN")}đ
+                </span>
+              </label>
+            )}
+          </div>
+
+          {/* Cột 3: Copy & Chat */}
+          <div className="flex items-center justify-center pl-4 border-l border-zinc-200/60 relative">
+            <AnimatePresence>
+              {awaitingZaloOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  role="status"
+                  className="absolute bottom-full right-0 mb-2 w-44 rounded-lg bg-brand-dark px-3 py-2 text-xs leading-snug text-white shadow-lg z-10"
+                >
+                  {t("optionConsultCopiedToast")}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <motion.button
+              type="button"
+              aria-label={awaitingZaloOpen ? t("optionConsultOpenLabel") : t("optionConsultCopyLabel")}
+              onClick={handleConsultClick}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.94 }}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0068ff] shadow-md shadow-[#0068ff]/30 shrink-0"
+            >
+              {awaitingZaloOpen ? (
+                <MessageCircle className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
+              ) : (
+                <Copy className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
+              )}
+            </motion.button>
           </div>
         </div>
       </div>
