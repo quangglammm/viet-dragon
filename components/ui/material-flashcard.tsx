@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   Layers, Sparkles, Palette, Award, Gem, Feather, PenLine, Minimize2, StickyNote,
   Stamp, ShieldCheck, Briefcase, Gift, ArrowLeftRight, Copy, MessageCircle,
+  Minus, Plus,
   type LucideIcon,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -14,6 +15,7 @@ import { materialTraits } from "@/data/material-traits";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import { ZALO_CHAT_URL } from "@/lib/contact";
+import { cn } from "@/lib/utils";
 
 const optionIconMap: Record<string, LucideIcon> = {
   Layers, Sparkles, Palette, Award, Gem, Feather, PenLine, Minimize2, StickyNote,
@@ -35,6 +37,8 @@ interface MaterialFlashcardProps {
   backToDetailsHint: string;
   foilCheckboxLabel: string;
   doubleSidedCheckboxLabel: string;
+  hideFoilCheckbox?: boolean;
+  hideDoubleSidedCheckbox?: boolean;
 }
 
 export function MaterialFlashcard({
@@ -48,11 +52,16 @@ export function MaterialFlashcard({
   backToDetailsHint,
   foilCheckboxLabel,
   doubleSidedCheckboxLabel,
+  hideFoilCheckbox,
+  hideDoubleSidedCheckbox,
 }: Readonly<MaterialFlashcardProps>) {
   const t = useTranslations("productDetailPage");
   const [flipped, setFlipped] = useState(false);
   const [foilChecked, setFoilChecked] = useState(false);
   const [doubleSidedChecked, setDoubleSidedChecked] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [pages, setPages] = useState(16);
+
   // Two-step consult flow: first click copies the message (and shows a toast
   // asking to click again), second click opens Zalo. Each step's window.open
   // (when it happens) runs synchronously inside that click's own handler, so
@@ -64,9 +73,90 @@ export function MaterialFlashcard({
   const description = pickLocale(locale, option.descriptionVi, option.description);
   const bestFor = pickLocale(locale, option.bestForVi, option.bestFor);
 
-  let backImage = option.image ?? fallbackImage;
-  if (option.pureImage && !foilChecked) {
-    backImage = option.pureImage;
+  let basePrice = 50000;
+  let doubleSidedAddon = 15000;
+  let foilAddon1Side = 20000;
+  let foilAddon2Sides = 35000;
+
+  const n = option.nameVi.toLowerCase();
+
+  // Heuristic pricing based on material name
+  if (n.includes("c300") || n.includes("c250") || n.includes("couche")) {
+    basePrice = 45000;
+    doubleSidedAddon = 15000;
+  } else if (n.includes("ford")) {
+    basePrice = 50000;
+    doubleSidedAddon = 15000;
+  } else if (n.includes("mỹ thuật") || n.includes("art")) {
+    basePrice = 120000;
+    doubleSidedAddon = 30000;
+    foilAddon1Side = 25000;
+    foilAddon2Sides = 45000;
+  } else if (n.includes("ngọc trai") || n.includes("pearl")) {
+    basePrice = 140000;
+    doubleSidedAddon = 35000;
+  } else if (n.includes("nhựa") || n.includes("plastic") || n.includes("siêu bền")) {
+    basePrice = 250000;
+    doubleSidedAddon = 50000;
+  } else if (n.includes("dập nổi") || n.includes("dập chìm") || n.includes("embossed")) {
+    basePrice = 180000;
+    doubleSidedAddon = 30000;
+  } else if (n.includes("in nhanh") || n.includes("kỹ thuật số")) {
+    basePrice = 80000;
+    doubleSidedAddon = 20000;
+  } else if (n.includes("đóng ghim")) {
+    basePrice = 30000;
+  } else if (n.includes("keo nhiệt") || n.includes("pur")) {
+    basePrice = 120000;
+  } else if (n.includes("lò xo") || n.includes("wire")) {
+    basePrice = 85000;
+  } else if (n.includes("bìa cứng") || n.includes("carton")) {
+    basePrice = 450000;
+    foilAddon1Side = 50000;
+    foilAddon2Sides = 90000;
+  } else if (n.includes("tay gấp") || n.includes("gáy hộp")) {
+    basePrice = 90000;
+  } else if (n.includes("uv")) {
+    basePrice = 150000;
+    foilAddon1Side = 30000;
+  }
+
+  const currentBasePrice = basePrice + (doubleSidedChecked ? doubleSidedAddon : 0);
+  const currentFoilPrice = foilChecked 
+    ? (doubleSidedChecked ? foilAddon2Sides : foilAddon1Side) 
+    : 0;
+
+  const hasPages = productName.toLowerCase().includes("catalogue") || productName.toLowerCase().includes("cẩm nang") || productName.toLowerCase().includes("book") || productName.toLowerCase().includes("sách");
+    
+  let unitPrice = currentBasePrice + currentFoilPrice;
+  if (hasPages) {
+    const pricePerPage = 2000;
+    unitPrice += pages * pricePerPage;
+  }
+  
+  const totalPrice = unitPrice * quantity;
+
+  let defaultUnitVi = "Cái";
+  let defaultUnitEn = "Pieces";
+  
+  if (productName.toLowerCase().includes("thẻ") || productName.toLowerCase().includes("card") || productName.toLowerCase().includes("danh thiếp")) {
+    defaultUnitVi = "Hộp";
+    defaultUnitEn = "Boxes";
+  } else if (productName.toLowerCase().includes("catalogue") || productName.toLowerCase().includes("cuốn") || productName.toLowerCase().includes("book")) {
+    defaultUnitVi = "Cuốn";
+    defaultUnitEn = "Books";
+  } else if (productName.toLowerCase().includes("folder") || productName.toLowerCase().includes("bìa")) {
+    defaultUnitVi = "Cái";
+    defaultUnitEn = "Pieces";
+  }
+  
+  const unitLabel = locale === "vi" ? defaultUnitVi : defaultUnitEn;
+
+  let backImages = option.images ?? (option.image ? [option.image] : [fallbackImage]);
+  if (!foilChecked && option.pureImages) {
+    backImages = option.pureImages;
+  } else if (!foilChecked && option.pureImage) {
+    backImages = [option.pureImage];
   }
 
   const clearToastTimeout = () => {
@@ -98,12 +188,19 @@ export function MaterialFlashcard({
     }
 
     const yesNo = (checked: boolean) => (checked ? t("optionConsultYes") : t("optionConsultNo"));
-    const message = [
+    const messageLines = [
       t("optionConsultMessage", { product: productName, url: window.location.href }),
       t("optionConsultMaterialLine", { option: name }),
-      t("optionConsultFoilLine", { status: yesNo(foilChecked) }),
-      t("optionConsultDoubleSidedLine", { status: yesNo(doubleSidedChecked) }),
-    ].join("\n");
+    ];
+    
+    if (!hideFoilCheckbox) {
+      messageLines.push(t("optionConsultFoilLine", { status: yesNo(foilChecked) }));
+    }
+    if (!hideDoubleSidedCheckbox) {
+      messageLines.push(t("optionConsultDoubleSidedLine", { status: yesNo(doubleSidedChecked) }));
+    }
+    
+    const message = messageLines.join("\n");
 
     clipboard
       .writeText(message)
@@ -143,7 +240,7 @@ export function MaterialFlashcard({
           <div style={{ backfaceVisibility: "hidden" }}>
             <div className="flex items-center gap-2.5 px-5 py-4 bg-zinc-50 border-b border-zinc-100">
               <OptIcon size={16} className="text-brand-primary shrink-0" />
-              <h3 className="font-black text-zinc-900 text-base truncate flex-1">{name}</h3>
+              <h3 className="font-black text-zinc-900 text-base line-clamp-2 flex-1">{name}</h3>
               <ArrowLeftRight size={14} strokeWidth={2} className="text-zinc-300 shrink-0" />
             </div>
             <div className="px-5 py-4 flex flex-col gap-4">
@@ -184,17 +281,35 @@ export function MaterialFlashcard({
             className="absolute inset-0"
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           >
-            <div className="relative w-full h-full bg-zinc-100">
-              <Image
-                src={backImage}
-                alt={`${productName} — ${name}`}
-                fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-brand-dark/10 to-transparent" />
+            <div className="relative w-full h-full bg-zinc-100 flex flex-col overflow-hidden">
+              <div
+                className={cn(
+                  "grid w-full h-full gap-0.5 bg-white",
+                  backImages.length >= 3 ? "grid-cols-1 lg:grid-cols-2 lg:grid-rows-2" : "grid-cols-1"
+                )}
+              >
+                {backImages.slice(0, 4).map((img, idx) => (
+                  <div
+                    key={idx}
+                    className={cn(
+                      "relative w-full h-full bg-zinc-100",
+                      idx > 0 && "hidden lg:block",
+                      backImages.length === 3 && idx === 0 && "lg:row-span-2"
+                    )}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${productName} — ${name} - ${idx}`}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-brand-dark/10 to-transparent pointer-events-none" />
               <div className="absolute inset-x-0 bottom-0 px-5 py-4 flex items-center gap-2.5">
-                <span className="text-white font-black text-base truncate flex-1">{name}</span>
+                <span className="text-white font-black text-base line-clamp-2 flex-1">{name}</span>
                 <ArrowLeftRight size={14} strokeWidth={2} className="text-white/60 shrink-0" />
               </div>
             </div>
@@ -203,65 +318,170 @@ export function MaterialFlashcard({
       </button>
 
       {/* Footer — foil/double-sided add-ons + Zalo consult, always visible regardless of flip state */}
-      <div className="flex items-center justify-between gap-3 px-5 py-4 border-t border-zinc-100">
-        <div className="flex flex-col gap-2.5">
-          <label className="flex items-center gap-2.5 text-sm font-semibold text-zinc-700 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={foilChecked}
-              onChange={(e) => {
-                setFoilChecked(e.target.checked);
-                clearToastTimeout();
-                setAwaitingZaloOpen(false);
-              }}
-              className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
-            />
-            {foilCheckboxLabel}
-          </label>
-          <label className="flex items-center gap-2.5 text-sm font-semibold text-zinc-700 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={doubleSidedChecked}
-              onChange={(e) => {
-                setDoubleSidedChecked(e.target.checked);
-                clearToastTimeout();
-                setAwaitingZaloOpen(false);
-              }}
-              className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
-            />
-            {doubleSidedCheckboxLabel}
-          </label>
+      <div className="flex flex-col border-t border-zinc-100 bg-zinc-50/30">
+        <div className="flex items-start justify-between gap-3 px-5 py-4">
+          <div className="flex flex-col gap-3 flex-1">
+            {!hideFoilCheckbox && (
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2.5 text-sm font-semibold text-zinc-700 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={foilChecked}
+                    onChange={(e) => {
+                      setFoilChecked(e.target.checked);
+                      clearToastTimeout();
+                      setAwaitingZaloOpen(false);
+                    }}
+                    className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
+                  />
+                  {foilCheckboxLabel}
+                </label>
+                <span className="text-xs font-medium text-brand-primary">
+                  + {(doubleSidedChecked ? foilAddon2Sides : foilAddon1Side).toLocaleString("vi-VN")}đ
+                </span>
+              </div>
+            )}
+            {!hideDoubleSidedCheckbox && (
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2.5 text-sm font-semibold text-zinc-700 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={doubleSidedChecked}
+                    onChange={(e) => {
+                      setDoubleSidedChecked(e.target.checked);
+                      clearToastTimeout();
+                      setAwaitingZaloOpen(false);
+                    }}
+                    className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
+                  />
+                  {doubleSidedCheckboxLabel}
+                </label>
+                <span className="text-xs font-medium text-brand-primary">
+                  + {doubleSidedAddon.toLocaleString("vi-VN")}đ
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div className="relative shrink-0 ml-2">
+            <AnimatePresence>
+              {awaitingZaloOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  role="status"
+                  className="absolute bottom-full right-0 mb-2 w-44 rounded-lg bg-brand-dark px-3 py-2 text-xs leading-snug text-white shadow-lg z-10"
+                >
+                  {t("optionConsultCopiedToast")}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <motion.button
+              type="button"
+              aria-label={awaitingZaloOpen ? t("optionConsultOpenLabel") : t("optionConsultCopyLabel")}
+              onClick={handleConsultClick}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.94 }}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0068ff] shadow-md shadow-[#0068ff]/30"
+            >
+              {awaitingZaloOpen ? (
+                <MessageCircle className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
+              ) : (
+                <Copy className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
+              )}
+            </motion.button>
+          </div>
         </div>
 
-        <div className="relative shrink-0">
-          <AnimatePresence>
-            {awaitingZaloOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 6, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 6, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                role="status"
-                className="absolute bottom-full right-0 mb-2 w-44 rounded-lg bg-brand-dark px-3 py-2 text-xs leading-snug text-white shadow-lg"
+        {/* Optional Pages Row (e.g. for Catalogues) */}
+        {hasPages && (
+          <div className="flex items-center justify-between px-5 py-3 border-t border-zinc-100/60 bg-white">
+            <span className="text-sm font-semibold text-zinc-700">
+              {locale === "vi" ? "Số trang:" : "Pages:"}
+            </span>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center h-8 bg-white border border-zinc-200 rounded-md overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setPages((p) => Math.max(4, p - 4))}
+                  className="w-8 h-full flex items-center justify-center text-zinc-500 hover:bg-zinc-50 hover:text-brand-primary transition-colors"
+                >
+                  <Minus size={14} />
+                </button>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={pages || ""}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "");
+                    setPages(val ? parseInt(val, 10) : 0);
+                  }}
+                  onBlur={() => {
+                    if (pages < 4) setPages(4);
+                    else setPages(Math.round(pages / 4) * 4);
+                  }}
+                  className="w-12 h-full text-center text-sm font-semibold text-zinc-700 bg-transparent focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setPages((p) => p + 4)}
+                  className="w-8 h-full flex items-center justify-center text-zinc-500 hover:bg-zinc-50 hover:text-brand-primary transition-colors"
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
+              <span className="text-sm font-medium text-zinc-500 min-w-10">
+                {locale === "vi" ? "Trang" : "Pages"}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Quantity and Price row */}
+        <div className="flex items-center justify-between px-5 py-3.5 border-t border-zinc-100/60 bg-zinc-50/50">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center h-8 bg-white border border-zinc-200 rounded-md overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                className="w-8 h-full flex items-center justify-center text-zinc-500 hover:bg-zinc-50 hover:text-brand-primary transition-colors"
               >
-                {t("optionConsultCopiedToast")}
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <motion.button
-            type="button"
-            aria-label={awaitingZaloOpen ? t("optionConsultOpenLabel") : t("optionConsultCopyLabel")}
-            onClick={handleConsultClick}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.94 }}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0068ff] shadow-md shadow-[#0068ff]/30"
-          >
-            {awaitingZaloOpen ? (
-              <MessageCircle className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
-            ) : (
-              <Copy className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
-            )}
-          </motion.button>
+                <Minus size={14} />
+              </button>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={quantity || ""}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "");
+                    setQuantity(val ? parseInt(val, 10) : 0);
+                  }}
+                  onBlur={() => {
+                    if (quantity < 1) setQuantity(1);
+                  }}
+                  className="w-12 h-full text-center text-sm font-semibold text-zinc-700 bg-transparent focus:outline-none"
+                />
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => q + 1)}
+                className="w-8 h-full flex items-center justify-center text-zinc-500 hover:bg-zinc-50 hover:text-brand-primary transition-colors"
+              >
+                <Plus size={14} />
+              </button>
+            </div>
+            <span className="text-sm font-medium text-zinc-500">{unitLabel}</span>
+          </div>
+
+          <div className="text-right">
+            <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-0.5">
+              {locale === "vi" ? "Tổng" : "Total"}
+            </div>
+            <div className="text-lg font-black text-brand-primary">
+              {totalPrice.toLocaleString("vi-VN")}đ
+            </div>
+          </div>
         </div>
       </div>
     </div>

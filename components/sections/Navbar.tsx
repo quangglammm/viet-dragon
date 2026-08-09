@@ -11,8 +11,7 @@ import { productCategories, isFastPrint, type ProductCategory, type ProductItem 
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 
-const linkHrefs = ["/products", "/blog", "/#services", "/#about", "/#cta"] as const;
-const linkKeys = ["products", "blog", "services", "about", "contact"] as const;
+
 
 function LocaleSwitcher({
   locale,
@@ -46,53 +45,64 @@ function LocaleSwitcher({
   );
 }
 
-interface NavbarCategoryColumnProps {
-  cat: ProductCategory;
-  locale: Locale;
-  previewItem: ProductItem;
-  onHoverItem: (item: ProductItem) => void;
-}
-
-function NavbarCategoryColumn({
+function DesktopCategoryDropdown({
   cat,
   locale,
-  previewItem,
-  onHoverItem,
-}: Readonly<NavbarCategoryColumnProps>) {
+}: Readonly<{
+  cat: ProductCategory;
+  locale: Locale;
+}>) {
+  const [previewItem, setPreviewItem] = useState<ProductItem>(cat.items[0]);
+
   return (
-    <div className="flex flex-col">
-      <Link
-        href={`/products#${cat.id}`}
-        className="text-xs font-bold uppercase tracking-wider text-brand-primary mb-2.5 pb-1 border-b border-zinc-100 hover:text-brand-dark transition-colors"
-      >
-        {pickLocale(locale, cat.nameVi, cat.nameEn)}
-      </Link>
-      <ul className="flex flex-col gap-1.5">
+    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[600px] bg-white rounded-2xl shadow-2xl border border-zinc-100 p-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-50 flex gap-5 text-zinc-800">
+      {/* Left side: Preview card */}
+      <div className="w-1/2 bg-zinc-50 border border-zinc-100 rounded-xl p-3 text-center flex flex-col items-center justify-start shadow-sm">
+        <div className="w-full">
+          <div className="relative w-full h-40 rounded-lg overflow-hidden mb-3 bg-white shadow-xs">
+            <Image
+              src={previewItem.image}
+              alt={pickLocale(locale, previewItem.nameVi, previewItem.nameEn)}
+              fill
+              sizes="240px"
+              className="object-cover"
+            />
+          </div>
+          <h4 className="text-[13px] font-bold text-brand-primary uppercase tracking-wide leading-snug">
+            {pickLocale(locale, previewItem.nameVi, previewItem.nameEn)}
+          </h4>
+          <p className="text-[12px] text-zinc-500 italic mt-1.5 leading-relaxed line-clamp-2">
+            {pickLocale(locale, previewItem.descriptionVi, previewItem.description)}
+          </p>
+        </div>
+      </div>
+
+      {/* Right side: List of items */}
+      <div className="w-1/2 flex flex-col gap-1">
         {cat.items.map((item) => {
           const isHovered = previewItem.id === item.id;
           return (
-            <li key={item.id}>
-              <Link
-                href={`/products/${cat.id}/${item.id}`}
-                onMouseEnter={() => onHoverItem(item)}
-                className={cn(
-                  "inline-flex items-center gap-1.5 text-xs py-0.5 rounded transition-all",
-                  isHovered
-                    ? "text-brand-primary font-bold translate-x-0.5"
-                    : "text-zinc-600 hover:text-brand-primary hover:font-medium"
-                )}
-              >
-                <span>{pickLocale(locale, item.nameVi, item.nameEn)}</span>
-                {isFastPrint(item.id) && (
-                  <span className="px-1.5 py-0.5 text-[9px] font-bold text-white bg-amber-500 rounded leading-none shadow-xs shrink-0">
-                    {locale === "vi" ? "in nhanh" : "fast"}
-                  </span>
-                )}
-              </Link>
-            </li>
+            <Link
+              key={item.id}
+              href={`/products/${cat.id}/${item.id}`}
+              onMouseEnter={() => setPreviewItem(item)}
+              className={cn(
+                "px-3 py-2.5 text-[14px] font-medium rounded-lg transition-colors flex items-center justify-between",
+                isHovered
+                  ? "bg-brand-soft text-brand-primary"
+                  : "text-zinc-600 hover:text-brand-primary hover:bg-zinc-50"
+              )}
+            >
+              <span>{pickLocale(locale, item.nameVi, item.nameEn)}</span>
+              {isFastPrint(item.id) && (
+                <span className="px-1.5 py-0.5 text-[10px] font-bold text-white bg-amber-500 rounded leading-none shadow-xs shrink-0 ml-2">
+                  {locale === "vi" ? "in nhanh" : "fast"}
+                </span>
+              )}
+            </Link>
           );
         })}
-      </ul>
+      </div>
     </div>
   );
 }
@@ -100,17 +110,13 @@ function NavbarCategoryColumn({
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [productsOpen, setProductsOpen] = useState(false);
-  const [previewItem, setPreviewItem] = useState(productCategories[0].items[0]);
+  const [openMobileCat, setOpenMobileCat] = useState<string | null>(null);
   const t = useTranslations("nav");
   const tContact = useTranslations("contact");
   const locale = useLocale() as Locale;
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleHoverItem = (item: ProductItem) => {
-    setPreviewItem(item);
-  };
 
   // Template's header-1.style-3 sits transparent/white-text over the hero and only
   // turns solid on scroll — only the homepage has a hero behind it to be transparent
@@ -145,7 +151,7 @@ export default function Navbar() {
   // down — scroll to top explicitly in that case.
   const closeAllMenu = () => {
     setMenuOpen(false);
-    setProductsOpen(false);
+    setOpenMobileCat(null);
   };
 
   const handleBrandClick = () => {
@@ -205,79 +211,24 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden lg:flex items-center gap-1">
-            {linkHrefs.map((href, i) => {
-              const isProducts = href === "/products";
-              if (isProducts) {
-                return (
-                  <div key={href} className="group py-2">
-                    <Link
-                      href={href}
-                      className={cn(
-                        "px-4 py-2 text-sm font-medium rounded-full inline-flex items-center gap-1 transition-colors duration-300",
-                        transparent
-                          ? "text-white/90 hover:text-white hover:bg-white/10"
-                          : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
-                      )}
-                    >
-                      {t(`links.${linkKeys[i]}`)}
-                    </Link>
-
-                    {/* Desktop Mega Menu Dropdown (Sample Image 2 Style) */}
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[940px] max-w-[90vw] bg-white rounded-2xl shadow-2xl border border-zinc-100 p-6 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-50 text-zinc-800 flex gap-6">
-                      {/* Left side: Dynamic Preview Card */}
-                      <div className="w-64 shrink-0 bg-zinc-100/90 border border-zinc-200/60 rounded-2xl p-4 text-center flex flex-col items-center justify-start shadow-xs">
-                        <div className="w-full">
-                          <div className="relative w-full h-44 rounded-xl overflow-hidden mb-3.5 bg-white shadow-xs">
-                            <Image
-                              src={previewItem.image}
-                              alt={pickLocale(locale, previewItem.nameVi, previewItem.nameEn)}
-                              fill
-                              sizes="256px"
-                              className="object-cover"
-                            />
-                          </div>
-                          <h4 className="text-xs font-bold text-brand-primary uppercase tracking-wide leading-snug">
-                            {pickLocale(locale, previewItem.nameVi, previewItem.nameEn)}
-                          </h4>
-                          <p className="text-[11px] text-zinc-500 italic mt-1 leading-relaxed line-clamp-2">
-                            {pickLocale(locale, previewItem.descriptionVi, previewItem.description)}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Right side: Multi-column Categories */}
-                      <div className="grid grid-cols-4 gap-5 flex-1 pl-1">
-                        {productCategories.map((cat) => (
-                          <NavbarCategoryColumn
-                            key={cat.id}
-                            cat={cat}
-                            locale={locale}
-                            previewItem={previewItem}
-                            onHoverItem={handleHoverItem}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
-
-              return (
+          <div className="hidden lg:flex items-center justify-center flex-1 gap-4 xl:gap-8 px-4">
+            {productCategories.map((cat) => (
+              <div key={cat.id} className="group py-2 relative">
                 <Link
-                  key={href}
-                  href={href}
+                  href={`/products#${cat.id}`}
                   className={cn(
-                    "px-4 py-2 text-sm font-medium rounded-full transition-colors duration-300",
+                    "py-2 text-[13px] xl:text-sm font-bold uppercase tracking-wider transition-colors duration-300",
                     transparent
-                      ? "text-white/90 hover:text-white hover:bg-white/10"
-                      : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
+                      ? "text-white/90 hover:text-white"
+                      : "text-zinc-800 hover:text-brand-primary"
                   )}
                 >
-                  {t(`links.${linkKeys[i]}`)}
+                  {pickLocale(locale, cat.nameVi, cat.nameEn)}
                 </Link>
-              );
-            })}
+
+                <DesktopCategoryDropdown cat={cat} locale={locale} />
+              </div>
+            ))}
           </div>
 
           <div className="flex items-center gap-3">
@@ -317,76 +268,49 @@ export default function Navbar() {
           menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}
       >
-        <nav className="flex flex-col px-6 py-8 gap-1 flex-1 overflow-y-auto">
-          {linkHrefs.map((href, i) => {
-            const isProducts = href === "/products";
-            if (isProducts) {
-              return (
-                <div key={href} className="flex flex-col">
-                  <div className="flex items-center gap-1 rounded-2xl hover:bg-zinc-50 transition-colors">
-                    <Link
-                      href={href}
-                      onClick={closeAllMenu}
-                      className="pl-4 py-3.5 text-xl font-semibold text-zinc-800"
-                    >
-                      {t(`links.${linkKeys[i]}`)}
-                    </Link>
-                    <button
-                      onClick={() => setProductsOpen((o) => !o)}
-                      aria-label="Toggle subcategories"
-                      className="p-2 text-zinc-600 hover:text-brand-primary transition-colors"
-                    >
-                      <ChevronDown
-                        size={22}
-                        className={cn("transition-transform duration-200", productsOpen && "rotate-180")}
-                      />
-                    </button>
-                  </div>
+        <nav className="flex flex-col px-6 py-8 gap-2 flex-1 overflow-y-auto">
+          {productCategories.map((cat) => (
+            <div key={cat.id} className="flex flex-col">
+              <div className="flex items-center justify-between rounded-2xl hover:bg-zinc-50 transition-colors">
+                <Link
+                  href={`/products#${cat.id}`}
+                  onClick={closeAllMenu}
+                  className="pl-4 py-3.5 text-xl font-semibold text-zinc-800 flex-1"
+                >
+                  {pickLocale(locale, cat.nameVi, cat.nameEn)}
+                </Link>
+                <button
+                  onClick={() => setOpenMobileCat((current) => current === cat.id ? null : cat.id)}
+                  aria-label="Toggle subcategories"
+                  className="p-4 -mr-2 text-zinc-600 hover:text-brand-primary transition-colors"
+                >
+                  <ChevronDown
+                    size={22}
+                    className={cn("transition-transform duration-200", openMobileCat === cat.id && "rotate-180")}
+                  />
+                </button>
+              </div>
 
-                  {/* Mobile Accordion Subcategories */}
-                  {productsOpen && (
-                    <div className="pl-6 pr-4 py-2 flex flex-col gap-4 border-l-2 border-brand-primary/20 ml-4 my-1">
-                      {productCategories.map((cat) => (
-                        <div key={cat.id} className="flex flex-col gap-1.5">
-                          <Link
-                            href={`/products#${cat.id}`}
-                            onClick={closeAllMenu}
-                            className="text-xs font-bold uppercase tracking-wider text-brand-primary"
-                          >
-                            {pickLocale(locale, cat.nameVi, cat.nameEn)}
-                          </Link>
-                          <ul className="flex flex-col gap-1 pl-2">
-                            {cat.items.map((item) => (
-                              <li key={item.id}>
-                                <Link
-                                  href={`/products/${cat.id}/${item.id}`}
-                                  onClick={closeAllMenu}
-                                  className="block py-1.5 text-sm font-medium text-zinc-700 hover:text-brand-primary"
-                                >
-                                  {pickLocale(locale, item.nameVi, item.nameEn)}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+              {/* Mobile Accordion Subcategories */}
+              {openMobileCat === cat.id && (
+                <div className="pl-6 pr-4 py-2 flex flex-col gap-2 border-l-2 border-brand-primary/20 ml-4 my-1">
+                  <ul className="flex flex-col gap-1">
+                    {cat.items.map((item) => (
+                      <li key={item.id}>
+                        <Link
+                          href={`/products/${cat.id}/${item.id}`}
+                          onClick={closeAllMenu}
+                          className="block py-2 text-base font-medium text-zinc-700 hover:text-brand-primary transition-colors"
+                        >
+                          {pickLocale(locale, item.nameVi, item.nameEn)}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              );
-            }
-
-            return (
-              <Link
-                key={href}
-                href={href}
-                onClick={closeAllMenu}
-                className="px-4 py-3.5 text-xl font-semibold text-zinc-800 rounded-2xl hover:bg-zinc-50 transition-colors"
-              >
-                {t(`links.${linkKeys[i]}`)}
-              </Link>
-            );
-          })}
+              )}
+            </div>
+          ))}
         </nav>
 
         <div className="px-6 pb-10">
