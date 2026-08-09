@@ -11,6 +11,9 @@ import { IconBadge } from "@/components/ui/icon-badge";
 const usefulLinkHrefs = ["/#about", "/#services", "/#process", "/#testimonials", "/#faq"] as const;
 const usefulLinkKeys = ["about", "services", "process", "testimonials", "faq"] as const;
 
+const companyLinkHrefs = ["/blog", "/#services", "/#about", "/#cta"] as const;
+const companyLinkKeys = ["blog", "services", "about", "contact"] as const;
+
 // lucide-react dropped brand/social marks — minimal inline glyphs instead.
 function FacebookIcon({ size = 15 }: Readonly<{ size?: number }>) {
   return (
@@ -43,13 +46,14 @@ const socialLinks = [
 
 export default function Footer() {
   const t = useTranslations("footer");
+  const tNav = useTranslations("nav");
   const tContact = useTranslations("contact");
   const locale = useLocale() as Locale;
 
   return (
     <footer className="bg-brand-soft text-brand-dark">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
             <p className="text-2xl font-black tracking-tight mb-4">
@@ -87,6 +91,25 @@ export default function Footer() {
                     className="inline-block text-sm text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 transition-all duration-200 py-1 font-medium"
                   >
                     {pickLocale(locale, cat.nameVi, cat.nameEn)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Company links */}
+          <div>
+            <p className="text-xs font-semibold tracking-widest uppercase text-brand-dark/40 mb-4">
+              {t("companyLabel")}
+            </p>
+            <ul className="flex flex-col gap-2">
+              {companyLinkHrefs.map((href, i) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="inline-block text-sm text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 transition-all duration-200 py-1 font-medium"
+                  >
+                    {tNav(`links.${companyLinkKeys[i]}`)}
                   </Link>
                 </li>
               ))}

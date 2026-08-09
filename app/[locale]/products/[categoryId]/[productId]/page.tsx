@@ -74,15 +74,17 @@ export default async function ProductDetailPage({
       {/* ── Product panel ── */}
       <div className="max-w-7xl mx-auto px-6 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
-          <div className="relative aspect-square lg:aspect-[4/5] rounded-2xl border border-zinc-100 overflow-hidden bg-zinc-100 lg:sticky lg:top-28">
-            <Image
-              src={item.image}
-              alt={name}
-              fill
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-              preload
-            />
+          <div className="aspect-square lg:aspect-[4/5] rounded-2xl border border-zinc-100 overflow-hidden bg-zinc-100 lg:sticky lg:top-28">
+            <div className="relative w-full h-full">
+              <Image
+                src={item.image}
+                alt={name}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover"
+                preload
+              />
+            </div>
           </div>
 
           <div className="flex flex-col gap-6">
@@ -122,6 +124,8 @@ export default async function ProductDetailPage({
                           backToDetailsHint={t("optionBackToDetailsHint")}
                           foilCheckboxLabel={t("optionFoilCheckboxLabel")}
                           doubleSidedCheckboxLabel={t("optionDoubleSidedCheckboxLabel")}
+                          hideFoilCheckbox={opt.hideFoilCheckbox ?? item.hideFoilCheckbox}
+                          hideDoubleSidedCheckbox={opt.hideDoubleSidedCheckbox ?? item.hideDoubleSidedCheckbox}
                         />
                       </div>
                     ))}

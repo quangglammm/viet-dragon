@@ -33,12 +33,25 @@ export interface ProductOption {
    */
   image?: string;
   /**
+   * Optional array of photos for the flashcard's flip-to-reveal back face.
+   * If provided, will be displayed as a grid on desktop.
+   */
+  images?: string[];
+  /**
    * Photo of the same stock with no foil accent — shown on the back face when
    * the "Ép kim" (foil stamping) checkbox is unchecked. The foil/double-sided
    * checkboxes are offered on every flashcard regardless of this field; when
    * omitted, checking foil has no back-face image swap and `image` is shown as-is.
    */
   pureImage?: string;
+  /**
+   * Array of photos for the pure stock (no foil).
+   */
+  pureImages?: string[];
+  /** If true, overrides the product-level hideFoilCheckbox setting */
+  hideFoilCheckbox?: boolean;
+  /** If true, overrides the product-level hideDoubleSidedCheckbox setting */
+  hideDoubleSidedCheckbox?: boolean;
 }
 
 /** A row of option flashcards (e.g. the paper-stock choices for a product). */
@@ -53,9 +66,14 @@ export interface ProductItem {
   /** English description */
   description: string;
   descriptionVi: string;
-  /** Local product photo path, e.g. /images/product/vd-item-card.jpeg */
   image: string;
-  /** Optional flashcard groups — reserve this for capability dimensions worth a real use-case summary. */
+  images?: string[];
+  pureImage?: string;
+  pureImages?: string[];
+  /** If true, the "Foil Stamping" (Ép kim) checkbox is hidden for all materials of this product */
+  hideFoilCheckbox?: boolean;
+  /** If true, the "Double Sided" (In 2 mặt) checkbox is hidden for all materials of this product */
+  hideDoubleSidedCheckbox?: boolean;
   optionGroups?: ProductOptionGroup[];
 }
 
@@ -88,10 +106,15 @@ export const productCategories: ProductCategory[] = [
       {
         id: "card",
         nameEn: "Card",
-        nameVi: "Danh thiếp / Thẻ",
+        nameVi: "Danh\u00A0thiếp / Thẻ",
         description: "Business cards, membership and loyalty cards.",
         descriptionVi: "Danh thiếp, thẻ thành viên và thẻ tích điểm.",
         image: "/images/product/vd-item-card.jpeg",
+        images: [
+          "/images/product/vd-item-card.jpeg",
+          "/images/product/vd-item-card.jpeg",
+          "/images/product/vd-item-card.jpeg",
+        ],
         optionGroups: [
           {
             options: [
@@ -122,8 +145,18 @@ export const productCategories: ProductCategory[] = [
                   "Thương hiệu nhà hàng, khách sạn, sự kiện sang trọng",
                   "Logo hoặc monogram cần bắt sáng, gây ấn tượng",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-4.webp",
+                pureImages: [
+                  "/images/product/card-c300-4.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -152,8 +185,18 @@ export const productCategories: ProductCategory[] = [
                   "Thương hiệu cao cấp muốn vẻ ngoài tinh tế, không phô trương",
                   "Thiết kế kết hợp chi tiết ép kim tinh giản trên nền giấy tự nhiên",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil5.webp",
+                  "/images/product/card-f300-foil4.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Palette",
@@ -182,8 +225,18 @@ export const productCategories: ProductCategory[] = [
                   "Lãnh đạo doanh nghiệp muốn danh thiếp tạo ấn tượng xúc giác khác biệt",
                   "Thiết kế tối giản lấy chính vân giấy làm điểm nhấn chủ đạo",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-art-foil1.webp",
+                images: [
+                  "/images/product/card-art-foil1.webp",
+                  "/images/product/card-art-foil4.webp",
+                  "/images/product/card-art-foil3.webp",
+                ],
+                pureImage: "/images/product/card-art1.webp",
+                pureImages: [
+                  "/images/product/card-art1.webp",
+                  "/images/product/card-art2.webp",
+                  "/images/product/card-art3.webp",
+                ],
               },
               {
                 icon: "PenLine",
@@ -212,8 +265,13 @@ export const productCategories: ProductCategory[] = [
                   "Startup hoặc freelancer cần in số lượng ít, tiết kiệm chi phí",
                   "In thử nhiều mẫu thiết kế trước khi đặt sản xuất offset hàng loạt",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-digital1.webp",
+                images: [
+                  "/images/product/card-digital1.webp",
+                  "/images/product/card-digital2.webp",
+                  "/images/product/card-digital3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
               {
                 icon: "Sparkles",
@@ -242,8 +300,13 @@ export const productCategories: ProductCategory[] = [
                   "Thẻ thành viên VIP và thiệp mời sự kiện thượng lưu",
                   "Doanh nghiệp hướng tới phong cách sang trọng, tinh tế và rực rỡ",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-pearl1.webp",
+                images: [
+                  "/images/product/card-pearl1.webp",
+                  "/images/product/card-pearl2.webp",
+                  "/images/product/card-pearl3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
               {
                 icon: "ShieldCheck",
@@ -272,8 +335,13 @@ export const productCategories: ProductCategory[] = [
                   "Thẻ thành viên dài hạn, thẻ VIP hoặc thẻ bảo hành cao cấp",
                   "Khách hàng muốn sở hữu tấm thẻ độc đáo, không bao giờ bị hỏng",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-plastic1.webp",
+                images: [
+                  "/images/product/card-plastic1.webp",
+                  "/images/product/card-plastic2.webp",
+                  "/images/product/card-plastic3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
               {
                 icon: "Layers",
@@ -302,8 +370,18 @@ export const productCategories: ProductCategory[] = [
                   "Công ty kiến trúc, thời trang và thiết kế nội thất hạng sang",
                   "Danh thiếp tạo điểm nhấn xúc giác mạnh mẽ, khó quên khi trao tay",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
               },
             ],
           },
@@ -316,6 +394,11 @@ export const productCategories: ProductCategory[] = [
         description: "Presentation folders for proposals and press kits.",
         descriptionVi: "Bìa hồ sơ dùng cho bản đề xuất và tài liệu báo chí.",
         image: "/images/product/vd-item-folder.jpeg",
+        images: [
+          "/images/product/vd-item-folder.jpeg",
+          "/images/product/vd-item-folder.jpeg",
+          "/images/product/vd-item-folder.jpeg",
+        ],
         optionGroups: [
           {
             options: [
@@ -346,8 +429,18 @@ export const productCategories: ProductCategory[] = [
                   "Bộ tài liệu kinh doanh, sales kit ngành bất động sản, tài chính, ô tô",
                   "Bộ press kit họp báo, sự kiện ra mắt sản phẩm tích hợp khe cài danh thiếp",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-item-folder-c300-foil1.webp",
+                images: [
+                  "/images/product/card-item-folder-c300-foil1.webp",
+                  "/images/product/card-item-folder-c300-foil4.webp",
+                  "/images/product/card-item-folder-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-item-folder-c300-4.webp",
+                pureImages: [
+                  "/images/product/card-item-folder-c300-4.webp",
+                  "/images/product/card-item-folder-c300-5.webp",
+                  "/images/product/card-item-folder-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -376,8 +469,18 @@ export const productCategories: ProductCategory[] = [
                   "Doanh nghiệp hướng đến thẩm mỹ thanh lịch, mộc mạc và bền vững",
                   "Kẹp tài liệu nội bộ cấp cao và bộ hợp đồng khách hàng",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-item-folder-ford300-foil1.webp",
+                images: [
+                  "/images/product/card-item-folder-ford300-foil1.webp",
+                  "/images/product/card-item-folder-ford300-foil2.webp",
+                  "/images/product/card-item-folder-ford300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-item-folder-ford300-4.webp",
+                pureImages: [
+                  "/images/product/card-item-folder-ford300-4.webp",
+                  "/images/product/card-item-folder-ford300-5.webp",
+                  "/images/product/card-item-folder-ford300-6.webp",
+                ],
               },
               {
                 icon: "Palette",
@@ -406,7 +509,18 @@ export const productCategories: ProductCategory[] = [
                   "Dự án bất động sản hạng sang, bộ tài liệu dịch vụ ngân hàng riêng (VIP)",
                   "Bộ hồ sơ gửi đối tác cấp cao, nhà đầu tư chiến lược",
                 ],
-                image: "/images/product/vd-item-folder.jpeg",
+                image: "/images/product/item-folder-art-foil1.webp",
+                images: [
+                  "/images/product/item-folder-art-foil1.webp",
+                  "/images/product/item-folder-art-foil2.webp",
+                  "/images/product/item-folder-art-foil3.webp",
+                ],
+                pureImage: "/images/product/item-folder-art1.webp",
+                pureImages: [
+                  "/images/product/item-folder-art1.webp",
+                  "/images/product/item-folder-art2.webp",
+                  "/images/product/item-folder-art3.webp",
+                ],
               },
               {
                 icon: "Briefcase",
@@ -435,7 +549,18 @@ export const productCategories: ProductCategory[] = [
                   "Bộ tài liệu huấn luyện, hướng dẫn hội nhập nhân sự toàn diện",
                   "Bộ sales kit tổng hợp bao gồm catalogue, bảng giá, tờ rơi và danh thiếp",
                 ],
-                image: "/images/product/vd-item-folder.jpeg",
+                image: "/images/product/item-folder-double-pocket-foil1.webp",
+                images: [
+                  "/images/product/item-folder-double-pocket-foil1.webp",
+                  "/images/product/item-folder-double-pocket-foil2.webp",
+                  "/images/product/item-folder-double-pocket-foil3.webp",
+                ],
+                pureImage: "/images/product/item-folder-double-pocket1.webp",
+                pureImages: [
+                  "/images/product/item-folder-double-pocket1.webp",
+                  "/images/product/item-folder-double-pocket2.webp",
+                  "/images/product/item-folder-double-pocket3.webp",
+                ],
               },
               {
                 icon: "Sparkles",
@@ -464,7 +589,19 @@ export const productCategories: ProductCategory[] = [
                   "Lễ ký kết hợp đồng quan trọng của lãnh đạo cấp cao với đối tác chiến lược",
                   "Doanh nghiệp chú trọng xây dựng hình ảnh thương hiệu đa giác quan, đẳng cấp",
                 ],
-                image: "/images/product/vd-item-folder.jpeg",
+                image: "/images/product/item-folder-UV-foil1.webp",
+                images: [
+                  "/images/product/item-folder-UV-foil1.webp",
+                  "/images/product/item-folder-UV-foil2.webp",
+                  "/images/product/item-folder-UV-foil3.webp",
+                ],
+                pureImage: "/images/product/item-folder-UV4.webp",
+                pureImages: [
+                  "/images/product/item-folder-UV4.webp",
+                  "/images/product/item-folder-UV2.webp",
+                  "/images/product/item-folder-UV3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -477,6 +614,11 @@ export const productCategories: ProductCategory[] = [
         description: "Multi-page product showcases.",
         descriptionVi: "Ấn phẩm nhiều trang giới thiệu sản phẩm.",
         image: "/images/product/vd-item-catalogue.jpeg",
+        images: [
+          "/images/product/vd-item-catalogue.jpeg",
+          "/images/product/vd-item-catalogue.jpeg",
+          "/images/product/vd-item-catalogue.jpeg",
+        ],
         optionGroups: [
           {
             options: [
@@ -507,8 +649,18 @@ export const productCategories: ProductCategory[] = [
                   "Menu giới thiệu món ăn nhà hàng, bảng dịch vụ spa & thẩm mỹ viện",
                   "Tài liệu hướng dẫn sử dụng sản phẩm đi kèm thiết bị cao cấp",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/cotalogue-saddle-foil1.webp",
+                images: [
+                  "/images/product/cotalogue-saddle-foil1.webp",
+                  "/images/product/cotalogue-saddle-foil2.webp",
+                  "/images/product/cotalogue-saddle-foil3.webp",
+                ],
+                pureImage: "/images/product/cotalogue-saddle-1.webp",
+                pureImages: [
+                  "/images/product/cotalogue-saddle-1.webp",
+                  "/images/product/cotalogue-saddle-2.webp",
+                  "/images/product/cotalogue-saddle-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -537,8 +689,18 @@ export const productCategories: ProductCategory[] = [
                   "Kỷ yếu triển lãm nghệ thuật và các ấn phẩm học thuật cao cấp",
                   "Thương hiệu tối giản chú trọng trải nghiệm đọc tự nhiên, thân thiện",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Award",
@@ -568,6 +730,11 @@ export const productCategories: ProductCategory[] = [
                   "Tạp chí thương hiệu cao cấp, cẩm nang du lịch & thiết kế nội thất",
                 ],
                 image: "/images/product/vd-item-catalogue.jpeg",
+                images: [
+                  "/images/product/vd-item-catalogue.jpeg",
+                  "/images/product/vd-item-catalogue.jpeg",
+                  "/images/product/vd-item-catalogue.jpeg",
+                ],
               },
               {
                 icon: "StickyNote",
@@ -597,6 +764,11 @@ export const productCategories: ProductCategory[] = [
                   "Sổ tay bán hàng (Sales Flipbook) dành cho nhân viên kinh doanh thực địa",
                 ],
                 image: "/images/product/vd-item-catalogue.jpeg",
+                images: [
+                  "/images/product/vd-item-catalogue.jpeg",
+                  "/images/product/vd-item-catalogue.jpeg",
+                  "/images/product/vd-item-catalogue.jpeg",
+                ],
               },
               {
                 icon: "Gem",
@@ -625,7 +797,19 @@ export const productCategories: ProductCategory[] = [
                   "Sách kỷ niệm 10 - 20 - 50 năm thành lập doanh nghiệp, tập đoàn",
                   "Bộ catalogue trưng bày vĩnh cửu tại showroom và phòng tiếp khách VIP",
                 ],
-                image: "/images/product/vd-item-catalogue.jpeg",
+                image: "/images/product/card-art-foil1.webp",
+                images: [
+                  "/images/product/card-art-foil1.webp",
+                  "/images/product/card-art-foil2.webp",
+                  "/images/product/card-art-foil3.webp",
+                ],
+                pureImage: "/images/product/card-art1.webp",
+                pureImages: [
+                  "/images/product/card-art1.webp",
+                  "/images/product/card-art2.webp",
+                  "/images/product/card-art3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -638,6 +822,11 @@ export const productCategories: ProductCategory[] = [
         description: "Folded single-piece company or product introduction.",
         descriptionVi: "Tờ gấp giới thiệu công ty hoặc sản phẩm.",
         image: "/images/product/vd-item-brochure.jpeg",
+        images: [
+          "/images/product/vd-item-brochure.jpeg",
+          "/images/product/vd-item-brochure.jpeg",
+          "/images/product/vd-item-brochure.jpeg",
+        ],
         optionGroups: [
           {
             options: [
@@ -668,8 +857,18 @@ export const productCategories: ProductCategory[] = [
                   "Tài liệu phát tại triển lãm, hội chợ thương mại, quầy lễ tân showroom",
                   "Brochure dịch vụ y tế, lịch trình du lịch, danh sách dịch vụ khách sạn",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -698,8 +897,18 @@ export const productCategories: ProductCategory[] = [
                   "Khu nghỉ dưỡng boutique, dịch vụ sức khỏe và du lịch sinh thái",
                   "Các thương hiệu tối giản chú trọng thẩm mỹ mộc mạc, tự nhiên",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Award",
@@ -729,6 +938,11 @@ export const productCategories: ProductCategory[] = [
                   "Brochure cao cấp giới thiệu chuỗi nhà hàng, khách sạn 5 sao",
                 ],
                 image: "/images/product/vd-item-brochure.jpeg",
+                images: [
+                  "/images/product/vd-item-brochure.jpeg",
+                  "/images/product/vd-item-brochure.jpeg",
+                  "/images/product/vd-item-brochure.jpeg",
+                ],
               },
               {
                 icon: "PenLine",
@@ -757,7 +971,13 @@ export const productCategories: ProductCategory[] = [
                   "Doanh nghiệp kiểm tra mẫu thực tế trước khi in sản xuất offset hàng loạt",
                   "Các chương trình ưu đãi ngắn ngày, sự kiện popup store thương mại",
                 ],
-                image: "/images/product/vd-item-brochure.jpeg",
+                image: "/images/product/card-digital1.webp",
+                images: [
+                  "/images/product/card-digital1.webp",
+                  "/images/product/card-digital2.webp",
+                  "/images/product/card-digital3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
               {
                 icon: "Sparkles",
@@ -786,7 +1006,19 @@ export const productCategories: ProductCategory[] = [
                   "Tờ gấp mời sự kiện ra mắt sản phẩm cao cấp (VIP Launching)",
                   "Các thương hiệu muốn khẳng định sự độc bản, phá cách trong truyền thông",
                 ],
-                image: "/images/product/vd-item-brochure.jpeg",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -812,6 +1044,11 @@ export const productCategories: ProductCategory[] = [
         description: "Desk and wall calendars.",
         descriptionVi: "Lịch để bàn và lịch treo tường.",
         image: "/images/product/vd-item-calendar.jpeg",
+        images: [
+          "/images/product/vd-item-calendar.jpeg",
+          "/images/product/vd-item-calendar.jpeg",
+          "/images/product/vd-item-calendar.jpeg",
+        ],
         optionGroups: [
           {
             options: [
@@ -842,8 +1079,18 @@ export const productCategories: ProductCategory[] = [
                   "Tăng độ nhận diện thương hiệu suốt 365 ngày trên bàn làm việc",
                   "Quà tặng nhân viên và ấn phẩm văn phòng nội bộ doanh nghiệp",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -872,8 +1119,18 @@ export const productCategories: ProductCategory[] = [
                   "Trường học, văn phòng luật sư và các tổ chức tư vấn chuyên nghiệp",
                   "Doanh nghiệp ưu tiên trải nghiệm tiện dụng, không bóng chói",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Award",
@@ -903,6 +1160,11 @@ export const productCategories: ProductCategory[] = [
                   "Trang trí và truyền thông thương hiệu tại khu vực lễ tân, phòng khách",
                 ],
                 image: "/images/product/vd-item-calendar.jpeg",
+                images: [
+                  "/images/product/vd-item-calendar.jpeg",
+                  "/images/product/vd-item-calendar.jpeg",
+                  "/images/product/vd-item-calendar.jpeg",
+                ],
               },
               {
                 icon: "Palette",
@@ -931,7 +1193,18 @@ export const productCategories: ProductCategory[] = [
                   "Gallery nghệ thuật, bảo tàng và các studio thiết kế danh tiếng",
                   "Ấn phẩm kỷ niệm thành lập doanh nghiệp phiên bản giới hạn",
                 ],
-                image: "/images/product/vd-item-calendar.jpeg",
+                image: "/images/product/card-art-foil1.webp",
+                images: [
+                  "/images/product/card-art-foil1.webp",
+                  "/images/product/card-art-foil2.webp",
+                  "/images/product/card-art-foil3.webp",
+                ],
+                pureImage: "/images/product/card-art1.webp",
+                pureImages: [
+                  "/images/product/card-art1.webp",
+                  "/images/product/card-art2.webp",
+                  "/images/product/card-art3.webp",
+                ],
               },
               {
                 icon: "Sparkles",
@@ -960,7 +1233,19 @@ export const productCategories: ProductCategory[] = [
                   "Tập đoàn khách sạn, ẩm thực cao cấp và thương hiệu thời trang",
                   "Doanh nghiệp muốn khẳng định vị thế và uy tín thương hiệu suốt cả năm",
                 ],
-                image: "/images/product/vd-item-calendar.jpeg",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -973,6 +1258,11 @@ export const productCategories: ProductCategory[] = [
         description: "Restaurant and café menus.",
         descriptionVi: "Menu nhà hàng và quán cà phê.",
         image: "/images/product/vd-item-menu.jpeg",
+        images: [
+          "/images/product/vd-item-menu.jpeg",
+          "/images/product/vd-item-menu.jpeg",
+          "/images/product/vd-item-menu.jpeg",
+        ],
         optionGroups: [
           {
             options: [
@@ -1003,8 +1293,18 @@ export const productCategories: ProductCategory[] = [
                   "Menu rượu vang, thực đơn cocktail và danh sách món tráng miệng",
                   "Các cơ sở ẩm thực cần menu trưng bày tại bàn lâu dài, dễ vệ sinh",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -1033,8 +1333,18 @@ export const productCategories: ProductCategory[] = [
                   "Thực đơn theo mùa hoặc danh sách món đặc biệt hằng ngày của Bếp trưởng",
                   "Quán cafe tối giản chú trọng không gian mộc mạc, tĩnh lặng",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "ShieldCheck",
@@ -1063,7 +1373,13 @@ export const productCategories: ProductCategory[] = [
                   "Quán bia ngoài trời, bar thể thao và chuỗi cafe đông khách",
                   "Đầu tư menu sử dụng dài hạn, loại bỏ chi phí in lại do thấm nước hư hỏng",
                 ],
-                image: "/images/product/vd-item-menu.jpeg",
+                image: "/images/product/card-plastic1.webp",
+                images: [
+                  "/images/product/card-plastic1.webp",
+                  "/images/product/card-plastic2.webp",
+                  "/images/product/card-plastic3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
               {
                 icon: "StickyNote",
@@ -1093,6 +1409,11 @@ export const productCategories: ProductCategory[] = [
                   "Quán cafe cần quy cách menu linh hoạt, dễ dàng cập nhật từng trang",
                 ],
                 image: "/images/product/vd-item-menu.jpeg",
+                images: [
+                  "/images/product/vd-item-menu.jpeg",
+                  "/images/product/vd-item-menu.jpeg",
+                  "/images/product/vd-item-menu.jpeg",
+                ],
               },
               {
                 icon: "Sparkles",
@@ -1121,7 +1442,19 @@ export const productCategories: ProductCategory[] = [
                   "Menu phục vụ tại phòng (Room Service) trong các khách sạn, resort cao cấp",
                   "Thực đơn đặc biệt dịp lễ (Valentine, Giáng Sinh, Tiệc Tết Nguyên Đán)",
                 ],
-                image: "/images/product/vd-item-menu.jpeg",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -1134,6 +1467,11 @@ export const productCategories: ProductCategory[] = [
         description: "Note pads and sticky notes.",
         descriptionVi: "Sổ note và giấy ghi chú.",
         image: "/images/product/vd-item-notepad.jpeg",
+        images: [
+          "/images/product/vd-item-notepad.jpeg",
+          "/images/product/vd-item-notepad.jpeg",
+          "/images/product/vd-item-notepad.jpeg",
+        ],
         optionGroups: [
           {
             options: [
@@ -1164,8 +1502,18 @@ export const productCategories: ProductCategory[] = [
                   "Quà tặng hội nghị, hội thảo, triển lãm thương mại cho khách mời",
                   "Sổ ghi chú tại phòng khách sạn và quầy lễ tân doanh nghiệp",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Layers",
@@ -1194,8 +1542,18 @@ export const productCategories: ProductCategory[] = [
                   "Bộ tài liệu học tập của trung tâm đào tạo, lớp huấn luyện nội bộ",
                   "Quà tặng sự kiện, kỷ niệm thành lập doanh nghiệp kèm bút ký",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "StickyNote",
@@ -1224,7 +1582,18 @@ export const productCategories: ProductCategory[] = [
                   "Quà tặng cao cấp cho đối tác, đại biểu tham dự hội nghị lớn",
                   "Bộ văn phòng phẩm đồng bộ cho sự kiện khởi động năm mới của công ty",
                 ],
-                image: "/images/product/vd-item-notepad.jpeg",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
               },
               {
                 icon: "Award",
@@ -1254,6 +1623,11 @@ export const productCategories: ProductCategory[] = [
                   "Phiếu gọi món của phục vụ nhà hàng, quán cafe",
                 ],
                 image: "/images/product/vd-item-notepad.jpeg",
+                images: [
+                  "/images/product/vd-item-notepad.jpeg",
+                  "/images/product/vd-item-notepad.jpeg",
+                  "/images/product/vd-item-notepad.jpeg",
+                ],
               },
               {
                 icon: "ShieldCheck",
@@ -1282,7 +1656,12 @@ export const productCategories: ProductCategory[] = [
                   "Workshop thủ công, hội chợ xanh và quà tặng từ các studio sáng tạo",
                   "Trường đại học, tổ chức phi chính phủ trong các chiến dịch môi trường",
                 ],
-                image: "/images/product/vd-item-notepad.jpeg",
+                image: "/images/product/vd-card-f300.png",
+                images: [
+                  "/images/product/vd-card-f300.png",
+                  "/images/product/vd-card-f300.png",
+                  "/images/product/vd-card-f300.png",
+                ],
               },
             ],
           },
@@ -1295,6 +1674,13 @@ export const productCategories: ProductCategory[] = [
         description: "Internal forms, order sheets, receipts.",
         descriptionVi: "Biểu mẫu nội bộ, phiếu đặt hàng, biên nhận.",
         image: "/images/product/vd-item-form.jpg",
+        images: [
+          "/images/product/vd-item-form.jpg",
+          "/images/product/vd-item-form.jpg",
+          "/images/product/vd-item-form.jpg",
+        ],
+        hideFoilCheckbox: true,
+        hideDoubleSidedCheckbox: true,
         optionGroups: [
           {
             options: [
@@ -1325,8 +1711,18 @@ export const productCategories: ProductCategory[] = [
                   "Phiếu chỉ định xét nghiệm bệnh viện, giấy cam kết khám chữa bệnh",
                   "Phiếu đặt hàng tiêu chuẩn và bảng kiểm kê hàng hóa kho bãi",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Layers",
@@ -1355,8 +1751,19 @@ export const productCategories: ProductCategory[] = [
                   "Phiếu giao hàng kho bãi, vận đơn vận tải và phiếu kiểm tra đóng gói",
                   "Phiếu thanh toán viện phí và phiếu trả kết quả xét nghiệm bệnh viện",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
               {
                 icon: "Award",
@@ -1386,6 +1793,11 @@ export const productCategories: ProductCategory[] = [
                   "Sổ thu tiền thuê nhà, phí quản lý tòa nhà và phiếu bảo trì kỹ thuật",
                 ],
                 image: "/images/product/vd-item-form.jpg",
+                images: [
+                  "/images/product/vd-item-form.jpg",
+                  "/images/product/vd-item-form.jpg",
+                  "/images/product/vd-item-form.jpg",
+                ],
               },
               {
                 icon: "StickyNote",
@@ -1415,6 +1827,11 @@ export const productCategories: ProductCategory[] = [
                   "Hồ sơ bệnh án kiểm soát nghiêm ngặt và mã số xét nghiệm bệnh viện",
                 ],
                 image: "/images/product/vd-item-form.jpg",
+                images: [
+                  "/images/product/vd-item-form.jpg",
+                  "/images/product/vd-item-form.jpg",
+                  "/images/product/vd-item-form.jpg",
+                ],
               },
               {
                 icon: "PenLine",
@@ -1443,7 +1860,13 @@ export const productCategories: ProductCategory[] = [
                   "Bổ sung chứng từ khẩn cấp khi chờ đơn hàng in offset số lượng lớn",
                   "Gian hàng hội chợ triển lãm và các sự kiện thương mại ngắn ngày",
                 ],
-                image: "/images/product/vd-item-form.jpg",
+                image: "/images/product/card-digital1.webp",
+                images: [
+                  "/images/product/card-digital1.webp",
+                  "/images/product/card-digital2.webp",
+                  "/images/product/card-digital3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -1469,6 +1892,12 @@ export const productCategories: ProductCategory[] = [
         description: "Retail and gift packaging.",
         descriptionVi: "Bao bì bán lẻ và quà tặng.",
         image: "/images/product/vd-item-box.jpg",
+        images: [
+          "/images/product/vd-item-box.jpg",
+          "/images/product/vd-item-box.jpg",
+          "/images/product/vd-item-box.jpg",
+        ],
+        hideDoubleSidedCheckbox: true,
         optionGroups: [
           {
             options: [
@@ -1499,8 +1928,18 @@ export const productCategories: ProductCategory[] = [
                   "Hộp đựng phụ kiện công nghệ, thiết bị điện tử tiêu dùng",
                   "Hộp thực phẩm chức năng, bánh kẹo và hàng tiêu dùng cao cấp",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "ShieldCheck",
@@ -1529,8 +1968,18 @@ export const productCategories: ProductCategory[] = [
                   "Hộp mỹ phẩm serum cao cấp, bộ sản phẩm làm đẹp sang trọng",
                   "Hộp quà tặng doanh nghiệp yêu cầu phom hộp vững chãi, đứng dáng",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Award",
@@ -1559,7 +2008,18 @@ export const productCategories: ProductCategory[] = [
                   "Hộp đựng chai lọ thủy tinh nặng, rượu vang, gốm sứ và thiết bị điện",
                   "Hộp quà trái cây, nông sản xuất khẩu và giỏ quà thực phẩm",
                 ],
-                image: "/images/product/vd-item-box.jpg",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -1588,7 +2048,12 @@ export const productCategories: ProductCategory[] = [
                   "Hộp trà thảo mộc, cà phê rang xay và đặc sản nông sản khô",
                   "Hộp đựng phụ kiện thời trang xanh và đồ gia dụng thân thiện môi trường",
                 ],
-                image: "/images/product/vd-item-box.jpg",
+                image: "/images/product/vd-card-f300.png",
+                images: [
+                  "/images/product/vd-card-f300.png",
+                  "/images/product/vd-card-f300.png",
+                  "/images/product/vd-card-f300.png",
+                ],
               },
               {
                 icon: "Gem",
@@ -1617,7 +2082,18 @@ export const productCategories: ProductCategory[] = [
                   "Hộp rượu ngoại sang trọng, yến sào và trang sức giá trị cao",
                   "Bộ hộp quà mỹ phẩm giới hạn và đồng hồ kỷ niệm cho đại biểu",
                 ],
-                image: "/images/product/vd-item-box.jpg",
+                image: "/images/product/card-art-foil1.webp",
+                images: [
+                  "/images/product/card-art-foil1.webp",
+                  "/images/product/card-art-foil2.webp",
+                  "/images/product/card-art-foil3.webp",
+                ],
+                pureImage: "/images/product/card-art1.webp",
+                pureImages: [
+                  "/images/product/card-art1.webp",
+                  "/images/product/card-art2.webp",
+                  "/images/product/card-art3.webp",
+                ],
               },
             ],
           },
@@ -1630,6 +2106,12 @@ export const productCategories: ProductCategory[] = [
         description: "Carry-out and shopping bags.",
         descriptionVi: "Túi giấy mang đi và túi mua sắm.",
         image: "/images/product/vd-item-bag.jpeg",
+        images: [
+          "/images/product/vd-item-bag.jpeg",
+          "/images/product/vd-item-bag.jpeg",
+          "/images/product/vd-item-bag.jpeg",
+        ],
+        hideDoubleSidedCheckbox: true,
         optionGroups: [
           {
             options: [
@@ -1660,8 +2142,18 @@ export const productCategories: ProductCategory[] = [
                   "Showroom mỹ phẩm, nước hoa và túi đựng quà làm đẹp cao cấp",
                   "Túi phát tài liệu, quà tặng sự kiện hội nghị và triển lãm doanh nghiệp",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "ShieldCheck",
@@ -1690,8 +2182,18 @@ export const productCategories: ProductCategory[] = [
                   "Túi quà tặng dược phẩm, y tế cao cấp và quà biếu tập đoàn",
                   "Túi xách quà tặng VIP trong các hội nghị đối tác chiến lược",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -1720,7 +2222,12 @@ export const productCategories: ProductCategory[] = [
                   "Thương hiệu thời trang bền vững, cửa hàng mỹ phẩm thiên nhiên",
                   "Túi quà trong các chiến dịch xanh và hội thảo bảo vệ môi trường",
                 ],
-                image: "/images/product/vd-item-bag.jpeg",
+                image: "/images/product/vd-card-f300.png",
+                images: [
+                  "/images/product/vd-card-f300.png",
+                  "/images/product/vd-card-f300.png",
+                  "/images/product/vd-card-f300.png",
+                ],
               },
               {
                 icon: "Palette",
@@ -1749,7 +2256,18 @@ export const productCategories: ProductCategory[] = [
                   "Gallery nghệ thuật, bảo tàng và các công ty kiến trúc hàng đầu",
                   "Túi quà tặng giới hạn dành riêng cho đối tác VVIP và tiệc thượng lưu",
                 ],
-                image: "/images/product/vd-item-bag.jpeg",
+                image: "/images/product/card-art-foil1.webp",
+                images: [
+                  "/images/product/card-art-foil1.webp",
+                  "/images/product/card-art-foil2.webp",
+                  "/images/product/card-art-foil3.webp",
+                ],
+                pureImage: "/images/product/card-art1.webp",
+                pureImages: [
+                  "/images/product/card-art1.webp",
+                  "/images/product/card-art2.webp",
+                  "/images/product/card-art3.webp",
+                ],
               },
               {
                 icon: "Sparkles",
@@ -1778,7 +2296,19 @@ export const productCategories: ProductCategory[] = [
                   "Túi quà sự kiện kỷ niệm thành lập tập đoàn và quà biếu của CEO",
                   "Túi xách hộp bánh trung thu, quà Tết hạng sang và yến sào",
                 ],
-                image: "/images/product/vd-item-bag.jpeg",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -1791,6 +2321,12 @@ export const productCategories: ProductCategory[] = [
         description: "Document mailing envelopes.",
         descriptionVi: "Bao thư gửi tài liệu.",
         image: "/images/product/vd-item-envelope.jpeg",
+        images: [
+          "/images/product/vd-item-envelope.jpeg",
+          "/images/product/vd-item-envelope.jpeg",
+          "/images/product/vd-item-envelope.jpeg",
+        ],
+        hideDoubleSidedCheckbox: true,
         optionGroups: [
           {
             options: [
@@ -1821,8 +2357,18 @@ export const productCategories: ProductCategory[] = [
                   "Các cơ quan hành chính, trường học và tổ chức giáo dục",
                   "Doanh nghiệp cần bao thư chuẩn mực, uy tín và tối ưu ngân sách",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Layers",
@@ -1851,8 +2397,18 @@ export const productCategories: ProductCategory[] = [
                   "Các thương hiệu chú trọng hình ảnh đồ họa màu sắc rực rỡ",
                   "Bảo vệ tài liệu quan trọng khi gửi qua bưu điện hoặc chuyển phát nhanh",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Palette",
@@ -1881,7 +2437,18 @@ export const productCategories: ProductCategory[] = [
                   "Văn phòng luật sư, studio kiến trúc và chuỗi khách sạn 5 sao",
                   "Thiệp mời sự kiện đặc biệt và thư cảm ơn gửi khách hàng VIP",
                 ],
-                image: "/images/product/vd-item-envelope.jpeg",
+                image: "/images/product/card-art-foil1.webp",
+                images: [
+                  "/images/product/card-art-foil1.webp",
+                  "/images/product/card-art-foil2.webp",
+                  "/images/product/card-art-foil3.webp",
+                ],
+                pureImage: "/images/product/card-art1.webp",
+                pureImages: [
+                  "/images/product/card-art1.webp",
+                  "/images/product/card-art2.webp",
+                  "/images/product/card-art3.webp",
+                ],
               },
               {
                 icon: "ShieldCheck",
@@ -1910,7 +2477,12 @@ export const productCategories: ProductCategory[] = [
                   "Quán cafe thủ công, boutique hotel và studio sáng tạo",
                   "Chiến dịch marketing gửi thư tay tạo điểm nhấn khác biệt với bao thư trắng",
                 ],
-                image: "/images/product/vd-item-envelope.jpeg",
+                image: "/images/product/vd-card-f300.png",
+                images: [
+                  "/images/product/vd-card-f300.png",
+                  "/images/product/vd-card-f300.png",
+                  "/images/product/vd-card-f300.png",
+                ],
               },
               {
                 icon: "PenLine",
@@ -1939,7 +2511,13 @@ export const productCategories: ProductCategory[] = [
                   "Doanh nghiệp mới thành lập cần in số lượng ít bộ nhận diện văn phòng",
                   "In thử nghiệm mẫu thiết kế trước khi đặt sản xuất offset số lượng lớn",
                 ],
-                image: "/images/product/vd-item-envelope.jpeg",
+                image: "/images/product/card-digital1.webp",
+                images: [
+                  "/images/product/card-digital1.webp",
+                  "/images/product/card-digital2.webp",
+                  "/images/product/card-digital3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -1952,6 +2530,12 @@ export const productCategories: ProductCategory[] = [
         description: "Single-sheet mass handout or leaflet.",
         descriptionVi: "Tờ rơi phát hàng loạt, một mặt giấy.",
         image: "/images/product/vd-item-flyer.jpeg",
+        images: [
+          "/images/product/vd-item-flyer.jpeg",
+          "/images/product/vd-item-flyer.jpeg",
+          "/images/product/vd-item-flyer.jpeg",
+        ],
+        hideFoilCheckbox: true,
         optionGroups: [
           {
             options: [
@@ -1982,8 +2566,18 @@ export const productCategories: ProductCategory[] = [
                   "Mở bán dự án bất động sản và tuyển sinh các khóa học trung tâm",
                   "Menu gọi món mang đi của nhà hàng và tờ quảng cáo kẹp trong hộp hàng",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -2012,8 +2606,18 @@ export const productCategories: ProductCategory[] = [
                   "Thương hiệu tối giản ưa chuộng phong cách giao tiếp mộc mạc, tự nhiên",
                   "Tờ rơi kẹp coupon giảm giá và phiếu thăm dò ý kiến khách hàng",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Award",
@@ -2042,7 +2646,18 @@ export const productCategories: ProductCategory[] = [
                   "Chiến dịch truyền thông cộng đồng, từ thiện và sự kiện công cộng",
                   "Phát tờ rơi quảng bá định kỳ trên diện rộng tại các khu dân cư",
                 ],
-                image: "/images/product/vd-item-flyer.jpeg",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "StickyNote",
@@ -2071,7 +2686,18 @@ export const productCategories: ProductCategory[] = [
                   "Thư ngỏ sự kiện VIP và thẻ giới thiệu của thương hiệu trang sức",
                   "Tờ giới thiệu liệu trình của viện thẩm mỹ, spa và resort 5 sao",
                 ],
-                image: "/images/product/vd-item-flyer.jpeg",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "PenLine",
@@ -2100,7 +2726,13 @@ export const productCategories: ProductCategory[] = [
                   "In kiểm tra nội dung và phản hồi thị trường trước khi in offset hàng vạn tờ",
                   "Chương trình khuyến mãi chớp nhoáng, cửa hàng popup và sự kiện cuối tuần",
                 ],
-                image: "/images/product/vd-item-flyer.jpeg",
+                image: "/images/product/card-digital1.webp",
+                images: [
+                  "/images/product/card-digital1.webp",
+                  "/images/product/card-digital2.webp",
+                  "/images/product/card-digital3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -2113,6 +2745,13 @@ export const productCategories: ProductCategory[] = [
         description: "Surface and product decals, various types.",
         descriptionVi: "Decal bề mặt và sản phẩm, nhiều loại.",
         image: "/images/product/vd-item-decal.jpeg",
+        images: [
+          "/images/product/vd-item-decal.jpeg",
+          "/images/product/vd-item-decal.jpeg",
+          "/images/product/vd-item-decal.jpeg",
+        ],
+        hideFoilCheckbox: true,
+        hideDoubleSidedCheckbox: true,
         optionGroups: [
           {
             options: [
@@ -2143,8 +2782,18 @@ export const productCategories: ProductCategory[] = [
                   "Hũ mỹ phẩm khô, vỏ hộp nước hoa và cốc nến thơm tinh dầu",
                   "Nhãn dán địa chỉ gói hàng bưu phẩm và sticker khuyến mãi tặng kèm",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -2173,8 +2822,18 @@ export const productCategories: ProductCategory[] = [
                   "Nhãn dán ống nghiệm phòng xét nghiệm và nhãn toa thuốc nhà thuốc",
                   "Sản phẩm thủ công truyền thống và nông sản sạch tự nhiên",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "ShieldCheck",
@@ -2203,7 +2862,13 @@ export const productCategories: ProductCategory[] = [
                   "Chai dầu gội, sữa tắm và mỹ phẩm sử dụng trong môi trường ẩm ướt",
                   "Sticker dán kính cửa hàng và tem niêm phong hộp quà trong suốt",
                 ],
-                image: "/images/product/vd-item-decal.jpeg",
+                image: "/images/product/card-plastic1.webp",
+                images: [
+                  "/images/product/card-plastic1.webp",
+                  "/images/product/card-plastic2.webp",
+                  "/images/product/card-plastic3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
               {
                 icon: "Award",
@@ -2232,7 +2897,13 @@ export const productCategories: ProductCategory[] = [
                   "Chai nhớt xe cộ, hóa chất công nghiệp và chai xịt tẩy rửa gia dụng",
                   "Nhãn cảnh báo trên máy móc ngoài trời và tem thiết bị chịu thời tiết",
                 ],
-                image: "/images/product/vd-item-decal.jpeg",
+                image: "/images/product/card-plastic1.webp",
+                images: [
+                  "/images/product/card-plastic1.webp",
+                  "/images/product/card-plastic2.webp",
+                  "/images/product/card-plastic3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
               {
                 icon: "Sparkles",
@@ -2261,7 +2932,19 @@ export const productCategories: ProductCategory[] = [
                   "Sticker nhận diện thương hiệu dán laptop, bình nước, mũ bảo hiểm quà tặng",
                   "Tem niêm phong quà Tết giới hạn và chứng nhận hàng chính hãng",
                 ],
-                image: "/images/product/vd-item-decal.jpeg",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -2274,6 +2957,13 @@ export const productCategories: ProductCategory[] = [
         description: "Seals and authentication stickers.",
         descriptionVi: "Tem niêm phong và tem xác thực.",
         image: "/images/product/vd-item-stamp.jpg",
+        images: [
+          "/images/product/vd-item-stamp.jpg",
+          "/images/product/vd-item-stamp.jpg",
+          "/images/product/vd-item-stamp.jpg",
+        ],
+        hideFoilCheckbox: true,
+        hideDoubleSidedCheckbox: true,
         optionGroups: [
           {
             options: [
@@ -2304,8 +2994,18 @@ export const productCategories: ProductCategory[] = [
                   "Tem mã vạch sản phẩm bán lẻ và nhãn thông số SKU hàng hóa",
                   "Tem niêm phong hộp bánh ngọt, thực phẩm mang đi của nhà hàng",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -2334,8 +3034,18 @@ export const productCategories: ProductCategory[] = [
                   "Tem ghi tay ngày rang của bao bì cà phê đặc sản cao cấp",
                   "Sticker ghi số lô sản xuất thủ công và tem hướng dẫn sử dụng nhà thuốc",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "ShieldCheck",
@@ -2365,6 +3075,11 @@ export const productCategories: ProductCategory[] = [
                   "Tem niêm phong nắp hộp mỹ phẩm chống mở dùng thử trước tại cửa hàng",
                 ],
                 image: "/images/product/vd-item-stamp.jpg",
+                images: [
+                  "/images/product/vd-item-stamp.jpg",
+                  "/images/product/vd-item-stamp.jpg",
+                  "/images/product/vd-item-stamp.jpg",
+                ],
               },
               {
                 icon: "Award",
@@ -2394,6 +3109,11 @@ export const productCategories: ProductCategory[] = [
                   "Tem bản quyền phần mềm, tem an ninh sách giáo khoa và chứng nhận VIP",
                 ],
                 image: "/images/product/vd-item-stamp.jpg",
+                images: [
+                  "/images/product/vd-item-stamp.jpg",
+                  "/images/product/vd-item-stamp.jpg",
+                  "/images/product/vd-item-stamp.jpg",
+                ],
               },
               {
                 icon: "Sparkles",
@@ -2422,7 +3142,19 @@ export const productCategories: ProductCategory[] = [
                   "Tem trang trí hộp quà lễ Tết (Tết Nguyên Đán, Trung Thu, Giáng Sinh)",
                   "Tem nhãn trang trí hộp sô-cô-la thủ công, rượu vang và nước hoa xa xỉ",
                 ],
-                image: "/images/product/vd-item-stamp.jpg",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -2435,6 +3167,13 @@ export const productCategories: ProductCategory[] = [
         description: "Product and packaging labels.",
         descriptionVi: "Nhãn sản phẩm và bao bì.",
         image: "/images/product/vd-item-label.jpeg",
+        images: [
+          "/images/product/vd-item-label.jpeg",
+          "/images/product/vd-item-label.jpeg",
+          "/images/product/vd-item-label.jpeg",
+        ],
+        hideFoilCheckbox: true,
+        hideDoubleSidedCheckbox: true,
         optionGroups: [
           {
             options: [
@@ -2465,8 +3204,18 @@ export const productCategories: ProductCategory[] = [
                   "Nhãn chai dầu gội, sữa dưỡng thể và bình xịt tẩy rửa gia dụng",
                   "Nhãn phụ thông tin nhập khẩu, hướng dẫn sử dụng trên hàng tiêu dùng",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -2495,8 +3244,18 @@ export const productCategories: ProductCategory[] = [
                   "Hũ mật ong hữu cơ thủ công, mứt và gia vị truyền thống",
                   "Nhãn chai thuốc nhà thuốc và lọ hóa chất phòng xét nghiệm y khoa",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Palette",
@@ -2525,7 +3284,18 @@ export const productCategories: ProductCategory[] = [
                   "Chai nước hoa xa xỉ, cốc nến thơm tinh dầu và chai xịt phòng cao cấp",
                   "Chai dầu ô-liu thượng hạng và dấm lên men nhập khẩu",
                 ],
-                image: "/images/product/vd-item-label.jpeg",
+                image: "/images/product/card-art-foil1.webp",
+                images: [
+                  "/images/product/card-art-foil1.webp",
+                  "/images/product/card-art-foil2.webp",
+                  "/images/product/card-art-foil3.webp",
+                ],
+                pureImage: "/images/product/card-art1.webp",
+                pureImages: [
+                  "/images/product/card-art1.webp",
+                  "/images/product/card-art2.webp",
+                  "/images/product/card-art3.webp",
+                ],
               },
               {
                 icon: "ShieldCheck",
@@ -2554,7 +3324,12 @@ export const productCategories: ProductCategory[] = [
                   "Chai dầu gội, sữa tắm và mỹ phẩm chăm sóc sử dụng trong phòng tắm",
                   "Chai thuốc nông nghiệp ngoài trời và bao bì thiết bị hằng hải",
                 ],
-                image: "/images/product/vd-item-label.jpeg",
+                image: "/images/product/card-plastic1.webp",
+                images: [
+                  "/images/product/card-plastic1.webp",
+                  "/images/product/card-plastic2.webp",
+                  "/images/product/card-plastic3.webp",
+                ],
               },
               {
                 icon: "Sparkles",
@@ -2583,7 +3358,19 @@ export const productCategories: ProductCategory[] = [
                   "Chai rượu ngoại sang trọng, rượu whisky giới hạn và rượu mừng sự kiện",
                   "Hộp thực phẩm chức năng cao cấp và giỏ quà tặng doanh nghiệp VIP",
                 ],
-                image: "/images/product/vd-item-label.jpeg",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -2596,6 +3383,11 @@ export const productCategories: ProductCategory[] = [
         description: "Hang tags and garment tags.",
         descriptionVi: "Mác treo và mác quần áo.",
         image: "/images/product/vd-item-tag.jpeg",
+        images: [
+          "/images/product/vd-item-tag.jpeg",
+          "/images/product/vd-item-tag.jpeg",
+          "/images/product/vd-item-tag.jpeg",
+        ],
         optionGroups: [
           {
             options: [
@@ -2626,8 +3418,18 @@ export const productCategories: ProductCategory[] = [
                   "Mác treo túi xách, hành lý và mác giày dép thời trang",
                   "Mác giá bán lẻ và thẻ treo mã vạch tại các trung tâm thương mại",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -2656,8 +3458,18 @@ export const productCategories: ProductCategory[] = [
                   "Mác treo đồ gốm sứ thủ công, đồ trang trí nhà cửa và vải vóc hữu cơ",
                   "Thương hiệu thời trang tối giản ưu tiên phong cách mộc mạc, tự nhiên",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "ShieldCheck",
@@ -2686,8 +3498,18 @@ export const productCategories: ProductCategory[] = [
                   "Đồ da hàng hiệu, túi xách cao cấp và giày da sang trọng",
                   "Mác treo quà tặng doanh nghiệp VIP và thẻ bảo hành sản phẩm",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Palette",
@@ -2716,7 +3538,18 @@ export const productCategories: ProductCategory[] = [
                   "Bộ sưu tập trang sức thủ công và trang phục cashmere/lụa xa xỉ",
                   "Các phiên bản hợp tác đặc biệt của nhà thiết kế và hàng giới hạn",
                 ],
-                image: "/images/product/vd-item-tag.jpeg",
+                image: "/images/product/card-art-foil1.webp",
+                images: [
+                  "/images/product/card-art-foil1.webp",
+                  "/images/product/card-art-foil2.webp",
+                  "/images/product/card-art-foil3.webp",
+                ],
+                pureImage: "/images/product/card-art1.webp",
+                pureImages: [
+                  "/images/product/card-art1.webp",
+                  "/images/product/card-art2.webp",
+                  "/images/product/card-art3.webp",
+                ],
               },
               {
                 icon: "Sparkles",
@@ -2745,7 +3578,19 @@ export const productCategories: ProductCategory[] = [
                   "Nội y cao cấp, trang phục bãi biển và phụ kiện thiết kế độc quyền",
                   "Các thương hiệu muốn tạo dấu ấn hình ảnh khác biệt qua chiếc mác treo",
                 ],
-                image: "/images/product/vd-item-tag.jpeg",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -2771,6 +3616,12 @@ export const productCategories: ProductCategory[] = [
         description: "Red envelopes for Tet cash gifts, custom-printed with your brand.",
         descriptionVi: "Bao lì xì đỏ dùng để mừng tuổi dịp Tết, in theo yêu cầu với thương hiệu riêng.",
         image: "/images/product/vd-item-lixi.jpeg",
+        images: [
+          "/images/product/vd-item-lixi.jpeg",
+          "/images/product/vd-item-lixi.jpeg",
+          "/images/product/vd-item-lixi.jpeg",
+        ],
+        hideDoubleSidedCheckbox: true,
         optionGroups: [
           {
             options: [
@@ -2801,8 +3652,18 @@ export const productCategories: ProductCategory[] = [
                   "Bộ quà tặng tri ân của các ngân hàng, bảo hiểm và bất động sản",
                   "Quà tặng khuyến mãi dịp mua sắm sắm Tết cho cửa hàng bán lẻ",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -2831,8 +3692,18 @@ export const productCategories: ProductCategory[] = [
                   "Trường học, đại học và các tổ chức văn hóa mừng xuân mới",
                   "Thiết kế tối giản kết hợp nền giấy đỏ mộc và chữ thư pháp vàng",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Palette",
@@ -2861,7 +3732,18 @@ export const productCategories: ProductCategory[] = [
                   "Khách sạn 5 sao, dịch vụ ngân hàng VIP và thương hiệu thời trang xa xỉ",
                   "Bộ lì xì phiên bản giới hạn dành riêng cho khách hàng VIP",
                 ],
-                image: "/images/product/vd-item-lixi.jpeg",
+                image: "/images/product/card-art-foil1.webp",
+                images: [
+                  "/images/product/card-art-foil1.webp",
+                  "/images/product/card-art-foil2.webp",
+                  "/images/product/card-art-foil3.webp",
+                ],
+                pureImage: "/images/product/card-art1.webp",
+                pureImages: [
+                  "/images/product/card-art1.webp",
+                  "/images/product/card-art2.webp",
+                  "/images/product/card-art3.webp",
+                ],
               },
               {
                 icon: "Sparkles",
@@ -2890,7 +3772,19 @@ export const productCategories: ProductCategory[] = [
                   "Thương hiệu trang sức đá quý, xe hơi hạng sang và tập đoàn bất động sản",
                   "Doanh nghiệp muốn khẳng định hình ảnh thịnh vượng, may mắn đầu xuân",
                 ],
-                image: "/images/product/vd-item-lixi.jpeg",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
               {
                 icon: "Layers",
@@ -2919,7 +3813,18 @@ export const productCategories: ProductCategory[] = [
                   "Bộ quà mừng xuân chào mừng khách VIP tại các khu nghỉ dưỡng 5 sao",
                   "Bao lì xì phiên bản sưu tầm mang tính nghệ thuật và lưu niệm cao",
                 ],
-                image: "/images/product/vd-item-lixi.jpeg",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
               },
             ],
           },
@@ -2932,6 +3837,11 @@ export const productCategories: ProductCategory[] = [
         description: "Printed New Year greeting cards for clients and partners.",
         descriptionVi: "Thiệp chúc mừng năm mới gửi đến khách hàng và đối tác.",
         image: "/images/product/vd-item-thieptet.jpg",
+        images: [
+          "/images/product/vd-item-thieptet.jpg",
+          "/images/product/vd-item-thieptet.jpg",
+          "/images/product/vd-item-thieptet.jpg",
+        ],
         optionGroups: [
           {
             options: [
@@ -2962,8 +3872,18 @@ export const productCategories: ProductCategory[] = [
                   "Thiệp chúc mừng xuân mới của các ngân hàng, công ty bảo hiểm",
                   "Thư ngỏ tri ân khách hàng thân thiết dịp cuối năm",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -2992,8 +3912,18 @@ export const productCategories: ProductCategory[] = [
                   "Thiệp chúc Tết của các cơ quan ngoại giao, giáo dục và tổ chức văn hóa",
                   "Thiệp Tết tối giản chú trọng sự tinh tế, ấm áp và chân thật",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Palette",
@@ -3022,7 +3952,18 @@ export const productCategories: ProductCategory[] = [
                   "Studio kiến trúc, thiết kế nội thất và các thương hiệu thời trang cao cấp",
                   "Thiệp chúc mừng đi kèm giỏ quà Tết thượng hạng gửi đối tác VVIP",
                 ],
-                image: "/images/product/vd-item-thieptet.jpg",
+                image: "/images/product/card-art-foil1.webp",
+                images: [
+                  "/images/product/card-art-foil1.webp",
+                  "/images/product/card-art-foil2.webp",
+                  "/images/product/card-art-foil3.webp",
+                ],
+                pureImage: "/images/product/card-art1.webp",
+                pureImages: [
+                  "/images/product/card-art1.webp",
+                  "/images/product/card-art2.webp",
+                  "/images/product/card-art3.webp",
+                ],
               },
               {
                 icon: "Sparkles",
@@ -3051,7 +3992,13 @@ export const productCategories: ProductCategory[] = [
                   "Thiệp mời tiệc tân niên, tiệc mừng xuân của tập đoàn lớn",
                   "Doanh nghiệp hướng tới phong cách chúc xuân sang trọng, rực rỡ",
                 ],
-                image: "/images/product/vd-item-thieptet.jpg",
+                image: "/images/product/card-pearl1.webp",
+                images: [
+                  "/images/product/card-pearl1.webp",
+                  "/images/product/card-pearl2.webp",
+                  "/images/product/card-pearl3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
               {
                 icon: "Layers",
@@ -3080,7 +4027,19 @@ export const productCategories: ProductCategory[] = [
                   "Tập đoàn khách sạn, ẩm thực cao cấp và thương hiệu thời trang",
                   "Doanh nghiệp muốn khẳng định uy tín và lời chúc thịnh vượng đầu xuân",
                 ],
-                image: "/images/product/vd-item-thieptet.jpg",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -3093,6 +4052,11 @@ export const productCategories: ProductCategory[] = [
         description: "Desk and wall calendars themed for the Lunar New Year season.",
         descriptionVi: "Lịch để bàn và lịch treo tường mang chủ đề Tết Nguyên Đán.",
         image: "/images/product/vd-item-lichtet.jpg",
+        images: [
+          "/images/product/vd-item-lichtet.jpg",
+          "/images/product/vd-item-lichtet.jpg",
+          "/images/product/vd-item-lichtet.jpg",
+        ],
         optionGroups: [
           {
             options: [
@@ -3123,8 +4087,18 @@ export const productCategories: ProductCategory[] = [
                   "Tăng độ nhận diện thương hiệu suốt 365 ngày trên bàn làm việc",
                   "Quà tặng nhân viên và ấn phẩm văn phòng mừng xuân mới",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -3153,8 +4127,18 @@ export const productCategories: ProductCategory[] = [
                   "Trường học, văn phòng luật sư và các tổ chức tư vấn chuyên nghiệp",
                   "Doanh nghiệp ưu tiên trải nghiệm tiện dụng, không bóng chói",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Award",
@@ -3184,6 +4168,11 @@ export const productCategories: ProductCategory[] = [
                   "Trang trí và truyền thông thương hiệu tại khu vực lễ tân, phòng khách",
                 ],
                 image: "/images/product/vd-item-lichtet.jpg",
+                images: [
+                  "/images/product/vd-item-lichtet.jpg",
+                  "/images/product/vd-item-lichtet.jpg",
+                  "/images/product/vd-item-lichtet.jpg",
+                ],
               },
               {
                 icon: "Gem",
@@ -3212,7 +4201,18 @@ export const productCategories: ProductCategory[] = [
                   "Tập đoàn truyền thống, ngân hàng, bảo hiểm và các tổng công ty",
                   "Món quà xuân đẳng cấp được treo ở vị trí trang trọng nhất trong nhà",
                 ],
-                image: "/images/product/vd-item-lichtet.jpg",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
               },
               {
                 icon: "Palette",
@@ -3242,6 +4242,11 @@ export const productCategories: ProductCategory[] = [
                   "Quà tặng phiên bản giới hạn dành cho các đại sứ thương hiệu trọng điểm",
                 ],
                 image: "/images/product/vd-item-lichtet.jpg",
+                images: [
+                  "/images/product/vd-item-lichtet.jpg",
+                  "/images/product/vd-item-lichtet.jpg",
+                  "/images/product/vd-item-lichtet.jpg",
+                ],
               },
             ],
           },
@@ -3254,6 +4259,12 @@ export const productCategories: ProductCategory[] = [
         description: "Festive gift boxes for Tet hampers and corporate gifting.",
         descriptionVi: "Hộp quà mang không khí Tết dùng cho giỏ quà và quà tặng doanh nghiệp.",
         image: "/images/product/vd-item-hopquatet.jpeg",
+        images: [
+          "/images/product/vd-item-hopquatet.jpeg",
+          "/images/product/vd-item-hopquatet.jpeg",
+          "/images/product/vd-item-hopquatet.jpeg",
+        ],
+        hideDoubleSidedCheckbox: true,
         optionGroups: [
           {
             options: [
@@ -3284,8 +4295,18 @@ export const productCategories: ProductCategory[] = [
                   "Bao bì bánh kẹo, các loại hạt và hoa quả sấy mùa Tết bán lẻ",
                   "Hộp quà tặng tri ân công đoàn dành cho nhân viên cuối năm",
                 ],
-                image: "/images/product/vd-card-c300-foil.png",
-                pureImage: "/images/product/vd-card-c300-pure.png",
+                image: "/images/product/card-c300-foil1.webp",
+                images: [
+                  "/images/product/card-c300-foil1.webp",
+                  "/images/product/card-c300-foil2.webp",
+                  "/images/product/card-c300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-c300-1.webp",
+                pureImages: [
+                  "/images/product/card-c300-1.webp",
+                  "/images/product/card-c300-2.webp",
+                  "/images/product/card-c300-3.webp",
+                ],
               },
               {
                 icon: "ShieldCheck",
@@ -3314,8 +4335,18 @@ export const productCategories: ProductCategory[] = [
                   "Bộ quà tặng mỹ phẩm, chăm sóc sức khỏe và làm đẹp ngày xuân",
                   "Quà tặng doanh nghiệp yêu cầu phom hộp vững chãi, sang trọng",
                 ],
-                image: "/images/product/vd-card-f300-foil.png",
-                pureImage: "/images/product/vd-card-f300-pure.png",
+                image: "/images/product/card-f300-foil1.webp",
+                images: [
+                  "/images/product/card-f300-foil1.webp",
+                  "/images/product/card-f300-foil2.webp",
+                  "/images/product/card-f300-foil3.webp",
+                ],
+                pureImage: "/images/product/card-f300-3.webp",
+                pureImages: [
+                  "/images/product/card-f300.webp",
+                  "/images/product/card-f300-2.webp",
+                  "/images/product/card-f300-3.webp",
+                ],
               },
               {
                 icon: "Gem",
@@ -3344,7 +4375,18 @@ export const productCategories: ProductCategory[] = [
                   "Hộp rượu ngoại nhập khẩu sang trọng, xì gà và quà thượng hạng",
                   "Bộ hộp quà giới hạn mừng xuân dành cho các cổ đông và nhà đầu tư lớn",
                 ],
-                image: "/images/product/vd-item-hopquatet.jpeg",
+                image: "/images/product/card-art-foil1.webp",
+                images: [
+                  "/images/product/card-art-foil1.webp",
+                  "/images/product/card-art-foil2.webp",
+                  "/images/product/card-art-foil3.webp",
+                ],
+                pureImage: "/images/product/card-art1.webp",
+                pureImages: [
+                  "/images/product/card-art1.webp",
+                  "/images/product/card-art2.webp",
+                  "/images/product/card-art3.webp",
+                ],
               },
               {
                 icon: "Feather",
@@ -3373,7 +4415,12 @@ export const productCategories: ProductCategory[] = [
                   "Quà Tết từ các hợp tác xã nông sản sạch và thương hiệu hữu cơ",
                   "Giỏ quà xuân mộc mạc tôn vinh văn hóa truyền thống và lối sống xanh",
                 ],
-                image: "/images/product/vd-item-hopquatet.jpeg",
+                image: "/images/product/vd-card-f300.png",
+                images: [
+                  "/images/product/vd-card-f300.png",
+                  "/images/product/vd-card-f300.png",
+                  "/images/product/vd-card-f300.png",
+                ],
               },
               {
                 icon: "Sparkles",
@@ -3402,7 +4449,19 @@ export const productCategories: ProductCategory[] = [
                   "Giỏ quà mang đi (Hamper takeaway) của chuỗi khách sạn 5 sao, nhà hàng sang trọng",
                   "Doanh nghiệp muốn tạo ấn tượng thịnh vượng, đẳng cấp dịp Tết Nguyên Đán",
                 ],
-                image: "/images/product/vd-item-hopquatet.jpeg",
+                image: "/images/product/card-embossed-foil1.webp",
+                images: [
+                  "/images/product/card-embossed-foil1.webp",
+                  "/images/product/card-embossed-foil2.webp",
+                  "/images/product/card-embossed-foil3.webp",
+                ],
+                pureImage: "/images/product/card-embossed1.webp",
+                pureImages: [
+                  "/images/product/card-embossed1.webp",
+                  "/images/product/card-embossed2.webp",
+                  "/images/product/card-embossed3.webp",
+                ],
+                hideFoilCheckbox: true,
               },
             ],
           },
@@ -3416,10 +4475,10 @@ export const productCategories: ProductCategory[] = [
 // Reuses real product photos whose subject matches the showcase label.
 export const showcaseImages = [
   { seed: "vd-show-1", src: "/images/product/vd-item-card.jpeg", label: "Danh thiếp cao cấp", labelEn: "Premium Business Cards", aspect: "tall" },
-  { seed: "vd-show-2", src: "/images/product/vd-item-box.jpg", label: "Hộp giấy sang trọng", labelEn: "Luxury Packaging",       aspect: "square" },
+  { seed: "vd-show-2", src: "/images/product/vd-item-box.jpg", label: "Hộp giấy sang trọng", labelEn: "Luxury Packaging", aspect: "square" },
   { seed: "vd-show-3", src: "/images/product/vd-item-catalogue.jpeg", label: "Catalogue chuyên nghiệp", labelEn: "Professional Catalogue", aspect: "square" },
-  { seed: "vd-show-4", src: "/images/product/vd-item-label.jpeg", label: "Nhãn mác tinh tế",    labelEn: "Premium Labels",         aspect: "wide" },
-  { seed: "vd-show-5", src: "/images/product/vd-item-lixi.jpeg", label: "Bao lì xì Tết",       labelEn: "Tet Lucky Envelopes",    aspect: "wide" },
+  { seed: "vd-show-4", src: "/images/product/vd-item-label.jpeg", label: "Nhãn mác tinh tế", labelEn: "Premium Labels", aspect: "wide" },
+  { seed: "vd-show-5", src: "/images/product/vd-item-lixi.jpeg", label: "Bao lì xì Tết", labelEn: "Tet Lucky Envelopes", aspect: "wide" },
 ] as const;
 
 export function isFastPrint(id: string): boolean {
