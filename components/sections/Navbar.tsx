@@ -61,52 +61,50 @@ function DesktopCategoryDropdown({
     return cat.items.find((i) => pathname === `/products/${cat.id}/${i.id}`) || cat.items[0];
   });
 
+  const itemCount = cat.items.length;
+  const isMultiCol = itemCount > 5;
+  const widthClass = isMultiCol ? "w-[560px]" : "w-[400px]";
+
   return (
     <div className={cn(
-      "absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[600px] bg-white rounded-2xl shadow-2xl border border-zinc-100 p-4 transition-all duration-200 z-50 flex gap-5 text-zinc-800",
-      isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      "absolute top-full left-1/2 -translate-x-1/2 mt-1 rounded-2xl shadow-2xl border border-white/50 overflow-hidden transition-all duration-200 z-50 text-zinc-800 min-h-[350px] flex flex-col justify-center",
+      widthClass,
+      isOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-1"
     )}>
-      {/* Left side: Preview card */}
-      <div className="w-1/2 bg-zinc-50 border border-zinc-100 rounded-xl p-3 text-center flex flex-col items-center justify-start shadow-sm">
-        <div className="w-full">
-          <div className="relative w-full h-40 rounded-lg overflow-hidden mb-3 bg-white shadow-xs">
-            <Image
-              src={previewItem.image}
-              alt={pickLocale(locale, previewItem.nameVi, previewItem.nameEn)}
-              fill
-              sizes="240px"
-              className="object-cover"
-            />
-          </div>
-          <h4 className="text-[13px] font-bold text-brand-primary uppercase tracking-wide leading-snug">
-            {pickLocale(locale, previewItem.nameVi, previewItem.nameEn)}
-          </h4>
-          <p className="text-[12px] text-zinc-500 italic mt-1.5 leading-relaxed line-clamp-2">
-            {pickLocale(locale, previewItem.descriptionVi, previewItem.description)}
-          </p>
-        </div>
-      </div>
+      {/* Layer 1: Background Image */}
+      <Image
+        src={previewItem.image}
+        alt=""
+        fill
+        sizes={isMultiCol ? "560px" : "400px"}
+        className="object-cover -z-20 transition-opacity duration-300"
+      />
+      
+      {/* Layer 2: Transparent Overlay */}
+      <div className="absolute inset-0 bg-white/70 -z-10" />
 
-      {/* Right side: List of items */}
-      <div className="w-1/2 flex flex-col gap-1">
+      {/* Layer 3: Menu Items */}
+      <div className={cn(
+        "relative z-10 p-6",
+        isMultiCol ? "grid grid-cols-2 gap-x-6 gap-y-1" : "flex flex-col gap-1"
+      )}>
         {cat.items.map((item) => {
           const isActive = pathname === `/products/${cat.id}/${item.id}`;
-          const isHovered = previewItem.id === item.id;
           return (
             <Link
               key={item.id}
               href={`/products/${cat.id}/${item.id}`}
               onMouseEnter={() => setPreviewItem(item)}
               className={cn(
-                "px-3 py-2.5 text-[14px] font-medium rounded-lg transition-colors flex items-center justify-between",
-                (isHovered || isActive)
-                  ? "bg-brand-soft text-brand-primary"
-                  : "text-zinc-600 hover:text-brand-primary hover:bg-zinc-50"
+                "px-4 py-3 text-[14px] font-medium rounded-lg transition-colors flex items-center justify-between gap-2",
+                isActive
+                  ? "bg-brand-primary/10 text-brand-primary font-bold"
+                  : "text-zinc-800 hover:text-brand-primary hover:bg-brand-primary/10"
               )}
             >
-              <span className={cn(isActive && "font-bold")}>{pickLocale(locale, item.nameVi, item.nameEn)}</span>
+              <span className={cn(isActive && "font-bold", isMultiCol && "truncate")}>{pickLocale(locale, item.nameVi, item.nameEn)}</span>
               {isFastPrint(item.id) && (
-                <span className="px-1.5 py-0.5 text-[10px] font-bold text-white bg-amber-500 rounded leading-none shadow-xs shrink-0 ml-2">
+                <span className="px-1.5 py-0.5 text-[10px] font-bold text-white bg-amber-500 rounded leading-none shadow-xs shrink-0">
                   {locale === "vi" ? "in nhanh" : "fast"}
                 </span>
               )}
@@ -177,7 +175,6 @@ export default function Navbar() {
   // down — scroll to top explicitly in that case.
   const closeAllMenu = () => {
     setMenuOpen(false);
-    setOpenMobileCat(null);
   };
 
   const handleBrandClick = () => {
