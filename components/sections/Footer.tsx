@@ -8,11 +8,15 @@ import type { Locale } from "@/i18n/routing";
 import { productCategories } from "@/data/categories";
 import { IconBadge } from "@/components/ui/icon-badge";
 
-const usefulLinkHrefs = ["/#services", "/#process", "/#testimonials", "/#faq"] as const;
-const usefulLinkKeys = ["services", "process", "testimonials", "faq"] as const;
-
-const companyLinkHrefs = ["/#about", "/blog", "/#cta"] as const;
-const companyLinkKeys = ["about", "blog", "contact"] as const;
+type CompanyLink = { href: string; ns: "nav" | "footer"; key: string };
+const companyLinks: CompanyLink[] = [
+  { href: "/#about", ns: "nav", key: "about" },
+  { href: "/#services", ns: "footer", key: "services" },
+  { href: "/#process", ns: "footer", key: "process" },
+  { href: "/#testimonials", ns: "footer", key: "testimonials" },
+  { href: "/#faq", ns: "footer", key: "faq" },
+  { href: "/blog", ns: "nav", key: "blog" }
+];
 
 // lucide-react dropped brand/social marks — minimal inline glyphs instead.
 function FacebookIcon({ size = 15 }: Readonly<{ size?: number }>) {
@@ -53,9 +57,9 @@ export default function Footer() {
   return (
     <footer className="bg-brand-soft text-brand-dark">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-8 md:gap-12">
           {/* Brand */}
-          <div className="lg:col-span-1">
+          <div className="col-span-2 md:col-span-4 lg:col-span-1">
             <p className="text-2xl font-black tracking-tight mb-4">
               VIET <span className="text-brand-primary">DRAGON</span>
             </p>
@@ -111,40 +115,23 @@ export default function Footer() {
               {t("companyLabel")}
             </p>
             <ul className="flex flex-col gap-2">
-              {companyLinkHrefs.map((href, i) => (
-                <li key={href}>
+              {companyLinks.map((link) => (
+                <li key={link.href}>
                   <Link
-                    href={href}
+                    href={link.href}
                     className="inline-block text-sm text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 transition-all duration-200 py-1 font-medium"
                   >
-                    {tNav(`links.${companyLinkKeys[i]}`)}
+                    {link.ns === "nav" ? tNav(`links.${link.key}`) : t(`usefulLinks.${link.key}`)}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Useful links */}
-          <div>
-            <p className="text-xs font-semibold tracking-widest uppercase text-brand-dark/40 mb-4">
-              {t("usefulLabel")}
-            </p>
-            <ul className="flex flex-col gap-2">
-              {usefulLinkHrefs.map((href, i) => (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    className="text-sm text-brand-dark/60 hover:text-brand-primary transition-colors"
-                  >
-                    {t(`usefulLinks.${usefulLinkKeys[i]}`)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+
 
           {/* Contact */}
-          <div>
+          <div className="col-span-2 md:col-span-2 lg:col-span-1">
             <p className="text-xs font-semibold tracking-widest uppercase text-brand-dark/40 mb-4">
               {t("contactLabel")}
             </p>

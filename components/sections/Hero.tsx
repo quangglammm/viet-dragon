@@ -95,13 +95,14 @@ export default function Hero() {
                     {slide.tag}
                   </p>
 
-                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white">
+                  <h1 className="text-[clamp(2.25rem,8vw,3.75rem)] font-black leading-tight tracking-tight text-white line-clamp-2 min-h-[2.5em]">
                     {slide.titleLine1}
-                    <br />
+                    <span className="hidden sm:inline"> </span>
+                    <br className="sm:hidden" />
                     {slide.titleLine2}
                   </h1>
 
-                  <p className="text-base sm:text-lg text-white/75 leading-relaxed max-w-md">
+                  <p className="text-[clamp(1rem,4vw,1.125rem)] text-white/75 leading-relaxed max-w-md line-clamp-2 min-h-[3.25em]">
                     {slide.desc}
                   </p>
 

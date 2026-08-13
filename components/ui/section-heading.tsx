@@ -1,8 +1,8 @@
 "use client";
-
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { useHashPulse } from "@/hooks/use-hash-pulse";
 
 type SectionHeadingProps = {
   eyebrow: string;
@@ -24,6 +24,8 @@ export function SectionHeading({
   className,
   titleClassName,
 }: Readonly<SectionHeadingProps>) {
+  const { ref: headingRef, pulse } = useHashPulse<HTMLHeadingElement>();
+
   return (
     <div className={className}>
       <motion.div
@@ -37,6 +39,7 @@ export function SectionHeading({
       </motion.div>
 
       <motion.h2
+        ref={headingRef}
         className={cn(
           "text-4xl lg:text-5xl font-black leading-tight",
           dark ? "text-white" : "text-zinc-900",
@@ -47,7 +50,13 @@ export function SectionHeading({
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.55, delay: 0.1 }}
       >
-        {title}
+        <motion.span
+          animate={pulse ? { scale: [1, 1.05, 1], color: ["inherit", "var(--brand-primary)", "inherit"] } : { scale: 1 }}
+          transition={{ duration: 0.3 }}
+          className="inline-block origin-left"
+        >
+          {title}
+        </motion.span>
       </motion.h2>
 
       {description && (

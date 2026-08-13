@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { WipeButton } from "@/components/ui/wipe-button";
 import { IconBadge } from "@/components/ui/icon-badge";
 import { useSectionInView } from "@/hooks/use-section-in-view";
+import { useHashPulse } from "@/hooks/use-hash-pulse";
 
 const icons = [MessageCircle, PenTool, Truck];
 
@@ -13,6 +14,7 @@ type Step = { title: string; desc: string };
 
 export default function Process() {
   const { ref, inView } = useSectionInView();
+  const { ref: titleRef, pulse } = useHashPulse<HTMLHeadingElement>();
   const t = useTranslations("process");
   const steps = (t.raw("steps") as Step[]).map((s, i) => ({ ...s, icon: icons[i] }));
 
@@ -26,9 +28,15 @@ export default function Process() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-3xl font-black text-zinc-900 leading-tight mb-2">
-              {t("titleLine1")}{" "}
-              <span className="text-brand-primary">{t("titleHighlight")}</span>
+            <h2 ref={titleRef} className="text-3xl font-black text-zinc-900 leading-tight mb-2">
+              <motion.span
+                animate={pulse ? { scale: [1, 1.05, 1], color: ["inherit", "var(--brand-primary)", "inherit"] } : { scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="inline-block origin-left"
+              >
+                {t("titleLine1")}{" "}
+                <span className="text-brand-primary">{t("titleHighlight")}</span>
+              </motion.span>
             </h2>
             <p className="text-zinc-500 text-sm mb-6">
               {t("subtitle")}

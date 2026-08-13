@@ -146,6 +146,8 @@ export function MaterialFlashcard({
   
   const unitLabel = locale === "vi" ? defaultUnitVi : defaultUnitEn;
 
+  const maxQuantity = defaultUnitVi === "Hộp" ? 200 : 1000;
+
   let backImages = option.images ?? (option.image ? [option.image] : [fallbackImage]);
   if (!foilChecked && option.pureImages) {
     backImages = option.pureImages;
@@ -260,7 +262,7 @@ export function MaterialFlashcard({
                 </span>
                 <ul className="mt-2 flex flex-col gap-1.5">
                   {bestFor.map((line) => (
-                    <li key={line} className="flex items-start gap-2 text-sm text-zinc-700 leading-relaxed">
+                     <li key={line} className="flex items-start gap-2 text-sm text-zinc-700 leading-relaxed">
                       <span className="mt-2 size-1 rounded-full bg-brand-primary shrink-0" />
                       <span>{line}</span>
                     </li>
@@ -335,17 +337,22 @@ export function MaterialFlashcard({
                   value={pages || ""}
                   onChange={(e) => {
                     const val = e.target.value.replace(/\D/g, "");
-                    setPages(val ? parseInt(val, 10) : 0);
+                    let num = val ? parseInt(val, 10) : 0;
+                    if (num > 120) num = 120;
+                    setPages(num);
                   }}
                   onBlur={() => {
-                    if (pages < 4) setPages(4);
-                    else setPages(Math.round(pages / 4) * 4);
+                    let num = pages;
+                    if (num < 4) num = 4;
+                    else num = Math.round(num / 4) * 4;
+                    if (num > 120) num = 120;
+                    setPages(num);
                   }}
                   className="w-12 h-full text-center text-sm font-semibold text-zinc-700 bg-transparent focus:outline-none"
                 />
                 <button
                   type="button"
-                  onClick={() => setPages((p) => p + 4)}
+                  onClick={() => setPages((p) => Math.min(120, p + 4))}
                   className="w-8 h-full flex items-center justify-center text-zinc-500 hover:bg-zinc-50 hover:text-brand-primary transition-colors"
                 >
                   <Plus size={14} />
@@ -378,16 +385,19 @@ export function MaterialFlashcard({
                 value={quantity || ""}
                 onChange={(e) => {
                   const val = e.target.value.replace(/\D/g, "");
-                  setQuantity(val ? parseInt(val, 10) : 0);
+                  let num = val ? parseInt(val, 10) : 0;
+                  if (num > maxQuantity) num = maxQuantity;
+                  setQuantity(num);
                 }}
                 onBlur={() => {
                   if (quantity < 1) setQuantity(1);
+                  if (quantity > maxQuantity) setQuantity(maxQuantity);
                 }}
                 className="w-12 h-full text-center text-sm font-semibold text-zinc-700 bg-transparent focus:outline-none"
               />
               <button
                 type="button"
-                onClick={() => setQuantity((q) => q + 1)}
+                onClick={() => setQuantity((q) => Math.min(maxQuantity, q + 1))}
                 className="w-8 h-full flex items-center justify-center text-zinc-500 hover:bg-zinc-50 hover:text-brand-primary transition-colors"
               >
                 <Plus size={14} />
@@ -397,21 +407,11 @@ export function MaterialFlashcard({
           </div>
         </div>
 
-        {/* 3-Column Layout: Price Range | Checkboxes | Copy & Chat */}
-        <div className="flex items-stretch px-5 py-4">
+        {/* Responsive Layout: Checkboxes Top (Mobile), 3-Column (Desktop) */}
+        <div className="flex flex-col sm:flex-row sm:items-stretch p-4 sm:px-5 sm:py-4 gap-4 sm:gap-0">
           
-          {/* Cột 1: Giá */}
-          <div className="flex flex-col justify-center flex-1">
-            <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1">
-              {locale === "vi" ? "Thành tiền" : "Total Amount"}
-            </div>
-            <div className="text-[15px] font-black text-brand-primary leading-tight">
-              {totalPriceMin.toLocaleString("vi-VN")}đ <span className="text-zinc-400 font-normal mx-0.5">~</span> {totalPriceMax.toLocaleString("vi-VN")}đ
-            </div>
-          </div>
-
-          {/* Cột 2: Checkbox */}
-          <div className="flex flex-col justify-center gap-3 px-4 border-l border-zinc-200/60 min-w-[170px]">
+          {/* Cột 2: Checkbox (Mobile: Top, Desktop: Middle) */}
+          <div className="order-1 sm:order-2 flex flex-col justify-center gap-3 sm:px-4 sm:border-l border-zinc-200/60 sm:min-w-[170px] pb-4 sm:pb-0 border-b sm:border-b-0 border-zinc-200/60">
             {!hideFoilCheckbox && (
               <label className="flex items-center justify-between gap-4 text-sm font-semibold text-zinc-700 cursor-pointer select-none">
                 <div className="flex items-center gap-2.5">
@@ -454,36 +454,50 @@ export function MaterialFlashcard({
             )}
           </div>
 
-          {/* Cột 3: Copy & Chat */}
-          <div className="flex items-center justify-center pl-4 border-l border-zinc-200/60 relative">
-            <AnimatePresence>
-              {awaitingZaloOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 6, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 6, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  role="status"
-                  className="absolute bottom-full right-0 mb-2 w-44 rounded-lg bg-brand-dark px-3 py-2 text-xs leading-snug text-white shadow-lg z-10"
-                >
-                  {t("optionConsultCopiedToast")}
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <motion.button
-              type="button"
-              aria-label={awaitingZaloOpen ? t("optionConsultOpenLabel") : t("optionConsultCopyLabel")}
-              onClick={handleConsultClick}
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.94 }}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0068ff] shadow-md shadow-[#0068ff]/30 shrink-0"
-            >
-              {awaitingZaloOpen ? (
-                <MessageCircle className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
-              ) : (
-                <Copy className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
-              )}
-            </motion.button>
+          {/* Wrapper for Price and Copy (Mobile: Bottom row, Desktop: Unwrapped via contents) */}
+          <div className="order-2 sm:order-1 flex items-center justify-between sm:contents">
+            
+            {/* Cột 1: Giá (Mobile: Left, Desktop: Left) */}
+            <div className="flex flex-col justify-center sm:flex-1 order-1 sm:order-1">
+              <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1">
+                {locale === "vi" ? "Thành tiền" : "Total Amount"}
+              </div>
+              <div className="text-[15px] font-black text-brand-primary leading-tight">
+                {totalPriceMin.toLocaleString("vi-VN")}đ <span className="text-zinc-400 font-normal mx-0.5">~</span> {totalPriceMax.toLocaleString("vi-VN")}đ
+              </div>
+            </div>
+
+            {/* Cột 3: Copy & Chat (Mobile: Right, Desktop: Right) */}
+            <div className="flex items-center justify-center sm:pl-4 sm:border-l border-zinc-200/60 relative order-2 sm:order-3 shrink-0">
+              <AnimatePresence>
+                {awaitingZaloOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    role="status"
+                    className="absolute bottom-full right-0 mb-2 w-44 rounded-lg bg-brand-dark px-3 py-2 text-xs leading-snug text-white shadow-lg z-10"
+                  >
+                    {t("optionConsultCopiedToast")}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <motion.button
+                type="button"
+                aria-label={awaitingZaloOpen ? t("optionConsultOpenLabel") : t("optionConsultCopyLabel")}
+                onClick={handleConsultClick}
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.94 }}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0068ff] shadow-md shadow-[#0068ff]/30 shrink-0"
+              >
+                {awaitingZaloOpen ? (
+                  <MessageCircle className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
+                ) : (
+                  <Copy className="h-[18px] w-[18px] text-white" strokeWidth={2.25} />
+                )}
+              </motion.button>
+            </div>
           </div>
         </div>
       </div>
