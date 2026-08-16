@@ -81,8 +81,65 @@ export function MaterialFlashcard({
 
   const n = option.nameVi.toLowerCase();
 
-  // Heuristic pricing based on material name (adjusted to user's logic e.g., 150k-200k for standard)
-  if (n.includes("c300") || n.includes("c250") || n.includes("couche")) {
+  const isNotepad = productName.toLowerCase().includes("note");
+  const isStamp = productName.toLowerCase().includes("tem") || productName.toLowerCase().includes("decal") || productName.toLowerCase().includes("nhãn");
+  const isLiXi = productName.toLowerCase().includes("lì xì") || productName.toLowerCase().includes("lixi") || productName.toLowerCase().includes("envelope");
+
+  if (isNotepad) {
+    if (n.includes("kraft")) {
+      basePriceMin = 15000; basePriceMax = 25000;
+      doubleSidedAddon = 5000; foilAddon1Side = 10000; foilAddon2Sides = 18000;
+    } else if (n.includes("lò xo")) {
+      basePriceMin = 25000; basePriceMax = 40000;
+      doubleSidedAddon = 5000; foilAddon1Side = 10000; foilAddon2Sides = 18000;
+    } else if (n.includes("keo dán")) {
+      basePriceMin = 12000; basePriceMax = 20000;
+      doubleSidedAddon = 3000; foilAddon1Side = 5000; foilAddon2Sides = 10000;
+    } else if (n.includes("couche")) {
+      basePriceMin = 18000; basePriceMax = 30000;
+      doubleSidedAddon = 5000; foilAddon1Side = 12000; foilAddon2Sides = 20000;
+    } else {
+      basePriceMin = 10000; basePriceMax = 18000;
+      doubleSidedAddon = 3000; foilAddon1Side = 6000; foilAddon2Sides = 12000;
+    }
+  } else if (isStamp) {
+    if (n.includes("vỡ") || n.includes("bảo hành") || n.includes("tamper")) {
+      basePriceMin = 500; basePriceMax = 1200;
+      doubleSidedAddon = 0; foilAddon1Side = 0; foilAddon2Sides = 0;
+    } else if (n.includes("hologram") || n.includes("7 màu")) {
+      basePriceMin = 800; basePriceMax = 1500;
+      doubleSidedAddon = 0; foilAddon1Side = 0; foilAddon2Sides = 0;
+    } else if (n.includes("pvc") || n.includes("nhựa") || n.includes("plastic") || n.includes("trong")) {
+      basePriceMin = 800; basePriceMax = 1800;
+      doubleSidedAddon = 0; foilAddon1Side = 500; foilAddon2Sides = 0;
+    } else if (n.includes("kraft")) {
+      basePriceMin = 600; basePriceMax = 1500;
+      doubleSidedAddon = 0; foilAddon1Side = 400; foilAddon2Sides = 0;
+    } else if (n.includes("couche") || n.includes("màng")) {
+      basePriceMin = 400; basePriceMax = 1200;
+      doubleSidedAddon = 0; foilAddon1Side = 300; foilAddon2Sides = 0;
+    } else if (n.includes("ford") || n.includes("ghi tay") || n.includes("giấy")) {
+      basePriceMin = 300; basePriceMax = 1000;
+      doubleSidedAddon = 0; foilAddon1Side = 350; foilAddon2Sides = 0;
+    } else {
+      basePriceMin = 400; basePriceMax = 1200;
+      doubleSidedAddon = 0; foilAddon1Side = 300; foilAddon2Sides = 0;
+    }
+  } else if (isLiXi) {
+    if (n.includes("mỹ thuật") || n.includes("art")) {
+      basePriceMin = 3500; basePriceMax = 5000;
+      doubleSidedAddon = 0; foilAddon1Side = 1500; foilAddon2Sides = 0;
+    } else if (n.includes("3d") || n.includes("dập nổi") || n.includes("embossed")) {
+      basePriceMin = 4000; basePriceMax = 6000;
+      doubleSidedAddon = 0; foilAddon1Side = 1500; foilAddon2Sides = 0;
+    } else if (n.includes("kraft")) {
+      basePriceMin = 1200; basePriceMax = 2000;
+      doubleSidedAddon = 0; foilAddon1Side = 1000; foilAddon2Sides = 0;
+    } else {
+      basePriceMin = 1500; basePriceMax = 2500;
+      doubleSidedAddon = 0; foilAddon1Side = 1000; foilAddon2Sides = 0;
+    }
+  } else if (n.includes("c300") || n.includes("c250") || n.includes("couche")) {
     basePriceMin = 150000; basePriceMax = 200000;
   } else if (n.includes("ford")) {
     basePriceMin = 150000; basePriceMax = 200000;
@@ -116,6 +173,8 @@ export function MaterialFlashcard({
     : 0;
 
   const hasPages = productName.toLowerCase().includes("catalogue") || productName.toLowerCase().includes("cẩm nang") || productName.toLowerCase().includes("book") || productName.toLowerCase().includes("sách");
+  
+  const effectiveHideFoilCheckbox = hideFoilCheckbox || hasPages;
     
   let unitMin = basePriceMin + currentDoubleSidedPrice + currentFoilPrice;
   let unitMax = basePriceMax + currentDoubleSidedPrice + currentFoilPrice;
@@ -189,7 +248,7 @@ export function MaterialFlashcard({
       t("optionConsultMaterialLine", { option: name }),
     ];
     
-    if (!hideFoilCheckbox) {
+    if (!effectiveHideFoilCheckbox) {
       messageLines.push(t("optionConsultFoilLine", { status: yesNo(foilChecked) }));
     }
     if (!hideDoubleSidedCheckbox) {
@@ -338,21 +397,21 @@ export function MaterialFlashcard({
                   onChange={(e) => {
                     const val = e.target.value.replace(/\D/g, "");
                     let num = val ? parseInt(val, 10) : 0;
-                    if (num > 120) num = 120;
+                    if (num > 200) num = 200;
                     setPages(num);
                   }}
                   onBlur={() => {
                     let num = pages;
                     if (num < 4) num = 4;
                     else num = Math.round(num / 4) * 4;
-                    if (num > 120) num = 120;
+                    if (num > 200) num = 200;
                     setPages(num);
                   }}
                   className="w-12 h-full text-center text-sm font-semibold text-zinc-700 bg-transparent focus:outline-none"
                 />
                 <button
                   type="button"
-                  onClick={() => setPages((p) => Math.min(120, p + 4))}
+                  onClick={() => setPages((p) => Math.min(200, p + 4))}
                   className="w-8 h-full flex items-center justify-center text-zinc-500 hover:bg-zinc-50 hover:text-brand-primary transition-colors"
                 >
                   <Plus size={14} />
@@ -411,48 +470,50 @@ export function MaterialFlashcard({
         <div className="flex flex-col sm:flex-row sm:items-stretch p-4 sm:px-5 sm:py-4 gap-4 sm:gap-0">
           
           {/* Cột 2: Checkbox (Mobile: Top, Desktop: Middle) */}
-          <div className="order-1 sm:order-2 flex flex-col justify-center gap-3 sm:px-4 sm:border-l border-zinc-200/60 sm:min-w-[170px] pb-4 sm:pb-0 border-b sm:border-b-0 border-zinc-200/60">
-            {!hideFoilCheckbox && (
-              <label className="flex items-center justify-between gap-4 text-sm font-semibold text-zinc-700 cursor-pointer select-none">
-                <div className="flex items-center gap-2.5">
-                  <input
-                    type="checkbox"
-                    checked={foilChecked}
-                    onChange={(e) => {
-                      setFoilChecked(e.target.checked);
-                      clearToastTimeout();
-                      setAwaitingZaloOpen(false);
-                    }}
-                    className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
-                  />
-                  {foilCheckboxLabel}
-                </div>
-                <span className="text-xs font-medium text-brand-primary whitespace-nowrap">
-                  + {(doubleSidedChecked ? foilAddon2Sides : foilAddon1Side).toLocaleString("vi-VN")}đ
-                </span>
-              </label>
-            )}
-            {!hideDoubleSidedCheckbox && (
-              <label className="flex items-center justify-between gap-4 text-sm font-semibold text-zinc-700 cursor-pointer select-none">
-                <div className="flex items-center gap-2.5">
-                  <input
-                    type="checkbox"
-                    checked={doubleSidedChecked}
-                    onChange={(e) => {
-                      setDoubleSidedChecked(e.target.checked);
-                      clearToastTimeout();
-                      setAwaitingZaloOpen(false);
-                    }}
-                    className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
-                  />
-                  {doubleSidedCheckboxLabel}
-                </div>
-                <span className="text-xs font-medium text-brand-primary whitespace-nowrap">
-                  + {doubleSidedAddon.toLocaleString("vi-VN")}đ
-                </span>
-              </label>
-            )}
-          </div>
+          {(!effectiveHideFoilCheckbox || !hideDoubleSidedCheckbox) && (
+            <div className="order-1 sm:order-2 flex flex-col justify-center gap-3 sm:px-4 sm:border-l border-zinc-200/60 sm:min-w-[170px] pb-4 sm:pb-0 border-b sm:border-b-0 border-zinc-200/60">
+              {!effectiveHideFoilCheckbox && (
+                <label className="flex items-center justify-between gap-4 text-sm font-semibold text-zinc-700 cursor-pointer select-none">
+                  <div className="flex items-center gap-2.5">
+                    <input
+                      type="checkbox"
+                      checked={foilChecked}
+                      onChange={(e) => {
+                        setFoilChecked(e.target.checked);
+                        clearToastTimeout();
+                        setAwaitingZaloOpen(false);
+                      }}
+                      className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
+                    />
+                    {foilCheckboxLabel}
+                  </div>
+                  <span className="text-xs font-medium text-brand-primary whitespace-nowrap">
+                    + {(doubleSidedChecked ? foilAddon2Sides : foilAddon1Side).toLocaleString("vi-VN")}đ
+                  </span>
+                </label>
+              )}
+              {!hideDoubleSidedCheckbox && (
+                <label className="flex items-center justify-between gap-4 text-sm font-semibold text-zinc-700 cursor-pointer select-none">
+                  <div className="flex items-center gap-2.5">
+                    <input
+                      type="checkbox"
+                      checked={doubleSidedChecked}
+                      onChange={(e) => {
+                        setDoubleSidedChecked(e.target.checked);
+                        clearToastTimeout();
+                        setAwaitingZaloOpen(false);
+                      }}
+                      className="size-4 rounded border-zinc-300 text-brand-primary focus:ring-2 focus:ring-brand-primary/50"
+                    />
+                    {doubleSidedCheckboxLabel}
+                  </div>
+                  <span className="text-xs font-medium text-brand-primary whitespace-nowrap">
+                    + {doubleSidedAddon.toLocaleString("vi-VN")}đ
+                  </span>
+                </label>
+              )}
+            </div>
+          )}
 
           {/* Wrapper for Price and Copy (Mobile: Bottom row, Desktop: Unwrapped via contents) */}
           <div className="order-2 sm:order-1 flex items-center justify-between sm:contents">
