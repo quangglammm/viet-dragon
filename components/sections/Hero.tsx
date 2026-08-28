@@ -14,9 +14,9 @@ import "swiper/css/pagination";
 
 const SLIDE_DURATION = 4000;
 const slideImages = [
-  "/images/hero/slide-1.jpg",
-  "/images/hero/slide-2.jpeg",
-  "/images/hero/slide-3.jpg",
+  "/images/hero/slide1.webp",
+  "/images/hero/slide2.webp",
+  "/images/hero/slide4.webp",
 ];
 
 // Template's actual hero is a full-bleed saturated gradient (not a photo), alternated
@@ -102,7 +102,7 @@ export default function Hero() {
                     {slide.titleLine2}
                   </h1>
 
-                  <p className="text-[clamp(1rem,4vw,1.125rem)] text-white/75 leading-relaxed max-w-md line-clamp-2 min-h-[3.25em]">
+                  <p className="text-[clamp(1rem,4vw,1.125rem)] text-white/75 leading-relaxed max-w-md line-clamp-3 min-h-[4.875em]">
                     {slide.desc}
                   </p>
 
@@ -122,7 +122,7 @@ export default function Hero() {
                     src={slideImages[i]}
                     alt={`${slide.titleLine1} ${slide.titleLine2}`}
                     fill
-                    preload={i === 0}
+                    priority
                     sizes="(min-width: 1024px) 50vw, 100vw"
                     className="object-cover"
                   />
