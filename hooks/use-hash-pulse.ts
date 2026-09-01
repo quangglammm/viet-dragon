@@ -46,7 +46,9 @@ export function useHashPulse<T extends HTMLElement>() {
           }
           checkAndPulse(url.hash);
         }
-      } catch (err) {}
+      } catch {
+        // Ignore URL parsing errors
+      }
     };
 
     document.addEventListener("click", handleGlobalClick);

@@ -73,99 +73,236 @@ export function MaterialFlashcard({
   const description = pickLocale(locale, option.descriptionVi, option.description);
   const bestFor = pickLocale(locale, option.bestForVi, option.bestFor);
 
-  let basePriceMin = 150000;
-  let basePriceMax = 200000;
-  let doubleSidedAddon = 25000;
-  let foilAddon1Side = 40000;
-  let foilAddon2Sides = 70000;
+  let fallbackBasePrice = 150000;
+  let fallbackDoubleSided = 25000;
+  let fallbackFoil1Side = 40000;
+  let fallbackFoil2Sides = 70000;
 
   const n = option.nameVi.toLowerCase();
+  const p = productName.toLowerCase();
 
-  const isNotepad = productName.toLowerCase().includes("note");
-  const isStamp = productName.toLowerCase().includes("tem") || productName.toLowerCase().includes("decal") || productName.toLowerCase().includes("nhãn");
-  const isLiXi = productName.toLowerCase().includes("lì xì") || productName.toLowerCase().includes("lixi") || productName.toLowerCase().includes("envelope");
+  const isNotepad = p.includes("note") || p.includes("sổ");
+  const isStamp = p.includes("tem") || p.includes("decal") || p.includes("nhãn") || p.includes("label");
+  const isLiXi = p.includes("lì xì") || p.includes("lixi") || p.includes("lucky");
+  const isEnvelope = p.includes("bao thư") || p.includes("phong bì") || p.includes("envelope");
+  const isCard = p.includes("thẻ") || p.includes("card") || p.includes("danh thiếp");
+  const isFolder = p.includes("folder") || p.includes("bìa kẹp");
+  const isCatalogue = p.includes("catalogue") || p.includes("cuốn") || p.includes("book") || p.includes("cẩm nang") || p.includes("menu") || p.includes("sách");
+  const isLetterhead = p.includes("letterhead") || p.includes("tiêu đề");
+  const isBag = p.includes("túi") || p.includes("bag");
+  const isFlyer = p.includes("tờ rơi") || p.includes("tờ gấp") || p.includes("flyer") || p.includes("brochure");
+  const isVoucher = p.includes("voucher") || p.includes("phiếu");
+  const isGreetingCard = p.includes("thiệp");
+  const isTetBox = p.includes("hộp quà tết") || p.includes("hamper");
+  const isCalendar = p.includes("lịch") || p.includes("calendar");
+  const isBox = p.includes("hộp") || p.includes("box");
 
   if (isNotepad) {
     if (n.includes("kraft")) {
-      basePriceMin = 15000; basePriceMax = 25000;
-      doubleSidedAddon = 5000; foilAddon1Side = 10000; foilAddon2Sides = 18000;
+      fallbackBasePrice = 12000;
+      fallbackDoubleSided = 3000; fallbackFoil1Side = 8000; fallbackFoil2Sides = 15000;
     } else if (n.includes("lò xo")) {
-      basePriceMin = 25000; basePriceMax = 40000;
-      doubleSidedAddon = 5000; foilAddon1Side = 10000; foilAddon2Sides = 18000;
+      fallbackBasePrice = 20000;
+      fallbackDoubleSided = 4000; fallbackFoil1Side = 8000; fallbackFoil2Sides = 15000;
     } else if (n.includes("keo dán")) {
-      basePriceMin = 12000; basePriceMax = 20000;
-      doubleSidedAddon = 3000; foilAddon1Side = 5000; foilAddon2Sides = 10000;
+      fallbackBasePrice = 10000;
+      fallbackDoubleSided = 2000; fallbackFoil1Side = 5000; fallbackFoil2Sides = 10000;
     } else if (n.includes("couche")) {
-      basePriceMin = 18000; basePriceMax = 30000;
-      doubleSidedAddon = 5000; foilAddon1Side = 12000; foilAddon2Sides = 20000;
+      fallbackBasePrice = 15000;
+      fallbackDoubleSided = 3000; fallbackFoil1Side = 8000; fallbackFoil2Sides = 15000;
     } else {
-      basePriceMin = 10000; basePriceMax = 18000;
-      doubleSidedAddon = 3000; foilAddon1Side = 6000; foilAddon2Sides = 12000;
+      fallbackBasePrice = 8000;
+      fallbackDoubleSided = 2000; fallbackFoil1Side = 5000; fallbackFoil2Sides = 10000;
     }
   } else if (isStamp) {
     if (n.includes("vỡ") || n.includes("bảo hành") || n.includes("tamper")) {
-      basePriceMin = 500; basePriceMax = 1200;
-      doubleSidedAddon = 0; foilAddon1Side = 0; foilAddon2Sides = 0;
+      fallbackBasePrice = 300;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 0; fallbackFoil2Sides = 0;
     } else if (n.includes("hologram") || n.includes("7 màu")) {
-      basePriceMin = 800; basePriceMax = 1500;
-      doubleSidedAddon = 0; foilAddon1Side = 0; foilAddon2Sides = 0;
+      fallbackBasePrice = 500;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 0; fallbackFoil2Sides = 0;
     } else if (n.includes("pvc") || n.includes("nhựa") || n.includes("plastic") || n.includes("trong")) {
-      basePriceMin = 800; basePriceMax = 1800;
-      doubleSidedAddon = 0; foilAddon1Side = 500; foilAddon2Sides = 0;
+      fallbackBasePrice = 500;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 400; fallbackFoil2Sides = 0;
     } else if (n.includes("kraft")) {
-      basePriceMin = 600; basePriceMax = 1500;
-      doubleSidedAddon = 0; foilAddon1Side = 400; foilAddon2Sides = 0;
+      fallbackBasePrice = 400;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 300; fallbackFoil2Sides = 0;
     } else if (n.includes("couche") || n.includes("màng")) {
-      basePriceMin = 400; basePriceMax = 1200;
-      doubleSidedAddon = 0; foilAddon1Side = 300; foilAddon2Sides = 0;
+      fallbackBasePrice = 200;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 250; fallbackFoil2Sides = 0;
     } else if (n.includes("ford") || n.includes("ghi tay") || n.includes("giấy")) {
-      basePriceMin = 300; basePriceMax = 1000;
-      doubleSidedAddon = 0; foilAddon1Side = 350; foilAddon2Sides = 0;
+      fallbackBasePrice = 200;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 250; fallbackFoil2Sides = 0;
     } else {
-      basePriceMin = 400; basePriceMax = 1200;
-      doubleSidedAddon = 0; foilAddon1Side = 300; foilAddon2Sides = 0;
+      fallbackBasePrice = 300;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 200; fallbackFoil2Sides = 0;
     }
   } else if (isLiXi) {
     if (n.includes("mỹ thuật") || n.includes("art")) {
-      basePriceMin = 3500; basePriceMax = 5000;
-      doubleSidedAddon = 0; foilAddon1Side = 1500; foilAddon2Sides = 0;
+      fallbackBasePrice = 2500;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 1200; fallbackFoil2Sides = 0;
     } else if (n.includes("3d") || n.includes("dập nổi") || n.includes("embossed")) {
-      basePriceMin = 4000; basePriceMax = 6000;
-      doubleSidedAddon = 0; foilAddon1Side = 1500; foilAddon2Sides = 0;
+      fallbackBasePrice = 3000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 1200; fallbackFoil2Sides = 0;
     } else if (n.includes("kraft")) {
-      basePriceMin = 1200; basePriceMax = 2000;
-      doubleSidedAddon = 0; foilAddon1Side = 1000; foilAddon2Sides = 0;
+      fallbackBasePrice = 800;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 800; fallbackFoil2Sides = 0;
     } else {
-      basePriceMin = 1500; basePriceMax = 2500;
-      doubleSidedAddon = 0; foilAddon1Side = 1000; foilAddon2Sides = 0;
+      fallbackBasePrice = 1200;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 800; fallbackFoil2Sides = 0;
     }
-  } else if (n.includes("c300") || n.includes("c250") || n.includes("couche")) {
-    basePriceMin = 150000; basePriceMax = 200000;
-  } else if (n.includes("ford")) {
-    basePriceMin = 150000; basePriceMax = 200000;
-  } else if (n.includes("mỹ thuật") || n.includes("art")) {
-    basePriceMin = 250000; basePriceMax = 350000;
-  } else if (n.includes("ngọc trai") || n.includes("pearl")) {
-    basePriceMin = 280000; basePriceMax = 380000;
-  } else if (n.includes("nhựa") || n.includes("plastic") || n.includes("siêu bền")) {
-    basePriceMin = 450000; basePriceMax = 600000;
-  } else if (n.includes("dập nổi") || n.includes("dập chìm") || n.includes("embossed")) {
-    basePriceMin = 300000; basePriceMax = 450000;
-  } else if (n.includes("in nhanh") || n.includes("kỹ thuật số")) {
-    basePriceMin = 180000; basePriceMax = 250000;
-  } else if (n.includes("đóng ghim")) {
-    basePriceMin = 40000; basePriceMax = 60000;
-  } else if (n.includes("keo nhiệt") || n.includes("pur")) {
-    basePriceMin = 150000; basePriceMax = 220000;
-  } else if (n.includes("lò xo") || n.includes("wire")) {
-    basePriceMin = 90000; basePriceMax = 140000;
-  } else if (n.includes("bìa cứng") || n.includes("carton")) {
-    basePriceMin = 450000; basePriceMax = 650000;
-  } else if (n.includes("tay gấp") || n.includes("gáy hộp")) {
-    basePriceMin = 120000; basePriceMax = 180000;
-  } else if (n.includes("uv")) {
-    basePriceMin = 220000; basePriceMax = 320000;
+  } else if (isCard) {
+    if (n.includes("mỹ thuật") || n.includes("art")) {
+      fallbackBasePrice = 180000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 50000; fallbackFoil2Sides = 90000;
+    } else if (n.includes("ngọc trai") || n.includes("pearl")) {
+      fallbackBasePrice = 220000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 50000; fallbackFoil2Sides = 90000;
+    } else if (n.includes("nhựa") || n.includes("plastic") || n.includes("trong suốt")) {
+      fallbackBasePrice = 350000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 80000; fallbackFoil2Sides = 0;
+    } else {
+      fallbackBasePrice = 100000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 40000; fallbackFoil2Sides = 70000;
+    }
+  } else if (isEnvelope) {
+    if (n.includes("mỹ thuật") || n.includes("art")) {
+      fallbackBasePrice = 200000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 60000; fallbackFoil2Sides = 0;
+    } else {
+      fallbackBasePrice = 120000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 40000; fallbackFoil2Sides = 0;
+    }
+  } else if (isFolder) {
+    if (n.includes("mỹ thuật") || n.includes("art")) {
+      fallbackBasePrice = 15000;
+      fallbackDoubleSided = 4000; fallbackFoil1Side = 8000; fallbackFoil2Sides = 15000;
+    } else {
+      fallbackBasePrice = 6500;
+      fallbackDoubleSided = 1500; fallbackFoil1Side = 3500; fallbackFoil2Sides = 6000;
+    }
+  } else if (isCatalogue) {
+    if (n.includes("keo nhiệt") || n.includes("pur")) {
+      fallbackBasePrice = 18000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 8000; fallbackFoil2Sides = 0;
+    } else if (n.includes("lò xo") || n.includes("wire")) {
+      fallbackBasePrice = 22000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 8000; fallbackFoil2Sides = 0;
+    } else if (n.includes("bìa cứng") || n.includes("hardcover")) {
+      fallbackBasePrice = 35000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 12000; fallbackFoil2Sides = 0;
+    } else {
+      fallbackBasePrice = 12000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 4000; fallbackFoil2Sides = 0;
+    }
+  } else if (isLetterhead) {
+    if (n.includes("mỹ thuật") || n.includes("art")) {
+      fallbackBasePrice = 280000;
+      fallbackDoubleSided = 50000; fallbackFoil1Side = 0; fallbackFoil2Sides = 0;
+    } else {
+      fallbackBasePrice = 150000;
+      fallbackDoubleSided = 40000; fallbackFoil1Side = 0; fallbackFoil2Sides = 0;
+    }
+  } else if (isBag) {
+    if (n.includes("kraft")) {
+      fallbackBasePrice = 6500;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 2500; fallbackFoil2Sides = 0;
+    } else if (n.includes("mỹ thuật") || n.includes("art")) {
+      fallbackBasePrice = 15000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 5000; fallbackFoil2Sides = 0;
+    } else {
+      fallbackBasePrice = 10000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 3000; fallbackFoil2Sides = 0;
+    }
+  } else if (isFlyer || isVoucher) {
+    if (n.includes("mỹ thuật") || n.includes("art")) {
+      fallbackBasePrice = 2000;
+      fallbackDoubleSided = 800; fallbackFoil1Side = 1200; fallbackFoil2Sides = 2000;
+    } else {
+      fallbackBasePrice = 500;
+      fallbackDoubleSided = 300; fallbackFoil1Side = 600; fallbackFoil2Sides = 1000;
+    }
+  } else if (isGreetingCard) {
+    if (n.includes("dập nổi") || n.includes("3d") || n.includes("embossed")) {
+      fallbackBasePrice = 8000;
+      fallbackDoubleSided = 1500; fallbackFoil1Side = 2500; fallbackFoil2Sides = 4000;
+    } else if (n.includes("kraft")) {
+      fallbackBasePrice = 4000;
+      fallbackDoubleSided = 800; fallbackFoil1Side = 1500; fallbackFoil2Sides = 3000;
+    } else if (n.includes("mỹ thuật") || n.includes("art") || n.includes("ngọc trai")) {
+      fallbackBasePrice = 6500;
+      fallbackDoubleSided = 1500; fallbackFoil1Side = 2500; fallbackFoil2Sides = 4000;
+    } else {
+      fallbackBasePrice = 3000;
+      fallbackDoubleSided = 800; fallbackFoil1Side = 1200; fallbackFoil2Sides = 2000;
+    }
+  } else if (isTetBox || isBox) {
+    if (n.includes("carton") || n.includes("bìa cứng") || n.includes("rigid")) {
+      fallbackBasePrice = 65000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 12000; fallbackFoil2Sides = 0;
+    } else if (n.includes("kraft")) {
+      fallbackBasePrice = 12000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 3000; fallbackFoil2Sides = 0;
+    } else if (n.includes("ivory") || n.includes("cao cấp")) {
+      fallbackBasePrice = 18000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 4500; fallbackFoil2Sides = 0;
+    } else {
+      fallbackBasePrice = 15000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 4000; fallbackFoil2Sides = 0;
+    }
+  } else if (isCalendar) {
+    if (n.includes("gỗ") || n.includes("wood")) {
+      fallbackBasePrice = 95000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 15000; fallbackFoil2Sides = 0;
+    } else if (n.includes("bìa cứng") || n.includes("carton") || n.includes("chữ a")) {
+      fallbackBasePrice = 45000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 10000; fallbackFoil2Sides = 0;
+    } else if (n.includes("treo tường") || n.includes("wall")) {
+      fallbackBasePrice = 35000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 8000; fallbackFoil2Sides = 0;
+    } else {
+      fallbackBasePrice = 30000;
+      fallbackDoubleSided = 0; fallbackFoil1Side = 6000; fallbackFoil2Sides = 0;
+    }
+  } else {
+    // Ultimate fallback based solely on material text
+    if (n.includes("c300") || n.includes("c250") || n.includes("couche")) {
+      fallbackBasePrice = 8000;
+    } else if (n.includes("ford")) {
+      fallbackBasePrice = 8000;
+    } else if (n.includes("mỹ thuật") || n.includes("art")) {
+      fallbackBasePrice = 15000;
+    } else if (n.includes("ngọc trai") || n.includes("pearl")) {
+      fallbackBasePrice = 18000;
+    } else if (n.includes("nhựa") || n.includes("plastic") || n.includes("siêu bền")) {
+      fallbackBasePrice = 25000;
+    } else if (n.includes("dập nổi") || n.includes("dập chìm") || n.includes("embossed")) {
+      fallbackBasePrice = 20000;
+    } else if (n.includes("in nhanh") || n.includes("kỹ thuật số")) {
+      fallbackBasePrice = 12000;
+    } else if (n.includes("đóng ghim")) {
+      fallbackBasePrice = 10000;
+    } else if (n.includes("keo nhiệt") || n.includes("pur")) {
+      fallbackBasePrice = 18000;
+    } else if (n.includes("lò xo") || n.includes("wire")) {
+      fallbackBasePrice = 15000;
+    } else if (n.includes("bìa cứng") || n.includes("carton")) {
+      fallbackBasePrice = 35000;
+    } else if (n.includes("tay gấp") || n.includes("gáy hộp")) {
+      fallbackBasePrice = 8000;
+    } else if (n.includes("uv")) {
+      fallbackBasePrice = 15000;
+    } else {
+      fallbackBasePrice = 8000;
+    }
   }
+
+  const basePriceMin = option.basePrice !== undefined ? option.basePrice : fallbackBasePrice;
+  const doubleSidedAddon = option.doubleSidedPrice !== undefined ? option.doubleSidedPrice : fallbackDoubleSided;
+  const foilAddon1Side = option.foilPrice !== undefined ? option.foilPrice : fallbackFoil1Side;
+  const foilAddon2Sides = option.foil2SidesPrice !== undefined 
+    ? option.foil2SidesPrice 
+    : (option.foilPrice !== undefined && option.foilPrice > 0 ? Math.round(option.foilPrice * 1.75) : fallbackFoil2Sides);
 
   const currentDoubleSidedPrice = doubleSidedChecked ? doubleSidedAddon : 0;
   const currentFoilPrice = foilChecked 
@@ -177,33 +314,46 @@ export function MaterialFlashcard({
   const effectiveHideFoilCheckbox = hideFoilCheckbox || hasPages;
     
   let unitMin = basePriceMin + currentDoubleSidedPrice + currentFoilPrice;
-  let unitMax = basePriceMax + currentDoubleSidedPrice + currentFoilPrice;
   
   if (hasPages) {
     const pricePerPageMin = 1500;
-    const pricePerPageMax = 2500;
     unitMin += pages * pricePerPageMin;
-    unitMax += pages * pricePerPageMax;
   }
   
   const totalPriceMin = unitMin * quantity;
-  const totalPriceMax = unitMax * quantity;
 
   let defaultUnitVi = "Cái";
   let defaultUnitEn = "Pieces";
   
-  if (productName.toLowerCase().includes("thẻ") || productName.toLowerCase().includes("card") || productName.toLowerCase().includes("danh thiếp")) {
+  if (isCard || isEnvelope) {
     defaultUnitVi = "Hộp";
     defaultUnitEn = "Boxes";
-  } else if (productName.toLowerCase().includes("catalogue") || productName.toLowerCase().includes("cuốn") || productName.toLowerCase().includes("book")) {
+  } else if (isCatalogue || isCalendar || isNotepad) {
     defaultUnitVi = "Cuốn";
     defaultUnitEn = "Books";
-  } else if (productName.toLowerCase().includes("folder") || productName.toLowerCase().includes("bìa")) {
-    defaultUnitVi = "Cái";
+  } else if (isLetterhead) {
+    defaultUnitVi = "Ram";
+    defaultUnitEn = "Reams";
+  } else if (isBag) {
+    defaultUnitVi = "Túi";
+    defaultUnitEn = "Bags";
+  } else if (isBox || isTetBox) {
+    defaultUnitVi = "Hộp";
+    defaultUnitEn = "Boxes";
+  } else if (isFlyer || isVoucher) {
+    defaultUnitVi = "Tờ";
     defaultUnitEn = "Pieces";
+  } else if (isGreetingCard) {
+    defaultUnitVi = "Thiệp";
+    defaultUnitEn = "Cards";
+  } else if (isStamp) {
+    defaultUnitVi = "Tem";
+    defaultUnitEn = "Stamps";
   }
   
-  const unitLabel = locale === "vi" ? defaultUnitVi : defaultUnitEn;
+  const unitLabel = locale === "vi" 
+    ? (option.unitVi ?? defaultUnitVi) 
+    : (option.unitEn ?? defaultUnitEn);
 
   const maxQuantity = defaultUnitVi === "Hộp" ? 200 : 1000;
 
@@ -524,7 +674,7 @@ export function MaterialFlashcard({
                 {locale === "vi" ? "Thành tiền" : "Total Amount"}
               </div>
               <div className="text-[15px] font-black text-brand-primary leading-tight">
-                {totalPriceMin.toLocaleString("vi-VN")}đ <span className="text-zinc-400 font-normal mx-0.5">~</span> {totalPriceMax.toLocaleString("vi-VN")}đ
+                {totalPriceMin.toLocaleString("vi-VN")}đ
               </div>
             </div>
 

@@ -157,18 +157,44 @@ export default async function CategoryPage({
             {t("referenceGallery")}
           </p>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            {cat.items.map((item) => (
-              <div key={item.id} className="relative rounded-xl overflow-hidden group h-36 sm:h-44 lg:h-[200px]">
-                <Image
-                  src={item.image}
-                  alt={pickLocale(locale, item.nameVi, item.nameEn)}
-                  fill
-                  sizes="(min-width: 1024px) 25vw, 50vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-              </div>
-            ))}
+            {cat.items.map((item) => {
+              let refImage = item.image;
+              
+              if (item.optionGroups && item.optionGroups.length > 0) {
+                const allMaterialImages: string[] = [];
+                for (const group of item.optionGroups) {
+                  for (const option of group.options) {
+                    if (option.images) allMaterialImages.push(...option.images);
+                    if (option.pureImages) allMaterialImages.push(...option.pureImages);
+                  }
+                }
+                
+                // Filter out the main item.image to avoid duplication
+                const uniqueImages = allMaterialImages.filter(img => img !== item.image);
+                
+                // Try to get the 2nd image (index 1), or 3rd (index 2) if possible
+                if (uniqueImages.length >= 2) {
+                  refImage = uniqueImages[1]; 
+                } else if (uniqueImages.length === 1) {
+                  refImage = uniqueImages[0];
+                }
+              } else if (item.images && item.images.length > 1) {
+                refImage = item.images[1];
+              }
+
+              return (
+                <div key={item.id} className="relative rounded-xl overflow-hidden group h-36 sm:h-44 lg:h-[200px]">
+                  <Image
+                    src={refImage}
+                    alt={pickLocale(locale, item.nameVi, item.nameEn)}
+                    fill
+                    sizes="(min-width: 1024px) 25vw, 50vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                </div>
+              );
+            })}
           </div>
         </div>
 
