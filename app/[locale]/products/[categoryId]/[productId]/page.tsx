@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
-  Briefcase, Package, Calendar, Gift,
+  Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles,
   ArrowLeft, ArrowRight,
   type LucideIcon,
 } from "lucide-react";
@@ -14,7 +14,7 @@ import { productCategories } from "@/data/categories";
 import { MaterialFlashcard } from "@/components/ui/material-flashcard";
 import { MaterialGlossaryFab } from "@/components/ui/material-glossary-fab";
 
-const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift };
+const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 
 export function generateStaticParams() {
   return productCategories.flatMap((cat) =>

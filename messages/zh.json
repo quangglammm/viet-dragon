@@ -1,0 +1,326 @@
+{
+  "contact": {
+    "phone1": "0901 448 377",
+    "phone2": "0919 510 543",
+    "email": "contact@vietdragon.vn",
+    "address": "胡志明市 & 平阳省"
+  },
+  "floatingContact": {
+    "zalo": "Zalo 咨询",
+    "call": "电话咨询"
+  },
+  "materialGlossary": {
+    "title": "印刷材质图解",
+    "openLabel": "查看材质图解",
+    "closeLabel": "关闭材质图解"
+  },
+  "nav": {
+    "links": {
+      "products": "产品中心",
+      "blog": "文章资讯",
+      "services": "印刷服务",
+      "about": "关于我们",
+      "contact": "联系我们"
+    },
+    "quote": "获取报价",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单"
+  },
+  "hero": {
+    "slides": [
+      {
+        "tag": "营销印刷品",
+        "titleLine1": "高端精湛印刷，",
+        "titleLine2": "100% 准时交付。",
+        "desc": "从名片到画册目录 —— 批量生产前提供免费设计与打样。30分钟内极速透明报价。"
+      },
+      {
+        "tag": "包装与纸袋",
+        "titleLine1": "树立品牌包装标准，",
+        "titleLine2": "无需久候。",
+        "desc": "纸盒、手提纸袋、不干胶贴纸 —— 快速生产，直达配送，无任何隐形收费。"
+      },
+      {
+        "tag": "极速交付",
+        "titleLine1": "从设计到成品，",
+        "titleLine2": "仅需 48 小时。",
+        "desc": "免费打样，极速出货，全胡志明市及平阳省送货上门。"
+      }
+    ],
+    "cta": "获取报价",
+    "viewSlide": "查看第 {number} 张幻灯片"
+  },
+  "shopCategories": {
+    "itemCount": "{count} 款产品"
+  },
+  "shopBanner": {
+    "banners": [
+      { "eyebrow": "热销爆款", "title": "高档商务名片" },
+      { "eyebrow": "新品趋势", "title": "奢华精品纸盒" }
+    ],
+    "cta": "立即查看"
+  },
+  "about": {
+    "eyebrow": "关于我们",
+    "title": "我们为您的企业打造出众的印刷品质。",
+    "body": "从小巧名片到高端礼盒，从精美折页到醒目贴纸 —— 每一件产品都承载着 Viet Dragon 的卓越品质。",
+    "checklist": [
+      "细节精雕细琢",
+      "标准化品质流程",
+      "价格透明实惠",
+      "免费一对一咨询"
+    ],
+    "discoverMore": "了解更多",
+    "callExpert": "咨询印刷专家",
+    "statNumber": "10+",
+    "statLabel": "年专业印刷经验",
+    "imageAlt": "Viet Dragon 印刷工场",
+    "playVideo": "观看宣传视频"
+  },
+  "services": {
+    "eyebrow": "特色服务",
+    "title": "四项配套服务，完全免费。",
+    "subtitle": "每笔订单均尊享四项全免配套服务，无任何额外费用。",
+    "items": [
+      { "title": "专业咨询", "desc": "专属顾问团队从设计构想到材质选用提供全方位专业建议。" },
+      { "title": "设计支持", "desc": "按需提供专业排版与设计，修改至您完全满意为止。" },
+      { "title": "免费打样", "desc": "大货生产前提供实物打样 —— 亲眼确认品质后再定稿。" },
+      { "title": "免费配送", "desc": "胡志明市与平阳省全境快速免费配送到门。" }
+    ],
+    "cta": "获取报价"
+  },
+  "shop": {
+    "eyebrow": "热销产品",
+    "title": "探索我们的印刷产品系列。",
+    "viewDetail": "查看详情",
+    "requestQuote": "获取报价",
+    "requestQuoteArrow": "获取报价 →"
+  },
+  "ctaBanner": {
+    "title": "准备好开始您的印刷项目了吗？",
+    "subtitle": "按时按量生产并准时送达",
+    "ctaQuote": "获取报价",
+    "ctaProducts": "查看产品"
+  },
+  "portfolio": {
+    "eyebrow": "精选案例",
+    "titleLine1": "每一件作品，",
+    "titleHighlight": "皆倾注匠心。",
+    "viewAll": "全部产品",
+    "items": [
+      { "label": "商务名片", "cat": "营销印刷" },
+      { "label": "包装盒", "cat": "包装印刷" },
+      { "label": "新年利是封", "cat": "节日印刷" },
+      { "label": "企业画册", "cat": "营销印刷" },
+      { "label": "餐厅菜单", "cat": "办公印刷" },
+      { "label": "邀请函", "cat": "营销印刷" }
+    ]
+  },
+  "testimonials": {
+    "eyebrow": "客户评价",
+    "title": "深受长期合作客户的信赖与好评。",
+    "items": [
+      {
+        "name": "Nguyễn Thị Minh Anh",
+        "role": "咖啡店主",
+        "quote": "Viet Dragon 印刷的纸杯和外带纸袋色彩非常纯正，准时送达，我们会一直长期合作。"
+      },
+      {
+        "name": "Trần Quốc Bảo",
+        "role": "市场总监",
+        "quote": "我们公司的整套 VI 品牌形象印刷极为专业，沟通顺畅且改稿响应神速。"
+      },
+      {
+        "name": "Lê Thu Hà",
+        "role": "时尚品牌主理人",
+        "quote": "我们大批量订购了纸盒和吊牌，每批品质都高度一致，性价比非常高。"
+      }
+    ],
+    "viewReview": "查看第 {number} 条评价"
+  },
+  "faq": {
+    "eyebrow": "常见问题",
+    "titleLine1": "关于 Viet Dragon",
+    "titleHighlight": "的常见解答。",
+    "items": [
+      {
+        "q": "最低起印量是多少？",
+        "a": "根据产品不同起印量略有差异，通常为 50–100 件。如需少量定制，请直接联系我们。"
+      },
+      {
+        "q": "交货周期一般需要多久？",
+        "a": "常规订单在胡志明市及平阳省 24–48 小时内送达。大批量或复杂工艺订单需 3–5 天。"
+      },
+      {
+        "q": "接受哪些设计文件格式？",
+        "a": "我们支持 AI、PDF、PSD 格式（CMYK 模式，分辨率 300dpi 以上）。若无现成文件，我们的设计团队可免费协助。"
+      },
+      {
+        "q": "是否支持送货至其他省市？",
+        "a": "支持。我们通过专业物流合作伙伴配送至越南全国各地。"
+      },
+      {
+        "q": "支持哪些付款方式？",
+        "a": "支持银行转账、货到付款以及企业客户月结/合同对公付款。"
+      }
+    ]
+  },
+  "quality": {
+    "eyebrow": "品质承诺",
+    "titleLine1": "我们坚持怎样的",
+    "titleHighlight": "严苛品质标准？",
+    "subtitle": "每一件印刷品出厂前均经过严格的质量把控。",
+    "checklist": [
+      "尺寸分毫不差",
+      "色彩真实还原",
+      "材质坚固耐用",
+      "边角精致利落",
+      "注重细节处理",
+      "全数出厂质检"
+    ],
+    "cta": "立即询价"
+  },
+  "process": {
+    "titleLine1": "合作",
+    "titleHighlight": "流程",
+    "subtitle": "从构思到成品交付 —— 仅需简单三步。",
+    "cta": "立即开始",
+    "steps": [
+      { "title": "咨询与报价", "desc": "告知您的需求，30分钟内获取清晰明细的报价单。" },
+      { "title": "设计与打样", "desc": "专业团队排版效果图并提供实物打样以供确认。" },
+      { "title": "量产与配送", "desc": "高效自动化印刷生产，快速配送至您的指定地点。" }
+    ]
+  },
+  "blogPreview": {
+    "eyebrow": "文章资讯",
+    "titleLine1": "印刷技巧与",
+    "titleHighlight": "最新动态。",
+    "readMore": "阅读全文",
+    "viewAll": "查看全部文章",
+    "minute": "分钟"
+  },
+  "brands": {
+    "title": "服务众多行业客户",
+    "industries": [
+      "餐饮 · 咖啡厅",
+      "时尚服装",
+      "科技初创",
+      "零售连锁",
+      "婚庆 · 活动",
+      "教育机构",
+      "美容 · 水疗",
+      "室内设计"
+    ]
+  },
+  "cta": {
+    "eyebrow": "立即开始",
+    "title": "准备好印刷了吗？",
+    "subtitle": "联系我们，30分钟内获取专属免费报价。",
+    "getQuote": "立即获取报价"
+  },
+  "footer": {
+    "tagline": "胡志明市与平阳省专业高品质印刷服务商。",
+    "productsLabel": "产品分类",
+    "companyLabel": "关于公司",
+    "usefulLabel": "快捷导航",
+    "contactLabel": "联系方式",
+    "usefulLinks": {
+      "about": "关于我们",
+      "services": "印刷服务",
+      "process": "合作流程",
+      "testimonials": "客户评价",
+      "faq": "常见问题"
+    },
+    "copyright": "© {year} Viet Dragon. 版权所有。",
+    "premium": "高端品质印刷服务"
+  },
+  "productsPage": {
+    "metaTitle": "产品中心 | Viet Dragon – 专业印刷服务",
+    "metaDescription": "浏览 Viet Dragon 完整印刷产品目录：营销、办公、包装、新年礼品、个人定制、商务礼品、展会物料及快印服务。",
+    "breadcrumbHome": "首页",
+    "breadcrumbCurrent": "产品中心",
+    "eyebrow": "全部产品",
+    "titleLine1": "满足您的一切需求，",
+    "titleHighlight": "我们用心印刷。",
+    "subtitle": "涵盖商务名片、精美包装、企业礼品及极速快印等全方位产品分类。",
+    "galleryCaption": "产品示意图 — 真实样品照片持续更新中。",
+    "browseByCategory": "按分类浏览",
+    "viewDetail": "查看详情 →",
+    "ctaTitleLine1": "没有找到您需要的",
+    "ctaTitleHighlight": "产品？",
+    "ctaSubtitle": "立即联系我们 —— 免费咨询与设计，30分钟内极速报价。",
+    "ctaButton": "联系我们"
+  },
+  "categoryPage": {
+    "breadcrumbHome": "首页",
+    "breadcrumbProducts": "产品中心",
+    "eyebrow": "产品分类",
+    "getQuote": "获取报价",
+    "itemCount": "该分类共 {count} 款产品",
+    "referenceGallery": "样品参考图库",
+    "ctaTitleLine1": "获取产品报价：",
+    "ctaSubtitle": "立即联系我们 —— 免费咨询与设计，30分钟内极速报价。",
+    "ctaButton": "立即获取报价",
+    "prevShort": "上一类",
+    "allProducts": "全部产品",
+    "viewAll": "查看全部",
+    "nextShort": "下一类"
+  },
+  "productDetailPage": {
+    "breadcrumbHome": "首页",
+    "breadcrumbProducts": "产品中心",
+    "optionDescriptionLabel": "材质特性",
+    "optionBestForLabel": "适用场景",
+    "optionViewImageHint": "点击查看材质样品照片",
+    "optionBackToDetailsHint": "点击返回参数详情",
+    "optionFoilCheckboxLabel": "烫金/烫银工艺 (Ép kim)",
+    "optionDoubleSidedCheckboxLabel": "双面印刷 (In 2 mặt)",
+    "optionConsultCopyLabel": "复制咨询内容",
+    "optionConsultOpenLabel": "打开 Zalo 发送咨询",
+    "optionConsultCopiedToast": "已复制！再次点击即可打开 Zalo 粘贴发送。",
+    "optionConsultMessage": "我想咨询这款产品：{product} ({url})",
+    "optionConsultMaterialLine": "材质选项：{option}",
+    "optionConsultFoilLine": "烫金工艺：{status}",
+    "optionConsultDoubleSidedLine": "双面印刷：{status}",
+    "optionConsultYes": "需要",
+    "optionConsultNo": "不需要",
+    "getQuote": "获取报价",
+    "ctaTitleLine1": "需要此产品的定制报价：",
+    "ctaSubtitle": "立即联系我们 —— 免费咨询与设计，30分钟内极速报价。",
+    "ctaButton": "立即获取报价",
+    "prevShort": "上一款",
+    "nextShort": "下一款",
+    "backToCategory": "返回分类",
+    "viewAllInCategory": "查看该分类全部产品"
+  },
+  "blogPage": {
+    "metaTitle": "文章资讯 | Viet Dragon – 印刷知识与案例",
+    "metaDescription": "探索 Viet Dragon 的印刷工艺技巧、行业案例分析与最新动态资讯。",
+    "breadcrumbHome": "首页",
+    "breadcrumbCurrent": "文章资讯",
+    "eyebrow": "文章资讯",
+    "titleLine1": "印刷技巧与",
+    "titleHighlight": "行业动态。",
+    "subtitle": "专业的印刷工艺指南、实战项目案例与 Viet Dragon 最新资讯。",
+    "readArticle": "阅读文章",
+    "allPosts": "全部文章",
+    "readMore": "阅读全文 →",
+    "minuteRead": "分钟阅读",
+    "minute": "分钟",
+    "ctaTitleLine1": "准备好启动您的",
+    "ctaTitleHighlight": "印刷项目了吗？",
+    "ctaSubtitle": "免费专业咨询与打样设计 —— 30分钟内极速报价。",
+    "ctaButton": "立即获取报价"
+  },
+  "blogPostPage": {
+    "breadcrumbHome": "首页",
+    "breadcrumbBlog": "文章资讯",
+    "minuteRead": "分钟阅读",
+    "needHelp": "需要更多专业建议？",
+    "needHelpDesc": "Viet Dragon 专业团队随时为您提供免费咨询并在30分钟内出具详细报价。",
+    "contactNow": "联系我们",
+    "allPosts": "全部文章",
+    "viewAll": "查看全部",
+    "getQuote": "获取报价"
+  }
+}
