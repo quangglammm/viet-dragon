@@ -1,0 +1,326 @@
+{
+  "contact": {
+    "phone1": "0901 448 377",
+    "phone2": "0919 510 543",
+    "email": "contact@vietdragon.vn",
+    "address": "ホーチミン市 ＆ ビンズオン省"
+  },
+  "floatingContact": {
+    "zalo": "Zaloでお問い合わせ",
+    "call": "電話でお問い合わせ"
+  },
+  "materialGlossary": {
+    "title": "印刷用紙・素材ガイド",
+    "openLabel": "素材ガイドを見る",
+    "closeLabel": "素材ガイドを閉じる"
+  },
+  "nav": {
+    "links": {
+      "products": "取扱製品",
+      "blog": "ブログ・お知らせ",
+      "services": "印刷サービス",
+      "about": "会社概要",
+      "contact": "お問い合わせ"
+    },
+    "quote": "お見積り依頼",
+    "openMenu": "メニューを開く",
+    "closeMenu": "メニューを閉じる"
+  },
+  "hero": {
+    "slides": [
+      {
+        "tag": "販促・マーケティング印刷",
+        "titleLine1": "最高峰の印刷品質、",
+        "titleLine2": "100% 納期厳守。",
+        "desc": "名刺から製品カタログまで —— 本生産前に無料デザイン＆サンプル印刷をご提供。30分以内に透明性の高いお見積りをご案内。"
+      },
+      {
+        "tag": "パッケージ・紙袋",
+        "titleLine1": "ブランド価値を高める",
+        "titleLine2": "確かなパッケージ技術。",
+        "desc": "化粧箱、オリジナル紙袋、各種シール —— スピーディな製造と直送配送、追加料金なし。"
+      },
+      {
+        "tag": "スピード納品",
+        "titleLine1": "デザインから完成まで",
+        "titleLine2": "わずか48時間。",
+        "desc": "無料色校正サンプル、短納期生産、ホーチミン市・ビンズオン省全域へ直接お届けします。"
+      }
+    ],
+    "cta": "お見積り依頼",
+    "viewSlide": "スライド {number} を表示"
+  },
+  "shopCategories": {
+    "itemCount": "{count} 点の製品"
+  },
+  "shopBanner": {
+    "banners": [
+      { "eyebrow": "ベストセラー", "title": "高級ビジネス名刺" },
+      { "eyebrow": "トレンド", "title": "高級貼り箱・ギフトボックス" }
+    ],
+    "cta": "今すぐ見る"
+  },
+  "about": {
+    "eyebrow": "会社概要",
+    "title": "お客様のビジネスを際立たせる高品質印刷をお届けします。",
+    "body": "小さな名刺から高級ギフトボックス、洗練されたパンフレットから耐久性のあるステッカーまで —— すべての製品に Viet Dragon のクラフトマンシップが宿っています。",
+    "checklist": [
+      "細部まで完璧な仕上がり",
+      "厳格な品質管理プロセス",
+      "適正かつ透明な価格設定",
+      "専任スタッフによる無料相談"
+    ],
+    "discoverMore": "詳細を見る",
+    "callExpert": "専門スタッフに相談",
+    "statNumber": "10+",
+    "statLabel": "年の印刷実績",
+    "imageAlt": "Viet Dragon 印刷工場",
+    "playVideo": "紹介動画を見る"
+  },
+  "services": {
+    "eyebrow": "サービス内容",
+    "title": "ご注文時、4つの安心サポートをすべて無料でご提供。",
+    "subtitle": "すべてのご注文に無料パッケージサービスが付帯します。",
+    "items": [
+      { "title": "専門コンサルティング", "desc": "デザイン企画から最適な用紙・特殊加工の選定まで丁寧にサポート。" },
+      { "title": "デザイン制作", "desc": "ご納得いただけるまで何度でも修正可能なプロのデザインサポート。" },
+      { "title": "無料サンプル校正", "desc": "大ロット生産前に実際の仕上がりを確認できる無料サンプル作成。" },
+      { "title": "無料配送サービス", "desc": "ホーチミン市およびビンズオン省内へ迅速かつ丁寧にお届け。" }
+    ],
+    "cta": "お見積り依頼"
+  },
+  "shop": {
+    "eyebrow": "おすすめ製品",
+    "title": "幅広い印刷ラインナップをご覧ください。",
+    "viewDetail": "詳細を見る",
+    "requestQuote": "お見積り",
+    "requestQuoteArrow": "お見積り依頼 →"
+  },
+  "ctaBanner": {
+    "title": "印刷のご相談・ご注文はこちら",
+    "subtitle": "ご希望の納期に合わせて製造・納品いたします",
+    "ctaQuote": "お見積り依頼",
+    "ctaProducts": "製品一覧を見る"
+  },
+  "portfolio": {
+    "eyebrow": "実績紹介",
+    "titleLine1": "すべての製品に、",
+    "titleHighlight": "こだわりと技術を。",
+    "viewAll": "全製品を見る",
+    "items": [
+      { "label": "ビジネス名刺", "cat": "マーケティング" },
+      { "label": "パッケージ・箱", "cat": "パッケージ" },
+      { "label": "お年玉袋 (ポチ袋)", "cat": "季節・祝儀用品" },
+      { "label": "企業カタログ", "cat": "マーケティング" },
+      { "label": "レストランメニュー", "cat": "オフィス用品" },
+      { "label": "招待状・案内状", "cat": "マーケティング" }
+    ]
+  },
+  "testimonials": {
+    "eyebrow": "お客様の声",
+    "title": "リピートいただく多くのお客様から厚い信頼を得ています。",
+    "items": [
+      {
+        "name": "Nguyễn Thị Minh Anh",
+        "role": "カフェオーナー",
+        "quote": "Viet Dragonに紙カップと持ち帰り用手提げ袋を依頼しましたが、発色が素晴らしく納期通りに納品されました。今後も継続して発注します。"
+      },
+      {
+        "name": "Trần Quốc Bảo",
+        "role": "マーケティング部長",
+        "quote": "自社ブランドのVI印刷一式をお願いしました。非常にプロフェッショナルで修正対応も迅速で助かりました。"
+      },
+      {
+        "name": "Lê Thu Hà",
+        "role": "アパレルブランド代表",
+        "quote": "化粧箱とタグを大量ロットで注文しましたが、ロットごとの品質ブレがなく価格も非常に良心的でした。"
+      }
+    ],
+    "viewReview": "レビュー {number} を見る"
+  },
+  "faq": {
+    "eyebrow": "よくあるご質問",
+    "titleLine1": "Viet Dragon についての",
+    "titleHighlight": "よくある質問と回答。",
+    "items": [
+      {
+        "q": "最小ロット数はいくつからですか？",
+        "a": "製品により異なりますが、通常50〜100個から対応可能です。小ロットのご相談もお気軽にお問い合わせください。"
+      },
+      {
+        "q": "納期はどのくらいかかりますか？",
+        "a": "通常のご注文はホーチミン市・ビンズオン省内で24〜48時間以内に納品可能です。大ロットや特殊加工は3〜5日程度となります。"
+      },
+      {
+        "q": "入稿可能なファイル形式を教えてください。",
+        "a": "AI、PDF、PSD（CMYKカラー、解像度300dpi以上推奨）に対応しております。データがない場合も専任デザイナーがサポートします。"
+      },
+      {
+        "q": "他地域への発送は可能ですか？",
+        "a": "はい、提携物流会社を通じてベトナム全国へ配送可能です。"
+      },
+      {
+        "q": "利用できる支払い方法は何ですか？",
+        "a": "銀行振込、代金引換（COD）、法人向け請求書払いに対応しております。"
+      }
+    ]
+  },
+  "quality": {
+    "eyebrow": "品質へのこだわり",
+    "titleLine1": "私たちが誇る",
+    "titleHighlight": "徹底した品質基準。",
+    "subtitle": "すべての印刷物は出荷前に厳密な検品プロセスを経てお客様にお届けします。",
+    "checklist": [
+      "ミリ単位の寸法精度",
+      "忠実なカラー再現",
+      "高耐久・高品質な用紙",
+      "美しい断裁・エッジ加工",
+      "細部への徹底したこだわり",
+      "全数出荷前検査"
+    ],
+    "cta": "お見積りを依頼する"
+  },
+  "process": {
+    "titleLine1": "ご注文の",
+    "titleHighlight": "流れ",
+    "subtitle": "企画・ご相談から納品まで —— カンタン3ステップ。",
+    "cta": "相談を始める",
+    "steps": [
+      { "title": "ご相談・お見積り", "desc": "ご要望をお伺いし、30分以内に明瞭なお見積りをお出しします。" },
+      { "title": "デザイン・校正確認", "desc": "仕上がりイメージを作成し、実物サンプルで事前に確認いただけます。" },
+      { "title": "印刷製造・納品", "desc": "最新設備で迅速に印刷・加工し、ご指定の場所へ直送します。" }
+    ]
+  },
+  "blogPreview": {
+    "eyebrow": "ブログ・最新情報",
+    "titleLine1": "印刷ノウハウと",
+    "titleHighlight": "最新ニュース。",
+    "readMore": "続きを読む",
+    "viewAll": "すべての記事を見る",
+    "minute": "分"
+  },
+  "brands": {
+    "title": "多様な業界での豊富な導入実績",
+    "industries": [
+      "飲食・カフェ",
+      "ファッション・アパレル",
+      "IT・スタートアップ",
+      "小売・リテール",
+      "ブライダル・イベント",
+      "教育・学校",
+      "美容・サロン・スパ",
+      "インテリア・建築"
+    ]
+  },
+  "cta": {
+    "eyebrow": "今すぐご相談",
+    "title": "印刷のご準備はお済みですか？",
+    "subtitle": "お気軽にお問い合わせください。30分以内に無料見積りをご案内します。",
+    "getQuote": "今すぐ見積りを依頼する"
+  },
+  "footer": {
+    "tagline": "ホーチミン市・ビンズオン省のプロフェッショナル高品質印刷サービス。",
+    "productsLabel": "取扱製品",
+    "companyLabel": "会社案内",
+    "usefulLabel": "リンク",
+    "contactLabel": "お問い合わせ先",
+    "usefulLinks": {
+      "about": "会社概要",
+      "services": "サービス一覧",
+      "process": "製造の流れ",
+      "testimonials": "お客様の声",
+      "faq": "よくある質問"
+    },
+    "copyright": "© {year} Viet Dragon. All rights reserved.",
+    "premium": "プレミアム印刷サービス"
+  },
+  "productsPage": {
+    "metaTitle": "取扱製品一覧 | Viet Dragon – プロフェッショナル印刷",
+    "metaDescription": "Viet Dragonの総合印刷製品カタログ：マーケティング資材、オフィス用品、パッケージ、お祝い用品、個人向けギフト、ノベルティ、特急印刷。",
+    "breadcrumbHome": "ホーム",
+    "breadcrumbCurrent": "取扱製品",
+    "eyebrow": "すべての製品",
+    "titleLine1": "お客様のあらゆる印刷ニーズに、",
+    "titleHighlight": "確かな技術でお応えします。",
+    "subtitle": "名刺、パンフレットからパッケージ、企業ノベルティ、即日特急印刷まで網羅したラインナップ。",
+    "galleryCaption": "製品イメージ写真 — 実際のサンプル写真は順次更新しております。",
+    "browseByCategory": "カテゴリーから探す",
+    "viewDetail": "詳細を見る →",
+    "ctaTitleLine1": "お探しの製品が",
+    "ctaTitleHighlight": "見つかりませんか？",
+    "ctaSubtitle": "専任スタッフが無料でお見積り・デザイン相談に対応（30分以内にご案内）。",
+    "ctaButton": "お問い合わせ"
+  },
+  "categoryPage": {
+    "breadcrumbHome": "ホーム",
+    "breadcrumbProducts": "取扱製品",
+    "eyebrow": "製品カテゴリー",
+    "getQuote": "お見積り依頼",
+    "itemCount": "このカテゴリーには {count} 点の製品があります",
+    "referenceGallery": "製品参考ギャラリー",
+    "ctaTitleLine1": "製品のお見積りをご希望ですか：",
+    "ctaSubtitle": "専任スタッフが無料でお見積り・デザイン相談に対応（30分以内にご案内）。",
+    "ctaButton": "お見積りを依頼する",
+    "prevShort": "前のカテゴリー",
+    "allProducts": "全製品一覧",
+    "viewAll": "すべて見る",
+    "nextShort": "次のカテゴリー"
+  },
+  "productDetailPage": {
+    "breadcrumbHome": "ホーム",
+    "breadcrumbProducts": "取扱製品",
+    "optionDescriptionLabel": "素材の特徴",
+    "optionBestForLabel": "おすすめの用途",
+    "optionViewImageHint": "タップして用紙サンプル写真を表示",
+    "optionBackToDetailsHint": "タップして仕様詳細に戻る",
+    "optionFoilCheckboxLabel": "箔押し加工 (金・銀)",
+    "optionDoubleSidedCheckboxLabel": "両面印刷",
+    "optionConsultCopyLabel": "問い合わせ文をコピー",
+    "optionConsultOpenLabel": "Zaloを開いて貼り付け",
+    "optionConsultCopiedToast": "コピー完了！もう一度タップするとZaloが開きます。",
+    "optionConsultMessage": "こちらの製品について問い合わせたいです：{product} ({url})",
+    "optionConsultMaterialLine": "選択用紙：{option}",
+    "optionConsultFoilLine": "箔押し加工：{status}",
+    "optionConsultDoubleSidedLine": "両面印刷：{status}",
+    "optionConsultYes": "あり",
+    "optionConsultNo": "なし",
+    "getQuote": "お見積り依頼",
+    "ctaTitleLine1": "この製品のオーダー見積り依頼：",
+    "ctaSubtitle": "専任スタッフが無料でお見積り・デザイン相談に対応（30分以内にご案内）。",
+    "ctaButton": "お見積りを依頼する",
+    "prevShort": "前の製品",
+    "nextShort": "次の製品",
+    "backToCategory": "カテゴリーに戻る",
+    "viewAllInCategory": "このカテゴリーの全製品を見る"
+  },
+  "blogPage": {
+    "metaTitle": "ブログ・お知らせ | Viet Dragon – 印刷コラム＆実績",
+    "metaDescription": "Viet Dragonの印刷技術解説、プロジェクト事例、最新ニュースをお届けします。",
+    "breadcrumbHome": "ホーム",
+    "breadcrumbCurrent": "ブログ",
+    "eyebrow": "ブログ・お知らせ",
+    "titleLine1": "印刷のヒントと",
+    "titleHighlight": "最新ニュース。",
+    "subtitle": "実用的な印刷知識、導入事例、Viet Dragon からの最新情報をご紹介。",
+    "readArticle": "記事を読む",
+    "allPosts": "全記事一覧",
+    "readMore": "続きを読む →",
+    "minuteRead": "分で読めます",
+    "minute": "分",
+    "ctaTitleLine1": "印刷プロジェクトを",
+    "ctaTitleHighlight": "始めましょう",
+    "ctaSubtitle": "無料相談＆デザインサポート —— 30分以内に迅速お見積り。",
+    "ctaButton": "お見積りを依頼する"
+  },
+  "blogPostPage": {
+    "breadcrumbHome": "ホーム",
+    "breadcrumbBlog": "ブログ",
+    "minuteRead": "分で読めます",
+    "needHelp": "詳しいご相談・アドバイスが必要ですか？",
+    "needHelpDesc": "Viet Dragonの専門チームが無料でご相談を承り、30分以内にお見積りを作成します。",
+    "contactNow": "お問い合わせ",
+    "allPosts": "全記事一覧",
+    "viewAll": "すべて見る",
+    "getQuote": "お見積り依頼"
+  }
+}

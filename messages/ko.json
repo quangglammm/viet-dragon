@@ -1,0 +1,326 @@
+{
+  "contact": {
+    "phone1": "0901 448 377",
+    "phone2": "0919 510 543",
+    "email": "contact@vietdragon.vn",
+    "address": "호치민시 & 빈증성"
+  },
+  "floatingContact": {
+    "zalo": "Zalo 상담하기",
+    "call": "전화 상담하기"
+  },
+  "materialGlossary": {
+    "title": "인쇄 용지 및 재질 가이드",
+    "openLabel": "재질 가이드 보기",
+    "closeLabel": "재질 가이드 닫기"
+  },
+  "nav": {
+    "links": {
+      "products": "인쇄 제품",
+      "blog": "블로그·소식",
+      "services": "인쇄 서비스",
+      "about": "회사 소개",
+      "contact": "문의하기"
+    },
+    "quote": "견적 요청",
+    "openMenu": "메뉴 열기",
+    "closeMenu": "메뉴 닫기"
+  },
+  "hero": {
+    "slides": [
+      {
+        "tag": "마케팅 & 홍보 인쇄",
+        "titleLine1": "최고급 인쇄 품질,",
+        "titleLine2": "100% 납기 준수.",
+        "desc": "명함부터 기업 카탈로그까지 —— 대량 생산 전 무료 디자인 & 샘플 인쇄 제공. 30분 이내 투명하고 빠른 견적 안내."
+      },
+      {
+        "tag": "패키지 & 종이 쇼핑백",
+        "titleLine1": "브랜드의 품격을 높이는",
+        "titleLine2": "완벽한 패키징 솔루션.",
+        "desc": "종이 박스, 쇼핑백, 스티커 라벨 —— 빠른 생산과 직배송, 추가 비용 없음."
+      },
+      {
+        "tag": "초고속 납기",
+        "titleLine1": "디자인 기획부터 완제품까지",
+        "titleLine2": "단 48시간.",
+        "desc": "무료 샘플 출력, 신속한 제작, 호치민시 및 빈증성 전 지역 직접 배송."
+      }
+    ],
+    "cta": "견적 요청",
+    "viewSlide": "슬라이드 {number} 보기"
+  },
+  "shopCategories": {
+    "itemCount": "{count}개 제품"
+  },
+  "shopBanner": {
+    "banners": [
+      { "eyebrow": "베스트셀러", "title": "프리미엄 비즈니스 명함" },
+      { "eyebrow": "트렌드", "title": "고급 선물용 하드커버 박스" }
+    ],
+    "cta": "지금 보기"
+  },
+  "about": {
+    "eyebrow": "회사 소개",
+    "title": "고객의 비즈니스를 돋보이게 하는 최고급 인쇄를 제공합니다.",
+    "body": "작은 명함부터 고급 선물 박스, 정교한 리플렛부터 내구성 있는 스티커까지 —— 모든 인쇄물에 Viet Dragon의 장인정신과 품질을 담습니다.",
+    "checklist": [
+      "정교한 디테일 마감",
+      "철저한 표준 품질 공정",
+      "합리적이고 투명한 가격",
+      "전문가의 1:1 무료 상담"
+    ],
+    "discoverMore": "더 알아보기",
+    "callExpert": "전문가 전화 상담",
+    "statNumber": "10+",
+    "statLabel": "년 전문 인쇄 경력",
+    "imageAlt": "Viet Dragon 인쇄 제작 공장",
+    "playVideo": "소개 영상 시청"
+  },
+  "services": {
+    "eyebrow": "특별 서비스",
+    "title": "주문 시 4가지 안심 케어 서비스를 전액 무료로 제공합니다.",
+    "subtitle": "모든 주문에 추가 비용 없이 무료 혜택 패키지가 포함됩니다.",
+    "items": [
+      { "title": "전문 컨설팅", "desc": "기획 단계부터 최적의 용지 및 후가공 선택까지 전담팀의 맞춤 가이드." },
+      { "title": "디자인 지원", "desc": "고객이 만족할 때까지 수정 가능한 전문 그래픽 디자인 지원." },
+      { "title": "무료 샘플 인쇄", "desc": "대량 발주 전 실제 결과물을 직접 확인할 수 있는 무료 샘플 제작." },
+      { "title": "무료 직배송", "desc": "호치민시 및 빈증성 전 지역 빠르고 안전한 무료 배송." }
+    ],
+    "cta": "견적 요청"
+  },
+  "shop": {
+    "eyebrow": "추천 제품",
+    "title": "다양한 인쇄 제품 라인업을 확인해보세요.",
+    "viewDetail": "상세보기",
+    "requestQuote": "견적 문의",
+    "requestQuoteArrow": "견적 문의 →"
+  },
+  "ctaBanner": {
+    "title": "인쇄 제작을 시작할 준비가 되셨나요?",
+    "subtitle": "고객의 일정에 맞추어 정확하게 생산하고 납품합니다",
+    "ctaQuote": "견적 요청",
+    "ctaProducts": "제품 목록 보기"
+  },
+  "portfolio": {
+    "eyebrow": "포트폴리오",
+    "titleLine1": "모든 제품에,",
+    "titleHighlight": "완벽한 정성을 담아.",
+    "viewAll": "전체 제품",
+    "items": [
+      { "label": "비즈니스 명함", "cat": "마케팅 인쇄" },
+      { "label": "패키지 박스", "cat": "패키지" },
+      { "label": "새해 세뱃돈 봉투", "cat": "명절·축하 인쇄" },
+      { "label": "기업 카탈로그", "cat": "마케팅 인쇄" },
+      { "label": "레스토랑 메뉴판", "cat": "오피스 용품" },
+      { "label": "고급 초대장", "cat": "마케팅 인쇄" }
+    ]
+  },
+  "testimonials": {
+    "eyebrow": "고객 후기",
+    "title": "수많은 기업과 파트너들의 꾸준한 신뢰를 받고 있습니다.",
+    "items": [
+      {
+        "name": "Nguyễn Thị Minh Anh",
+        "role": "카페 대표",
+        "quote": "Viet Dragon에서 종이컵과 포장 쇼핑백을 인쇄했는데, 색감이 아주 정확하고 약속된 날짜에 정확히 배송되었습니다. 앞으로도 계속 이용할 예정입니다."
+      },
+      {
+        "name": "Trần Quốc Bảo",
+        "role": "마케팅 총괄 이사",
+        "quote": "회사 전체 브랜드 VI 패키지를 제작했는데 디자인부터 후가공까지 완성도가 매우 뛰어났습니다. 피드백 대응도 아주 빨랐습니다."
+      },
+      {
+        "name": "Lê Thu Hà",
+        "role": "패션 브랜드 대표",
+        "quote": "종이 상자와 행택을 대량 발주했는데, 전 제품의 품질이 균일하고 시장 대비 가격도 매우 합리적이었습니다."
+      }
+    ],
+    "viewReview": "리뷰 {number} 보기"
+  },
+  "faq": {
+    "eyebrow": "자주 묻는 질문",
+    "titleLine1": "Viet Dragon 에 대한",
+    "titleHighlight": "자주 묻는 질문과 답변.",
+    "items": [
+      {
+        "q": "최소 주문 수량(MOQ)은 얼마인가요?",
+        "a": "품목별로 상이하나 보통 50~100개부터 제작 가능합니다. 소량 인쇄도 문의주시면 친절히 안내해 드립니다."
+      },
+      {
+        "q": "제작 및 납기 기간은 얼마나 걸리나요?",
+        "a": "일반 주문은 호치민 및 빈증성 기준 24~48시간 이내에 배송됩니다. 대량 및 특수 후가공 주문은 3~5일 정도 소요됩니다."
+      },
+      {
+        "q": "어떤 파일 포맷으로 접수할 수 있나요?",
+        "a": "AI, PDF, PSD 파일(CMYK 모드, 해상도 300dpi 이상 권장)을 지원합니다. 디자인 파일이 없으셔도 전담 디자이너가 도와드립니다."
+      },
+      {
+        "q": "호치민과 빈증 외 타 지역 배송도 가능한가요?",
+        "a": "네, 전문 물류 파트너를 통해 베트남 전역으로 안전하게 배송해 드립니다."
+      },
+      {
+        "q": "결제 방식은 어떤 것이 있나요?",
+        "a": "은행 계좌이체, 착불 결제(COD), 기업 고객을 위한 세금계산서 발행 및 계약 정산이 가능합니다."
+      }
+    ]
+  },
+  "quality": {
+    "eyebrow": "품질 기준",
+    "titleLine1": "우리가 약속하는",
+    "titleHighlight": "엄격한 품질 기준은 무엇일까요?",
+    "subtitle": "모든 인쇄물은 출고 전 철저한 자체 품질 검사를 거칩니다.",
+    "checklist": [
+      "오차 없는 정확한 재단",
+      "선명하고 정확한 색상 재현",
+      "견고하고 튼튼한 고급 재질",
+      "깔끔하고 완벽한 모서리 마감",
+      "디테일까지 세심한 관리",
+      "출고 전 100% 전수 검사"
+    ],
+    "cta": "견적 문의하기"
+  },
+  "process": {
+    "titleLine1": "주문 및 제작",
+    "titleHighlight": "프로세스",
+    "subtitle": "아이디어 기획부터 완제품 배송까지 —— 간단한 3단계.",
+    "cta": "상담 시작하기",
+    "steps": [
+      { "title": "상담 및 견적", "desc": "필요하신 사양을 알려주시면 30분 이내에 명확한 견적서를 제공합니다." },
+      { "title": "디자인 및 샘플 확인", "desc": "전문 디자이너가 시안을 제작하고 실제 인쇄 샘플로 사전에 확인합니다." },
+      { "title": "본 생산 및 직배송", "desc": "첨단 설비로 정밀 인쇄 후 고객이 지정하신 주소로 안전하게 직배송합니다." }
+    ]
+  },
+  "blogPreview": {
+    "eyebrow": "블로그 & 소식",
+    "titleLine1": "인쇄 노하우와",
+    "titleHighlight": "최신 뉴스.",
+    "readMore": "자세히 보기",
+    "viewAll": "전체 글 보기",
+    "minute": "분"
+  },
+  "brands": {
+    "title": "다양한 산업 분야의 신뢰받는 파트너",
+    "industries": [
+      "F&B · 카페·식음료",
+      "패션·의류",
+      "IT·스타트업",
+      "유통·리테일",
+      "웨딩·이벤트",
+      "교육·학교",
+      "뷰티·스파·에스테틱",
+      "인테리어·건축"
+    ]
+  },
+  "cta": {
+    "eyebrow": "지금 시작하기",
+    "title": "인쇄 제작을 시작하시겠습니까?",
+    "subtitle": "지금 문의하시면 30분 이내에 맞춤 무료 견적을 안내해 드립니다.",
+    "getQuote": "지금 무료 견적 받기"
+  },
+  "footer": {
+    "tagline": "호치민시 및 빈증성 전문 프리미엄 인쇄 제작 서비스.",
+    "productsLabel": "제품 카테고리",
+    "companyLabel": "회사 정보",
+    "usefulLabel": "바로가기",
+    "contactLabel": "고객센터",
+    "usefulLinks": {
+      "about": "회사 소개",
+      "services": "서비스 안내",
+      "process": "제작 프로세스",
+      "testimonials": "고객 후기",
+      "faq": "자주 묻는 질문"
+    },
+    "copyright": "© {year} Viet Dragon. All rights reserved.",
+    "premium": "프리미엄 인쇄 서비스"
+  },
+  "productsPage": {
+    "metaTitle": "전체 제품 목록 | Viet Dragon – 전문 인쇄 서비스",
+    "metaDescription": "Viet Dragon의 종합 인쇄 제품 카탈로그: 마케팅, 오피스, 패키징, 명절 상품, 개인 맞춤 인쇄, 기업 판촉물, 당일 급행 인쇄.",
+    "breadcrumbHome": "홈",
+    "breadcrumbCurrent": "인쇄 제품",
+    "eyebrow": "전체 제품",
+    "titleLine1": "고객이 필요로 하는 모든 인쇄,",
+    "titleHighlight": "완벽한 기술로 제작합니다.",
+    "subtitle": "명함부터 종이 패키지, 기업 판촉 선물, 초고속 당일 인쇄까지 완벽한 제품 카테고리.",
+    "galleryCaption": "제품 참고 이미지 — 실제 샘플 사진이 지속적으로 업데이트됩니다.",
+    "browseByCategory": "카테고리별 탐색",
+    "viewDetail": "상세보기 →",
+    "ctaTitleLine1": "찾으시는 제품이",
+    "ctaTitleHighlight": "없으신가요?",
+    "ctaSubtitle": "지금 문의하세요 —— 무료 상담 및 디자인 지원, 30분 내 빠른 견적 안내.",
+    "ctaButton": "문의하기"
+  },
+  "categoryPage": {
+    "breadcrumbHome": "홈",
+    "breadcrumbProducts": "인쇄 제품",
+    "eyebrow": "제품 카테고리",
+    "getQuote": "견적 요청",
+    "itemCount": "이 카테고리에 {count}개의 제품이 있습니다",
+    "referenceGallery": "제품 갤러리",
+    "ctaTitleLine1": "맞춤 견적이 필요하신가요:",
+    "ctaSubtitle": "지금 문의하세요 —— 무료 상담 및 디자인 지원, 30분 내 빠른 견적 안내.",
+    "ctaButton": "지금 견적 요청하기",
+    "prevShort": "이전 카테고리",
+    "allProducts": "전체 제품",
+    "viewAll": "모두 보기",
+    "nextShort": "다음 카테고리"
+  },
+  "productDetailPage": {
+    "breadcrumbHome": "홈",
+    "breadcrumbProducts": "인쇄 제품",
+    "optionDescriptionLabel": "재질 특성",
+    "optionBestForLabel": "추천 용도",
+    "optionViewImageHint": "터치하여 용지 샘플 사진 확인",
+    "optionBackToDetailsHint": "터치하여 사양 상세로 돌아가기",
+    "optionFoilCheckboxLabel": "금박/은박 후가공 (Ép kim)",
+    "optionDoubleSidedCheckboxLabel": "양면 인쇄 (In 2 mặt)",
+    "optionConsultCopyLabel": "상담 메시지 복사",
+    "optionConsultOpenLabel": "Zalo 열어서 붙여넣기",
+    "optionConsultCopiedToast": "복사되었습니다! 한 번 더 누르면 Zalo가 열립니다.",
+    "optionConsultMessage": "이 제품에 대해 상담받고 싶습니다: {product} ({url})",
+    "optionConsultMaterialLine": "선택 재질: {option}",
+    "optionConsultFoilLine": "박가공 여부: {status}",
+    "optionConsultDoubleSidedLine": "양면 인쇄: {status}",
+    "optionConsultYes": "필요함",
+    "optionConsultNo": "필요 없음",
+    "getQuote": "견적 요청",
+    "ctaTitleLine1": "이 제품에 대한 맞춤 견적 요청:",
+    "ctaSubtitle": "지금 문의하세요 —— 무료 상담 및 디자인 지원, 30분 내 빠른 견적 안내.",
+    "ctaButton": "지금 견적 요청하기",
+    "prevShort": "이전 제품",
+    "nextShort": "다음 제품",
+    "backToCategory": "카테고리로 돌아가기",
+    "viewAllInCategory": "이 카테고리 전체 제품 보기"
+  },
+  "blogPage": {
+    "metaTitle": "블로그 & 소식 | Viet Dragon – 인쇄 가이드 및 소식",
+    "metaDescription": "Viet Dragon의 인쇄 제작 팁, 프로젝트 적용 사례 및 최신 업계 소식을 확인하세요.",
+    "breadcrumbHome": "홈",
+    "breadcrumbCurrent": "블로그",
+    "eyebrow": "블로그 & 소식",
+    "titleLine1": "인쇄 제작 팁과",
+    "titleHighlight": "최신 뉴스.",
+    "subtitle": "실전 인쇄 가이드, 실제 프로젝트 사례 및 Viet Dragon의 최신 소식.",
+    "readArticle": "기사 읽기",
+    "allPosts": "전체 글",
+    "readMore": "자세히 보기 →",
+    "minuteRead": "분 소요",
+    "minute": "분",
+    "ctaTitleLine1": "인쇄 프로젝트를",
+    "ctaTitleHighlight": "시작할 준비가 되셨나요?",
+    "ctaSubtitle": "무료 상담 및 디자인 지원 —— 30분 내 빠른 견적 제공.",
+    "ctaButton": "지금 견적 요청하기"
+  },
+  "blogPostPage": {
+    "breadcrumbHome": "홈",
+    "breadcrumbBlog": "블로그",
+    "minuteRead": "분 소요",
+    "needHelp": "추가 안내나 상담이 필요하신가요?",
+    "needHelpDesc": "Viet Dragon 전문팀이 무료로 친절히 상담해 드리며 30분 내에 견적을 드립니다.",
+    "contactNow": "문의하기",
+    "allPosts": "전체 글",
+    "viewAll": "모두 보기",
+    "getQuote": "견적 요청"
+  }
+}

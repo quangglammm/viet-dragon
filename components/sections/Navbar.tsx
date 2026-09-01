@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Menu, X, Phone, Mail, MapPin, ChevronDown, Briefcase, Package, Calendar, Gift, type LucideIcon } from "lucide-react";
+import { Menu, X, Phone, Mail, MapPin, ChevronDown, Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles, type LucideIcon } from "lucide-react";
 
-const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift };
+const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { WipeButton } from "@/components/ui/wipe-button";
@@ -15,34 +15,44 @@ import type { Locale } from "@/i18n/routing";
 
 
 
+const LANGUAGES: { code: Locale; flag: string; label: string }[] = [
+  { code: "vi", flag: "🇻🇳", label: "Tiếng Việt" },
+  { code: "en", flag: "🇬🇧", label: "English" },
+  { code: "zh", flag: "🇨🇳", label: "中文" },
+  { code: "ja", flag: "🇯🇵", label: "日本語" },
+  { code: "ko", flag: "🇰🇷", label: "한국어" },
+];
+
 function LocaleSwitcher({
   locale,
   onSwitch,
   className,
 }: Readonly<{
-  locale: string;
-  onSwitch: (next: "vi" | "en") => void;
+  locale: Locale;
+  onSwitch: (next: Locale) => void;
   className?: string;
 }>) {
   return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <button
-        type="button"
-        onClick={() => onSwitch("vi")}
-        aria-label="Tiếng Việt"
-        className={cn("text-lg leading-none transition-opacity", locale === "vi" ? "opacity-100" : "opacity-40 hover:opacity-70")}
-      >
-        🇻🇳
-      </button>
-      <span className="text-zinc-300 text-xs">/</span>
-      <button
-        type="button"
-        onClick={() => onSwitch("en")}
-        aria-label="English"
-        className={cn("text-lg leading-none transition-opacity", locale === "en" ? "opacity-100" : "opacity-40 hover:opacity-70")}
-      >
-        🇬🇧
-      </button>
+    <div className={cn("flex items-center gap-1.5", className)}>
+      {LANGUAGES.map((lang, idx) => (
+        <div key={lang.code} className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => onSwitch(lang.code)}
+            aria-label={lang.label}
+            title={lang.label}
+            className={cn(
+              "text-base leading-none transition-all px-1 py-0.5 rounded cursor-pointer",
+              locale === lang.code
+                ? "opacity-100 scale-110 ring-1 ring-white/50 bg-white/15"
+                : "opacity-40 hover:opacity-80 hover:scale-105"
+            )}
+          >
+            {lang.flag}
+          </button>
+          {idx < LANGUAGES.length - 1 && <span className="text-white/30 text-[10px]">·</span>}
+        </div>
+      ))}
     </div>
   );
 }
@@ -51,10 +61,12 @@ function DesktopCategoryDropdown({
   cat,
   locale,
   isOpen,
+  align = "center",
 }: Readonly<{
   cat: ProductCategory;
   locale: Locale;
   isOpen: boolean;
+  align?: "left" | "center" | "right";
 }>) {
   const pathname = usePathname();
   const [previewItem, setPreviewItem] = useState<ProductItem>(() => {
@@ -64,11 +76,18 @@ function DesktopCategoryDropdown({
   const itemCount = cat.items.length;
   const isMultiCol = itemCount > 5;
   const widthClass = isMultiCol ? "w-[560px]" : "w-[400px]";
+  const alignClass =
+    align === "left"
+      ? "left-0 translate-x-0"
+      : align === "right"
+      ? "right-0 left-auto translate-x-0"
+      : "left-1/2 -translate-x-1/2";
 
   return (
     <div className={cn(
-      "absolute top-full left-1/2 -translate-x-1/2 mt-1 rounded-2xl shadow-2xl border border-white/50 overflow-hidden transition-all duration-200 z-50 text-zinc-800 min-h-[350px] flex flex-col justify-center",
+      "absolute top-full mt-1 rounded-2xl shadow-2xl border border-white/50 overflow-hidden transition-all duration-200 z-50 text-zinc-800 min-h-[350px] flex flex-col justify-center",
       widthClass,
+      alignClass,
       isOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-1"
     )}>
       {/* Layer 1: Background Image */}
@@ -166,7 +185,7 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  const switchLocale = (next: "vi" | "en") => {
+  const switchLocale = (next: Locale) => {
     router.replace(pathname, { locale: next });
   };
 
@@ -234,10 +253,11 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden lg:flex items-center justify-center flex-1 gap-4 xl:gap-8 px-4">
-            {productCategories.map((cat) => {
+          <div className="hidden lg:flex items-center justify-center flex-1 gap-1.5 xl:gap-3 2xl:gap-5 px-2 xl:px-4">
+            {productCategories.map((cat, idx) => {
               const Icon = iconMap[cat.icon] ?? Briefcase;
               const isActiveCat = pathname.startsWith(`/products/${cat.id}`);
+              const align = idx === 0 ? "left" : idx >= productCategories.length - 2 ? "right" : "center";
               return (
                 <div
                   key={cat.id}
@@ -248,7 +268,7 @@ export default function Navbar() {
                   <Link
                     href={`/products/${cat.id}`}
                     className={cn(
-                      "flex items-center gap-1.5 py-2 text-[13px] xl:text-sm font-bold uppercase tracking-wider transition-colors duration-300",
+                      "flex items-center gap-1 xl:gap-1.5 py-2 text-[11px] xl:text-[13px] 2xl:text-sm font-bold uppercase tracking-wide whitespace-nowrap transition-colors duration-300",
                       transparent
                         ? "text-white/90 hover:text-white"
                         : "text-zinc-800 hover:text-brand-primary",
@@ -256,11 +276,11 @@ export default function Navbar() {
                       (activeDesktopCat === cat.id || isActiveCat) && transparent && "text-white"
                     )}
                   >
-                    <Icon size={14} strokeWidth={2.5} />
-                    {pickLocale(locale, cat.nameVi, cat.nameEn)}
+                    <Icon size={13} className="shrink-0" strokeWidth={2.5} />
+                    <span>{pickLocale(locale, cat.nameVi, cat.nameEn)}</span>
                   </Link>
 
-                  <DesktopCategoryDropdown cat={cat} locale={locale} isOpen={activeDesktopCat === cat.id} />
+                  <DesktopCategoryDropdown cat={cat} locale={locale} isOpen={activeDesktopCat === cat.id} align={align} />
                 </div>
               );
             })}
