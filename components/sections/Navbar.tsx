@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Menu, X, Phone, Mail, MapPin, ChevronDown, Check, Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles, type LucideIcon } from "lucide-react";
+import { Menu, X, Phone, Mail, MapPin, ChevronDown, Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles, type LucideIcon } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 import { useTranslations, useLocale } from "next-intl";
@@ -13,115 +13,46 @@ import { productCategories, isFastPrint, type ProductCategory, type ProductItem 
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 
-const LANGUAGES: { code: Locale; flag: string; label: string; short: string }[] = [
-  { code: "vi", flag: "🇻🇳", label: "Tiếng Việt", short: "VI" },
-  { code: "en", flag: "🇬🇧", label: "English", short: "EN" },
-  { code: "zh", flag: "🇨🇳", label: "中文", short: "ZH" },
-  { code: "ja", flag: "🇯🇵", label: "日本語", short: "JA" },
-  { code: "ko", flag: "🇰🇷", label: "한국어", short: "KO" },
+
+
+const LANGUAGES: { code: Locale; flag: string; label: string }[] = [
+  { code: "vi", flag: "🇻🇳", label: "Tiếng Việt" },
+  { code: "en", flag: "🇬🇧", label: "English" },
+  { code: "zh", flag: "🇨🇳", label: "中文" },
+  { code: "ja", flag: "🇯🇵", label: "日本語" },
+  { code: "ko", flag: "🇰🇷", label: "한국어" },
 ];
 
 function LocaleSwitcher({
   locale,
   onSwitch,
   className,
-  tone = "light",
 }: Readonly<{
   locale: Locale;
   onSwitch: (next: Locale) => void;
   className?: string;
-  tone?: "light" | "dark";
 }>) {
-  const [open, setOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const currentLang = LANGUAGES.find((l) => l.code === locale) || LANGUAGES[0];
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    if (open) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [open]);
-
   return (
-    <div ref={dropdownRef} className={cn("relative inline-block text-left", className)}>
-      {/* Dropdown Box / Select Trigger */}
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        className={cn(
-          "flex items-center justify-between gap-2 rounded-xl px-3 py-1.5 text-xs font-bold transition-all cursor-pointer shadow-xs select-none",
-          tone === "light"
-            ? "bg-white/15 hover:bg-white/25 text-white border border-white/20 backdrop-blur-xs"
-            : "w-full bg-zinc-100 hover:bg-zinc-200 text-zinc-900 border border-zinc-200 py-2.5 px-4"
-        )}
-        aria-expanded={open}
-        aria-haspopup="listbox"
-        aria-label="Chọn ngôn ngữ"
-      >
-        <div className="flex items-center gap-2">
-          <span className="text-base leading-none">{currentLang.flag}</span>
-          <span>{currentLang.label}</span>
-          <span className={cn("text-[10px] font-mono px-1 rounded", tone === "light" ? "bg-white/20 text-purple-100" : "bg-zinc-200 text-zinc-600")}>
-            {currentLang.short}
-          </span>
+    <div className={cn("flex items-center gap-1.5", className)}>
+      {LANGUAGES.map((lang, idx) => (
+        <div key={lang.code} className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => onSwitch(lang.code)}
+            aria-label={lang.label}
+            title={lang.label}
+            className={cn(
+              "text-base leading-none transition-all px-1 py-0.5 rounded cursor-pointer",
+              locale === lang.code
+                ? "opacity-100 scale-110 ring-1 ring-white/50 bg-white/15"
+                : "opacity-40 hover:opacity-80 hover:scale-105"
+            )}
+          >
+            {lang.flag}
+          </button>
+          {idx < LANGUAGES.length - 1 && <span className="text-white/30 text-[10px]">·</span>}
         </div>
-        <ChevronDown
-          size={13}
-          className={cn("transition-transform duration-200 opacity-80 shrink-0", open && "rotate-180")}
-        />
-      </button>
-
-      {/* Options Dropdown List */}
-      {open && (
-        <div
-          className={cn(
-            "absolute mt-1.5 rounded-2xl shadow-2xl border border-zinc-100 bg-white p-1.5 z-50 text-zinc-800 animate-in fade-in zoom-in-95 duration-150 min-w-[175px]",
-            tone === "light" ? "right-0" : "left-0 right-0 w-full"
-          )}
-          role="listbox"
-        >
-          {LANGUAGES.map((lang) => {
-            const isSelected = locale === lang.code;
-            return (
-              <button
-                key={lang.code}
-                type="button"
-                onClick={() => {
-                  onSwitch(lang.code);
-                  setOpen(false);
-                }}
-                className={cn(
-                  "flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-colors cursor-pointer text-left",
-                  isSelected
-                    ? "bg-purple-50 text-brand-primary font-bold"
-                    : "text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900"
-                )}
-                role="option"
-                aria-selected={isSelected}
-              >
-                <div className="flex items-center gap-2.5">
-                  <span className="text-base leading-none">{lang.flag}</span>
-                  <span>{lang.label}</span>
-                </div>
-                {isSelected ? (
-                  <Check size={14} className="text-brand-primary shrink-0" strokeWidth={2.5} />
-                ) : (
-                  <span className="text-[10px] font-mono text-zinc-400">{lang.short}</span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      ))}
     </div>
   );
 }
@@ -452,7 +383,7 @@ export default function Navbar() {
         </nav>
 
         <div className="px-6 pb-10">
-          <LocaleSwitcher locale={locale} onSwitch={switchLocale} tone="dark" className="w-full mb-5" />
+          <LocaleSwitcher locale={locale} onSwitch={switchLocale} className="justify-center mb-5" />
           <WipeButton
             href="/#cta"
             tone="primary"
