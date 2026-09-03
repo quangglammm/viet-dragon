@@ -506,6 +506,7 @@ export function MaterialFlashcard({
                       src={img}
                       alt={`${productName} — ${name} - ${idx}`}
                       fill
+                      quality={95}
                       sizes="(min-width: 1024px) 25vw, 100vw"
                       className="object-cover"
                     />
