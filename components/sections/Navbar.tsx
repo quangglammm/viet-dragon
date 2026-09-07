@@ -13,18 +13,133 @@ import { productCategories, isFastPrint, type ProductCategory, type ProductItem 
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 
-
-
-const LANGUAGES: { code: Locale; flag: string; label: string }[] = [
-  { code: "vi", flag: "🇻🇳", label: "Tiếng Việt" },
-  { code: "en", flag: "🇬🇧", label: "English" },
-  { code: "zh", flag: "🇨🇳", label: "中文" },
-  { code: "ja", flag: "🇯🇵", label: "日本語" },
-  { code: "ko", flag: "🇰🇷", label: "한국어" },
+const LANGUAGES: { code: Locale; flag: string; label: string; short: string }[] = [
+  { code: "vi", flag: "🇻🇳", label: "Tiếng Việt", short: "VN" },
+  { code: "en", flag: "🇬🇧", label: "English", short: "EN" },
+  { code: "zh", flag: "🇨🇳", label: "中文", short: "ZH" },
+  { code: "ja", flag: "🇯🇵", label: "日本語", short: "JA" },
+  { code: "ko", flag: "🇰🇷", label: "한국어", short: "KO" },
 ];
 
-function LocaleSwitcher({
-  locale,
+/**
+ * Floating Language Switcher rendered directly beneath the menu.
+ * 2 states:
+ * - "khuất" (compact): shows language vn-arrow pill
+ * - "full" (expanded): opens the full language list
+ */
+function FloatingLocaleSwitcher({
+  locale = "vi",
+  onSwitch,
+  variant = "floating",
+  className,
+}: Readonly<{
+  locale: Locale;
+  onSwitch: (next: Locale) => void;
+  variant?: "floating" | "topbar";
+  className?: string;
+}>) {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const currentLang = LANGUAGES.find((l) => l.code === locale) || LANGUAGES[0];
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
+  const isTopbar = variant === "topbar";
+
+  return (
+    <div ref={dropdownRef} className={cn("relative inline-block text-left select-none", className)}>
+      {/* Trạng thái 1: Khuất (Chỉ có lá cờ và mũi tên) */}
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className={cn(
+          "group flex items-center gap-1 rounded-full transition-all duration-200 cursor-pointer",
+          isTopbar
+            ? "px-2 py-0.5 bg-white/15 hover:bg-white/25 border border-white/20 text-white shadow-2xs backdrop-blur-xs"
+            : "gap-1.5 px-2.5 py-1.5 bg-white/95 hover:bg-white border border-zinc-200/90 shadow-md hover:shadow-lg backdrop-blur-md",
+          open && isTopbar && "bg-white/30 border-white/40 ring-2 ring-white/30",
+          open && !isTopbar && "ring-2 ring-brand-primary/30 border-brand-primary/50 bg-white shadow-lg"
+        )}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        aria-label="Chọn ngôn ngữ"
+        title={currentLang.label}
+      >
+        <span className={cn("leading-none select-none", isTopbar ? "text-sm" : "text-base")}>
+          {currentLang.flag}
+        </span>
+        <ChevronDown
+          size={isTopbar ? 11 : 13}
+          strokeWidth={2.5}
+          className={cn(
+            "transition-transform duration-200 shrink-0",
+            isTopbar
+              ? "text-white/70 group-hover:text-white"
+              : "text-zinc-400 group-hover:text-zinc-700",
+            open && (isTopbar ? "rotate-180 text-white" : "rotate-180 text-brand-primary")
+          )}
+        />
+      </button>
+
+      {/* Trạng thái 2: Full (Chỉ hiển thị các lá cờ) */}
+      {open && (
+        <div
+          className={cn(
+            "absolute mt-1.5 rounded-2xl bg-white/98 backdrop-blur-md border border-zinc-100 shadow-2xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150 flex flex-col gap-1 min-w-[42px]",
+            isTopbar ? "left-0 sm:right-0 sm:left-auto" : "right-0"
+          )}
+          role="listbox"
+        >
+          {LANGUAGES.map((lang) => {
+            const isSelected = (locale || "vi") === lang.code;
+            return (
+              <button
+                key={lang.code}
+                type="button"
+                onClick={() => {
+                  onSwitch(lang.code);
+                  setOpen(false);
+                }}
+                className={cn(
+                  "flex items-center justify-center size-8.5 rounded-xl text-lg leading-none transition-all cursor-pointer",
+                  isSelected
+                    ? "bg-brand-soft ring-1.5 ring-brand-primary shadow-2xs scale-105"
+                    : "hover:bg-zinc-100 hover:scale-105 opacity-70 hover:opacity-100"
+                )}
+                role="option"
+                aria-selected={isSelected}
+                title={lang.label}
+              >
+                <span>{lang.flag}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DrawerLocaleSwitcher({
+  locale = "vi",
   onSwitch,
   className,
 }: Readonly<{
@@ -33,26 +148,26 @@ function LocaleSwitcher({
   className?: string;
 }>) {
   return (
-    <div className={cn("flex items-center gap-1.5", className)}>
-      {LANGUAGES.map((lang, idx) => (
-        <div key={lang.code} className="flex items-center gap-1.5">
+    <div className={cn("flex items-center justify-center gap-3 py-2", className)}>
+      {LANGUAGES.map((lang) => {
+        const isSelected = (locale || "vi") === lang.code;
+        return (
           <button
+            key={lang.code}
             type="button"
             onClick={() => onSwitch(lang.code)}
-            aria-label={lang.label}
-            title={lang.label}
             className={cn(
-              "text-base leading-none transition-all px-1 py-0.5 rounded cursor-pointer",
-              locale === lang.code
-                ? "opacity-100 scale-110 ring-1 ring-white/50 bg-white/15"
-                : "opacity-40 hover:opacity-80 hover:scale-105"
+              "flex items-center justify-center size-10 rounded-2xl text-2xl leading-none transition-all cursor-pointer",
+              isSelected
+                ? "bg-brand-soft ring-2 ring-brand-primary shadow-xs scale-110"
+                : "bg-zinc-100 hover:bg-zinc-200 opacity-60 hover:opacity-100"
             )}
+            title={lang.label}
           >
-            {lang.flag}
+            <span>{lang.flag}</span>
           </button>
-          {idx < LANGUAGES.length - 1 && <span className="text-white/30 text-[10px]">·</span>}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -69,8 +184,9 @@ function DesktopCategoryDropdown({
   align?: "left" | "center" | "right";
 }>) {
   const pathname = usePathname();
-  const [previewItem, setPreviewItem] = useState<ProductItem>(() => {
-    return cat.items.find((i) => pathname === `/products/${cat.id}/${i.id}`) || cat.items[0];
+  const [previewItem, setPreviewItem] = useState<ProductItem | null>(() => {
+    if (cat.items.length === 0) return null;
+    return cat.items.find((i) => pathname === `/products/${cat.id}/${i.id}`) ?? cat.items[0];
   });
 
   const itemCount = cat.items.length;
@@ -82,6 +198,9 @@ function DesktopCategoryDropdown({
       : align === "right"
       ? "right-0 left-auto translate-x-0"
       : "left-1/2 -translate-x-1/2";
+
+  // No items (e.g. fast-print has its own dedicated page)
+  if (cat.items.length === 0 || previewItem === null) return null;
 
   return (
     <div className={cn(
@@ -220,11 +339,12 @@ export default function Navbar() {
                 <MapPin size={13} /> {tContact("address")}
               </li>
             </ul>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
+              <FloatingLocaleSwitcher variant="topbar" locale={locale} onSwitch={switchLocale} />
+              <span className="w-px h-3.5 bg-white/25" aria-hidden="true" />
               <a href="tel:0901448377" className="flex items-center gap-2 hover:text-white transition-colors">
                 <Phone size={13} /> {tContact("phone1")}
               </a>
-              <LocaleSwitcher locale={locale} onSwitch={switchLocale} />
             </div>
           </div>
         </div>
@@ -286,7 +406,7 @@ export default function Navbar() {
             })}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <WipeButton
               href="/#cta"
               tone="primary"
@@ -316,6 +436,18 @@ export default function Navbar() {
         </div>
       </header>
 
+      {/* Language switcher directly under menu on mobile & tablet — does NOT follow scroll */}
+      {!menuOpen && (
+        <div
+          className={cn(
+            "absolute top-[72px] right-4 sm:right-6 z-40 lg:hidden transition-all duration-200",
+            scrolled ? "opacity-0 pointer-events-none -translate-y-2" : "opacity-100 pointer-events-auto"
+          )}
+        >
+          <FloatingLocaleSwitcher locale={locale} onSwitch={switchLocale} />
+        </div>
+      )}
+
       {/* Mobile full-screen menu */}
       <div
         className={cn(
@@ -323,7 +455,10 @@ export default function Navbar() {
           menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}
       >
-        <nav className="flex flex-col px-6 py-8 gap-2 flex-1 overflow-y-auto">
+        <div className="px-6 pt-4 pb-2 border-b border-zinc-100">
+          <DrawerLocaleSwitcher locale={locale} onSwitch={switchLocale} className="w-full" />
+        </div>
+        <nav className="flex flex-col px-6 py-6 gap-2 flex-1 overflow-y-auto">
           {productCategories.map((cat) => {
             const Icon = iconMap[cat.icon] ?? Briefcase;
             const isActiveCat = pathname.startsWith(`/products/${cat.id}`);
@@ -383,7 +518,6 @@ export default function Navbar() {
         </nav>
 
         <div className="px-6 pb-10">
-          <LocaleSwitcher locale={locale} onSwitch={switchLocale} className="justify-center mb-5" />
           <WipeButton
             href="/#cta"
             tone="primary"
