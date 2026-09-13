@@ -2,11 +2,12 @@
 
 import { Phone, Mail, MapPin } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import { productCategories } from "@/data/categories";
 import { IconBadge } from "@/components/ui/icon-badge";
+import { cn } from "@/lib/utils";
 
 type CompanyLink = { href: string; ns: "nav" | "footer"; key: string };
 const companyLinks: CompanyLink[] = [
@@ -48,11 +49,28 @@ const socialLinks = [
   { icon: YoutubeIcon, href: "https://youtube.com", name: "YouTube" },
 ];
 
+const ALL_PRODUCTS_LABEL: Record<Locale, string> = {
+  vi: "Tất cả sản phẩm",
+  en: "All Products",
+  zh: "全部产品",
+  ja: "全製品一覧",
+  ko: "전체 제품",
+};
+
+const CATEGORY_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
+  marketing: { zh: "营销物料", ja: "マーケティング", ko: "마케팅" },
+  office: { zh: "办公文具", ja: "オフィス用品", ko: "오피스/사무" },
+  packaging: { zh: "包装制品", ja: "パッケージ包装", ko: "패키지/포장" },
+  tet: { zh: "新年年品", ja: "テト・新年", ko: "새해 인쇄물" },
+  other: { zh: "其他印刷品", ja: "その他印刷", ko: "기타 인쇄물" },
+};
+
 export default function Footer() {
   const t = useTranslations("footer");
   const tNav = useTranslations("nav");
   const tContact = useTranslations("contact");
   const locale = useLocale() as Locale;
+  const pathname = usePathname();
 
   return (
     <footer className="bg-brand-soft text-brand-dark">
@@ -91,21 +109,36 @@ export default function Footer() {
               <li key="all-products">
                 <Link
                   href="/products"
-                  className="inline-block text-sm text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 transition-all duration-200 py-1 font-medium"
+                  className={cn(
+                    "inline-block text-sm py-1 transition-all duration-200",
+                    pathname === "/products"
+                      ? "text-brand-primary font-bold"
+                      : "text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 font-medium"
+                  )}
                 >
-                  {locale === "vi" ? "Tất cả sản phẩm" : "All Products"}
+                  {ALL_PRODUCTS_LABEL[locale] || "All Products"}
                 </Link>
               </li>
-              {productCategories.map((cat) => (
-                <li key={cat.id}>
-                  <Link
-                    href={`/products/${cat.id}`}
-                    className="inline-block text-sm text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 transition-all duration-200 py-1 font-medium"
-                  >
-                    {pickLocale(locale, cat.nameVi, cat.nameEn)}
-                  </Link>
-                </li>
-              ))}
+              {productCategories.map((cat) => {
+                const isActive =
+                  pathname === `/products/${cat.id}` ||
+                  pathname.startsWith(`/products/${cat.id}/`);
+                return (
+                  <li key={cat.id}>
+                    <Link
+                      href={`/products/${cat.id}`}
+                      className={cn(
+                        "inline-block text-sm py-1 transition-all duration-200",
+                        isActive
+                          ? "text-brand-primary font-bold"
+                          : "text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 font-medium"
+                      )}
+                    >
+                      {pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
@@ -115,16 +148,24 @@ export default function Footer() {
               {t("companyLabel")}
             </p>
             <ul className="flex flex-col gap-2">
-              {companyLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="inline-block text-sm text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 transition-all duration-200 py-1 font-medium"
-                  >
-                    {link.ns === "nav" ? tNav(`links.${link.key}`) : t(`usefulLinks.${link.key}`)}
-                  </Link>
-                </li>
-              ))}
+              {companyLinks.map((link) => {
+                const isActive = link.href === "/blog" && pathname.startsWith("/blog");
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={cn(
+                        "inline-block text-sm py-1 transition-all duration-200",
+                        isActive
+                          ? "text-brand-primary font-bold"
+                          : "text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 font-medium"
+                      )}
+                    >
+                      {link.ns === "nav" ? tNav(`links.${link.key}`) : t(`usefulLinks.${link.key}`)}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
