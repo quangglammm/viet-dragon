@@ -107,9 +107,6 @@ export default function AdminLoginPage() {
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
-              <p className="mt-2 text-[11px] text-zinc-400">
-                Mật khẩu xưởng: <span className="font-mono text-pink-300 font-bold">vietdragon2026@admin</span>
-              </p>
             </div>
 
             <button
