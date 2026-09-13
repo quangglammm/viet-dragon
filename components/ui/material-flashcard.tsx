@@ -26,6 +26,17 @@ const optionIconMap: Record<string, LucideIcon> = {
 // up before auto-reverting to the copy step, in case the user never clicks again.
 const CONSULT_TOAST_DURATION_MS = 5000;
 
+const UNIT_TRANSLATIONS: Record<string, { zh: string; ja: string; ko: string }> = {
+  "Hộp": { zh: "盒", ja: "箱", ko: "상자" },
+  "Cuốn": { zh: "本", ja: "冊", ko: "권" },
+  "Ram": { zh: "令", ja: "包", ko: "연" },
+  "Túi": { zh: "个", ja: "袋", ko: "개" },
+  "Tờ": { zh: "张", ja: "枚", ko: "장" },
+  "Thiệp": { zh: "张", ja: "枚", ko: "장" },
+  "Tem": { zh: "枚", ja: "枚", ko: "장" },
+  "Cái": { zh: "个", ja: "個", ko: "개" },
+};
+
 interface MaterialFlashcardProps {
   option: ProductOption;
   locale: Locale;
@@ -351,9 +362,17 @@ export function MaterialFlashcard({
     defaultUnitEn = "Stamps";
   }
   
-  const unitLabel = locale === "vi" 
-    ? (option.unitVi ?? defaultUnitVi) 
-    : (option.unitEn ?? defaultUnitEn);
+  const rawUnitVi = option.unitVi ?? defaultUnitVi;
+  const rawUnitEn = option.unitEn ?? defaultUnitEn;
+  const unitLabel = locale === "vi"
+    ? rawUnitVi
+    : locale === "zh"
+    ? (UNIT_TRANSLATIONS[rawUnitVi]?.zh ?? rawUnitEn)
+    : locale === "ja"
+    ? (UNIT_TRANSLATIONS[rawUnitVi]?.ja ?? rawUnitEn)
+    : locale === "ko"
+    ? (UNIT_TRANSLATIONS[rawUnitVi]?.ko ?? rawUnitEn)
+    : rawUnitEn;
 
   const maxQuantity = defaultUnitVi === "Hộp" ? 200 : 1000;
 
@@ -529,7 +548,7 @@ export function MaterialFlashcard({
         {hasPages && (
           <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-100/60 bg-white">
             <span className="text-sm font-semibold text-zinc-700">
-              {locale === "vi" ? "Số trang:" : "Pages:"}
+              {locale === "vi" ? "Số trang:" : locale === "zh" ? "页数:" : locale === "ja" ? "ページ数:" : locale === "ko" ? "페이지 수:" : "Pages:"}
             </span>
             <div className="flex items-center gap-3">
               <div className="flex items-center h-8 bg-white border border-zinc-200 rounded-md overflow-hidden">
@@ -568,7 +587,7 @@ export function MaterialFlashcard({
                 </button>
               </div>
               <span className="text-sm font-medium text-zinc-500 min-w-10">
-                {locale === "vi" ? "Trang" : "Pages"}
+                {locale === "vi" ? "Trang" : locale === "zh" ? "页" : locale === "ja" ? "ページ" : locale === "ko" ? "페이지" : "Pages"}
               </span>
             </div>
           </div>
@@ -577,7 +596,7 @@ export function MaterialFlashcard({
         {/* Quantity row */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-100/60 bg-white">
           <span className="text-sm font-semibold text-zinc-700">
-            {locale === "vi" ? "Số lượng:" : "Quantity:"}
+            {locale === "vi" ? "Số lượng:" : locale === "zh" ? "数量:" : locale === "ja" ? "数量:" : locale === "ko" ? "수량:" : "Quantity:"}
           </span>
           <div className="flex items-center gap-3">
             <div className="flex items-center h-8 bg-white border border-zinc-200 rounded-md overflow-hidden">
@@ -671,7 +690,7 @@ export function MaterialFlashcard({
             {/* Cột 1: Giá (Mobile: Left, Desktop: Left) */}
             <div className="flex flex-col justify-center sm:flex-1 order-1 sm:order-1">
               <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1">
-                {locale === "vi" ? "Thành tiền" : "Total Amount"}
+                {locale === "vi" ? "Thành tiền" : locale === "zh" ? "预估总价" : locale === "ja" ? "合計金額" : locale === "ko" ? "예상 금액" : "Total Amount"}
               </div>
               <div className="text-[15px] font-black text-brand-primary leading-tight">
                 {totalPriceMin.toLocaleString("vi-VN")}đ

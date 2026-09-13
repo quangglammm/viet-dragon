@@ -70,19 +70,27 @@ export default function CTA() {
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.5, delay: 0.55 }}
         >
-          <span className="flex items-center gap-2">
-            <IconBadge icon={Phone} size="sm" className="bg-white/15" />
-            {tContact("phone1")} · {tContact("phone2")}
+          <span className="flex items-center gap-2.5">
+            <IconBadge icon={Phone} size="sm" className="bg-white/15 shrink-0" />
+            <span className="flex flex-col lg:flex-row lg:items-center text-left leading-tight lg:leading-normal">
+              <a href="tel:0901448377" className="hover:text-white transition-colors whitespace-nowrap">
+                {tContact("phone1")}
+              </a>
+              <span className="hidden lg:inline mx-1.5 opacity-60">-</span>
+              <a href="tel:0919510543" className="hover:text-white transition-colors whitespace-nowrap">
+                {tContact("phone2")}
+              </a>
+            </span>
           </span>
-          <span className="hidden sm:block">·</span>
           <span className="flex items-center gap-2">
-            <IconBadge icon={Mail} size="sm" className="bg-white/15" />
-            {tContact("email")}
+            <IconBadge icon={Mail} size="sm" className="bg-white/15 shrink-0" />
+            <a href="mailto:contact@vietdragon.vn" className="hover:text-white transition-colors whitespace-nowrap">
+              {tContact("email")}
+            </a>
           </span>
-          <span className="hidden sm:block">·</span>
           <span className="flex items-center gap-2">
-            <IconBadge icon={MapPin} size="sm" className="bg-white/15" />
-            {tContact("address")}
+            <IconBadge icon={MapPin} size="sm" className="bg-white/15 shrink-0" />
+            <span>{tContact("address")}</span>
           </span>
         </motion.div>
       </div>

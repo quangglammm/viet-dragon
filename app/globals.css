@@ -316,3 +316,169 @@ section[id] {
     scroll-margin-top: 6.5rem; /* 104px for desktop navbar (40px top bar + 64px main) */
   }
 }
+
+/* ==========================================================================
+   Admin Portal: Automatic Light/Dark High-Contrast Theme System
+   ========================================================================== */
+
+/* Main Container Background & Base Text */
+.dark .admin-theme-root {
+  background-color: #080526 !important;
+  color: #f8fafc !important;
+}
+
+/* Headings & High-Emphasis Text: Crisp Pure White in Dark Mode */
+.dark .admin-theme-root h1,
+.dark .admin-theme-root h2,
+.dark .admin-theme-root h3,
+.dark .admin-theme-root h4,
+.dark .admin-theme-root h5,
+.dark .admin-theme-root h6,
+.dark .admin-theme-root .text-slate-900,
+.dark .admin-theme-root .text-slate-800,
+.dark .admin-theme-root .text-zinc-900,
+.dark .admin-theme-root .text-zinc-800,
+.dark .admin-theme-root .text-gray-900,
+.dark .admin-theme-root .text-gray-800 {
+  color: #ffffff !important;
+}
+
+/* Body Text, Labels & Interactive Text: High-Contrast Light Slate */
+.dark .admin-theme-root label,
+.dark .admin-theme-root .text-slate-700,
+.dark .admin-theme-root .text-slate-600,
+.dark .admin-theme-root .text-zinc-700,
+.dark .admin-theme-root .text-zinc-600,
+.dark .admin-theme-root .text-gray-700,
+.dark .admin-theme-root .text-gray-600 {
+  color: #e2e8f0 !important;
+}
+
+/* Secondary, Helper & Muted Text: Readable Slate 400 */
+.dark .admin-theme-root .text-slate-500,
+.dark .admin-theme-root .text-slate-400,
+.dark .admin-theme-root .text-zinc-500,
+.dark .admin-theme-root .text-zinc-400,
+.dark .admin-theme-root .text-gray-500,
+.dark .admin-theme-root .text-gray-400 {
+  color: #94a3b8 !important;
+}
+
+/* Cards & Panel Backgrounds: Deep Luxury Navy */
+.dark .admin-theme-root .bg-white:not(.keep-white) {
+  background-color: #120d38 !important;
+  color: #f8fafc !important;
+}
+
+/* Hover effects */
+.dark .admin-theme-root .hover\:bg-slate-100:hover,
+.dark .admin-theme-root .hover\:bg-slate-50:hover,
+.dark .admin-theme-root .hover\:bg-slate-200:hover,
+.dark .admin-theme-root .hover\:bg-zinc-100:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Layout Frames (Slides, Section sub-panels, list cards): Deep sunken tone to prevent glare */
+.dark .admin-theme-root [class*="bg-slate-50"],
+.dark .admin-theme-root [class*="bg-slate-100"],
+.dark .admin-theme-root [class*="bg-zinc-50"],
+.dark .admin-theme-root [class*="bg-zinc-100"],
+.dark .admin-theme-root [class*="bg-gray-50"],
+.dark .admin-theme-root [class*="bg-gray-100"],
+.dark .admin-theme-root [class*="bg-purple-50"] {
+  background-color: #070320 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Card badges in layout frames (Slide #1, Dịch vụ #1, Vị trí #1...) */
+.dark .admin-theme-root .rounded-md.bg-slate-900,
+.dark .admin-theme-root .rounded-md.bg-purple-100 {
+  background-color: rgba(112, 0, 254, 0.25) !important;
+  color: #d8b4fe !important;
+  border: 1px solid rgba(112, 0, 254, 0.4) !important;
+}
+
+/* Hairline Borders: Translucent White */
+.dark .admin-theme-root .border-slate-200,
+.dark .admin-theme-root .border-slate-100,
+.dark .admin-theme-root .border-slate-300,
+.dark .admin-theme-root .border-zinc-200,
+.dark .admin-theme-root .border-zinc-100,
+.dark .admin-theme-root .border-gray-200,
+.dark .admin-theme-root .border-gray-100 {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Form Inputs, Textareas, Selects */
+.dark .admin-theme-root input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+.dark .admin-theme-root textarea,
+.dark .admin-theme-root select {
+  background-color: #0b0728 !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.dark .admin-theme-root input::placeholder,
+.dark .admin-theme-root textarea::placeholder {
+  color: #64748b !important;
+}
+
+.dark .admin-theme-root input:focus,
+.dark .admin-theme-root textarea:focus,
+.dark .admin-theme-root select:focus {
+  border-color: #7000fe !important;
+  box-shadow: 0 0 0 2px rgba(112, 0, 254, 0.3) !important;
+}
+
+/* Action buttons with bg-slate-900 */
+.dark .admin-theme-root .bg-slate-900:not([class*="admin-shell"]):not(aside) {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+.dark .admin-theme-root .bg-slate-900:not([class*="admin-shell"]):not(aside):hover {
+  background-color: #7000fe !important;
+}
+
+/* Table Elements */
+.dark .admin-theme-root th {
+  color: #cbd5e1 !important;
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.dark .admin-theme-root td {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+/* Modals & Dialogs */
+.dark .admin-theme-root .fixed.bg-slate-900\/60,
+.dark .admin-theme-root .fixed.bg-black\/50 {
+  background-color: rgba(4, 2, 18, 0.8) !important;
+}
+
+/* Colored status badge backgrounds in dark mode */
+.dark .admin-theme-root .bg-purple-50 {
+  background-color: rgba(112, 0, 254, 0.15) !important;
+  color: #c084fc !important;
+}
+
+.dark .admin-theme-root .bg-emerald-50 {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: #34d399 !important;
+}
+
+.dark .admin-theme-root .bg-rose-50 {
+  background-color: rgba(244, 63, 94, 0.15) !important;
+  color: #fb7185 !important;
+}
+
+.dark .admin-theme-root .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  color: #fbbf24 !important;
+}
+
+.dark .admin-theme-root .bg-blue-50 {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: #60a5fa !important;
+}
+

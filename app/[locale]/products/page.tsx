@@ -12,6 +12,66 @@ import { productCategories, showcaseImages } from "@/data/categories";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 
+const SHOWCASE_LABELS: Record<string, { zh: string; ja: string; ko: string }> = {
+  "vd-show-1": { zh: "高端商务名片", ja: "プレミアムビジネス名刺", ko: "프리미엄 비즈니스 명함" },
+  "vd-show-2": { zh: "奢华礼品包装盒", ja: "高級ペーパーボックス包装", ko: "고급 패키지 박스" },
+  "vd-show-3": { zh: "专业企业画册", ja: "プロフェッショナルカタログ", ko: "전문 기업 카탈로그" },
+  "vd-show-4": { zh: "精致标签贴纸", ja: "上質ラベルシール", ko: "정밀 라벨 스티커" },
+  "vd-show-5": { zh: "新年春节红包", ja: "お年玉・新年ポチ袋", ko: "새해 세뱃돈 봉투" },
+};
+
+const CATEGORY_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
+  marketing: { zh: "营销物料", ja: "マーケティング", ko: "마케팅" },
+  office: { zh: "办公文具", ja: "オフィス用品", ko: "오피스/사무" },
+  packaging: { zh: "包装制品", ja: "パッケージ包装", ko: "패키지/포장" },
+  tet: { zh: "新年年品", ja: "テト・新年", ko: "새해 인쇄물" },
+  other: { zh: "其他印刷品", ja: "その他印刷", ko: "기타 인쇄물" },
+};
+
+const CATEGORY_DESCS: Record<string, { zh: string; ja: string; ko: string }> = {
+  marketing: {
+    zh: "用于向客户和合作伙伴展示品牌与产品的印刷物料 —— 打造卓越第一印象并助力销售转化。",
+    ja: "顧客やパートナーへブランド・製品を効果的にアピールする印刷物 — 最高の第一印象と営業支援を実現。",
+    ko: "고객 및 파트너에게 브랜드와 제품을 효과적으로 전달하는 인쇄 제작물 — 탁월한 첫인상과 비즈니스 성장을 지원합니다.",
+  },
+  office: {
+    zh: "日常行政办公及品牌专业形象识别系统必备的各类办公印刷品。",
+    ja: "日々の業務とブランド統一感を高める、オフィスに欠かせないビジネス印刷アイテム。",
+    ko: "일상적인 업무 효율과 기업의 일관된 브랜드 아이덴티티를 위한 필수 오피스 인쇄물.",
+  },
+  packaging: {
+    zh: "高品质产品包装盒、精品手提袋及安全运输纸箱，提升产品开箱体验与品牌价值。",
+    ja: "製品の価値を高め、安全にお届けする化粧箱・ショッパー・ギフトパッケージ。",
+    ko: "제품의 가치를 높이고 안전하게 보호하는 고급 패키지 박스, 종이 쇼핑백 및 포장재.",
+  },
+  tet: {
+    zh: "精美新年台历、挂历、传统红包袋及企业专属春节礼盒。",
+    ja: "カレンダー、お年玉袋、企業向け迎春ギフトボックスなど、新年を彩る特別印刷物。",
+    ko: "새해 캘린더, 세뱃돈 봉투, 기업용 설맞이 특별 선물 세트 등 신년 맞춤 인쇄물.",
+  },
+  other: {
+    zh: "各类广告展示、活动物料、礼品及特色辅助印刷品。",
+    ja: "各種広告ディスプレイ、イベント販促物、ギフトおよび特殊印刷物。",
+    ko: "특수 광고 디스플레이, 이벤트 홍보물, 판촉물 및 기타 인쇄물.",
+  },
+};
+
+const ITEM_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
+  card: { zh: "商务名片 / 会员卡", ja: "名刺 / カード", ko: "명함 / 카드" },
+  catalogue: { zh: "企业画册 / 目录", ja: "カタログ / 会社案内", ko: "카탈로그 / 브로슈어" },
+  flyer: { zh: "宣传单页 / 折页", ja: "チラシ / リーフレット", ko: "전단지 / 리플렛" },
+  voucher: { zh: "优惠券 / 代金券", ja: "クーポン / 引換券", ko: "쿠폰 / 바우처" },
+  envelope: { zh: "商务信封", ja: "封筒印刷", ko: "봉투" },
+  letterhead: { zh: "信纸便笺", ja: "便箋 / レターヘッド", ko: "레터헤드" },
+  folder: { zh: "文件夹 / 封套", ja: "フォルダ / ポケットファイル", ko: "홀더 / 파일" },
+  decal: { zh: "不干胶标签 / 贴纸", ja: "シール / ラベル印刷", ko: "라벨 / 스티커" },
+  "paper-bag": { zh: "精品纸袋 / 手提袋", ja: "紙袋 / 手提げ袋", ko: "종이 쇼핑백" },
+  box: { zh: "定制包装盒", ja: "オリジナル化粧箱", ko: "맞춤 박스" },
+  "paper-box": { zh: "精品礼品盒", ja: "ギフトボックス", ko: "선물 상자" },
+  "li-xi": { zh: "新年红包袋", ja: "お年玉・ポチ袋", ko: "세뱃돈 봉투" },
+  calendar: { zh: "企业挂历 / 台历", ja: "カレンダー", ko: "달력 / 캘린더" },
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -31,7 +91,7 @@ export default async function ProductsPage({
   const t = await getTranslations({ locale, namespace: "productsPage" });
   const [s1, s2, s3, s4, s5] = showcaseImages;
   const showcaseLabel = (s: (typeof showcaseImages)[number]) =>
-    pickLocale(locale, s.label, s.labelEn);
+    pickLocale(locale, s.label, s.labelEn, SHOWCASE_LABELS[s.seed]?.zh, SHOWCASE_LABELS[s.seed]?.ja, SHOWCASE_LABELS[s.seed]?.ko);
 
   return (
     <div className="bg-white">
@@ -159,8 +219,8 @@ export default async function ProductsPage({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {productCategories.map((cat) => {
               const Icon = iconMap[cat.icon] ?? Briefcase;
-              const name = pickLocale(locale, cat.nameVi, cat.nameEn);
-              const description = pickLocale(locale, cat.descriptionVi, cat.description);
+              const name = pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko);
+              const description = pickLocale(locale, cat.descriptionVi, cat.description, CATEGORY_DESCS[cat.id]?.zh, CATEGORY_DESCS[cat.id]?.ja, CATEGORY_DESCS[cat.id]?.ko);
               return (
                 <div key={cat.id} className="group block">
                   <div className="h-full rounded-2xl border border-zinc-100 overflow-hidden hover:border-zinc-300 hover:shadow-lg transition-all duration-300 bg-white flex flex-col">
@@ -205,7 +265,7 @@ export default async function ProductsPage({
                               href={`/products/${cat.id}/${item.id}`}
                               className="px-3.5 py-1.5 bg-zinc-50 hover:bg-brand-soft hover:text-brand-primary border border-zinc-200 hover:border-brand-primary/30 text-zinc-700 text-xs font-semibold rounded-full transition-all duration-200"
                             >
-                              {pickLocale(locale, item.nameVi, item.nameEn)}
+                              {pickLocale(locale, item.nameVi, item.nameEn, ITEM_NAMES[item.id]?.zh, ITEM_NAMES[item.id]?.ja, ITEM_NAMES[item.id]?.ko)}
                             </Link>
                           ))}
                         </div>
@@ -219,7 +279,15 @@ export default async function ProductsPage({
                           {t("viewDetail")}
                         </Link>
                         <span className="text-xs text-zinc-400 font-medium">
-                          {cat.items.length} {locale === "vi" ? "sản phẩm" : "products"}
+                          {locale === "vi"
+                            ? `${cat.items.length} sản phẩm`
+                            : locale === "zh"
+                            ? `${cat.items.length} 款产品`
+                            : locale === "ja"
+                            ? `${cat.items.length} 製品`
+                            : locale === "ko"
+                            ? `${cat.items.length} 개 제품`
+                            : `${cat.items.length} products`}
                         </span>
                       </div>
                     </div>

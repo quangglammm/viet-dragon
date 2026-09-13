@@ -21,11 +21,40 @@ const LANGUAGES: { code: Locale; flag: string; label: string; short: string }[] 
   { code: "ko", flag: "🇰🇷", label: "한국어", short: "KO" },
 ];
 
+const CATEGORY_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
+  marketing: { zh: "营销物料", ja: "マーケティング", ko: "마케팅" },
+  office: { zh: "办公文具", ja: "オフィス用品", ko: "오피스/사무" },
+  packaging: { zh: "包装制品", ja: "パッケージ包装", ko: "패키지/포장" },
+  tet: { zh: "新年年品", ja: "テト・新年", ko: "새해 인쇄물" },
+  other: { zh: "其他印刷品", ja: "その他印刷", ko: "기타 인쇄물" },
+};
+
+const FAST_PRINT_TAGS: Record<Locale, string> = {
+  vi: "in nhanh",
+  en: "fast",
+  zh: "快印",
+  ja: "特急",
+  ko: "당일인쇄",
+};
+
+const ITEM_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
+  card: { zh: "商务名片 / 会员卡", ja: "名刺 / カード", ko: "명함 / 카드" },
+  catalogue: { zh: "企业画册 / 目录", ja: "カタログ / 会社案内", ko: "카탈로그 / 브로슈어" },
+  flyer: { zh: "宣传单页 / 折页", ja: "チラシ / リーフレット", ko: "전단지 / 리플렛" },
+  voucher: { zh: "优惠券 / 代金券", ja: "クーポン / 引換券", ko: "쿠폰 / 바우처" },
+  envelope: { zh: "商务信封", ja: "封筒印刷", ko: "봉투" },
+  letterhead: { zh: "信纸便笺", ja: "便箋 / レターヘッド", ko: "레터헤드" },
+  folder: { zh: "文件夹 / 封套", ja: "フォルダ / ポケットファイル", ko: "홀더 / 파일" },
+  decal: { zh: "不干胶标签 / 贴纸", ja: "シール / ラベル印刷", ko: "라벨 / 스티커" },
+  "paper-bag": { zh: "精品纸袋 / 手提袋", ja: "紙袋 / 手提げ袋", ko: "종이 쇼핑백" },
+  box: { zh: "定制包装盒", ja: "オリジナル化粧箱", ko: "맞춤 박스" },
+  "paper-box": { zh: "精品礼品盒", ja: "ギフトボックス", ko: "선물 상자" },
+  "li-xi": { zh: "新年红包袋", ja: "お年玉・ポチ袋", ko: "세뱃돈 봉투" },
+  calendar: { zh: "企业挂历 / 台历", ja: "カレンダー", ko: "달력 / 캘린더" },
+};
+
 /**
- * Floating Language Switcher rendered directly beneath the menu.
- * 2 states:
- * - "khuất" (compact): shows language vn-arrow pill
- * - "full" (expanded): opens the full language list
+ * Floating Language Switcher rendered in topbar and navbar.
  */
 function FloatingLocaleSwitcher({
   locale = "vi",
@@ -66,15 +95,14 @@ function FloatingLocaleSwitcher({
 
   return (
     <div ref={dropdownRef} className={cn("relative inline-block text-left select-none", className)}>
-      {/* Trạng thái 1: Khuất (Chỉ có lá cờ và mũi tên) */}
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
         className={cn(
-          "group flex items-center gap-1 rounded-full transition-all duration-200 cursor-pointer",
+          "group flex items-center gap-1.5 rounded-full transition-all duration-200 cursor-pointer",
           isTopbar
-            ? "px-2 py-0.5 bg-white/15 hover:bg-white/25 border border-white/20 text-white shadow-2xs backdrop-blur-xs"
-            : "gap-1.5 px-2.5 py-1.5 bg-white/95 hover:bg-white border border-zinc-200/90 shadow-md hover:shadow-lg backdrop-blur-md",
+            ? "px-2.5 py-1 bg-white/15 hover:bg-white/25 border border-white/20 text-white shadow-2xs backdrop-blur-xs"
+            : "px-3 py-1.5 bg-white/95 hover:bg-white border border-zinc-200/90 shadow-md hover:shadow-lg backdrop-blur-md text-zinc-800",
           open && isTopbar && "bg-white/30 border-white/40 ring-2 ring-white/30",
           open && !isTopbar && "ring-2 ring-brand-primary/30 border-brand-primary/50 bg-white shadow-lg"
         )}
@@ -99,11 +127,10 @@ function FloatingLocaleSwitcher({
         />
       </button>
 
-      {/* Trạng thái 2: Full (Chỉ hiển thị các lá cờ) */}
       {open && (
         <div
           className={cn(
-            "absolute mt-1.5 rounded-2xl bg-white/98 backdrop-blur-md border border-zinc-100 shadow-2xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150 flex flex-col gap-1 min-w-[42px]",
+            "absolute mt-2 rounded-2xl bg-white/98 backdrop-blur-md border border-zinc-100 shadow-2xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150 flex flex-col gap-1 min-w-[48px]",
             isTopbar ? "left-0 sm:right-0 sm:left-auto" : "right-0"
           )}
           role="listbox"
@@ -119,16 +146,16 @@ function FloatingLocaleSwitcher({
                   setOpen(false);
                 }}
                 className={cn(
-                  "flex items-center justify-center size-8.5 rounded-xl text-lg leading-none transition-all cursor-pointer",
+                  "flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold leading-none transition-all cursor-pointer whitespace-nowrap",
                   isSelected
-                    ? "bg-brand-soft ring-1.5 ring-brand-primary shadow-2xs scale-105"
-                    : "hover:bg-zinc-100 hover:scale-105 opacity-70 hover:opacity-100"
+                    ? "bg-brand-soft ring-1.5 ring-brand-primary text-brand-primary font-bold shadow-2xs"
+                    : "text-zinc-700 hover:bg-zinc-100 hover:text-brand-dark opacity-80 hover:opacity-100"
                 )}
                 role="option"
                 aria-selected={isSelected}
                 title={lang.label}
               >
-                <span>{lang.flag}</span>
+                <span className="text-lg leading-none mx-auto">{lang.flag}</span>
               </button>
             );
           })}
@@ -138,39 +165,6 @@ function FloatingLocaleSwitcher({
   );
 }
 
-function DrawerLocaleSwitcher({
-  locale = "vi",
-  onSwitch,
-  className,
-}: Readonly<{
-  locale: Locale;
-  onSwitch: (next: Locale) => void;
-  className?: string;
-}>) {
-  return (
-    <div className={cn("flex items-center justify-center gap-3 py-2", className)}>
-      {LANGUAGES.map((lang) => {
-        const isSelected = (locale || "vi") === lang.code;
-        return (
-          <button
-            key={lang.code}
-            type="button"
-            onClick={() => onSwitch(lang.code)}
-            className={cn(
-              "flex items-center justify-center size-10 rounded-2xl text-2xl leading-none transition-all cursor-pointer",
-              isSelected
-                ? "bg-brand-soft ring-2 ring-brand-primary shadow-xs scale-110"
-                : "bg-zinc-100 hover:bg-zinc-200 opacity-60 hover:opacity-100"
-            )}
-            title={lang.label}
-          >
-            <span>{lang.flag}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
 
 function DesktopCategoryDropdown({
   cat,
@@ -240,10 +234,12 @@ function DesktopCategoryDropdown({
                   : "text-zinc-800 hover:text-brand-primary hover:bg-brand-primary/10"
               )}
             >
-              <span className={cn(isActive && "font-bold", isMultiCol && "truncate")}>{pickLocale(locale, item.nameVi, item.nameEn)}</span>
+              <span className={cn(isActive && "font-bold", isMultiCol && "truncate")}>
+                {pickLocale(locale, item.nameVi, item.nameEn, ITEM_NAMES[item.id]?.zh, ITEM_NAMES[item.id]?.ja, ITEM_NAMES[item.id]?.ko)}
+              </span>
               {isFastPrint(item.id) && (
                 <span className="px-1.5 py-0.5 text-[10px] font-bold text-white bg-amber-500 rounded leading-none shadow-xs shrink-0">
-                  {locale === "vi" ? "in nhanh" : "fast"}
+                  {FAST_PRINT_TAGS[locale] || "fast"}
                 </span>
               )}
             </Link>
@@ -305,6 +301,7 @@ export default function Navbar() {
   }, [menuOpen]);
 
   const switchLocale = (next: Locale) => {
+    setMenuOpen(false);
     router.replace(pathname, { locale: next });
   };
 
@@ -324,6 +321,13 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Mobile floating language switcher (scrolls away with page) */}
+      {isHome && (
+        <div className="lg:hidden absolute top-20 right-6 z-40 shadow-xl rounded-full">
+          <FloatingLocaleSwitcher locale={locale} onSwitch={switchLocale} />
+        </div>
+      )}
+
       <header className="fixed top-0 inset-x-0 z-50">
         {/* Top info bar — desktop only, permanent brand-gradient band (matches the
             template's header-top-section, which sits outside the sticky-toggled
@@ -397,7 +401,7 @@ export default function Navbar() {
                     )}
                   >
                     <Icon size={13} className="shrink-0" strokeWidth={2.5} />
-                    <span>{pickLocale(locale, cat.nameVi, cat.nameEn)}</span>
+                    <span>{pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)}</span>
                   </Link>
 
                   <DesktopCategoryDropdown cat={cat} locale={locale} isOpen={activeDesktopCat === cat.id} align={align} />
@@ -407,6 +411,7 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
+
             <WipeButton
               href="/#cta"
               tone="primary"
@@ -436,18 +441,6 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Language switcher directly under menu on mobile & tablet — does NOT follow scroll */}
-      {!menuOpen && (
-        <div
-          className={cn(
-            "absolute top-[72px] right-4 sm:right-6 z-40 lg:hidden transition-all duration-200",
-            scrolled ? "opacity-0 pointer-events-none -translate-y-2" : "opacity-100 pointer-events-auto"
-          )}
-        >
-          <FloatingLocaleSwitcher locale={locale} onSwitch={switchLocale} />
-        </div>
-      )}
-
       {/* Mobile full-screen menu */}
       <div
         className={cn(
@@ -455,9 +448,6 @@ export default function Navbar() {
           menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}
       >
-        <div className="px-6 pt-4 pb-2 border-b border-zinc-100">
-          <DrawerLocaleSwitcher locale={locale} onSwitch={switchLocale} className="w-full" />
-        </div>
         <nav className="flex flex-col px-6 py-6 gap-2 flex-1 overflow-y-auto">
           {productCategories.map((cat) => {
             const Icon = iconMap[cat.icon] ?? Briefcase;
@@ -474,7 +464,7 @@ export default function Navbar() {
                     )}
                   >
                     <Icon size={22} className={isActiveCat ? "text-brand-primary" : "text-brand-primary/80"} />
-                    {pickLocale(locale, cat.nameVi, cat.nameEn)}
+                    {pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)}
                   </Link>
                 <button
                   onClick={() => setOpenMobileCat((current) => current === cat.id ? null : cat.id)}
@@ -504,7 +494,7 @@ export default function Navbar() {
                               isActive ? "text-brand-primary font-bold" : "text-zinc-700"
                             )}
                           >
-                            {pickLocale(locale, item.nameVi, item.nameEn)}
+                            {pickLocale(locale, item.nameVi, item.nameEn, ITEM_NAMES[item.id]?.zh, ITEM_NAMES[item.id]?.ja, ITEM_NAMES[item.id]?.ko)}
                           </Link>
                         </li>
                       );
@@ -518,6 +508,8 @@ export default function Navbar() {
         </nav>
 
         <div className="px-6 pb-10">
+
+
           <WipeButton
             href="/#cta"
             tone="primary"

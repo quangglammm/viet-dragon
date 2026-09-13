@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Lock, User, ArrowRight, ShieldCheck, Printer, Eye, EyeOff, Sparkles } from "lucide-react";
+import { Lock, ArrowRight, ShieldCheck, Printer, Eye, EyeOff, Sparkles } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -22,7 +21,7 @@ export default function AdminLoginPage() {
       const res = await fetch("/api/admin/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username: "admin", password }),
       });
 
       const data = await res.json();
@@ -33,7 +32,7 @@ export default function AdminLoginPage() {
         return;
       }
 
-      router.replace("/admin");
+      router.replace("/admin/site-content");
     } catch {
       setError("Không thể kết nối đến máy chủ");
       setLoading(false);
@@ -87,24 +86,7 @@ export default function AdminLoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="mb-1.5 block text-xs font-bold text-zinc-200">
-                Tài khoản quản trị
-              </label>
-              <div className="relative flex items-center">
-                <User size={16} className="absolute left-3.5 text-zinc-400" />
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="admin"
-                  required
-                  className="w-full rounded-2xl border border-white/15 bg-white/5 py-3 pl-10 pr-4 text-xs font-semibold text-white placeholder-zinc-500 transition-all focus:border-brand-primary focus:bg-white/10 focus:outline-hidden focus:ring-2 focus:ring-brand-primary/30"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="mb-1.5 block text-xs font-bold text-zinc-200">
-                Mật khẩu
+                Mật khẩu quản trị
               </label>
               <div className="relative flex items-center">
                 <Lock size={16} className="absolute left-3.5 text-zinc-400" />
@@ -114,18 +96,19 @@ export default function AdminLoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   required
+                  autoFocus
                   className="w-full rounded-2xl border border-white/15 bg-white/5 py-3 pl-10 pr-10 text-xs font-semibold text-white placeholder-zinc-500 transition-all focus:border-brand-primary focus:bg-white/10 focus:outline-hidden focus:ring-2 focus:ring-brand-primary/30"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 text-zinc-400 hover:text-white transition-colors"
+                  className="absolute right-3.5 text-zinc-400 hover:text-white transition-colors cursor-pointer"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
               <p className="mt-2 text-[11px] text-zinc-400">
-                Tài khoản xưởng: <span className="font-mono text-pink-300 font-bold">admin</span> / <span className="font-mono text-pink-300 font-bold">vietdragon2026@admin</span>
+                Mật khẩu xưởng: <span className="font-mono text-pink-300 font-bold">vietdragon2026@admin</span>
               </p>
             </div>
 
@@ -138,7 +121,7 @@ export default function AdminLoginPage() {
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
               ) : (
                 <>
-                  Truy Cập Bàn Làm Việc <ArrowRight size={15} />
+                  Truy Cập Trang Quản Trị <ArrowRight size={15} />
                 </>
               )}
             </button>

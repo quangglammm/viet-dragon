@@ -361,9 +361,9 @@ export default function AdminSiteContentPage() {
                     {currentData.hero?.slides?.map((slide: HeroSlide, sIdx: number) => (
                       <div
                         key={sIdx}
-                        className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-5 space-y-4"
+                        className="rounded-2xl border border-slate-200/80 bg-slate-50/50 dark:bg-[#070320] dark:border-white/10 p-5 space-y-4 transition-colors"
                       >
-                        <span className="rounded-md bg-slate-900 text-white px-2.5 py-1 text-[10px] font-bold">
+                        <span className="rounded-md bg-slate-900 text-white dark:bg-brand-primary/30 dark:text-purple-300 dark:border dark:border-brand-primary/40 px-2.5 py-1 text-[10px] font-bold">
                           Slide #{sIdx + 1}
                         </span>
 
@@ -436,7 +436,7 @@ export default function AdminSiteContentPage() {
                   </div>
 
                   {/* Hero CTA Button Text */}
-                  <div className="rounded-2xl border border-slate-200/80 bg-white p-4">
+                  <div className="rounded-2xl border border-slate-200/80 bg-white dark:bg-[#070320] dark:border-white/10 p-4 transition-colors">
                     <label className="text-xs font-bold text-slate-700 block mb-1">
                       Chữ trên nút CTA chính (cta)
                     </label>
@@ -512,8 +512,8 @@ export default function AdminSiteContentPage() {
                   </div>
 
                   {/* 4 Checklist Items */}
-                  <div className="rounded-2xl border border-purple-100 bg-purple-50/40 p-4">
-                    <label className="text-xs font-bold text-slate-800 block mb-2">
+                  <div className="rounded-2xl border border-purple-100 dark:border-white/10 bg-purple-50/40 dark:bg-[#070320] p-4 transition-colors">
+                    <label className="text-xs font-bold text-slate-800 dark:text-purple-200 block mb-2">
                       4 Cam Kết Chất Lượng In Ấn (Checklist)
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -551,8 +551,8 @@ export default function AdminSiteContentPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {currentData.services?.items?.map((item: ServiceItem, idx: number) => (
-                      <div key={idx} className="rounded-2xl border border-slate-200 bg-slate-50/50 p-4 space-y-3">
-                        <span className="rounded-md bg-purple-100 text-brand-primary px-2 py-0.5 text-[10px] font-bold">
+                      <div key={idx} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-[#070320] p-4 space-y-3 transition-colors">
+                        <span className="rounded-md bg-purple-100 text-brand-primary dark:bg-brand-primary/30 dark:text-purple-300 dark:border dark:border-brand-primary/40 px-2 py-0.5 text-[10px] font-bold">
                           Dịch vụ #{idx + 1}
                         </span>
                         <div>
@@ -605,8 +605,8 @@ export default function AdminSiteContentPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {currentData.portfolio?.items?.map((item: PortfolioItem, idx: number) => (
-                      <div key={idx} className="rounded-2xl border border-slate-200 bg-slate-50/50 p-4 space-y-3">
-                        <span className="rounded-md bg-slate-900 text-white px-2 py-0.5 text-[10px] font-bold">
+                      <div key={idx} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-[#070320] p-4 space-y-3 transition-colors">
+                        <span className="rounded-md bg-slate-900 text-white dark:bg-brand-primary/30 dark:text-purple-300 dark:border dark:border-brand-primary/40 px-2 py-0.5 text-[10px] font-bold">
                           Vị trí #{idx + 1}
                         </span>
                         <div>
@@ -659,8 +659,8 @@ export default function AdminSiteContentPage() {
 
                   <div className="space-y-4">
                     {currentData.testimonials?.items?.map((item: TestimonialItem, idx: number) => (
-                      <div key={idx} className="rounded-2xl border border-slate-200 bg-slate-50/50 p-4 space-y-3">
-                        <span className="rounded-md bg-purple-100 text-brand-primary px-2 py-0.5 text-[10px] font-bold">
+                      <div key={idx} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-[#070320] p-4 space-y-3 transition-colors">
+                        <span className="rounded-md bg-purple-100 text-brand-primary dark:bg-brand-primary/30 dark:text-purple-300 dark:border dark:border-brand-primary/40 px-2 py-0.5 text-[10px] font-bold">
                           Đánh giá #{idx + 1}
                         </span>
 
@@ -732,8 +732,8 @@ export default function AdminSiteContentPage() {
 
                   <div className="space-y-4">
                     {currentData.faq?.items?.map((item: FaqItem, idx: number) => (
-                      <div key={idx} className="rounded-2xl border border-slate-200 bg-slate-50/50 p-4 space-y-3">
-                        <span className="rounded-md bg-slate-900 text-white px-2 py-0.5 text-[10px] font-bold">
+                      <div key={idx} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-[#070320] p-4 space-y-3 transition-colors">
+                        <span className="rounded-md bg-slate-900 text-white dark:bg-brand-primary/30 dark:text-purple-300 dark:border dark:border-brand-primary/40 px-2 py-0.5 text-[10px] font-bold">
                           Câu hỏi #{idx + 1}
                         </span>
                         <div>

@@ -113,11 +113,102 @@ export interface MediaAsset {
   updatedAt: string;
   type: "image" | "video";
   folder: string;
+  usedIn?: string[];
+}
+
+function removeVietnameseTones(str: string): string {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "d");
+}
+
+function sanitizeOriginalFilename(originalName: string): { base: string; ext: string } {
+  const ext = path.extname(originalName).toLowerCase() || ".png";
+  const nameOnly = path.basename(originalName, ext);
+
+  // Strip Vietnamese accents
+  const asciiName = removeVietnameseTones(nameOnly);
+
+  // Keep alphanumeric, underscore, dash; replace spaces/special chars with dash without cutting length
+  let base = asciiName
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  if (!base) {
+    base = "media";
+  }
+
+  return { base, ext };
+}
+
+async function fileExists(filePath: string): Promise<boolean> {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function getUsedMediaMap(): Promise<Map<string, string[]>> {
+  const map = new Map<string, string[]>();
+
+  const registerUsage = (rawUrl: string | undefined | null, source: string) => {
+    if (!rawUrl || typeof rawUrl !== "string") return;
+    const normalized = rawUrl.startsWith("/") ? rawUrl : `/${rawUrl}`;
+    const list = map.get(normalized) || [];
+    if (!list.includes(source)) {
+      list.push(source);
+      map.set(normalized, list);
+    }
+  };
+
+  try {
+    const categories = await getStoredProducts();
+    for (const cat of categories) {
+      registerUsage(cat.coverImage, `Danh mục: ${cat.nameVi || cat.nameEn}`);
+      for (const prod of cat.items || []) {
+        registerUsage(prod.image, `Sản phẩm: ${prod.nameVi || prod.nameEn}`);
+        if (prod.images) {
+          for (const img of prod.images) {
+            registerUsage(img, `Sản phẩm (phụ): ${prod.nameVi || prod.nameEn}`);
+          }
+        }
+        for (const group of prod.optionGroups || []) {
+          for (const opt of group.options || []) {
+            registerUsage(opt.image, `Tùy chọn "${opt.nameVi || opt.name}" (${prod.nameVi || prod.nameEn})`);
+            if (opt.images) {
+              for (const img of opt.images) {
+                registerUsage(img, `Tùy chọn (phụ) "${opt.nameVi || opt.name}" (${prod.nameVi || prod.nameEn})`);
+              }
+            }
+          }
+        }
+      }
+    }
+  } catch {
+    // Ignore reading error
+  }
+
+  try {
+    const posts = await getStoredBlogPosts();
+    for (const post of posts) {
+      registerUsage(post.coverImage, `Bài viết: ${post.title || post.titleEn}`);
+    }
+  } catch {
+    // Ignore reading error
+  }
+
+  return map;
 }
 
 export async function getMediaAssets(): Promise<MediaAsset[]> {
   await ensureDirs();
   const assets: MediaAsset[] = [];
+  const usedMap = await getUsedMediaMap();
 
   // Recursive directory scanner function
   async function scanDirectory(dirPath: string) {
@@ -159,6 +250,7 @@ export async function getMediaAssets(): Promise<MediaAsset[]> {
                 updatedAt: stat.mtime.toISOString(),
                 type: isVideo ? "video" : "image",
                 folder,
+                usedIn: usedMap.get(url),
               });
             } catch {
               // Ignore stat error for unreadable file
@@ -182,22 +274,95 @@ export async function saveUploadedFile(file: File): Promise<MediaAsset> {
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
-  // Sanitize filename
-  const ext = path.extname(file.name).toLowerCase() || ".png";
-  const nameOnly = path.basename(file.name, ext).replace(/[^a-zA-Z0-9_-]/g, "-").toLowerCase();
-  const uniqueName = `${nameOnly}-${Date.now()}${ext}`;
-  const filePath = path.join(UPLOADS_DIR, uniqueName);
+  const { base, ext } = sanitizeOriginalFilename(file.name);
+
+  // Check all existing media files across the entire library in public/
+  const existingAssets = await getMediaAssets();
+  const takenFilenames = new Set(existingAssets.map((a) => a.filename.toLowerCase()));
+
+  // 1. If original name is NOT duplicate, keep original name as-is
+  let finalName = `${base}${ext}`;
+  let filePath = path.join(UPLOADS_DIR, finalName);
+
+  const isTaken =
+    takenFilenames.has(finalName.toLowerCase()) || (await fileExists(filePath));
+
+  // 2. Only if the name is already taken, append a short incremental number suffix
+  if (isTaken) {
+    let counter = 1;
+    let candidate = `${base}-${counter}${ext}`;
+    while (
+      takenFilenames.has(candidate.toLowerCase()) ||
+      (await fileExists(path.join(UPLOADS_DIR, candidate)))
+    ) {
+      counter++;
+      candidate = `${base}-${counter}${ext}`;
+    }
+    finalName = candidate;
+    filePath = path.join(UPLOADS_DIR, finalName);
+  }
 
   await fs.writeFile(filePath, buffer);
 
   const isVideo = VIDEO_EXTS.has(ext);
 
   return {
-    filename: uniqueName,
-    url: `/uploads/${uniqueName}`,
+    filename: finalName,
+    url: `/uploads/${finalName}`,
     size: buffer.length,
     updatedAt: new Date().toISOString(),
     type: isVideo ? "video" : "image",
     folder: "uploads",
+  };
+}
+
+export async function deleteMediaFiles(urls: string[]): Promise<{
+  success: boolean;
+  deleted: string[];
+  failed: { url: string; error: string }[];
+}> {
+  await ensureDirs();
+  const deleted: string[] = [];
+  const failed: { url: string; error: string }[] = [];
+
+  for (const rawUrl of urls) {
+    if (!rawUrl || typeof rawUrl !== "string") continue;
+    const cleanUrl = rawUrl.replace(/^\/+/, "");
+    const resolvedPath = path.resolve(PUBLIC_DIR, cleanUrl);
+
+    // Security check 1: Path must be strictly inside PUBLIC_DIR
+    if (!resolvedPath.startsWith(PUBLIC_DIR)) {
+      failed.push({ url: rawUrl, error: "Đường dẫn không hợp lệ hoặc nằm ngoài thư mục public" });
+      continue;
+    }
+
+    // Security check 2: Prevent deleting public directory or root subdirectories
+    if (
+      resolvedPath === PUBLIC_DIR ||
+      resolvedPath === UPLOADS_DIR ||
+      resolvedPath === path.join(PUBLIC_DIR, "images") ||
+      resolvedPath === path.join(PUBLIC_DIR, "videos")
+    ) {
+      failed.push({ url: rawUrl, error: "Không được phép xóa thư mục hệ thống" });
+      continue;
+    }
+
+    try {
+      const stat = await fs.stat(resolvedPath);
+      if (!stat.isFile()) {
+        failed.push({ url: rawUrl, error: "Chỉ được phép xóa tệp tin, không được xóa thư mục" });
+        continue;
+      }
+      await fs.unlink(resolvedPath);
+      deleted.push(rawUrl);
+    } catch {
+      failed.push({ url: rawUrl, error: "Tệp tin không tồn tại hoặc đã bị xóa" });
+    }
+  }
+
+  return {
+    success: failed.length === 0,
+    deleted,
+    failed,
   };
 }

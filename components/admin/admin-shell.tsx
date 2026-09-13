@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  LayoutDashboard,
   Languages,
   Package,
   FileText,
@@ -18,16 +17,12 @@ import {
   ChevronRight,
   ShieldCheck,
   LayoutTemplate,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  {
-    href: "/admin",
-    label: "Bàn Làm Việc",
-    subtitle: "Số liệu, biểu đồ & báo giá",
-    icon: LayoutDashboard,
-  },
   {
     href: "/admin/site-content",
     label: "Quản Lý Giao Diện & Ảnh",
@@ -66,6 +61,31 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [authChecking, setAuthChecking] = useState(true);
   const [adminUser, setAdminUser] = useState<string>("admin");
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const saved = localStorage.getItem("vd_admin_theme") as "light" | "dark" | null;
+      const initialTheme = saved === "dark" ? "dark" : "light";
+      setTheme(initialTheme);
+      if (initialTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const toggleTheme = (newTheme: "light" | "dark") => {
+    setTheme(newTheme);
+    localStorage.setItem("vd_admin_theme", newTheme);
+    if (newTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
 
   useEffect(() => {
     fetch("/api/admin/auth/me")
@@ -110,11 +130,14 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
 
   // Find active nav item for breadcrumb
   const currentNav = NAV_ITEMS.find(
-    (item) => pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href))
+    (item) => pathname === item.href || pathname.startsWith(item.href)
   ) || NAV_ITEMS[0];
 
   return (
-    <div className="flex min-h-screen bg-[#f4f6fb] text-slate-900 font-sans">
+    <div className={cn(
+      "admin-theme-root flex min-h-screen font-sans transition-colors duration-200",
+      theme === "dark" ? "bg-[#080526] text-white dark" : "bg-[#f4f6fb] text-slate-900"
+    )}>
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
@@ -132,7 +155,7 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
       >
         {/* Brand Header */}
         <div className="flex h-20 items-center justify-between border-b border-white/10 px-6 bg-[#060322]">
-          <Link href="/admin" className="flex items-center gap-3">
+          <Link href="/admin/site-content" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-brand-primary via-purple-500 to-pink-500 text-white shadow-lg shadow-brand-primary/40">
               <Printer size={20} strokeWidth={2.5} />
             </div>
@@ -164,7 +187,7 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive =
-              pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+              pathname === item.href || pathname.startsWith(item.href);
             return (
               <Link
                 key={item.href}
@@ -238,38 +261,70 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
       {/* Main Layout Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top Header Bar */}
-        <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6 shadow-xs lg:h-20 lg:px-10">
+        <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6 shadow-xs lg:h-20 lg:px-10 dark:bg-[#060322] dark:border-white/10 dark:text-white transition-colors duration-200">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="rounded-xl border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 lg:hidden"
+              className="rounded-xl border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 lg:hidden dark:border-white/10 dark:text-zinc-300 dark:hover:bg-white/10 cursor-pointer"
             >
               <Menu size={20} />
             </button>
 
             {/* Breadcrumb */}
-            <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-500">
-              <Link href="/admin" className="hover:text-brand-primary transition-colors">
+            <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-zinc-400">
+              <Link href="/admin/site-content" className="hover:text-brand-primary transition-colors">
                 Admin
               </Link>
               <ChevronRight size={14} className="text-slate-400" />
-              <span className="font-bold text-slate-800">{currentNav.label}</span>
+              <span className="font-bold text-slate-800 dark:text-white">{currentNav.label}</span>
             </div>
           </div>
 
           {/* Quick Header Actions */}
           <div className="flex items-center gap-3">
             {/* Quick Link to Customer Website */}
-            <div className="hidden md:flex items-center gap-1.5 rounded-xl bg-purple-50 border border-purple-100 px-3 py-1.5 text-xs text-purple-700 font-semibold">
+            <div className="hidden md:flex items-center gap-1.5 rounded-xl bg-purple-50 border border-purple-100 px-3 py-1.5 text-xs text-purple-700 font-semibold dark:bg-brand-primary/20 dark:border-brand-primary/30 dark:text-purple-300">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>Xưởng In & Showroom: <strong>HCM & Bình Dương</strong></span>
             </div>
 
+            {/* Theme Toggle (Sun & Moon Icons Only - No Text) */}
+            <div className="flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200/80 dark:bg-white/10 dark:border-white/10">
+              <button
+                type="button"
+                onClick={() => toggleTheme("light")}
+                className={cn(
+                  "flex h-8 w-8 items-center justify-center rounded-lg transition-all cursor-pointer",
+                  theme === "light"
+                    ? "bg-white text-amber-500 shadow-xs"
+                    : "text-slate-400 hover:text-slate-600 dark:text-zinc-400 dark:hover:text-white"
+                )}
+                title="Giao diện sáng"
+                aria-label="Giao diện sáng"
+              >
+                <Sun size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => toggleTheme("dark")}
+                className={cn(
+                  "flex h-8 w-8 items-center justify-center rounded-lg transition-all cursor-pointer",
+                  theme === "dark"
+                    ? "bg-[#1e293b] text-purple-300 shadow-xs dark:bg-brand-primary dark:text-white"
+                    : "text-slate-400 hover:text-slate-600 dark:text-zinc-400 dark:hover:text-white"
+                )}
+                title="Giao diện tối"
+                aria-label="Giao diện tối"
+              >
+                <Moon size={16} />
+              </button>
+            </div>
+
             {/* Notification Indicator */}
             <Link
-              href="/admin"
-              title="Yêu cầu báo giá mới"
-              className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:border-brand-primary hover:text-brand-primary transition-colors"
+              href="/admin/site-content"
+              title="Thông báo hệ thống"
+              className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:border-brand-primary hover:text-brand-primary transition-colors dark:bg-white/5 dark:border-white/10 dark:text-zinc-300 dark:hover:text-white"
             >
               <Bell size={18} />
               <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
@@ -282,7 +337,7 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
             <Link
               href="/"
               target="_blank"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#09052f] px-4 py-2.5 text-xs font-bold text-white hover:bg-brand-primary transition-colors shadow-sm"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#09052f] px-4 py-2.5 text-xs font-bold text-white hover:bg-brand-primary transition-colors shadow-sm dark:bg-brand-primary dark:hover:bg-brand-primary/80"
             >
               <span>Xem Web Khách Hàng</span>
               <ExternalLink size={13} />
@@ -291,7 +346,10 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
         </header>
 
         {/* Content Canvas */}
-        <main className="flex-1 overflow-y-auto p-6 lg:p-10">
+        <main className={cn(
+          "flex-1 overflow-y-auto p-6 lg:p-10 transition-colors duration-200",
+          theme === "dark" ? "bg-[#080526]" : "bg-[#f4f6fb]"
+        )}>
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>
       </div>
