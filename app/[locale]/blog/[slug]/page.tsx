@@ -6,7 +6,13 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { blogPosts, categoryColors } from "@/data/posts";
+import { blogPosts, categoryColors, type PostCategory } from "@/data/posts";
+
+const BLOG_CATEGORIES: Record<PostCategory, { zh: string; ja: string; ko: string }> = {
+  tips: { zh: "印刷技巧", ja: "印刷のヒント", ko: "인쇄 팁" },
+  "case-study": { zh: "实际案例", ja: "事例紹介", ko: "성공 사례" },
+  news: { zh: "新闻动态", ja: "ニュース", ko: "뉴스" },
+};
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
@@ -27,7 +33,8 @@ export async function generateMetadata({
 }
 
 function formatDate(iso: string, locale: Locale) {
-  return new Date(iso).toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {
+  const code = locale === "vi" ? "vi-VN" : locale === "zh" ? "zh-CN" : locale === "ja" ? "ja-JP" : locale === "ko" ? "ko-KR" : "en-US";
+  return new Date(iso).toLocaleDateString(code, {
     day: "2-digit",
     month: "long",
     year: "numeric",
@@ -46,7 +53,7 @@ export default async function BlogPostPage({
 
   const title = pickLocale(locale, post.title, post.titleEn);
   const excerpt = pickLocale(locale, post.excerpt, post.excerptEn);
-  const category = pickLocale(locale, post.categoryVi, post.categoryEn);
+  const category = pickLocale(locale, post.categoryVi, post.categoryEn, BLOG_CATEGORIES[post.category]?.zh, BLOG_CATEGORIES[post.category]?.ja, BLOG_CATEGORIES[post.category]?.ko);
   const content = pickLocale(locale, post.content, post.contentEn);
 
   const idx = blogPosts.findIndex((p) => p.slug === slug);

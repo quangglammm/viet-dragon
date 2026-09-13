@@ -8,6 +8,14 @@ import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import { productCategories } from "@/data/categories";
 
+const CATEGORY_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
+  marketing: { zh: "营销物料", ja: "マーケティング", ko: "마케팅" },
+  office: { zh: "办公文具", ja: "オフィス用品", ko: "오피스/사무" },
+  packaging: { zh: "包装制品", ja: "パッケージ包装", ko: "패키지/포장" },
+  tet: { zh: "新年年品", ja: "テト・新年", ko: "새해 인쇄물" },
+  other: { zh: "其他印刷品", ja: "その他印刷", ko: "기타 인쇄물" },
+};
+
 export default function ShopCategories() {
   const t = useTranslations("shopCategories");
   const locale = useLocale() as Locale;
@@ -15,9 +23,9 @@ export default function ShopCategories() {
   return (
     <section className="relative w-full bg-white py-10 lg:py-12 border-y border-zinc-100">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
           {productCategories.map((cat, i) => {
-            const name = pickLocale(locale, cat.nameVi, cat.nameEn);
+            const name = pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko);
             return (
               <motion.div
                 key={cat.id}

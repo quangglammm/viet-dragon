@@ -96,10 +96,11 @@ export function LanguageDetectorToast() {
 
     if (forceToast) {
       const target = testLang && SUGGESTIONS[testLang] ? testLang : (currentLocale === "vi" ? "en" : "vi");
-      setTargetLocale(target);
-      setVisible(true);
-      console.log(`[LanguageDetectorToast] Chế độ test đang bật: hiển thị đề xuất ngôn ngữ "${target}"`);
-      return;
+      const testTimer = setTimeout(() => {
+        setTargetLocale(target);
+        setVisible(true);
+      }, 0);
+      return () => clearTimeout(testTimer);
     }
 
     // Check if user has already made a decision or dismissed

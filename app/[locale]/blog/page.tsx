@@ -5,7 +5,13 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { blogPosts, categoryColors } from "@/data/posts";
+import { blogPosts, categoryColors, type PostCategory } from "@/data/posts";
+
+const BLOG_CATEGORIES: Record<PostCategory, { zh: string; ja: string; ko: string }> = {
+  tips: { zh: "印刷技巧", ja: "印刷のヒント", ko: "인쇄 팁" },
+  "case-study": { zh: "实际案例", ja: "事例紹介", ko: "성공 사례" },
+  news: { zh: "新闻动态", ja: "ニュース", ko: "뉴스" },
+};
 
 export async function generateMetadata({
   params,
@@ -18,7 +24,8 @@ export async function generateMetadata({
 }
 
 function formatDate(iso: string, locale: Locale) {
-  return new Date(iso).toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {
+  const code = locale === "vi" ? "vi-VN" : locale === "zh" ? "zh-CN" : locale === "ja" ? "ja-JP" : locale === "ko" ? "ko-KR" : "en-US";
+  return new Date(iso).toLocaleDateString(code, {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -35,7 +42,8 @@ export default async function BlogPage({
   const [featured, ...rest] = blogPosts;
   const title = (p: typeof featured) => pickLocale(locale, p.title, p.titleEn);
   const excerpt = (p: typeof featured) => pickLocale(locale, p.excerpt, p.excerptEn);
-  const category = (p: typeof featured) => pickLocale(locale, p.categoryVi, p.categoryEn);
+  const category = (p: typeof featured) =>
+    pickLocale(locale, p.categoryVi, p.categoryEn, BLOG_CATEGORIES[p.category]?.zh, BLOG_CATEGORIES[p.category]?.ja, BLOG_CATEGORIES[p.category]?.ko);
 
   return (
     <div className="bg-white">
