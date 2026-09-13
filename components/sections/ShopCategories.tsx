@@ -7,14 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import { productCategories } from "@/data/categories";
-
-const CATEGORY_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
-  marketing: { zh: "营销物料", ja: "マーケティング", ko: "마케팅" },
-  office: { zh: "办公文具", ja: "オフィス用品", ko: "오피스/사무" },
-  packaging: { zh: "包装制品", ja: "パッケージ包装", ko: "패키지/포장" },
-  tet: { zh: "新年年品", ja: "テト・新年", ko: "새해 인쇄물" },
-  other: { zh: "其他印刷品", ja: "その他印刷", ko: "기타 인쇄물" },
-};
+import { CATEGORY_NAMES } from "@/data/translations";
 
 export default function ShopCategories() {
   const t = useTranslations("shopCategories");

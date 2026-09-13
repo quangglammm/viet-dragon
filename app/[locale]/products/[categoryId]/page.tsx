@@ -10,6 +10,7 @@ import { Link } from "@/i18n/navigation";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import { productCategories } from "@/data/categories";
+import { CATEGORY_NAMES, CATEGORY_DESCS, ITEM_NAMES, ITEM_DESCS } from "@/data/translations";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 
@@ -26,8 +27,8 @@ export async function generateMetadata({
   const cat = productCategories.find((c) => c.id === categoryId);
   if (!cat) return {};
   return {
-    title: `${pickLocale(locale, cat.nameVi, cat.nameEn)} | Viet Dragon`,
-    description: pickLocale(locale, cat.descriptionVi, cat.description),
+    title: `${pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)} | Viet Dragon`,
+    description: pickLocale(locale, cat.descriptionVi, cat.description, CATEGORY_DESCS[cat.id]?.zh, CATEGORY_DESCS[cat.id]?.ja, CATEGORY_DESCS[cat.id]?.ko),
   };
 }
 
@@ -41,7 +42,7 @@ export default async function CategoryPage({
   const cat = productCategories.find((c) => c.id === categoryId);
   if (!cat) notFound();
 
-  const name = pickLocale(locale, cat.nameVi, cat.nameEn);
+  const name = pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko);
   const Icon = iconMap[cat.icon] ?? Briefcase;
   const idx = productCategories.findIndex((c) => c.id === categoryId);
   const prev = idx > 0 ? productCategories[idx - 1] : null;
@@ -93,7 +94,7 @@ export default async function CategoryPage({
       <div className="border-b border-zinc-100">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <p className="text-zinc-500 leading-relaxed max-w-2xl">
-            {pickLocale(locale, cat.descriptionVi, cat.description)}
+            {pickLocale(locale, cat.descriptionVi, cat.description, CATEGORY_DESCS[cat.id]?.zh, CATEGORY_DESCS[cat.id]?.ja, CATEGORY_DESCS[cat.id]?.ko)}
           </p>
           <Link
             href="/#cta"
@@ -112,7 +113,7 @@ export default async function CategoryPage({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {cat.items.map((item) => {
-            const itemName = pickLocale(locale, item.nameVi, item.nameEn);
+            const itemName = pickLocale(locale, item.nameVi, item.nameEn, ITEM_NAMES[item.id]?.zh, ITEM_NAMES[item.id]?.ja, ITEM_NAMES[item.id]?.ko);
             return (
               <div
                 key={item.id}
@@ -137,7 +138,7 @@ export default async function CategoryPage({
                     </Link>
                   </div>
                   <p className="text-zinc-500 text-sm leading-relaxed flex-1">
-                    {pickLocale(locale, item.descriptionVi, item.description)}
+                    {pickLocale(locale, item.descriptionVi, item.description, ITEM_DESCS[item.id]?.zh, ITEM_DESCS[item.id]?.ja, ITEM_DESCS[item.id]?.ko)}
                   </p>
                   <Link
                     href="/#cta"
@@ -186,7 +187,7 @@ export default async function CategoryPage({
                 <div key={item.id} className="relative rounded-xl overflow-hidden group h-36 sm:h-44 lg:h-[200px]">
                   <Image
                     src={refImage}
-                    alt={pickLocale(locale, item.nameVi, item.nameEn)}
+                    alt={pickLocale(locale, item.nameVi, item.nameEn, ITEM_NAMES[item.id]?.zh, ITEM_NAMES[item.id]?.ja, ITEM_NAMES[item.id]?.ko)}
                     fill
                     sizes="(min-width: 1024px) 25vw, 50vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -237,7 +238,7 @@ export default async function CategoryPage({
               className="flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group"
             >
               <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-              <span className="hidden sm:inline">{pickLocale(locale, prev.nameVi, prev.nameEn)}</span>
+              <span className="hidden sm:inline">{pickLocale(locale, prev.nameVi, prev.nameEn, CATEGORY_NAMES[prev.id]?.zh, CATEGORY_NAMES[prev.id]?.ja, CATEGORY_NAMES[prev.id]?.ko)}</span>
               <span className="sm:hidden">{t("prevShort")}</span>
             </Link>
           ) : (
@@ -259,7 +260,7 @@ export default async function CategoryPage({
               href={`/products/${next.id}`}
               className="flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group"
             >
-              <span className="hidden sm:inline">{pickLocale(locale, next.nameVi, next.nameEn)}</span>
+              <span className="hidden sm:inline">{pickLocale(locale, next.nameVi, next.nameEn, CATEGORY_NAMES[next.id]?.zh, CATEGORY_NAMES[next.id]?.ja, CATEGORY_NAMES[next.id]?.ko)}</span>
               <span className="sm:hidden">{t("nextShort")}</span>
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </Link>

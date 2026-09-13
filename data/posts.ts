@@ -4,16 +4,28 @@ export interface BlogPost {
   slug: string;
   title: string;
   titleEn: string;
+  titleZh?: string;
+  titleJa?: string;
+  titleKo?: string;
   excerpt: string;
   excerptEn: string;
+  excerptZh?: string;
+  excerptJa?: string;
+  excerptKo?: string;
   coverImage: string;
   date: string;
   category: PostCategory;
   categoryVi: string;
   categoryEn: string;
+  categoryZh?: string;
+  categoryJa?: string;
+  categoryKo?: string;
   readTime: number;
   content: string;
   contentEn: string;
+  contentZh?: string;
+  contentJa?: string;
+  contentKo?: string;
 }
 
 import storedPosts from "./content/posts.json";

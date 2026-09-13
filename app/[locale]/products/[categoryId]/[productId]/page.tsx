@@ -13,99 +13,9 @@ import type { Locale } from "@/i18n/routing";
 import { productCategories } from "@/data/categories";
 import { MaterialFlashcard } from "@/components/ui/material-flashcard";
 import { MaterialGlossaryFab } from "@/components/ui/material-glossary-fab";
+import { CATEGORY_NAMES, ITEM_NAMES, ITEM_DESCS } from "@/data/translations";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
-
-const CATEGORY_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
-  marketing: { zh: "营销物料", ja: "マーケティング", ko: "마케팅" },
-  office: { zh: "办公文具", ja: "オフィス用品", ko: "오피스/사무" },
-  packaging: { zh: "包装制品", ja: "パッケージ包装", ko: "패키지/포장" },
-  tet: { zh: "新年年品", ja: "テト・新年", ko: "새해 인쇄물" },
-};
-
-const ITEM_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
-  card: { zh: "商务名片 / 会员卡", ja: "名刺 / カード", ko: "명함 / 카드" },
-  catalogue: { zh: "企业画册 / 目录", ja: "カタログ / 会社案内", ko: "카탈로그 / 브로슈어" },
-  flyer: { zh: "宣传单页 / 折页", ja: "チラシ / リーフレット", ko: "전단지 / 리플렛" },
-  voucher: { zh: "优惠券 / 代金券", ja: "クーポン / 引換券", ko: "쿠폰 / 바우처" },
-  envelope: { zh: "商务信封", ja: "封筒印刷", ko: "봉투" },
-  letterhead: { zh: "信纸便笺", ja: "便箋 / レターヘッド", ko: "레터헤드" },
-  folder: { zh: "文件夹 / 封套", ja: "フォルダ / ポケットファイル", ko: "홀더 / 파일" },
-  decal: { zh: "不干胶标签 / 贴纸", ja: "シール / ラベル印刷", ko: "라벨 / 스티커" },
-  "paper-bag": { zh: "精品纸袋 / 手提袋", ja: "紙袋 / 手提げ袋", ko: "종이 쇼핑백" },
-  box: { zh: "定制包装盒", ja: "オリジナル化粧箱", ko: "맞춤 박스" },
-  "paper-box": { zh: "精品礼品盒", ja: "ギフトボックス", ko: "선물 상자" },
-  "li-xi": { zh: "新年红包袋", ja: "お年玉・ポチ袋", ko: "세뱃돈 봉투" },
-  calendar: { zh: "企业挂历 / 台历", ja: "カレンダー", ko: "달력 / 캘린더" },
-};
-
-const ITEM_DESCS: Record<string, { zh: string; ja: string; ko: string }> = {
-  card: {
-    zh: "商务名片、会员卡及积分卡制作。",
-    ja: "名刺、会員カード、ポイントカード印刷。",
-    ko: "비즈니스 명함, 멤버십 카드 및 포인트 카드 제작.",
-  },
-  catalogue: {
-    zh: "产品目录、企业画册及宣传画册。",
-    ja: "製品カタログ、会社案内、パンフレット。",
-    ko: "제품 카탈로그, 기업 소개서 및 브로슈어.",
-  },
-  flyer: {
-    zh: "适用于活动与营销推广的单页及折页宣传单。",
-    ja: "イベントやキャンペーン向けのチラシ・リーフレット。",
-    ko: "이벤트 및 마케팅 캠페인을 위한 전단지 및 리플렛.",
-  },
-  voucher: {
-    zh: "优惠券、礼品卡及活动门票。",
-    ja: "割引クーポン、ギフトカード、各種チケット。",
-    ko: "할인 쿠폰, 기프트 카드 및 이벤트 티켓.",
-  },
-  envelope: {
-    zh: "包含小号、中号及大号的标准商务信封。",
-    ja: "長形・角形など各種サイズの標準ビジネス封筒。",
-    ko: "소형, 중형, 대형 규격의 표준 비즈니스 봉투.",
-  },
-  letterhead: {
-    zh: "印有公司官方品牌标识的标准信纸便笺。",
-    ja: "公式ブランドロゴ入りの標準レターヘッド・便箋。",
-    ko: "공식 브랜드 로고가 인쇄된 표준 레터헤드 및 서식지.",
-  },
-  folder: {
-    zh: "用于存放合同、提案书及资料的商务文件夹封套。",
-    ja: "契約書や企画書、資料をまとめるポケットファイル・フォルダ。",
-    ko: "계약서, 제안서 및 서류 보관을 위한 맞춤형 홀더/파일.",
-  },
-  decal: {
-    zh: "纸质、塑料或透明材质的不干胶产品标签及模切贴纸。",
-    ja: "紙・フィルム・透明素材の製品ラベルおよびダイカットシール。",
-    ko: "종이, 유포지, 투명 재질의 제품 라벨 및 다이컷 스티커.",
-  },
-  "paper-bag": {
-    zh: "牛皮纸或铜版纸材质的品牌购物纸袋及精美礼品袋。",
-    ja: "クラフト紙やコート紙を使用したブランドショッパー・ギフト紙袋。",
-    ko: "크라프트지 및 코팅지 소재의 브랜드 쇼핑백 및 선물용 종이백.",
-  },
-  box: {
-    zh: "印有品牌标识的定制纸箱及快递发货包装盒。",
-    ja: "ブランドロゴ入り段ボール箱および配送用パッケージ。",
-    ko: "브랜드 로고가 인쇄된 맞춤형 골판지 상자 및 배송용 택배 박스.",
-  },
-  "paper-box": {
-    zh: "用于零售产品的高端精装硬盒与精美纸盒包装。",
-    ja: "小売製品向けの高級貼箱・化粧箱パッケージ。",
-    ko: "리테일 상품을 위한 고급 싸바리 하드 박스 및 종이 단상자.",
-  },
-  "li-xi": {
-    zh: "传统与现代风格的农历新年红包袋。",
-    ja: "伝統的・モダンなデザインの旧正月・お年玉袋。",
-    ko: "전통 및 현대적 디자인의 설날 세뱃돈 봉투.",
-  },
-  calendar: {
-    zh: "企业台历、挂历及新年商务日程礼品。",
-    ja: "卓上カレンダー、壁掛けカレンダー、新年ギフト。",
-    ko: "탁상 달력, 벽걸이 캘린더 및 신년 비즈니스 선물.",
-  },
-};
 
 export function generateStaticParams() {
   return productCategories.flatMap((cat) =>
@@ -202,7 +112,7 @@ export default async function ProductDetailPage({
                     {group.options.map((opt) => (
                       <div key={opt.name}>
                         <p className="font-black text-zinc-900 text-[15px] leading-snug mb-2.5">
-                          {pickLocale(locale, opt.taglineVi, opt.tagline)}
+                          {pickLocale(locale, opt.taglineVi, opt.tagline, opt.taglineZh, opt.taglineJa, opt.taglineKo)}
                         </p>
                         <MaterialFlashcard
                           option={opt}

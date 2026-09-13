@@ -9,13 +9,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { IconBadge } from "@/components/ui/icon-badge";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { blogPosts, categoryColors, type PostCategory } from "@/data/posts";
-
-const BLOG_CATEGORIES: Record<PostCategory, { zh: string; ja: string; ko: string }> = {
-  tips: { zh: "印刷技巧", ja: "印刷のヒント", ko: "인쇄 팁" },
-  "case-study": { zh: "实际案例", ja: "事例紹介", ko: "성공 사례" },
-  news: { zh: "新闻动态", ja: "ニュース", ko: "뉴스" },
-};
+import { blogPosts, categoryColors } from "@/data/posts";
 
 function formatDate(iso: string, locale: Locale) {
   const code = locale === "vi" ? "vi-VN" : locale === "zh" ? "zh-CN" : locale === "ja" ? "ja-JP" : locale === "ko" ? "ko-KR" : "en-US";
@@ -51,9 +45,9 @@ export default function BlogPreview() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {preview.map((post, i) => {
-            const title = pickLocale(locale, post.title, post.titleEn);
-            const excerpt = pickLocale(locale, post.excerpt, post.excerptEn);
-            const category = pickLocale(locale, post.categoryVi, post.categoryEn, BLOG_CATEGORIES[post.category]?.zh, BLOG_CATEGORIES[post.category]?.ja, BLOG_CATEGORIES[post.category]?.ko);
+            const title = pickLocale(locale, post.title, post.titleEn, post.titleZh, post.titleJa, post.titleKo);
+            const excerpt = pickLocale(locale, post.excerpt, post.excerptEn, post.excerptZh, post.excerptJa, post.excerptKo);
+            const category = pickLocale(locale, post.categoryVi, post.categoryEn, post.categoryZh, post.categoryJa, post.categoryKo);
             return (
               <motion.div
                 key={post.slug}

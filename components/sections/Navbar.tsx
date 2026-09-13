@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { productCategories, isFastPrint, type ProductCategory, type ProductItem } from "@/data/categories";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
+import { CATEGORY_NAMES, ITEM_NAMES } from "@/data/translations";
 
 const LANGUAGES: { code: Locale; flag: string; label: string; short: string }[] = [
   { code: "vi", flag: "🇻🇳", label: "Tiếng Việt", short: "VN" },
@@ -21,36 +22,12 @@ const LANGUAGES: { code: Locale; flag: string; label: string; short: string }[] 
   { code: "ko", flag: "🇰🇷", label: "한국어", short: "KO" },
 ];
 
-const CATEGORY_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
-  marketing: { zh: "营销物料", ja: "マーケティング", ko: "마케팅" },
-  office: { zh: "办公文具", ja: "オフィス用品", ko: "오피스/사무" },
-  packaging: { zh: "包装制品", ja: "パッケージ包装", ko: "패키지/포장" },
-  tet: { zh: "新年年品", ja: "テト・新年", ko: "새해 인쇄물" },
-  other: { zh: "其他印刷品", ja: "その他印刷", ko: "기타 인쇄물" },
-};
-
 const FAST_PRINT_TAGS: Record<Locale, string> = {
   vi: "in nhanh",
   en: "fast",
   zh: "快印",
   ja: "特急",
   ko: "당일인쇄",
-};
-
-const ITEM_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
-  card: { zh: "商务名片 / 会员卡", ja: "名刺 / カード", ko: "명함 / 카드" },
-  catalogue: { zh: "企业画册 / 目录", ja: "カタログ / 会社案内", ko: "카탈로그 / 브로슈어" },
-  flyer: { zh: "宣传单页 / 折页", ja: "チラシ / リーフレット", ko: "전단지 / 리플렛" },
-  voucher: { zh: "优惠券 / 代金券", ja: "クーポン / 引換券", ko: "쿠폰 / 바우처" },
-  envelope: { zh: "商务信封", ja: "封筒印刷", ko: "봉투" },
-  letterhead: { zh: "信纸便笺", ja: "便箋 / レターヘッド", ko: "레터헤드" },
-  folder: { zh: "文件夹 / 封套", ja: "フォルダ / ポケットファイル", ko: "홀더 / 파일" },
-  decal: { zh: "不干胶标签 / 贴纸", ja: "シール / ラベル印刷", ko: "라벨 / 스티커" },
-  "paper-bag": { zh: "精品纸袋 / 手提袋", ja: "紙袋 / 手提げ袋", ko: "종이 쇼핑백" },
-  box: { zh: "定制包装盒", ja: "オリジナル化粧箱", ko: "맞춤 박스" },
-  "paper-box": { zh: "精品礼品盒", ja: "ギフトボックス", ko: "선물 상자" },
-  "li-xi": { zh: "新年红包袋", ja: "お年玉・ポチ袋", ko: "세뱃돈 봉투" },
-  calendar: { zh: "企业挂历 / 台历", ja: "カレンダー", ko: "달력 / 캘린더" },
 };
 
 /**
