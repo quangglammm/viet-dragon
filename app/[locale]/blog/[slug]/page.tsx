@@ -6,13 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { blogPosts, categoryColors, type PostCategory } from "@/data/posts";
-
-const BLOG_CATEGORIES: Record<PostCategory, { zh: string; ja: string; ko: string }> = {
-  tips: { zh: "印刷技巧", ja: "印刷のヒント", ko: "인쇄 팁" },
-  "case-study": { zh: "实际案例", ja: "事例紹介", ko: "성공 사례" },
-  news: { zh: "新闻动态", ja: "ニュース", ko: "뉴스" },
-};
+import { blogPosts, categoryColors } from "@/data/posts";
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
@@ -27,8 +21,8 @@ export async function generateMetadata({
   const post = blogPosts.find((p) => p.slug === slug);
   if (!post) return {};
   return {
-    title: `${pickLocale(locale, post.title, post.titleEn)} | Viet Dragon Blog`,
-    description: pickLocale(locale, post.excerpt, post.excerptEn),
+    title: `${pickLocale(locale, post.title, post.titleEn, post.titleZh, post.titleJa, post.titleKo)} | Viet Dragon Blog`,
+    description: pickLocale(locale, post.excerpt, post.excerptEn, post.excerptZh, post.excerptJa, post.excerptKo),
   };
 }
 
@@ -51,10 +45,10 @@ export default async function BlogPostPage({
   const post = blogPosts.find((p) => p.slug === slug);
   if (!post) notFound();
 
-  const title = pickLocale(locale, post.title, post.titleEn);
-  const excerpt = pickLocale(locale, post.excerpt, post.excerptEn);
-  const category = pickLocale(locale, post.categoryVi, post.categoryEn, BLOG_CATEGORIES[post.category]?.zh, BLOG_CATEGORIES[post.category]?.ja, BLOG_CATEGORIES[post.category]?.ko);
-  const content = pickLocale(locale, post.content, post.contentEn);
+  const title = pickLocale(locale, post.title, post.titleEn, post.titleZh, post.titleJa, post.titleKo);
+  const excerpt = pickLocale(locale, post.excerpt, post.excerptEn, post.excerptZh, post.excerptJa, post.excerptKo);
+  const category = pickLocale(locale, post.categoryVi, post.categoryEn, post.categoryZh, post.categoryJa, post.categoryKo);
+  const content = pickLocale(locale, post.content, post.contentEn, post.contentZh, post.contentJa, post.contentKo);
 
   const idx = blogPosts.findIndex((p) => p.slug === slug);
   const prev = idx > 0 ? blogPosts[idx - 1] : null;

@@ -4,7 +4,6 @@ import Image from "next/image";
 import {
   Copy,
   Check,
-  Film,
   Play,
   ExternalLink,
   Trash2,

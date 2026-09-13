@@ -15,17 +15,29 @@ export interface ProductOption {
   icon?: string;
   name: string;
   nameVi: string;
+  nameZh?: string;
+  nameJa?: string;
+  nameKo?: string;
   /** Short second-person hook rendered above the flashcard (e.g. "Need a card that stands out?") — helps a customer self-select before reading the bullets. */
   tagline: string;
   taglineVi: string;
+  taglineZh?: string;
+  taglineJa?: string;
+  taglineKo?: string;
   /** Bullet points describing the material's physical characteristics. */
   description: string[];
   descriptionVi: string[];
+  descriptionZh?: string[];
+  descriptionJa?: string[];
+  descriptionKo?: string[];
   /** Trait key per `description` bullet (same index) — looked up in data/material-traits.ts for that bullet's icon. */
   descriptionTraits: MaterialTraitKey[];
   /** Bullet points describing the application contexts this option suits best. */
   bestFor: string[];
   bestForVi: string[];
+  bestForZh?: string[];
+  bestForJa?: string[];
+  bestForKo?: string[];
   /**
    * Optional photo for the flashcard's flip-to-reveal back face (e.g. a shot of
    * this specific paper stock). Falls back to the parent product's `image` when

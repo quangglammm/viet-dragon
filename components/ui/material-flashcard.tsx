@@ -28,13 +28,40 @@ const CONSULT_TOAST_DURATION_MS = 5000;
 
 const UNIT_TRANSLATIONS: Record<string, { zh: string; ja: string; ko: string }> = {
   "Hộp": { zh: "盒", ja: "箱", ko: "상자" },
+  "Boxes": { zh: "盒", ja: "箱", ko: "상자" },
   "Cuốn": { zh: "本", ja: "冊", ko: "권" },
+  "Books": { zh: "本", ja: "冊", ko: "권" },
   "Ram": { zh: "令", ja: "包", ko: "연" },
+  "Reams": { zh: "令", ja: "包", ko: "연" },
   "Túi": { zh: "个", ja: "袋", ko: "개" },
+  "Bags": { zh: "个", ja: "袋", ko: "개" },
   "Tờ": { zh: "张", ja: "枚", ko: "장" },
+  "Sheets": { zh: "张", ja: "枚", ko: "장" },
+  "Pieces": { zh: "个", ja: "個", ko: "개" },
   "Thiệp": { zh: "张", ja: "枚", ko: "장" },
+  "Cards": { zh: "张", ja: "枚", ko: "장" },
   "Tem": { zh: "枚", ja: "枚", ko: "장" },
+  "Stamps": { zh: "枚", ja: "枚", ko: "장" },
+  "Nhãn": { zh: "枚", ja: "枚", ko: "장" },
+  "Labels": { zh: "枚", ja: "枚", ko: "장" },
+  "Mác": { zh: "个", ja: "枚", ko: "개" },
+  "Tags": { zh: "个", ja: "枚", ko: "개" },
   "Cái": { zh: "个", ja: "個", ko: "개" },
+  "Bộ": { zh: "套", ja: "セット", ko: "세트" },
+  "Sets": { zh: "套", ja: "セット", ko: "세트" },
+  "Bức": { zh: "幅", ja: "点", ko: "점" },
+  "Bloc": { zh: "本", ja: "冊", ko: "권" },
+  "Blocs": { zh: "本", ja: "冊", ko: "권" },
+  "Thẻ": { zh: "张", ja: "枚", ko: "장" },
+  "Bình": { zh: "个", ja: "個", ko: "개" },
+  "Bottles": { zh: "个", ja: "個", ko: "개" },
+  "Áo": { zh: "件", ja: "着", ko: "벌" },
+  "Shirts": { zh: "件", ja: "着", ko: "벌" },
+  "Nón": { zh: "顶", ja: "個", ko: "개" },
+  "Caps": { zh: "顶", ja: "個", ko: "개" },
+  "Envelopes": { zh: "个", ja: "枚", ko: "개" },
+  "Flyers": { zh: "张", ja: "枚", ko: "장" },
+  "Calendars": { zh: "本", ja: "冊", ko: "권" },
 };
 
 interface MaterialFlashcardProps {
@@ -80,9 +107,9 @@ export function MaterialFlashcard({
   const [awaitingZaloOpen, setAwaitingZaloOpen] = useState(false);
   const toastTimeoutRef = useRef<number | null>(null);
   const OptIcon = optionIconMap[option.icon ?? ""] ?? Layers;
-  const name = pickLocale(locale, option.nameVi, option.name);
-  const description = pickLocale(locale, option.descriptionVi, option.description);
-  const bestFor = pickLocale(locale, option.bestForVi, option.bestFor);
+  const name = pickLocale(locale, option.nameVi, option.name, option.nameZh, option.nameJa, option.nameKo);
+  const description = pickLocale(locale, option.descriptionVi, option.description, option.descriptionZh, option.descriptionJa, option.descriptionKo);
+  const bestFor = pickLocale(locale, option.bestForVi, option.bestFor, option.bestForZh, option.bestForJa, option.bestForKo);
 
   let fallbackBasePrice = 150000;
   let fallbackDoubleSided = 25000;
@@ -367,11 +394,11 @@ export function MaterialFlashcard({
   const unitLabel = locale === "vi"
     ? rawUnitVi
     : locale === "zh"
-    ? (UNIT_TRANSLATIONS[rawUnitVi]?.zh ?? rawUnitEn)
+    ? (UNIT_TRANSLATIONS[rawUnitVi]?.zh ?? UNIT_TRANSLATIONS[rawUnitEn]?.zh ?? rawUnitEn)
     : locale === "ja"
-    ? (UNIT_TRANSLATIONS[rawUnitVi]?.ja ?? rawUnitEn)
+    ? (UNIT_TRANSLATIONS[rawUnitVi]?.ja ?? UNIT_TRANSLATIONS[rawUnitEn]?.ja ?? rawUnitEn)
     : locale === "ko"
-    ? (UNIT_TRANSLATIONS[rawUnitVi]?.ko ?? rawUnitEn)
+    ? (UNIT_TRANSLATIONS[rawUnitVi]?.ko ?? UNIT_TRANSLATIONS[rawUnitEn]?.ko ?? rawUnitEn)
     : rawUnitEn;
 
   const maxQuantity = defaultUnitVi === "Hộp" ? 200 : 1000;
