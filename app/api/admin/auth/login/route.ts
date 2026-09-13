@@ -3,16 +3,18 @@ import { verifyAdminCredentials, createAdminSession } from "@/lib/admin-auth";
 
 export async function POST(request: Request) {
   try {
-    const { username, password } = await request.json();
+    const body = await request.json();
+    const username = (body.username || "admin").trim();
+    const password = (body.password || "").trim();
 
-    if (!username || !password) {
-      return NextResponse.json({ error: "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu" }, { status: 400 });
+    if (!password) {
+      return NextResponse.json({ error: "Vui lòng nhập mật khẩu" }, { status: 400 });
     }
 
     const isValid = await verifyAdminCredentials(username, password);
 
     if (!isValid) {
-      return NextResponse.json({ error: "Tên đăng nhập hoặc mật khẩu không chính xác" }, { status: 401 });
+      return NextResponse.json({ error: "Mật khẩu không chính xác" }, { status: 401 });
     }
 
     await createAdminSession(username);

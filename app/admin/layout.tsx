@@ -25,8 +25,15 @@ export default function AdminRootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`${sans.variable} ${heading.variable} antialiased`}>
-      <body className="bg-[#f4f6fb] text-slate-900 min-h-screen antialiased">
+    <html lang="vi" suppressHydrationWarning className={`${sans.variable} ${heading.variable} antialiased`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('vd_admin_theme');if(t==='dark'){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body className="bg-[#f4f6fb] dark:bg-[#080526] text-slate-900 dark:text-white min-h-screen antialiased transition-colors duration-200">
         {children}
       </body>
     </html>

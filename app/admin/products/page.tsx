@@ -18,6 +18,8 @@ import {
   Target,
   ChevronDown,
   ChevronUp,
+  Upload,
+  FolderOpen,
 } from "lucide-react";
 import {
   type ProductCategory,
@@ -26,6 +28,7 @@ import {
   getStartingPrice,
   isFastPrint,
 } from "@/data/categories";
+import { MediaPickerModal } from "@/components/admin/media-picker-modal";
 
 export default function AdminProductsPage() {
   const [categories, setCategories] = useState<ProductCategory[]>([]);
@@ -37,6 +40,18 @@ export default function AdminProductsPage() {
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  // Media Picker state for choosing or uploading images directly in the form
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerConfig, setPickerConfig] = useState<{
+    title: string;
+    currentValue: string;
+    onSelect: (url: string) => void;
+  }>({
+    title: "Chọn Hình Ảnh",
+    currentValue: "",
+    onSelect: () => {},
+  });
 
   useEffect(() => {
     let active = true;
@@ -93,6 +108,38 @@ export default function AdminProductsPage() {
       };
     });
     handleSaveCategories(nextCats);
+  };
+
+  const handleOpenProductImagePicker = () => {
+    if (!editingItem) return;
+    setPickerConfig({
+      title: `Chọn ảnh đại diện cho "${editingItem.item.nameVi}"`,
+      currentValue: editingItem.item.image || "",
+      onSelect: (url: string) => {
+        setEditingItem((prev) =>
+          prev ? { ...prev, item: { ...prev.item, image: url } } : null
+        );
+      },
+    });
+    setPickerOpen(true);
+  };
+
+  const handleOpenOptionImagePicker = (
+    optIdx: number,
+    field: "image" | "pureImage"
+  ) => {
+    if (!editingItem) return;
+    const opt = editingItem.item.optionGroups?.[0]?.options?.[optIdx];
+    const fieldLabel =
+      field === "image" ? "Ảnh Flashcard (Ép kim)" : "Ảnh khi không ép kim";
+    setPickerConfig({
+      title: `Chọn ${fieldLabel} - ${opt?.nameVi || ""}`,
+      currentValue: (opt ? (opt[field] as string) : "") || "",
+      onSelect: (url: string) => {
+        handleUpdateOption(optIdx, field, url);
+      },
+    });
+    setPickerOpen(true);
   };
 
   // Option / Material Handlers inside editing modal
@@ -212,7 +259,7 @@ export default function AdminProductsPage() {
       descriptionTraits: ["smooth-base", "foil-accent"],
       bestFor: ["Ấn phẩm cao cấp", "Doanh nghiệp & sự kiện"],
       bestForVi: ["Ấn phẩm cao cấp", "Doanh nghiệp & sự kiện"],
-      image: editingItem.item.image || "/images/product/vd-card-standard.png",
+      image: editingItem.item.image || "/images/product/vd-item-card.jpeg",
       basePrice: 100000,
       doubleSidedPrice: 20000,
       foilPrice: 150000,
@@ -495,23 +542,43 @@ export default function AdminProductsPage() {
                 {/* Product Image & Thumbnail Preview */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
                   <div className="sm:col-span-2">
-                    <label className="mb-1 block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                      <ImageIcon size={14} className="text-brand-primary" /> Đường dẫn ảnh sản phẩm (Image URL)
+                    <label className="mb-1 block text-xs font-bold text-slate-700 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <ImageIcon size={14} className="text-brand-primary" /> Ảnh sản phẩm (Image URL)
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleOpenProductImagePicker}
+                        className="inline-flex items-center gap-1 text-brand-primary text-xs font-bold hover:underline cursor-pointer"
+                      >
+                        <FolderOpen size={13} /> Thư viện / Tải ảnh từ máy
+                      </button>
                     </label>
-                    <input
-                      type="text"
-                      value={editingItem.item.image}
-                      onChange={(e) =>
-                        setEditingItem({
-                          ...editingItem,
-                          item: { ...editingItem.item, image: e.target.value },
-                        })
-                      }
-                      placeholder="/images/product/vd-card-standard.png"
-                      className="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs font-mono text-slate-800 focus:border-brand-primary focus:outline-hidden"
-                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={editingItem.item.image}
+                        onChange={(e) =>
+                          setEditingItem({
+                            ...editingItem,
+                            item: { ...editingItem.item, image: e.target.value },
+                          })
+                        }
+                        placeholder="/images/product/vd-item-card.jpeg"
+                        className="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs font-mono text-slate-800 focus:border-brand-primary focus:outline-hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleOpenProductImagePicker}
+                        className="shrink-0 px-3.5 py-2 rounded-xl bg-brand-primary hover:bg-brand-primary/90 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
+                        title="Chọn ảnh từ thư viện hoặc tải ảnh mới từ máy tính"
+                      >
+                        <Upload size={14} />
+                        <span>Đổi ảnh</span>
+                      </button>
+                    </div>
                     <p className="mt-1 text-[11px] text-slate-400">
-                      Đường dẫn ảnh cục bộ từ thư mục public hoặc link ảnh tải lên từ Thư Viện Media.
+                      Đường dẫn ảnh cục bộ từ thư mục public hoặc chọn / tải ảnh mới trực tiếp.
                     </p>
                   </div>
 
@@ -704,8 +771,17 @@ export default function AdminProductsPage() {
                             {/* 2. Image and PureImage (No foil) with Preview */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                               <div>
-                                <label className="text-xs font-bold text-slate-700 block mb-1 flex items-center gap-1.5">
-                                  <ImageIcon size={14} className="text-brand-primary" /> Đường dẫn ảnh Flashcard (Image)
+                                <label className="text-xs font-bold text-slate-700 block mb-1 flex items-center justify-between">
+                                  <span className="flex items-center gap-1.5">
+                                    <ImageIcon size={14} className="text-brand-primary" /> Ảnh Flashcard (Ép kim)
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleOpenOptionImagePicker(optIdx, "image")}
+                                    className="text-brand-primary hover:underline font-bold text-[11px] cursor-pointer inline-flex items-center gap-1"
+                                  >
+                                    <FolderOpen size={12} /> Chọn / Tải ảnh
+                                  </button>
                                 </label>
                                 <div className="flex gap-2">
                                   <input
@@ -715,8 +791,16 @@ export default function AdminProductsPage() {
                                     placeholder="/images/product/..."
                                     className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2 text-xs font-mono text-slate-800"
                                   />
+                                  <button
+                                    type="button"
+                                    onClick={() => handleOpenOptionImagePicker(optIdx, "image")}
+                                    className="shrink-0 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-brand-primary/10 hover:text-brand-primary text-slate-700 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
+                                    title="Chọn từ thư viện hoặc tải ảnh từ máy"
+                                  >
+                                    <Upload size={13} />
+                                  </button>
                                   {opt.image && (
-                                    <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-slate-100 border border-slate-200">
+                                    <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg bg-slate-100 border border-slate-200">
                                       <Image src={opt.image} alt="Preview" fill className="object-cover" />
                                     </div>
                                   )}
@@ -724,8 +808,17 @@ export default function AdminProductsPage() {
                               </div>
 
                               <div>
-                                <label className="text-xs font-bold text-slate-700 block mb-1 flex items-center gap-1.5">
-                                  <ImageIcon size={14} className="text-slate-400" /> Ảnh khi không ép kim (PureImage)
+                                <label className="text-xs font-bold text-slate-700 block mb-1 flex items-center justify-between">
+                                  <span className="flex items-center gap-1.5">
+                                    <ImageIcon size={14} className="text-slate-400" /> Ảnh mộc (Không ép kim)
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleOpenOptionImagePicker(optIdx, "pureImage")}
+                                    className="text-brand-primary hover:underline font-bold text-[11px] cursor-pointer inline-flex items-center gap-1"
+                                  >
+                                    <FolderOpen size={12} /> Chọn / Tải ảnh
+                                  </button>
                                 </label>
                                 <div className="flex gap-2">
                                   <input
@@ -735,8 +828,16 @@ export default function AdminProductsPage() {
                                     placeholder="/images/product/... (Tùy chọn)"
                                     className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2 text-xs font-mono text-slate-800"
                                   />
+                                  <button
+                                    type="button"
+                                    onClick={() => handleOpenOptionImagePicker(optIdx, "pureImage")}
+                                    className="shrink-0 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-brand-primary/10 hover:text-brand-primary text-slate-700 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
+                                    title="Chọn từ thư viện hoặc tải ảnh từ máy"
+                                  >
+                                    <Upload size={13} />
+                                  </button>
                                   {opt.pureImage && (
-                                    <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-slate-100 border border-slate-200">
+                                    <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg bg-slate-100 border border-slate-200">
                                       <Image src={opt.pureImage} alt="Pure Preview" fill className="object-cover" />
                                     </div>
                                   )}
@@ -1000,6 +1101,15 @@ export default function AdminProductsPage() {
           </div>
         </div>
       )}
+
+      {/* Media Picker Modal for selecting or uploading product and option images */}
+      <MediaPickerModal
+        isOpen={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onSelect={pickerConfig.onSelect}
+        title={pickerConfig.title}
+        currentValue={pickerConfig.currentValue}
+      />
     </AdminShell>
   );
 }

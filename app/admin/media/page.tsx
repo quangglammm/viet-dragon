@@ -6,7 +6,6 @@ import { AdminShell } from "@/components/admin/admin-shell";
 import {
   Upload,
   Copy,
-  Check,
   Sparkles,
   RefreshCw,
   HardDrive,
@@ -14,12 +13,16 @@ import {
   Filter,
   Film,
   Image as ImageIcon,
-  Play,
   X,
-  ExternalLink,
   Layers,
+  Trash2,
+  CheckSquare,
+  Square,
+  CheckCircle,
 } from "lucide-react";
 import type { MediaAsset } from "@/lib/content-store";
+import { MediaCard } from "@/components/admin/media-card";
+import { MediaDeleteModal } from "@/components/admin/media-delete-modal";
 
 const FOLDER_NAMES: Record<string, string> = {
   all: "Tất Cả Tệp",
@@ -38,6 +41,12 @@ const FOLDER_NAMES: Record<string, string> = {
   root: "Tệp Gốc (root)",
 };
 
+const formatFileSize = (bytes: number) => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
 export default function AdminMediaPage() {
   const [assets, setAssets] = useState<MediaAsset[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,9 +54,12 @@ export default function AdminMediaPage() {
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
   const [previewAsset, setPreviewAsset] = useState<MediaAsset | null>(null);
   const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFolder, setSelectedFolder] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<"all" | "image" | "video">("all");
+  const [selectedUrls, setSelectedUrls] = useState<string[]>([]);
+  const [deleteModalTargets, setDeleteModalTargets] = useState<MediaAsset[] | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadData = () => {
@@ -91,6 +103,7 @@ export default function AdminMediaPage() {
 
     setUploading(true);
     setError("");
+    setSuccessMsg("");
 
     try {
       const formData = new FormData();
@@ -106,6 +119,8 @@ export default function AdminMediaPage() {
       const data = await res.json();
       if (data.asset) {
         setAssets((prev) => [data.asset, ...prev]);
+        setSuccessMsg(`Đã tải lên tệp mới: ${data.asset.filename}`);
+        setTimeout(() => setSuccessMsg(""), 4000);
       }
     } catch {
       setError("Lỗi khi tải tệp lên máy chủ");
@@ -121,12 +136,6 @@ export default function AdminMediaPage() {
     setTimeout(() => setCopiedUrl(null), 2500);
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  };
-
   // Extract unique folders dynamically
   const availableFolders = useMemo(() => {
     const folders = new Set<string>();
@@ -136,29 +145,94 @@ export default function AdminMediaPage() {
     return Array.from(folders);
   }, [assets]);
 
-  const filteredAssets = useMemo(() => {
-    return assets.filter((asset) => {
-      // Type filter
-      if (typeFilter !== "all" && asset.type !== typeFilter) return false;
+  const filteredAssets = assets.filter((asset) => {
+    // Type filter
+    if (typeFilter !== "all" && asset.type !== typeFilter) return false;
 
-      // Folder filter
-      if (selectedFolder !== "all" && asset.folder !== selectedFolder) return false;
+    // Folder filter
+    if (selectedFolder !== "all" && asset.folder !== selectedFolder) return false;
 
-      // Search query
-      if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        return (
-          asset.filename.toLowerCase().includes(q) ||
-          asset.url.toLowerCase().includes(q) ||
-          asset.folder.toLowerCase().includes(q)
-        );
-      }
-      return true;
+    // Search query
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      return (
+        asset.filename.toLowerCase().includes(q) ||
+        asset.url.toLowerCase().includes(q) ||
+        asset.folder.toLowerCase().includes(q)
+      );
+    }
+    return true;
+  });
+
+  const totalImages = assets.filter((a) => a.type === "image").length;
+  const totalVideos = assets.filter((a) => a.type === "video").length;
+  const isAllVisibleSelected =
+    filteredAssets.length > 0 && filteredAssets.every((a) => selectedUrls.includes(a.url));
+
+  // Toggle selection for a single url
+  const handleToggleSelect = (url: string) => {
+    setSelectedUrls((prev) =>
+      prev.includes(url) ? prev.filter((u) => u !== url) : [...prev, url]
+    );
+  };
+
+  // Toggle select all visible items
+  const handleSelectAllVisible = () => {
+    const visibleUrls = filteredAssets.map((a) => a.url);
+    const allSelected = visibleUrls.length > 0 && visibleUrls.every((u) => selectedUrls.includes(u));
+    if (allSelected) {
+      setSelectedUrls((prev) => prev.filter((u) => !visibleUrls.includes(u)));
+    } else {
+      setSelectedUrls((prev) => Array.from(new Set([...prev, ...visibleUrls])));
+    }
+  };
+
+  const handleClearSelection = () => {
+    setSelectedUrls([]);
+  };
+
+  const handleOpenDeleteSingle = (asset: MediaAsset) => {
+    setDeleteModalTargets([asset]);
+  };
+
+  const handleOpenDeleteBatch = () => {
+    const targets = assets.filter((a) => selectedUrls.includes(a.url));
+    if (targets.length > 0) {
+      setDeleteModalTargets(targets);
+    }
+  };
+
+  const handleConfirmDelete = async (targets: MediaAsset[]) => {
+    const urlsToDelete = targets.map((t) => t.url);
+    const res = await fetch("/api/admin/media", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ urls: urlsToDelete }),
     });
-  }, [assets, selectedFolder, typeFilter, searchQuery]);
 
-  const totalImages = useMemo(() => assets.filter((a) => a.type === "image").length, [assets]);
-  const totalVideos = useMemo(() => assets.filter((a) => a.type === "video").length, [assets]);
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || "Xóa tệp thất bại");
+    }
+
+    const data = await res.json();
+    const deletedSet = new Set<string>(data.deleted || urlsToDelete);
+
+    // Update assets list
+    setAssets((prev) => prev.filter((a) => !deletedSet.has(a.url)));
+
+    // Update selected list
+    setSelectedUrls((prev) => prev.filter((u) => !deletedSet.has(u)));
+
+    // If preview asset was deleted, close it
+    if (previewAsset && deletedSet.has(previewAsset.url)) {
+      setPreviewAsset(null);
+    }
+
+    // Show feedback notification
+    setSuccessMsg(`Đã xóa thành công ${deletedSet.size} tệp tin.`);
+    setTimeout(() => setSuccessMsg(""), 3500);
+  };
 
   return (
     <AdminShell>
@@ -166,13 +240,13 @@ export default function AdminMediaPage() {
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-primary">
-            <Sparkles size={15} /> Toàn Bộ Thư Viện Hình Ảnh & Video Xưởng In
+            <Sparkles size={15} /> Thư Viện Mẫu In & Hình Ảnh Xưởng
           </div>
           <h1 className="mt-1 text-2xl font-black text-slate-900 sm:text-3xl">
             Thư Viện Mẫu In, Hình Ảnh & Video Xưởng
           </h1>
           <p className="mt-1 text-xs text-slate-500">
-            Tổng hợp toàn bộ <strong>{assets.length} tệp</strong> ({totalImages} hình ảnh, {totalVideos} video) từ tất cả các thư mục con trong <code>public/</code>.
+            Tổng hợp <strong>{assets.length} tệp</strong> ({totalImages} ảnh, {totalVideos} video). Quản lý tải lên với mã rút gọn và xóa tệp an toàn.
           </p>
         </div>
 
@@ -189,9 +263,16 @@ export default function AdminMediaPage() {
         </div>
       </div>
 
+      {/* Notifications */}
       {error && (
         <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-semibold text-rose-700 shadow-xs">
           {error}
+        </div>
+      )}
+      {successMsg && (
+        <div className="mb-6 flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-xs font-bold text-emerald-800 shadow-xs animate-in fade-in duration-200">
+          <CheckCircle size={16} className="text-emerald-600 shrink-0" />
+          <span>{successMsg}</span>
         </div>
       )}
 
@@ -220,24 +301,82 @@ export default function AdminMediaPage() {
           {uploading ? "Đang tải tệp mẫu in / video lên máy chủ..." : "Nhấn hoặc Kéo Thả Hình Ảnh / Video Mẫu In Lên Đây"}
         </h3>
         <p className="mt-1.5 text-xs text-slate-500 max-w-md">
-          Hỗ trợ tất cả định dạng ảnh (JPG, PNG, WebP, SVG, GIF) và Video (MP4, WebM, MOV). Tệp sẽ được lưu vào <code>public/uploads/</code> và sẵn sàng sử dụng.
+          Hỗ trợ tất cả định dạng ảnh (JPG, PNG, WebP, SVG, GIF) và Video. Tệp sẽ được lưu vào <code>public/uploads/</code>.
         </p>
+        <div className="mt-3 flex items-center gap-1.5 rounded-xl border border-purple-100 bg-purple-50/70 px-3 py-1.5 text-[11px] font-medium text-brand-primary">
+          <Sparkles size={13} className="shrink-0" />
+          <span>Tên tệp được giữ nguyên như máy tính của bạn. Nếu trùng tên với tệp đã có trong thư viện, hệ thống sẽ tự động thêm số thứ tự ngắn phía sau (VD: <code>hop-qua-tet.png</code> → <code>hop-qua-tet-1.png</code>).</span>
+        </div>
       </div>
+
+      {/* Active Batch Selection Bar (Appears when items are selected) */}
+      {selectedUrls.length > 0 && (
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-brand-primary/30 bg-purple-50 p-4 shadow-sm animate-in fade-in slide-in-from-top-2 duration-150">
+          <div className="flex items-center gap-2.5 text-xs font-bold text-brand-primary">
+            <CheckSquare size={18} />
+            <span>
+              Đang chọn <strong>{selectedUrls.length}</strong> tệp tin
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleClearSelection}
+              className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors"
+            >
+              Bỏ chọn
+            </button>
+            <button
+              type="button"
+              onClick={handleOpenDeleteBatch}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-rose-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-rose-700 transition-colors cursor-pointer"
+            >
+              <Trash2 size={14} />
+              <span>Xóa ({selectedUrls.length}) tệp đã chọn</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Media Filter & Search Toolbar */}
       <div className="mb-6 flex flex-col gap-4 rounded-3xl border border-slate-200/80 bg-white p-5 shadow-xs">
-        {/* Top bar: Search + Type Filter */}
+        {/* Top bar: Search + Select All + Type Filter */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          {/* Search */}
-          <div className="relative w-full sm:w-80">
-            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Tìm theo tên tệp hoặc đường dẫn url..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 py-2.5 pl-11 pr-4 text-xs font-medium text-slate-900 placeholder-slate-400 focus:border-brand-primary focus:bg-white focus:outline-hidden"
-            />
+          <div className="flex flex-wrap items-center gap-3 flex-1">
+            {/* Search */}
+            <div className="relative w-full sm:w-72">
+              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Tìm theo tên tệp hoặc đường dẫn url..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 py-2.5 pl-11 pr-4 text-xs font-medium text-slate-900 placeholder-slate-400 focus:border-brand-primary focus:bg-white focus:outline-hidden"
+              />
+            </div>
+
+            {/* Select all visible button */}
+            <button
+              type="button"
+              onClick={handleSelectAllVisible}
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                isAllVisibleSelected
+                  ? "border-brand-primary/40 bg-purple-50 text-brand-primary"
+                  : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+              }`}
+            >
+              {isAllVisibleSelected ? (
+                <>
+                  <CheckSquare size={14} className="text-brand-primary" />
+                  <span>Bỏ chọn trang ({filteredAssets.length})</span>
+                </>
+              ) : (
+                <>
+                  <Square size={14} className="text-slate-400" />
+                  <span>Chọn tất cả ({filteredAssets.length})</span>
+                </>
+              )}
+            </button>
           </div>
 
           {/* Media Type Toggle: All / Images / Videos */}
@@ -260,7 +399,7 @@ export default function AdminMediaPage() {
               }`}
             >
               <ImageIcon size={13} />
-              <span>Hình ảnh ({totalImages})</span>
+              <span>Ảnh ({totalImages})</span>
             </button>
             <button
               type="button"
@@ -329,103 +468,19 @@ export default function AdminMediaPage() {
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {filteredAssets.map((asset, idx) => {
-            const isCopied = copiedUrl === asset.url;
-            const isVideo = asset.type === "video";
-
-            return (
-              <div
-                key={idx}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs transition-all hover:border-brand-primary/50 hover:shadow-lg"
-              >
-                {/* Media Preview Box */}
-                <div
-                  onClick={() => setPreviewAsset(asset)}
-                  className="relative aspect-square w-full bg-slate-100 overflow-hidden cursor-pointer flex items-center justify-center"
-                >
-                  {isVideo ? (
-                    <div className="relative h-full w-full bg-slate-900 flex flex-col items-center justify-center text-white">
-                      <video
-                        src={asset.url}
-                        muted
-                        playsInline
-                        className="h-full w-full object-cover opacity-75"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-primary text-white shadow-lg group-hover:scale-110 transition-transform">
-                          <Play size={18} className="ml-0.5" />
-                        </span>
-                      </div>
-                    </div>
-                  ) : (
-                    <Image
-                      src={asset.url}
-                      alt={asset.filename}
-                      fill
-                      sizes="(max-width: 768px) 50vw, 200px"
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  )}
-
-                  {/* Folder / Type Badge */}
-                  <span className="absolute left-2 top-2 rounded-md bg-black/70 text-white px-2 py-0.5 text-[9px] font-bold backdrop-blur-xs flex items-center gap-1">
-                    {isVideo && <Film size={10} className="text-purple-400" />}
-                    <span>{asset.folder}</span>
-                  </span>
-
-                  <span className="absolute right-2 top-2 rounded-md bg-white/90 text-slate-800 px-1.5 py-0.5 text-[9px] font-mono font-bold shadow-xs">
-                    {formatFileSize(asset.size)}
-                  </span>
-                </div>
-
-                {/* Info & Copy Button */}
-                <div className="p-3 bg-white">
-                  <p
-                    title={asset.filename}
-                    className="truncate text-xs font-bold text-slate-800 group-hover:text-brand-primary transition-colors"
-                  >
-                    {asset.filename}
-                  </p>
-                  <p className="truncate text-[10px] font-mono text-slate-400 mt-0.5">
-                    {asset.url}
-                  </p>
-
-                  <div className="mt-2.5 flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => handleCopy(asset.url)}
-                      className={`flex-1 flex items-center justify-center gap-1 rounded-xl py-1.5 text-[11px] font-bold transition-all cursor-pointer ${
-                        isCopied
-                          ? "bg-emerald-500 text-white"
-                          : "bg-slate-100 text-slate-700 hover:bg-brand-primary hover:text-white"
-                      }`}
-                    >
-                      {isCopied ? (
-                        <>
-                          <Check size={12} strokeWidth={3} />
-                          <span>Đã sao chép</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy size={12} />
-                          <span>Sao chép link</span>
-                        </>
-                      )}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setPreviewAsset(asset)}
-                      title="Xem toàn màn hình"
-                      className="p-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer"
-                    >
-                      <ExternalLink size={13} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {filteredAssets.map((asset, idx) => (
+            <MediaCard
+              key={asset.url || idx}
+              asset={asset}
+              isSelected={selectedUrls.includes(asset.url)}
+              onToggleSelect={handleToggleSelect}
+              onPreview={setPreviewAsset}
+              onDelete={handleOpenDeleteSingle}
+              onCopy={handleCopy}
+              isCopied={copiedUrl === asset.url}
+              formatFileSize={formatFileSize}
+            />
+          ))}
         </div>
       )}
 
@@ -478,25 +533,45 @@ export default function AdminMediaPage() {
               )}
             </div>
 
-            {/* Bottom bar */}
-            <div className="mt-4 flex items-center justify-between pt-3 border-t border-white/10 text-xs">
+            {/* Bottom bar with Delete & Copy */}
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-white/10 text-xs">
               <span className="text-slate-400">
                 Thư mục: <strong className="text-white">{previewAsset.folder}</strong> · Dung lượng:{" "}
                 <strong className="text-white">{formatFileSize(previewAsset.size)}</strong>
               </span>
 
-              <button
-                type="button"
-                onClick={() => handleCopy(previewAsset.url)}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-brand-primary px-4 py-2 text-xs font-bold text-white shadow-md hover:opacity-90 cursor-pointer"
-              >
-                <Copy size={13} />
-                <span>Sao chép đường dẫn</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleOpenDeleteSingle(previewAsset)}
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-rose-600/90 hover:bg-rose-600 px-3.5 py-2 text-xs font-bold text-white transition-colors cursor-pointer"
+                >
+                  <Trash2 size={13} />
+                  <span>Xóa tệp</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleCopy(previewAsset.url)}
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-brand-primary px-4 py-2 text-xs font-bold text-white shadow-md hover:opacity-90 cursor-pointer"
+                >
+                  <Copy size={13} />
+                  <span>Sao chép đường dẫn</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <MediaDeleteModal
+        isOpen={Boolean(deleteModalTargets && deleteModalTargets.length > 0)}
+        onClose={() => setDeleteModalTargets(null)}
+        targets={deleteModalTargets || []}
+        onConfirmDelete={handleConfirmDelete}
+        formatFileSize={formatFileSize}
+      />
     </AdminShell>
   );
 }

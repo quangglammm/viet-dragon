@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getAdminSession } from "@/lib/admin-auth";
-import { getMediaAssets, saveUploadedFile } from "@/lib/content-store";
+import { getMediaAssets, saveUploadedFile, deleteMediaFiles } from "@/lib/content-store";
 
 export async function GET() {
   const session = await getAdminSession();
@@ -34,5 +35,37 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, asset });
   } catch {
     return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  const session = await getAdminSession();
+  if (!session.authenticated) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const body = await request.json();
+    const urls: string[] = Array.isArray(body.urls)
+      ? body.urls
+      : typeof body.url === "string"
+      ? [body.url]
+      : [];
+
+    if (urls.length === 0) {
+      return NextResponse.json(
+        { error: "Không có tệp tin nào được chọn để xóa" },
+        { status: 400 }
+      );
+    }
+
+    const result = await deleteMediaFiles(urls);
+    revalidatePath("/", "layout");
+    return NextResponse.json(result);
+  } catch {
+    return NextResponse.json(
+      { error: "Không thể xóa tệp tin phương tiện" },
+      { status: 500 }
+    );
   }
 }

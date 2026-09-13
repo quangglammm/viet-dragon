@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getAdminSession } from "@/lib/admin-auth";
 import { getStoredBlogPosts, saveStoredBlogPosts } from "@/lib/content-store";
 import type { BlogPost } from "@/data/posts";
@@ -26,6 +27,10 @@ export async function POST(request: Request) {
   try {
     const posts = (await request.json()) as BlogPost[];
     await saveStoredBlogPosts(posts);
+
+    // Invalidate client caches so changes reflect immediately on the storefront
+    revalidatePath("/", "layout");
+
     return NextResponse.json({ success: true, message: "Blog posts updated successfully" });
   } catch {
     return NextResponse.json({ error: "Failed to save blog posts" }, { status: 500 });
