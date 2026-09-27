@@ -42,7 +42,7 @@ This project uses **pnpm** (pinned via `packageManager` in `package.json`) — n
 ---
 
 ## Project overview
-**Viet Dragon** (vietdragon.vn) — professional printing company, HCM City & Bình Dương.
+**Viet Dragon** (vietdragon.vn) — professional printing company, TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương.
 - Two real language **modes** — Vietnamese (default, unprefixed URLs) and English
   (`/en/...`) — switchable via the flag toggle in `Navbar.tsx`. Content shows in ONE
   language at a time; never render both inline (`"VI · EN"` strings) — see

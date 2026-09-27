@@ -14,9 +14,9 @@ import "swiper/css/pagination";
 
 const SLIDE_DURATION = 4000;
 const slideImages = [
-  "/images/hero/slide1.webp",
-  "/images/hero/slide2.webp",
-  "/images/hero/slide4.webp",
+  "/images/hero/mayinoffset.webp",
+  "/images/hero/mayinnhanh.webp",
+  "/images/hero/mayinngoaitroi.webp",
 ];
 
 // Template's actual hero is a full-bleed saturated gradient (not a photo), alternated

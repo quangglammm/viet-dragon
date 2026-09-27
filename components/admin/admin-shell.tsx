@@ -285,7 +285,7 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
             {/* Quick Link to Customer Website */}
             <div className="hidden md:flex items-center gap-1.5 rounded-xl bg-purple-50 border border-purple-100 px-3 py-1.5 text-xs text-purple-700 font-semibold dark:bg-brand-primary/20 dark:border-brand-primary/30 dark:text-purple-300">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Xưởng In & Showroom: <strong>HCM & Bình Dương</strong></span>
+              <span>Xưởng In & Showroom: <strong>TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương</strong></span>
             </div>
 
             {/* Theme Toggle (Sun & Moon Icons Only - No Text) */}

@@ -62,7 +62,6 @@ const CATEGORY_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
   office: { zh: "办公文具", ja: "オフィス用品", ko: "오피스/사무" },
   packaging: { zh: "包装制品", ja: "パッケージ包装", ko: "패키지/포장" },
   tet: { zh: "新年年品", ja: "テト・新年", ko: "새해 인쇄물" },
-  other: { zh: "其他印刷品", ja: "その他印刷", ko: "기타 인쇄물" },
 };
 
 export default function Footer() {

@@ -45,27 +45,27 @@ export async function generateMetadata({
     vi: {
       title: "Viet Dragon – In Ấn Chuyên Nghiệp | Premium Printing Services",
       description:
-        "Viet Dragon – dịch vụ in ấn chuyên nghiệp tại TP. Hồ Chí Minh & Bình Dương. Danh thiếp, catalogue, hộp giấy, decal. Tư vấn, thiết kế, in thử, giao hàng miễn phí.",
+        "Viet Dragon – dịch vụ in ấn chuyên nghiệp tại TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương. Danh thiếp, catalogue, hộp giấy, decal. Tư vấn, thiết kế, in thử, giao hàng miễn phí.",
     },
     en: {
       title: "Viet Dragon – Professional Printing Services",
       description:
-        "Viet Dragon – professional printing services in Ho Chi Minh City & Binh Duong. Business cards, catalogues, paper boxes, decals. Free consultation, design, and sample printing.",
+        "Viet Dragon – professional printing services in Ho Chi Minh City, Dong Nai, Vung Tau & Binh Duong. Business cards, catalogues, paper boxes, decals. Free consultation, design, and sample printing.",
     },
     zh: {
       title: "Viet Dragon – 越南高端专业印刷服务商",
       description:
-        "Viet Dragon – 胡志明市与平阳省专业高品质印刷服务。商务名片、企业画册、精品礼盒、不干胶贴纸。免费咨询、设计、打样及配送。",
+        "Viet Dragon – 胡志明市、同奈、头顿与平阳省专业高品质印刷服务。商务名片、企业画册、精品礼盒、不干胶贴纸。免费咨询、设计、打样及配送。",
     },
     ja: {
       title: "Viet Dragon – ベトナム・プロフェッショナル高品質印刷",
       description:
-        "Viet Dragon – ホーチミン市＆ビンズオン省のプロフェッショナル印刷サービス。名刺、カタログ、化粧箱、シール印刷。無料相談・デザイン・サンプル校正・無料配送。",
+        "Viet Dragon – ホーチミン市・ドンナイ・ブンタウ・ビンズオン省のプロフェッショナル印刷サービス。名刺、カタログ、化粧箱、シール印刷。無料相談・デザイン・サンプル校正・無料配送。",
     },
     ko: {
       title: "Viet Dragon – 베트남 전문 프리미엄 인쇄 제작 서비스",
       description:
-        "Viet Dragon – 호치민시 및 빈증성 전문 프리미엄 인쇄 서비스. 명함, 카탈로그, 종이 박스, 스티커 라벨. 1:1 무료 상담, 디자인, 샘플 인쇄 및 직배송.",
+        "Viet Dragon – 호치민시, 동나이, 붕따우 및 빈증성 전문 프리미엄 인쇄 서비스. 명함, 카탈로그, 종이 박스, 스티커 라벨. 1:1 무료 상담, 디자인, 샘플 인쇄 및 직배송.",
     },
   };
 

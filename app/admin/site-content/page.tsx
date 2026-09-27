@@ -100,7 +100,7 @@ const SECTIONS = [
   { id: "portfolio", label: "Dự Án & Mẫu In Thực Tế", icon: ImageIcon, desc: "6 vị trí ảnh dự án tiêu biểu (card, hộp, catalogue...)" },
   { id: "testimonials", label: "Đánh Giá Khách Hàng", icon: MessageSquare, desc: "3 nhận xét của khách hàng kèm tên, chức vụ, avatar" },
   { id: "faq", label: "Câu Hỏi Thường Gặp", icon: HelpCircle, desc: "5 câu hỏi đáp quy trình in, số lượng tối thiểu, thanh toán" },
-  { id: "contact", label: "Hotline, Zalo & Chân Trang", icon: Phone, desc: "Số điện thoại xưởng in, email, địa chỉ HCM - Bình Dương" },
+  { id: "contact", label: "Hotline, Zalo & Chân Trang", icon: Phone, desc: "Số điện thoại xưởng in, email, địa chỉ TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương" },
 ];
 
 export default function AdminSiteContentPage() {
