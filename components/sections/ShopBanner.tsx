@@ -11,8 +11,8 @@ import { WipeButton } from "@/components/ui/wipe-button";
 // Reuses the same "card" / "paper-box" product photos shown elsewhere
 // (Shop.tsx, category pages) rather than needing dedicated banner images.
 const banners = [
-  { href: "/products/marketing", src: "/images/product/vd-item-card.jpeg", background: "var(--brand-primary)" },
-  { href: "/products/packaging", src: "/images/product/vd-item-box.jpg", background: "linear-gradient(90deg, #4971f9 0%, #2fabf7 100%)" },
+  { href: "/products/marketing/catalogue", src: "/images/product/banner-catalogue.webp", background: "var(--brand-primary)" },
+  { href: "/products/packaging/paper-bag", src: "/images/product/banner-paperbag.webp", background: "linear-gradient(90deg, #4971f9 0%, #2fabf7 100%)" },
 ] as const;
 
 type BannerCopy = { eyebrow: string; title: string };
@@ -36,7 +36,7 @@ export default function ShopBanner() {
                 hidden: { opacity: 0, y: 24 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] } },
               }}
-              className="group relative rounded-2xl overflow-hidden"
+              className="group relative rounded-2xl overflow-hidden min-h-[240px]"
               style={{ background: b.background }}
             >
               {/* Decorative shape peeking bottom-right, echoing the template's
@@ -45,7 +45,7 @@ export default function ShopBanner() {
 
               {/* Asymmetric split: narrower content column, wider image column that
                   bleeds to the card's edge (template: col-xl-5 content / col-xl-7 image). */}
-              <div className="relative grid grid-cols-5 items-center h-full">
+              <div className="relative grid grid-cols-5 items-start h-full">
                 <div className="col-span-2 p-6 lg:p-8">
                   <p className="text-xs font-semibold tracking-widest uppercase mb-3 text-white/70">
                     {eyebrow}
