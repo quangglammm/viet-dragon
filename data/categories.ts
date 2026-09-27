@@ -176,9 +176,6 @@ export function isFastPrint(id: string): boolean {
     "in-nhanh-to-roi",
     "in-nhanh-voucher",
     "in-nhanh-tem-nhan",
-    "standee",
-    "poster",
-    "tem-bao-hanh",
   ].includes(id);
 }
 
@@ -199,14 +196,6 @@ export function getStartingPrice(id: string, locale: string): string {
     "thiep-ca-nhan": { vi: "Chỉ từ 5.000đ/Bộ", en: "From 5,000đ/Set" },
     "tranh-canvas": { vi: "Chỉ từ 150.000đ/Bức", en: "From 150,000đ/Pcs" },
     "ky-yeu": { vi: "Chỉ từ 120.000đ/Cuốn", en: "From 120,000đ/Book" },
-    "so-tay-qua-tang": { vi: "Chỉ từ 85.000đ/Cuốn", en: "From 85,000đ/Book" },
-    "binh-giu-nhiet": { vi: "Chỉ từ 160.000đ/Bình", en: "From 160,000đ/Bottle" },
-    "ao-dong-phuc": { vi: "Chỉ từ 65.000đ/Cái", en: "From 65,000đ/Pcs" },
-    "moc-khoa": { vi: "Chỉ từ 12.000đ/Cái", en: "From 12,000đ/Pcs" },
-    standee: { vi: "Chỉ từ 180.000đ/Bộ", en: "From 180,000đ/Set" },
-    poster: { vi: "Chỉ từ 35.000đ/Tờ", en: "From 35,000đ/Sheet" },
-    "the-nhua": { vi: "Chỉ từ 18.000đ/Thẻ", en: "From 18,000đ/Card" },
-    "tem-bao-hanh": { vi: "Chỉ từ 300đ/Tem", en: "From 300đ/Stamp" },
     "in-nhanh-danh-thiep": { vi: "Chỉ từ 120.000đ/Hộp", en: "From 120,000đ/Box" },
     "in-nhanh-to-roi": { vi: "Chỉ từ 850đ/Tờ", en: "From 850đ/Sheet" },
     "in-nhanh-voucher": { vi: "Chỉ từ 1.100đ/Tờ", en: "From 1,100đ/Sheet" },

@@ -3,7 +3,7 @@
     "phone1": "0901 448 377",
     "phone2": "0919 510 543",
     "email": "contact@vietdragon.vn",
-    "address": "Ho Chi Minh City & Binh Duong"
+    "address": "Ho Chi Minh City, Dong Nai, Vung Tau & Binh Duong"
   },
   "floatingContact": {
     "zalo": "Chat on Zalo",
@@ -44,7 +44,7 @@
         "tag": "Fast delivery",
         "titleLine1": "From idea to product,",
         "titleLine2": "in just 48 hours.",
-        "desc": "Free sample prints, fast production, delivered across Ho Chi Minh City & Binh Duong."
+        "desc": "Free sample prints, fast production, delivered across Ho Chi Minh City, Dong Nai, Vung Tau & Binh Duong."
       }
     ],
     "cta": "Get a quote",
@@ -55,8 +55,8 @@
   },
   "shopBanner": {
     "banners": [
-      { "eyebrow": "Best seller", "title": "Premium Business Cards" },
-      { "eyebrow": "Trending", "title": "Luxury Paper Boxes" }
+      { "eyebrow": "Best seller", "title": "Product Catalogues & Brochures" },
+      { "eyebrow": "Best seller", "title": "Premium Paper Bags" }
     ],
     "cta": "View now"
   },
@@ -85,7 +85,7 @@
       { "title": "Consultation", "desc": "A dedicated team of consultants, guiding you from concept to the right materials for the job." },
       { "title": "Design", "desc": "Professional design on request, with unlimited revisions until you're happy with the result." },
       { "title": "Sample Print", "desc": "Free sample printing before you commit to a large order — see the real product before deciding." },
-      { "title": "Delivery", "desc": "Fast, free local delivery across Ho Chi Minh City and Binh Duong." }
+      { "title": "Delivery", "desc": "Fast, free local delivery across Ho Chi Minh City, Dong Nai, Vung Tau and Binh Duong." }
     ],
     "cta": "Get a quote"
   },
@@ -149,14 +149,14 @@
       },
       {
         "q": "How long does turnaround take?",
-        "a": "Standard orders are delivered within 24–48 hours across Ho Chi Minh City & Binh Duong. Large-volume or custom orders may take 3–5 days."
+        "a": "Standard orders are delivered within 24–48 hours across Ho Chi Minh City, Dong Nai, Vung Tau & Binh Duong. Large-volume or custom orders may take 3–5 days."
       },
       {
         "q": "What file formats do you accept?",
         "a": "We accept AI, PDF, and PSD files in CMYK, at a minimum resolution of 300dpi. If you don't have a design file yet, our free design team can help."
       },
       {
-        "q": "Do you deliver outside Ho Chi Minh City & Binh Duong?",
+        "q": "Do you deliver outside Ho Chi Minh City, Dong Nai, Vung Tau & Binh Duong?",
         "a": "Yes. We deliver nationwide through shipping partners — cost and delivery time depend on the destination."
       },
       {
@@ -188,7 +188,7 @@
     "steps": [
       { "title": "Consultation & Quote", "desc": "Tell us what you need and get a transparent quote within 30 minutes." },
       { "title": "Design & Approval", "desc": "Our design team builds a mockup and a sample print before mass production." },
-      { "title": "Printing & Delivery", "desc": "Fast production, delivered across Ho Chi Minh City & Binh Duong." }
+      { "title": "Printing & Delivery", "desc": "Fast production, delivered across Ho Chi Minh City, Dong Nai, Vung Tau & Binh Duong." }
     ]
   },
   "blogPreview": {
@@ -219,7 +219,7 @@
     "getQuote": "Get a quote now"
   },
   "footer": {
-    "tagline": "Professional printing services in Ho Chi Minh City & Binh Duong.",
+    "tagline": "Professional printing services in Ho Chi Minh City, Dong Nai, Vung Tau & Binh Duong.",
     "productsLabel": "Products",
     "companyLabel": "Company",
     "usefulLabel": "Useful Links",
@@ -236,13 +236,13 @@
   },
   "productsPage": {
     "metaTitle": "Products | Viet Dragon – Professional Printing",
-    "metaDescription": "Browse Viet Dragon's full print product catalogue: marketing, office, packaging, Tet publications, other publications, and more.",
+    "metaDescription": "Browse Viet Dragon's full print product catalogue: marketing, office, packaging, Tet publications, and more.",
     "breadcrumbHome": "Home",
     "breadcrumbCurrent": "Products",
     "eyebrow": "All Products",
     "titleLine1": "Whatever you need,",
     "titleHighlight": "we can print it.",
-    "subtitle": "Complete product categories from business cards and packaging to other custom publications.",
+    "subtitle": "Complete product categories from business cards and packaging to festive publications.",
     "galleryCaption": "Placeholder imagery — real product photos coming soon.",
     "browseByCategory": "Browse by category",
     "viewDetail": "View detail →",
@@ -272,7 +272,7 @@
     "optionDescriptionLabel": "Characteristics",
     "optionBestForLabel": "Best For",
     "optionViewImageHint": "Tap to view material photo",
-    "optionBackToDetailsHint": "Tap to go back to details",
+    "optionBackToDetailsHint": "Tap to view details",
     "optionFoilCheckboxLabel": "Foil stamping",
     "optionDoubleSidedCheckboxLabel": "Double-sided printing",
     "optionConsultCopyLabel": "Copy consult message",

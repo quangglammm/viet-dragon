@@ -3,7 +3,7 @@
     "phone1": "0901 448 377",
     "phone2": "0919 510 543",
     "email": "contact@vietdragon.vn",
-    "address": "胡志明市 & 平阳省"
+    "address": "胡志明市、同奈、头顿 & 平阳省"
   },
   "floatingContact": {
     "zalo": "Zalo 咨询",
@@ -44,7 +44,7 @@
         "tag": "极速交付",
         "titleLine1": "从设计到成品，",
         "titleLine2": "仅需 48 小时。",
-        "desc": "免费打样，极速出货，全胡志明市及平阳省送货上门。"
+        "desc": "免费打样，极速出货，全胡志明市、同奈、头顿及平阳省送货上门。"
       }
     ],
     "cta": "获取报价",
@@ -55,8 +55,14 @@
   },
   "shopBanner": {
     "banners": [
-      { "eyebrow": "热销爆款", "title": "高档商务名片" },
-      { "eyebrow": "新品趋势", "title": "奢华精品纸盒" }
+      {
+        "eyebrow": "热销爆款",
+        "title": "产品画册 / 宣传册"
+      },
+      {
+        "eyebrow": "热销爆款",
+        "title": "高档纸袋"
+      }
     ],
     "cta": "立即查看"
   },
@@ -82,10 +88,22 @@
     "title": "四项配套服务，完全免费。",
     "subtitle": "每笔订单均尊享四项全免配套服务，无任何额外费用。",
     "items": [
-      { "title": "专业咨询", "desc": "专属顾问团队从设计构想到材质选用提供全方位专业建议。" },
-      { "title": "设计支持", "desc": "按需提供专业排版与设计，修改至您完全满意为止。" },
-      { "title": "免费打样", "desc": "大货生产前提供实物打样 —— 亲眼确认品质后再定稿。" },
-      { "title": "免费配送", "desc": "胡志明市与平阳省全境快速免费配送到门。" }
+      {
+        "title": "专业咨询",
+        "desc": "专属顾问团队从设计构想到材质选用提供全方位专业建议。"
+      },
+      {
+        "title": "设计支持",
+        "desc": "按需提供专业排版与设计，修改至您完全满意为止。"
+      },
+      {
+        "title": "免费打样",
+        "desc": "大货生产前提供实物打样 —— 亲眼确认品质后再定稿。"
+      },
+      {
+        "title": "免费配送",
+        "desc": "胡志明市、同奈、头顿与平阳省全境快速免费配送到门。"
+      }
     ],
     "cta": "获取报价"
   },
@@ -108,12 +126,30 @@
     "titleHighlight": "皆倾注匠心。",
     "viewAll": "全部产品",
     "items": [
-      { "label": "商务名片", "cat": "营销印刷" },
-      { "label": "包装盒", "cat": "包装印刷" },
-      { "label": "新年利是封", "cat": "节日印刷" },
-      { "label": "企业画册", "cat": "营销印刷" },
-      { "label": "餐厅菜单", "cat": "办公印刷" },
-      { "label": "邀请函", "cat": "营销印刷" }
+      {
+        "label": "商务名片",
+        "cat": "营销印刷"
+      },
+      {
+        "label": "包装盒",
+        "cat": "包装印刷"
+      },
+      {
+        "label": "新年利是封",
+        "cat": "节日印刷"
+      },
+      {
+        "label": "企业画册",
+        "cat": "营销印刷"
+      },
+      {
+        "label": "餐厅菜单",
+        "cat": "办公印刷"
+      },
+      {
+        "label": "邀请函",
+        "cat": "营销印刷"
+      }
     ]
   },
   "testimonials": {
@@ -149,7 +185,7 @@
       },
       {
         "q": "交货周期一般需要多久？",
-        "a": "常规订单在胡志明市及平阳省 24–48 小时内送达。大批量或复杂工艺订单需 3–5 天。"
+        "a": "常规订单在胡志明市、同奈、头顿及平阳省 24–48 小时内送达。大批量或复杂工艺订单需 3–5 天。"
       },
       {
         "q": "接受哪些设计文件格式？",
@@ -186,9 +222,18 @@
     "subtitle": "从构思到成品交付 —— 仅需简单三步。",
     "cta": "立即开始",
     "steps": [
-      { "title": "咨询与报价", "desc": "告知您的需求，30分钟内获取清晰明细的报价单。" },
-      { "title": "设计与打样", "desc": "专业团队排版效果图并提供实物打样以供确认。" },
-      { "title": "量产与配送", "desc": "高效自动化印刷生产，快速配送至您的指定地点。" }
+      {
+        "title": "咨询与报价",
+        "desc": "告知您的需求，30分钟内获取清晰明细的报价单。"
+      },
+      {
+        "title": "设计与打样",
+        "desc": "专业团队排版效果图并提供实物打样以供确认。"
+      },
+      {
+        "title": "量产与配送",
+        "desc": "高效自动化印刷生产，快速配送至您的指定地点。"
+      }
     ]
   },
   "blogPreview": {
@@ -219,7 +264,7 @@
     "getQuote": "立即获取报价"
   },
   "footer": {
-    "tagline": "胡志明市与平阳省专业高品质印刷服务商。",
+    "tagline": "胡志明市、同奈、头顿与平阳省专业高品质印刷服务商。",
     "productsLabel": "产品分类",
     "companyLabel": "关于公司",
     "usefulLabel": "快捷导航",
@@ -236,13 +281,13 @@
   },
   "productsPage": {
     "metaTitle": "产品中心 | Viet Dragon – 专业印刷服务",
-    "metaDescription": "浏览 Viet Dragon 完整印刷产品目录：营销、办公、包装、新年礼品、个人定制、商务礼品、展会物料及快印服务。",
+    "metaDescription": "浏览 Viet Dragon 完整印刷产品目录：营销、办公、包装与新年礼品印刷服务。",
     "breadcrumbHome": "首页",
     "breadcrumbCurrent": "产品中心",
     "eyebrow": "全部产品",
     "titleLine1": "满足您的一切需求，",
     "titleHighlight": "我们用心印刷。",
-    "subtitle": "涵盖商务名片、精美包装、企业礼品及极速快印等全方位产品分类。",
+    "subtitle": "涵盖商务名片、办公文具、精美包装与新年礼品等全方位产品分类。",
     "galleryCaption": "产品示意图 — 真实样品照片持续更新中。",
     "browseByCategory": "按分类浏览",
     "viewDetail": "查看详情 →",
@@ -272,7 +317,7 @@
     "optionDescriptionLabel": "材质特性",
     "optionBestForLabel": "适用场景",
     "optionViewImageHint": "点击查看材质样品照片",
-    "optionBackToDetailsHint": "点击返回参数详情",
+    "optionBackToDetailsHint": "点击查看参数详情",
     "optionFoilCheckboxLabel": "烫金/烫银工艺 (Ép kim)",
     "optionDoubleSidedCheckboxLabel": "双面印刷 (In 2 mặt)",
     "optionConsultCopyLabel": "复制咨询内容",

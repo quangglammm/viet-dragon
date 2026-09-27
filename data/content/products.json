@@ -25,8 +25,8 @@
             "options": [
               {
                 "icon": "Layers",
-                "name": "C300 (Standard)",
-                "nameVi": "C300 (Chuẩn)",
+                "name": "Type C Paper",
+                "nameVi": "Giấy loại C",
                 "basePrice": 100000,
                 "doubleSidedPrice": 20000,
                 "foilPrice": 40000,
@@ -111,8 +111,8 @@
               },
               {
                 "icon": "Feather",
-                "name": "Ford 300 (Uncoated)",
-                "nameVi": "Ford 300",
+                "name": "Type F Paper",
+                "nameVi": "Giấy loại F",
                 "basePrice": 120000,
                 "doubleSidedPrice": 25000,
                 "foilPrice": 40000,
@@ -360,87 +360,6 @@
                   "급한 출장 및 박람회 행사를 앞둔 비즈니스맨",
                   "직책 변경이나 신입 사원용 소량 명함 제작",
                   "소량 다품종 맞춤 주문에 최적화"
-                ]
-              },
-              {
-                "icon": "Sparkles",
-                "name": "Pearl Metallic Paper",
-                "nameVi": "Giấy Ngọc Trai",
-                "basePrice": 220000,
-                "doubleSidedPrice": 40000,
-                "foilPrice": 50000,
-                "foil2SidesPrice": 90000,
-                "unitVi": "Hộp",
-                "unitEn": "Boxes",
-                "tagline": "Want your card to shimmer with a sophisticated pearlescent glow?",
-                "taglineVi": "Bạn muốn danh thiếp lấp lánh ánh ngọc trai sang trọng dưới ánh sáng?",
-                "description": [
-                  "Infused with metallic mica particles for a radiant pearlescent sheen",
-                  "Shifts luminosity and color tone depending on the viewing angle",
-                  "Elevates logos and minimalist artwork without needing extra foil"
-                ],
-                "descriptionVi": [
-                  "Bề mặt phủ tinh thể vi mica tạo ánh lấp lánh như ngọc trai",
-                  "Hiệu ứng chuyển đổi độ sáng và sắc độ tùy thuộc vào góc nhìn",
-                  "Tôn vinh logo và thiết kế sang trọng mà không cần thêm ép kim"
-                ],
-                "descriptionTraits": [
-                  "metallic-shine",
-                  "smooth-base",
-                  "soft-light"
-                ],
-                "bestFor": [
-                  "Beauty brands, jewelry boutiques, and luxury spas",
-                  "VIP membership cards and upscale event invitations",
-                  "Brands looking for a radiant, feminine, or opulent aesthetic"
-                ],
-                "bestForVi": [
-                  "Thương hiệu mỹ phẩm, trang sức, viện thẩm mỹ và spa cao cấp",
-                  "Thẻ thành viên VIP và thiệp mời sự kiện thượng lưu",
-                  "Doanh nghiệp hướng tới phong cách sang trọng, tinh tế và rực rỡ"
-                ],
-                "image": "/images/product/pearl.webp",
-                "images": [
-                  "/images/product/pearl.webp",
-                  "/images/product/pearl4.webp",
-                  "/images/product/pearl5.webp"
-                ],
-                "hideFoilCheckbox": true,
-                "nameZh": "珠光星采金属光泽纸",
-                "nameJa": "パールメタリック紙",
-                "nameKo": "스타드림 펄 메탈릭지",
-                "taglineZh": "想让您的名片在光线变换下闪耀迷人的珠光微芒吗？",
-                "taglineJa": "光の角度で上品に移ろうパールのような輝きを名刺に纏わせませんか？",
-                "taglineKo": "빛의 각도에 따라 은은하게 빛나는 진주 펄 감성을 원하시나요?",
-                "descriptionZh": [
-                  "双面附着细腻珍珠微粒，光泽高贵不刺眼",
-                  "色彩表现层次丰富，视觉效果极具现代感",
-                  "与极简设计搭配，倍显优雅从容"
-                ],
-                "descriptionJa": [
-                  "両面に施された微細なパール粒子が放つ気品ある光沢",
-                  "光の加減で表情が変わる豊かな階調表現",
-                  "ミニマルなデザインを際立たせる洗練された仕上がり"
-                ],
-                "descriptionKo": [
-                  "양면에 코팅된 미세한 펄 입자가 자아내는 우아한 광채",
-                  "빛의 방향에 따라 고급스럽게 변화하는 깊이감 있는 색상",
-                  "미니멀한 디자인과 조화를 이루어 품격을 높여줌"
-                ],
-                "bestForZh": [
-                  "美妆护肤、珠宝首饰及轻奢时尚品牌",
-                  "婚礼策划、高端摄影工作室名片",
-                  "彰显女性柔美与高雅格调的商业场合"
-                ],
-                "bestForJa": [
-                  "コスメ、ジュエリー、ファッションブランド",
-                  "ウェディングプランナー、フォトスタジオ名刺",
-                  "洗練された上品さをアピールしたいビジネスシーン"
-                ],
-                "bestForKo": [
-                  "뷰티, 주얼리, 패션 및 럭셔리 라이프스타일 브랜드",
-                  "웨딩 플래너 및 프리미엄 스튜디오 명함",
-                  "우아하고 섬세한 감각을 전달해야 하는 비즈니스"
                 ]
               },
               {
@@ -1475,8 +1394,8 @@
             "options": [
               {
                 "icon": "Layers",
-                "name": "Couche 300 - 350gsm (Corporate Standard)",
-                "nameVi": "C300 - C350 Cán Màng (Chuẩn Doanh Nghiệp)",
+                "name": "Type C Paper",
+                "nameVi": "Giấy loại C",
                 "basePrice": 6500,
                 "doubleSidedPrice": 1500,
                 "foilPrice": 3500,
@@ -1561,8 +1480,8 @@
               },
               {
                 "icon": "Feather",
-                "name": "Ford 300gsm (Uncoated Standard)",
-                "nameVi": "Ford 300gsm (Chuẩn Giấy Mộc)",
+                "name": "Type F Paper",
+                "nameVi": "Giấy loại F",
                 "basePrice": 7500,
                 "doubleSidedPrice": 1800,
                 "foilPrice": 3500,
@@ -4563,8 +4482,8 @@
             "options": [
               {
                 "icon": "Layers",
-                "name": "Couche 250 - 300gsm (Laminated Shopping Bag)",
-                "nameVi": "Couche 250 - 300gsm Cán Màng (Túi Shopping)",
+                "name": "Type C Paper",
+                "nameVi": "Giấy loại C",
                 "basePrice": 8500,
                 "doubleSidedPrice": 2000,
                 "foilPrice": 2500,
@@ -4649,8 +4568,8 @@
               },
               {
                 "icon": "ShieldCheck",
-                "name": "Ivory 250 - 300gsm (Rigid Luxury Bag)",
-                "nameVi": "Ivory 250 - 300gsm (Siêu Cứng & Dai)",
+                "name": "Type I Paper",
+                "nameVi": "Giấy loại I",
                 "basePrice": 11000,
                 "doubleSidedPrice": 2500,
                 "foilPrice": 3000,
@@ -5008,8 +4927,8 @@
             "options": [
               {
                 "icon": "Layers",
-                "name": "Couche 300 - 350gsm (Laminated Box)",
-                "nameVi": "Couche 300 - 350gsm (Hộp Cán Màng)",
+                "name": "Type C Paper",
+                "nameVi": "Giấy loại C",
                 "basePrice": 6500,
                 "doubleSidedPrice": 2000,
                 "foilPrice": 2000,
@@ -5094,8 +5013,8 @@
               },
               {
                 "icon": "ShieldCheck",
-                "name": "Ivory 300 - 350gsm (Pharma & Luxury Standard)",
-                "nameVi": "Ivory 300 - 350gsm (Siêu Cứng & Chuẩn Dược)",
+                "name": "Type I Paper",
+                "nameVi": "Giấy loại I",
                 "basePrice": 7500,
                 "doubleSidedPrice": 2500,
                 "foilPrice": 2200,
@@ -6728,8 +6647,8 @@
             "options": [
               {
                 "icon": "Layers",
-                "name": "Couche 300 - 350gsm (Standard Garment Tag)",
-                "nameVi": "Couche 300 - 350gsm (Mác Quần Áo Chuẩn)",
+                "name": "Type C Paper",
+                "nameVi": "Giấy loại C",
                 "basePrice": 600,
                 "doubleSidedPrice": 200,
                 "foilPrice": 400,
@@ -6814,8 +6733,8 @@
               },
               {
                 "icon": "Feather",
-                "name": "Ford 300gsm (Uncoated Natural Tag)",
-                "nameVi": "Ford 300gsm (Mác Giấy Mộc Dễ Viết)",
+                "name": "Type F Paper",
+                "nameVi": "Giấy loại F",
                 "basePrice": 650,
                 "doubleSidedPrice": 200,
                 "foilPrice": 400,
@@ -6900,8 +6819,8 @@
               },
               {
                 "icon": "ShieldCheck",
-                "name": "Ivory 300 - 350gsm (Ultra-Rigid Luxury Tag)",
-                "nameVi": "Ivory 300 - 350gsm (Mác Siêu Cứng Cao Cấp)",
+                "name": "Type I Paper",
+                "nameVi": "Giấy loại I",
                 "basePrice": 900,
                 "doubleSidedPrice": 300,
                 "foilPrice": 500,
@@ -7173,8 +7092,8 @@
             "options": [
               {
                 "icon": "Feather",
-                "name": "Ford 100 - 120gsm (Standard Corporate)",
-                "nameVi": "Ford 100 - 120gsm (Chuẩn Bao Thư Văn Phòng)",
+                "name": "Type F Paper",
+                "nameVi": "Giấy loại F",
                 "basePrice": 1200,
                 "doubleSidedPrice": 400,
                 "foilPrice": 800,
@@ -7254,8 +7173,8 @@
               },
               {
                 "icon": "Layers",
-                "name": "Couche 150 - 200gsm (Laminated Finish)",
-                "nameVi": "Couche 150 - 200gsm (Cán Màng Bảo Vệ)",
+                "name": "Type C Paper",
+                "nameVi": "Giấy loại C",
                 "basePrice": 1800,
                 "doubleSidedPrice": 600,
                 "foilPrice": 1000,
@@ -7532,8 +7451,8 @@
             "options": [
               {
                 "icon": "Layers",
-                "name": "Couche 150gsm (Standard Handout)",
-                "nameVi": "Couche 150gsm (Chuẩn Phát Hàng Loạt)",
+                "name": "Type C Paper",
+                "nameVi": "Giấy loại C",
                 "basePrice": 600,
                 "doubleSidedPrice": 300,
                 "foilPrice": 800,
@@ -7619,8 +7538,8 @@
               },
               {
                 "icon": "Feather",
-                "name": "Ford 100 - 120gsm (Writable & Matte)",
-                "nameVi": "Ford 100 - 120gsm (Giấy Mộc Dễ Viết)",
+                "name": "Type F Paper",
+                "nameVi": "Giấy loại F",
                 "basePrice": 500,
                 "doubleSidedPrice": 250,
                 "foilPrice": 800,
@@ -7980,8 +7899,8 @@
             "options": [
               {
                 "icon": "Layers",
-                "name": "Couche 150gsm Laminated (Standard Red Envelope)",
-                "nameVi": "Couche 150gsm Cán Màng (Chuẩn Lì Xì)",
+                "name": "Type C Paper",
+                "nameVi": "Giấy loại C",
                 "basePrice": 1200,
                 "doubleSidedPrice": 300,
                 "foilPrice": 800,
@@ -8066,8 +7985,8 @@
               },
               {
                 "icon": "Feather",
-                "name": "Ford 120 - 150gsm (Traditional Uncoated Red Envelope)",
-                "nameVi": "Ford 120 - 150gsm (Lì Xì Giấy Mộc Cổ Truyền)",
+                "name": "Type F Paper",
+                "nameVi": "Giấy loại F",
                 "basePrice": 1100,
                 "doubleSidedPrice": 300,
                 "foilPrice": 800,
@@ -8839,8 +8758,8 @@
             "options": [
               {
                 "icon": "Layers",
-                "name": "Couche 350gsm (Laminated Gift Box)",
-                "nameVi": "Couche 350gsm Cán Màng (Chuẩn Hộp Quà)",
+                "name": "Type C Paper",
+                "nameVi": "Giấy loại C",
                 "basePrice": 18000,
                 "doubleSidedPrice": 4000,
                 "foilPrice": 4500,
@@ -8925,8 +8844,8 @@
               },
               {
                 "icon": "ShieldCheck",
-                "name": "Ivory 350 - 400gsm (Ultra-Rigid Box)",
-                "nameVi": "Ivory 350 - 400gsm (Hộp Siêu Cứng)",
+                "name": "Type I Paper",
+                "nameVi": "Giấy loại I",
                 "basePrice": 22000,
                 "doubleSidedPrice": 5000,
                 "foilPrice": 5000,
@@ -9278,8 +9197,8 @@
             "options": [
               {
                 "icon": "Layers",
-                "name": "Couche 300gsm Laminated (Standard Card)",
-                "nameVi": "Couche 300gsm Cán Màng (Chuẩn Thiệp Tết)",
+                "name": "Type C Paper",
+                "nameVi": "Giấy loại C",
                 "basePrice": 3000,
                 "doubleSidedPrice": 800,
                 "foilPrice": 1500,
@@ -9364,8 +9283,8 @@
               },
               {
                 "icon": "Feather",
-                "name": "Ford 300gsm (Writable Holiday Card)",
-                "nameVi": "Ford 300gsm (Thiệp Giấy Mộc Dễ Viết)",
+                "name": "Type F Paper",
+                "nameVi": "Giấy loại F",
                 "basePrice": 3200,
                 "doubleSidedPrice": 800,
                 "foilPrice": 1500,
@@ -9699,1300 +9618,6 @@
                   "평생의 비즈니스 동반자와 대형 파트너사에 바치는 최고의 헌정 카드",
                   "금융 투자사, 대형 협회 및 상공회 VIP 공식 신년 연하장",
                   "새해의 대길(大吉)과 만사형통을 비는 최고의 정성을 담은 카드"
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "other",
-    "nameEn": "Other Publications",
-    "nameVi": "Ấn phẩm khác",
-    "description": "Specialty advertising displays, event collateral, identity accessories, and auxiliary print items.",
-    "descriptionVi": "Các ấn phẩm quảng cáo, trưng bày sự kiện, nhận diện đặc biệt và ấn phẩm bổ trợ chuyên nghiệp.",
-    "icon": "Layers",
-    "coverImage": "/images/category/anphamkhac.webp",
-    "items": [
-      {
-        "id": "standee",
-        "nameEn": "Standees & Display Banners",
-        "nameVi": "Standee & Banner",
-        "description": "Roll-up aluminum standees, X-banner stands, indoor and outdoor PP/Hiflex banners.",
-        "descriptionVi": "Standee cuốn nhôm, standee chân X, banner bạt Hiflex / PP trong nhà & ngoài trời.",
-        "image": "/images/product/standee-banner.webp",
-        "images": [
-          "/images/product/standee-banner.webp",
-          "/images/product/standeecuonnhom2.webp",
-          "/images/product/standeechan2.webp"
-        ],
-        "hideFoilCheckbox": true,
-        "hideDoubleSidedCheckbox": true,
-        "optionGroups": [
-          {
-            "options": [
-              {
-                "icon": "Feather",
-                "name": "Retractable Aluminum Standee (Indoor PP)",
-                "nameVi": "Standee Cuốn Nhôm (PP Trong Nhà)",
-                "basePrice": 180000,
-                "doubleSidedPrice": 0,
-                "foilPrice": 0,
-                "foil2SidesPrice": 0,
-                "unitVi": "Bộ",
-                "unitEn": "Sets",
-                "hideFoilCheckbox": true,
-                "hideDoubleSidedCheckbox": true,
-                "tagline": "Compact roll-up banner that sets up in 30 seconds",
-                "taglineVi": "Standee cuốn nhôm tháo lắp chỉ trong 30 giây, tiện di chuyển",
-                "description": [
-                  "Sturdy lightweight aluminum cassette base with canvas carrying bag",
-                  "High-res indoor synthetic PP paper laminated in smooth anti-glare matte",
-                  "Available in standard 60x160cm and 80x200cm formats"
-                ],
-                "descriptionVi": [
-                  "Chân cuốn hợp kim nhôm sáng bóng, kèm túi vải đen có quai xách",
-                  "In giấy PP tổng hợp trong nhà cán màng mờ chống lóa dưới ánh đèn",
-                  "Kích thước chuẩn: 60x160cm và 80x200cm dễ bố trí trong showroom"
-                ],
-                "descriptionTraits": [
-                  "soft-light",
-                  "smooth-base",
-                  "digital-precision"
-                ],
-                "bestFor": [
-                  "Store entrances, showroom product highlights, and reception areas",
-                  "Seminars, exhibition booths, and hotel conferences",
-                  "Seasonal promotional announcements inside malls"
-                ],
-                "bestForVi": [
-                  "Cửa hàng, showroom giới thiệu sản phẩm và sảnh đón khách",
-                  "Hội thảo, gian hàng triển lãm và sự kiện họp báo",
-                  "Thông báo chương trình khuyến mãi trong trung tâm thương mại"
-                ],
-                "pureImage": "/images/product/standeecuonnhom.webp",
-                "pureImages": [
-                  "/images/product/standeecuonnhom.webp",
-                  "/images/product/standeecuonnhom2.webp",
-                  "/images/product/standeecuonnhom3.webp"
-                ],
-                "nameZh": "铝合金易拉宝（室内高精微喷相纸）",
-                "nameJa": "ロールアップバナー（屋内用高精細PP）",
-                "nameKo": "롤업 알루미늄 배너 (실내용 고화질 PP)",
-                "taglineZh": "展厅内部或商场专柜使用的色彩极其细腻逼真的便携展架？",
-                "taglineJa": "展示会やショールームで美しく映える、持ち運び簡単なバナーですか？",
-                "taglineKo": "전시회장이나 실내 매장에 거치하는 초고화질 선명 롤업 배너인가요?",
-                "descriptionZh": [
-                  "高精微喷PP合成相纸画面，覆哑膜或防反光防划光膜",
-                  "便携式加厚铝合金伸缩底座，内附收卷弹簧，极速安装撤展",
-                  "配备加厚牛津布双肩背袋，展会巡展差旅携带极为轻便"
-                ],
-                "descriptionJa": [
-                  "高精細プリントPPシート、反射を抑えたマットラミネート加工",
-                  "軽量で頑丈なアルミニウム製ロールアップスタンド、自動巻き取り機構",
-                  "持ち運びに便利な専用キャリングケース付きで、出張や展示会に最適"
-                ],
-                "descriptionKo": [
-                  "고화질 무광 코팅 PP 합성지로 눈부심 없이 선명한 시인성 제공",
-                  "알루미늄 바디와 내장 스프링으로 10초 만에 손쉬운 설치 및 철거",
-                  "휴대용 고급 패브릭 어깨끈 가방이 기본 포함되어 출장 및 이동 용이"
-                ],
-                "bestForZh": [
-                  "国际展会展位入口、招商推介会舞台侧翼展示",
-                  "企业前台大堂、商场专柜新品上市形象立牌",
-                  "酒店会议厅指引牌及临时活动快闪展示"
-                ],
-                "bestForJa": [
-                  "展示会ブースのアイキャッチ、セミナー会場の案内板",
-                  "オフィスのエントランス、店舗入口の新製品プロモーション",
-                  "ホテルのイベント案内、記者会見のバックボード横設置"
-                ],
-                "bestForKo": [
-                  "국제 박람회 부스 입구, 사업 설명회 무대 측면 배너",
-                  "기업 로비 인포메이션, 백화점 팝업스토어 신상품 프로모션",
-                  "호텔 세미나 행사장 유도 안내판 및 단기 이벤트 배너"
-                ]
-              },
-              {
-                "icon": "Shield",
-                "name": "Reinforced X-Banner Stand (Outdoor PP)",
-                "nameVi": "Standee Chân X Cường Lực (PP Ngoài Trời)",
-                "basePrice": 230000,
-                "doubleSidedPrice": 0,
-                "foilPrice": 0,
-                "foil2SidesPrice": 0,
-                "unitVi": "Bộ",
-                "unitEn": "Sets",
-                "hideFoilCheckbox": true,
-                "hideDoubleSidedCheckbox": true,
-                "tagline": "Weather-resistant display stand for outdoor events and festivals",
-                "taglineVi": "Chân standee chịu gió ngoài trời kèm bản in mực dầu kháng nước",
-                "description": [
-                  "Heavy-duty fiberglass X-frame with wind-resistant tension hooks",
-                  "Printed with waterproof eco-solvent oil inks that resist sunlight and rain",
-                  "4 corner brass eyelets for quick, secure banner mounting"
-                ],
-                "descriptionVi": [
-                  "Khung chữ X sợi thủy tinh cường lực chịu lực gió tốt ngoài trời",
-                  "In mực dầu ngoài trời kháng nước và chống tia cực tím không bay màu",
-                  "Đóng khoen đồng 4 góc chắc chắn, tháo lắp thay poster dễ dàng"
-                ],
-                "descriptionTraits": [
-                  "waterproof-durability",
-                  "glossy-coat",
-                  "digital-precision"
-                ],
-                "bestFor": [
-                  "Outdoor brand activations, music festivals, and sports competitions",
-                  "Storefront promotions and sidewalk signboards",
-                  "Event wayfinding and directional signage"
-                ],
-                "bestForVi": [
-                  "Sự kiện ngoài trời, giải chạy thể thao, lễ hội âm nhạc",
-                  "Biển thông báo khuyến mãi trước mặt tiền cửa hàng",
-                  "Bảng chỉ dẫn lối đi và thông tin sự kiện ngoài trời"
-                ],
-                "pureImage": "/images/product/standeechan.webp",
-                "pureImages": [
-                  "/images/product/standeechan.webp",
-                  "/images/product/standeechan2.webp",
-                  "/images/product/standeechan3.webp"
-                ],
-                "nameZh": "防风强化X展架（户外抗紫外线耐候PP）",
-                "nameJa": "強化型Xバナースタンド（屋外耐候性PP）",
-                "nameKo": "강화형 X배너 거치대 (야외용 내후성 PP)",
-                "taglineZh": "门店室外摆放，经受风吹日晒依然不褪色不倾倒？",
-                "taglineJa": "風雨や日差しに強く、店頭にしっかり自立する屋外対応バナーですか？",
-                "taglineKo": "매장 입구 야외에서도 바람에 강하고 햇빛에 바래지 않는 내후성 배너인가요?",
-                "descriptionZh": [
-                  "户外专用抗紫外线抗老化耐候PP材质，烈日暴晒长久不褪色",
-                  "高强度碳钢加粗X型支撑骨架与注水/配重防风底座",
-                  "四角带金属打孔气眼，拉伸紧绷平整，遇大风不翻倒变形"
-                ],
-                "descriptionJa": [
-                  "屋外専用の耐候性PP素材を使用、日差しによる色褪せを防止",
-                  "高強度のスチール製X型フレームと、風対策のウェイトに対応",
-                  "四隅のハトメ金具でピンと張りのある美しいディスプレイを維持"
-                ],
-                "descriptionKo": [
-                  "자외선과 비바람에 강한 실외 전용 무광 코팅 내후성 PP 출력",
-                  "고강도 탄소강 X형 프레임과 물통/모래주머니 호환 방풍 지지대",
-                  "사서 모서리 아일렛(타공 링) 마감으로 팽팽하고 반듯한 텐션 유지"
-                ],
-                "bestForZh": [
-                  "沿街店铺门口、户外步行街专卖店促销宣传",
-                  "露天音乐节、户外运动赛事及车展露天展示",
-                  "室外恶劣气候环境下依然持久坚挺的促销立牌"
-                ],
-                "bestForJa": [
-                  "路面店の店頭、商店街でのセール告知スタンド",
-                  "野外フェス、スポーツイベント、屋外マルシェの案内板",
-                  "風通しの良い屋外で長期間設置したいプロモーション看板"
-                ],
-                "bestForKo": [
-                  "로드샵 매장 앞 인도, 길거리 상권 오픈 홍보 배너",
-                  "야외 축제, 스포츠 경기장, 페스티벌 현장 안내 배너",
-                  "바람이 불고 햇볕이 강한 실외에서도 튼튼하게 자립하는 홍보 배너"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "poster",
-        "nameEn": "Advertising Posters",
-        "nameVi": "Poster quảng cáo",
-        "description": "Wall posters, large-format event posters with water-resistant digital printing.",
-        "descriptionVi": "Poster dán tường, poster sự kiện in kỹ thuật số khổ lớn sắc nét chống nước.",
-        "image": "/images/product/posterquangcao.webp",
-        "images": [
-          "/images/product/posterquangcao.webp",
-          "/images/product/postercouche2.webp",
-          "/images/product/posterpp2.webp"
-        ],
-        "hideDoubleSidedCheckbox": true,
-        "optionGroups": [
-          {
-            "options": [
-              {
-                "icon": "Sparkles",
-                "name": "Couche 250gsm (Laminated Poster)",
-                "nameVi": "Giấy Couche 250 (Cán Màng)",
-                "basePrice": 35000,
-                "doubleSidedPrice": 0,
-                "foilPrice": 15000,
-                "foil2SidesPrice": 25000,
-                "unitVi": "Tờ",
-                "unitEn": "Sheets",
-                "tagline": "Sharp, glossy commercial poster for movie and product launches",
-                "taglineVi": "Poster quảng cáo bóng bẩy, màu sắc rực rỡ thu hút ánh nhìn",
-                "description": [
-                  "Thick 250gsm art paper with high whiteness and vibrant ink absorption",
-                  "Gloss or matte protective film prevents tearing and moisture damage",
-                  "Available in standard A3, A2, A1 and custom large poster sizes"
-                ],
-                "descriptionVi": [
-                  "Giấy Couche 250 dày dặn, bắt màu sắc nét và có độ tương phản cao",
-                  "Cán màng bóng tăng độ tươi màu hoặc màng mờ chống chói ánh đèn",
-                  "Kích thước đa dạng từ A3, A2, A1 đến khổ lớn tùy chỉnh"
-                ],
-                "descriptionTraits": [
-                  "glossy-coat",
-                  "smooth-base",
-                  "foil-accent"
-                ],
-                "bestFor": [
-                  "Movie, theatrical, and music concert release promotions",
-                  "New product launch teasers and seasonal menu boards",
-                  "In-store visual merchandising displays"
-                ],
-                "bestForVi": [
-                  "Poster phim ảnh, đêm nhạc, chương trình giải trí và nghệ thuật",
-                  "Poster giới thiệu sản phẩm mới và bảng menu thức uống",
-                  "Trang trí điểm bán và poster dán cửa kính showroom"
-                ],
-                "pureImage": "/images/product/couche.webp",
-                "pureImages": [
-                  "/images/product/couche.webp",
-                  "/images/product/postercouche2.webp",
-                  "/images/product/postercouche3.webp"
-                ],
-                "hideFoilCheckbox": true,
-                "nameZh": "铜版纸 250gsm 覆膜商业海报",
-                "nameJa": "コート紙 250gsm PP加工ポスター",
-                "nameKo": "스노우지 250gsm 코팅 상업용 포스터",
-                "taglineZh": "画质高清晰、平整挺括，用于专卖店展示框内的促销海报？",
-                "taglineJa": "フレームに入れて飾る、発色の美しい高精細ポスターをお求めですか？",
-                "taglineKo": "액자에 넣어 매장에 디스플레이할 선명하고 화려한 홍보 포스터인가요?",
-                "descriptionZh": [
-                  "250gsm优质高挺度铜版纸，双面全彩精细喷印",
-                  "表面覆盖哑膜防止反光，在室内强聚光灯下画面清晰逼真",
-                  "纸质厚实平整不卷边，极易装入各类型材展示框内"
-                ],
-                "descriptionJa": [
-                  "250gsmの厚口コート紙、滑らかな紙面で写真やグラフィックが鮮明",
-                  "マットラミネート加工で照明の反射を抑え、あらゆる角度から見やすい",
-                  "コシがあり波打ちにくいため、ポスターフレームへのセットも容易"
-                ],
-                "descriptionKo": [
-                  "250gsm 도톰한 스노우지에 무광 코팅으로 조명 반사 완벽 차단",
-                  "고해상도 컬러 인쇄로 화보의 디테일과 색감을 생생히 재현",
-                  "종이가 울거나 말리지 않아 매장 액자 프레임에 손쉽게 거치"
-                ],
-                "bestForZh": [
-                  "专卖店橱窗宣传海报、专柜室内展示相框画心",
-                  "电影院灯箱非发光海报、剧场活动主视觉海报",
-                  "艺术展览主视觉海报及室内品牌形象宣传"
-                ],
-                "bestForJa": [
-                  "アパレル店舗のウィンドウポスター、店頭ディスプレイ",
-                  "映画館・劇場・コンサートの告知ポスター",
-                  "アート展・ギャラリーのメインビジュアル、企業PR"
-                ],
-                "bestForKo": [
-                  "의류 매장 쇼윈도 디스플레이, 매장 인테리어 액자 포스터",
-                  "영화관, 공연장, 콘서트 메인 홍보 포스터",
-                  "미술관 기획전 포스터 및 플래그십 스토어 브랜드 비주얼"
-                ]
-              },
-              {
-                "icon": "Shield",
-                "name": "Self-Adhesive PP Poster (Glass & Wall)",
-                "nameVi": "Decal PP Có Keo (Dán Kính / Dán Tường)",
-                "basePrice": 50000,
-                "doubleSidedPrice": 0,
-                "foilPrice": 0,
-                "foil2SidesPrice": 0,
-                "unitVi": "Tờ",
-                "unitEn": "Sheets",
-                "hideFoilCheckbox": true,
-                "hideDoubleSidedCheckbox": true,
-                "tagline": "Adhesive-backed PP film for direct wall and glass application",
-                "taglineVi": "Poster dán trực tiếp lên tường, kính, mica với lớp keo siêu dính",
-                "description": [
-                  "Tear-proof synthetic PP base with uniform high-tack adhesive backing",
-                  "Easy peel-and-stick application on glass, acrylic, foam board or walls",
-                  "Waterproof and smudge-proof surface wipeable with a damp cloth"
-                ],
-                "descriptionVi": [
-                  "Chất liệu PP tổng hợp xé không rách, có sẵn lớp keo dán mặt sau",
-                  "Dán dính chắc chắn trên kính, tường phẳng, tấm alu hoặc tấm fomex",
-                  "Chống thấm nước tuyệt đối, dễ dàng lau chùi vệ sinh bằng khăn ẩm"
-                ],
-                "descriptionTraits": [
-                  "waterproof-durability",
-                  "smooth-base",
-                  "digital-precision"
-                ],
-                "bestFor": [
-                  "Glass storefront posters and cafe window graphics",
-                  "Mounting on foam boards for rigid lightweight presentation signs",
-                  "Long-term wall murals and workplace motivational quotes"
-                ],
-                "bestForVi": [
-                  "Poster dán kính showroom, quán cà phê, chuỗi trà sữa",
-                  "Bồi lên tấm formex làm bảng trao giải thưởng hoặc biển quảng cáo cứng",
-                  "Tranh dán tường trang trí văn phòng và thông điệp doanh nghiệp"
-                ],
-                "pureImage": "/images/product/pp.webp",
-                "pureImages": [
-                  "/images/product/pp.webp",
-                  "/images/product/posterpp2.webp",
-                  "/images/product/posterpp3.webp"
-                ],
-                "nameZh": "背胶PP高精度海报（贴玻璃/橱窗/墙面）",
-                "nameJa": "強粘着PPポスター（ガラス面・壁面貼付用）",
-                "nameKo": "접착식 유포지 PP 포스터 (유리창/벽면 부착)",
-                "taglineZh": "撕开底纸直接平整贴在玻璃橱窗或展板墙面上？",
-                "taglineJa": "裏面の剥離紙を剥がして、ガラスや壁にそのまま貼れるポスターですか？",
-                "taglineKo": "벽면이나 쇼윈도 유리에 기포 없이 부착할 수 있는 스티커형 포스터인가요?",
-                "descriptionZh": [
-                  "高解析度抗紫外线背胶PP合成相纸，色彩饱和度极高",
-                  "撕开背面防粘底纸即可直接平整贴于玻璃、亚克力或展板上",
-                  "特制可移粘胶，撕下无残胶，不易产生气泡"
-                ],
-                "descriptionJa": [
-                  "高解像度PP合成紙に強粘着糊を塗布、剥離紙を剥がして貼るだけ",
-                  "ガラス窓・アクリル板・スチレンボードにシワなく綺麗に密着",
-                  "長期間貼っても糊残りが少なく、貼り替え作業もスムーズ"
-                ],
-                "descriptionKo": [
-                  "초고화질 무광 합성지에 강력 점착제가 도포되어 즉시 부착 가능",
-                  "이형지를 떼어내고 유리창, 아크릴, 폼보드 벽면에 기포 없이 밀착",
-                  "오랜 시간 부착 후 떼어내도 끈적임이 덜 남는 스마트 점착 공법"
-                ],
-                "bestForZh": [
-                  "商场大尺寸玻璃橱窗促销海报、写字楼电梯广告贴",
-                  "展会木质展板、快闪店背景墙大面积画面张贴",
-                  "免打孔直接贴合的平整平顺视觉解决方案"
-                ],
-                "bestForJa": [
-                  "ガラスショーウィンドウの特大ポスター、エレベーター内広告",
-                  "展示会ブースの壁面パネル貼り込み、ポップアップストア装飾",
-                  "ピンやテープを使わず、壁面を傷つけずに貼れる大型サイン"
-                ],
-                "bestForKo": [
-                  "백화점 대형 쇼윈도 유리창 홍보물, 엘리베이터 거울 광고",
-                  "박람회 부스 벽면 도배, 팝업스토어 아트월 벽면 부착",
-                  "못이나 테이프 없이 매끄럽고 완벽하게 밀착되는 대형 스티커 포스터"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "the-nhua",
-        "nameEn": "PVC Plastic Cards & Lanyards",
-        "nameVi": "Thẻ nhựa PVC / Dây đeo",
-        "description": "4-layer PVC staff badges, VIP cards, member cards with custom printed lanyards.",
-        "descriptionVi": "Thẻ nhân viên PVC 4 lớp, thẻ VIP, thẻ thành viên kèm dây đeo in lụa / in nhiệt.",
-        "image": "/images/product/thenhuapvc.webp",
-        "images": [
-          "/images/product/thenhuapvc.webp",
-          "/images/product/thenhuaatm2.webp",
-          "/images/product/thenhuatrongsuot3.webp"
-        ],
-        "optionGroups": [
-          {
-            "options": [
-              {
-                "icon": "Layers",
-                "name": "4-Layer Thermal Laminated ATM-Standard PVC",
-                "nameVi": "PVC 4 Lớp Chuẩn ATM (Ép Nhiệt)",
-                "basePrice": 18000,
-                "doubleSidedPrice": 4000,
-                "foilPrice": 6000,
-                "foil2SidesPrice": 10000,
-                "unitVi": "Thẻ",
-                "unitEn": "Cards",
-                "tagline": "Durable credit-card standard PVC card with embossed numbers",
-                "taglineVi": "Thẻ nhựa PVC chuẩn thẻ ATM ngân hàng, bền bỉ đến 5 năm",
-                "description": [
-                  "4-layer hydraulic laminated PVC with scratch-resistant clear overlay",
-                  "Optional metallic gold/silver foil, barcode, QR code or embossed numbers",
-                  "100% waterproof and bend-resistant material"
-                ],
-                "descriptionVi": [
-                  "Ép nhiệt cao tần 4 lớp PVC với màng bảo vệ chống trầy xước bề mặt",
-                  "Tích hợp dập nổi chữ số nhũ vàng/bạc, mã vạch, QR code hoặc dải từ",
-                  "Chống thấm nước 100%, không cong vênh hay gãy gập"
-                ],
-                "descriptionTraits": [
-                  "waterproof-durability",
-                  "embossed-depth",
-                  "foil-accent"
-                ],
-                "bestFor": [
-                  "Staff ID cards and company access badges",
-                  "VIP member cards, loyalty discount cards and spa membership",
-                  "Student cards and parking access cards"
-                ],
-                "bestForVi": [
-                  "Thẻ nhân viên công ty, thẻ chấm công ra vào tòa nhà",
-                  "Thẻ VIP khách hàng, thẻ tích điểm spa, gym, trung tâm thương mại",
-                  "Thẻ học sinh, sinh viên và thẻ giữ xe thông minh"
-                ],
-                "pureImage": "/images/product/thenhua.webp",
-                "pureImages": [
-                  "/images/product/thenhua.webp",
-                  "/images/product/thenhuaatm2.webp",
-                  "/images/product/thenhuaatm3.webp"
-                ],
-                "hideFoilCheckbox": true,
-                "nameZh": "4层热压高密度PVC卡（银行卡规格）",
-                "nameJa": "4層熱圧着 PVCカード（ATMカード仕様）",
-                "nameKo": "4단 열압착 표준 PVC 카드 (신용카드 두께)",
-                "taglineZh": "如银行信用卡般坚硬厚实、双面覆膜永不磨损掉色？",
-                "taglineJa": "クレジットカードと同じ厚みと強度を持つ、高品位なPVCカードですか？",
-                "taglineKo": "신용카드와 동일한 두께와 강도를 지녀 10년이 지나도 닳지 않는 플라스틱 카드인가요?",
-                "descriptionZh": [
-                  "标准0.76mm银行卡厚度，4层PVC高温高压热熔压合一体",
-                  "双面覆盖耐磨镜面防刮保护膜，日常频繁刷卡绝不掉色",
-                  "可内嵌RFID芯片、感应线圈、磁条并加凸印卡号烫金"
-                ],
-                "descriptionJa": [
-                  "銀行のクレジットカードと同じ0.76mm厚、4層熱圧着の高剛性ボディ",
-                  "両面にキズ防止オーバーレイフィルムを採用、長年の使用でも色褪せなし",
-                  "ICチップ（FeliCa・Mifare対応）、磁気テープ、エンボス刻印に対応"
-                ],
-                "descriptionKo": [
-                  "신용카드와 동일한 0.76mm 두께, 4단 고온 열압착 고강도 바디",
-                  "양면 스크래치 방지 오버레이 필름으로 매일 긁혀도 인쇄면 영구 보존",
-                  "RF/IC 칩, 마그네틱 라인 내장 및 양각 넘버링 금박 후가공 완벽 지원"
-                ],
-                "bestForZh": [
-                  "企业正式员工工牌、门禁考勤一卡通、大厦出入通行证",
-                  "健身房VIP会员卡、高端连锁商场储值会员卡",
-                  "高频使用、对耐磨度与安全性有严苛要求的卡片"
-                ],
-                "bestForJa": [
-                  "社員証・学生証・ビル入館セキュリティカード",
-                  "フィットネスクラブ会員証、高級サロンのポイントカード",
-                  "耐久性とセキュリティ性が最優先されるあらゆるIDカード"
-                ],
-                "bestForKo": [
-                  "기업 정규직 사원증, 오피스 빌딩 출입증, 학생증",
-                  "피트니스 VIP 멤버십 카드, 대형 프랜차이즈 리워드 카드",
-                  "매일 휴대하며 오랜 기간 동안 튼튼하게 유지되어야 하는 신분증"
-                ]
-              },
-              {
-                "icon": "Sparkles",
-                "name": "Transparent Clear PVC (Glass Effect)",
-                "nameVi": "PVC Trong Suốt (Hiệu Ứng Kính)",
-                "basePrice": 22000,
-                "doubleSidedPrice": 6000,
-                "foilPrice": 6000,
-                "foil2SidesPrice": 0,
-                "unitVi": "Thẻ",
-                "unitEn": "Cards",
-                "hideFoilCheckbox": true,
-                "tagline": "Striking see-through plastic card that wows on first touch",
-                "taglineVi": "Thẻ nhựa trong suốt độc đáo tạo ấn tượng thị giác khác biệt",
-                "description": [
-                  "High-transparency crystal PVC sheet with white ink underprinting",
-                  "Gold or holographic foil accents shine through clear areas",
-                  "Rounded corners and smooth polished edges"
-                ],
-                "descriptionVi": [
-                  "Phôi nhựa trong suốt cao cấp kết hợp in lót mực trắng chọn lọc",
-                  "Chi tiết ép kim vàng hoặc ánh hologram nổi bật trên nền trong suốt",
-                  "Bo 4 góc chuẩn và các cạnh thẻ được mài mịn"
-                ],
-                "descriptionTraits": [
-                  "glossy-coat",
-                  "metallic-shine",
-                  "waterproof-durability"
-                ],
-                "bestFor": [
-                  "Creative director, architect, and tech executive name cards",
-                  "Luxury boutique VIP passes and exclusive membership cards",
-                  "Special edition event admission tokens"
-                ],
-                "bestForVi": [
-                  "Danh thiếp cá nhân cho kiến trúc sư, giám đốc sáng tạo, founder",
-                  "Thẻ VIP câu lạc bộ đặc quyền, thẻ khách hàng thân thiết boutique",
-                  "Vé mời sự kiện đặc biệt dạng thẻ nhựa giới hạn"
-                ],
-                "pureImage": "/images/product/thenhuatrongsuot.webp",
-                "pureImages": [
-                  "/images/product/thenhuatrongsuot.webp",
-                  "/images/product/thenhuatrongsuot2.webp",
-                  "/images/product/thenhuatrongsuot3.webp"
-                ],
-                "nameZh": "高透水晶质感全透PVC卡",
-                "nameJa": "透明クリスタルPVCカード（ガラス調）",
-                "nameKo": "투명 크리스탈 PVC 카드 (글래스 효과)",
-                "taglineZh": "卡体如水晶般通透澄澈，散发极简前卫科技感？",
-                "taglineJa": "クリスタルのように透明で、先進的なイメージを与えるカードですか？",
-                "taglineKo": "유리처럼 맑고 투명하여 세련된 미래지향적 감각을 전하는 투명 카드인가요?",
-                "descriptionZh": [
-                  "高纯度超清无色透明PVC原片制作，透光率超越一般塑料",
-                  "局部可做白墨打底遮光，打造虚实结合的水晶通透艺术效果",
-                  "防水抗污耐折弯，前卫极简科技感，令人爱不释手"
-                ],
-                "descriptionJa": [
-                  "濁りのないクリアPVCを採用、ガラスのような高い透明度",
-                  "白インク印刷を組み合わせることで、透ける部分と不透明部分を自在に表現",
-                  "水濡れに強く折れ曲がらない、個性的で未来的なデザインカード"
-                ],
-                "descriptionKo": [
-                  "유리알처럼 맑고 투명한 고순도 크리스탈 투명 PVC 원단 사용",
-                  "화이트 잉크 부분 인쇄로 투명 영역과 불투명 그래픽의 감각적 조화",
-                  "완벽한 방수성과 탄성으로 꺾이지 않는 세련된 미래지향적 감성"
-                ],
-                "bestForZh": [
-                  "创意设计师名片、摄影师创意卡、潮牌主理人个性名片",
-                  "高端咖啡馆限量VIP会员卡、艺术馆特邀贵宾鉴赏卡",
-                  "突破传统白色塑料卡、追求先锋未来感的个性卡片"
-                ],
-                "bestForJa": [
-                  "クリエイターの名刺、フォトグラファーのパーソナルカード",
-                  "カフェやバーの限定VIPカード、アートイベントの招待証",
-                  "一目で他と差別化できる、先進的でスタイリッシュなカード"
-                ],
-                "bestForKo": [
-                  "디자이너, 사진작가, 크리에이티브 디렉터의 유니크 명함",
-                  "스페셜티 카페 VIP 카드, 갤러리 오프닝 리셉션 스페셜 패스",
-                  "평범함을 거부하고 독창적인 첫인상을 각인시키고 싶은 멤버십"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "so-tay-qua-tang",
-        "nameEn": "Executive Gift Notebooks",
-        "nameVi": "Sổ tay quà tặng",
-        "description": "Premium leather notebooks with debossed logos, spiral notebooks for conferences and events.",
-        "descriptionVi": "Sổ da cao cấp dập chìm logo, sổ lò xo quà tặng hội nghị, sự kiện.",
-        "image": "/images/product/sotayquatang.webp",
-        "images": [
-          "/images/product/sotayquatang.webp",
-          "/images/product/soquatangloxo2.webp",
-          "/images/product/soquatangda2.webp"
-        ],
-        "optionGroups": [
-          {
-            "options": [
-              {
-                "icon": "Layers",
-                "name": "PU Leather Binder Notebook (Embossed Logo)",
-                "nameVi": "Sổ Da PU Bìa Còng (Dập Logo)",
-                "basePrice": 130000,
-                "doubleSidedPrice": 0,
-                "foilPrice": 25000,
-                "foil2SidesPrice": 45000,
-                "unitVi": "Cuốn",
-                "unitEn": "Books",
-                "tagline": "Executive leather gift notebook with refined debossed branding",
-                "taglineVi": "Sổ da bìa còng cao cấp dập chìm logo khẳng định đẳng cấp thương hiệu",
-                "description": [
-                  "Supple imported PU leather exterior with magnetic closure buckle",
-                  "Precision hot-stamp debossing or gold foil stamping on cover",
-                  "Refillable 6-ring binder with smooth 80gsm anti-bleed writing paper"
-                ],
-                "descriptionVi": [
-                  "Da PU nhập khẩu mềm mịn có khóa nam châm kim loại sang trọng",
-                  "Dập chìm nhiệt sắc nét hoặc ép kim nhũ vàng trên bề mặt da",
-                  "Còng 6 lỗ tháo lắp dễ dàng, ruột giấy Ford 80gsm chống thấm mực"
-                ],
-                "descriptionTraits": [
-                  "embossed-depth",
-                  "foil-accent",
-                  "smooth-base"
-                ],
-                "bestFor": [
-                  "VIP corporate client gifts and partner tokens of appreciation",
-                  "Executive onboarding packages and year-end employee gifts",
-                  "High-level conferences and business summits"
-                ],
-                "bestForVi": [
-                  "Quà tặng tri ân khách hàng VIP và đối tác chiến lược",
-                  "Bộ quà tặng chào đón nhân sự mới và quà tặng cuối năm",
-                  "Hội nghị cấp cao, sự kiện ký kết hợp tác doanh nghiệp"
-                ],
-                "pureImage": "/images/product/da.webp",
-                "pureImages": [
-                  "/images/product/da.webp",
-                  "/images/product/soquatangda2.webp",
-                  "/images/product/soquatangda3.webp"
-                ],
-                "hideFoilCheckbox": true,
-                "nameZh": "高级商务活页PU皮质记事本（烫印LOGO）",
-                "nameJa": "高級PUレザーシステム手帳（型押しロゴ）",
-                "nameKo": "PU 가죽 바인더 다이어리 (로고 불박 각인)",
-                "taglineZh": "商务礼仪必备，手感细腻温润的皮质企业定制笔记本？",
-                "taglineJa": "ビジネスシーンに品格を添える、名入れ刻印入りの本革調手帳ですか？",
-                "taglineKo": "중요한 비즈니스 미팅과 VIP 선물에 최적화된 고급 가죽 다이어리인가요?",
-                "descriptionZh": [
-                  "精选高质感变色PU环保仿皮，手感细腻温润如真皮",
-                  "金属活页6孔夹具，可自由替换增减内页，循环使用多年",
-                  "封面Logo采用高温深钢印烫压或烫金，线条深邃凹凸立体"
-                ],
-                "descriptionJa": [
-                  "本革のようなしっとりとした触感の高級PUレザーカバー",
-                  "6穴リングバインダー仕様で、リフィルの追加・差し替えが自由自在",
-                  "高精度の熱押しエンボス刻印や箔押しで、企業ロゴを美しく表現"
-                ],
-                "descriptionKo": [
-                  "천연 가죽의 부드러움을 완벽 재현한 고급 열변색 친환경 PU 레더 커버",
-                  "견고한 6공 메탈 바인더 장착으로 속지 리필이 가능하여 다년간 사용",
-                  "고온 불박 프레스로 로고를 깊이 있게 음각 성형하여 남다른 중후함 전달"
-                ],
-                "bestForZh": [
-                  "企事业单位中高层管理者日常会议办公记事本",
-                  "重要商务签约、重大活动及周年庆典VIP高级商务礼品",
-                  "注重长期使用留存率与高端商务仪态的尊贵赠礼"
-                ],
-                "bestForJa": [
-                  "エグゼクティブ向けビジネス手帳、重役会議用ノート",
-                  "創立記念品、大型商談の成約記念、株主総会記念品",
-                  "長く愛用されることで企業価値を高める高級ギフト"
-                ],
-                "bestForKo": [
-                  "임원진 및 주요 부서장 비즈니스 미팅 다이어리",
-                  "창립기념일 VIP 선물, 대형 계약 체결 기념 비즈니스 기프트",
-                  "한 번 선물하면 수년간 애용되어 브랜드 충성도를 높이는 럭셔리 수첩"
-                ]
-              },
-              {
-                "icon": "Sparkles",
-                "name": "Hardcover Spiral Notebook",
-                "nameVi": "Sổ bìa cứng lò xo",
-                "basePrice": 85000,
-                "doubleSidedPrice": 0,
-                "foilPrice": 20000,
-                "foil2SidesPrice": 35000,
-                "unitVi": "Cuốn",
-                "unitEn": "Books",
-                "hideFoilCheckbox": true,
-                "tagline": "Practical, stylish spiral notebook with durable custom printed hardcover",
-                "taglineVi": "Sổ tay lò xo tiện dụng với bìa cứng in ấn sắc nét, bền đẹp tiện lợi",
-                "description": [
-                  "Rigid hardcover with soft-touch matte lamination and scratch resistance",
-                  "Durable double-wire metal spiral binding for 360-degree flat writing",
-                  "160 pages of lined 80gsm cream writing stock"
-                ],
-                "descriptionVi": [
-                  "Bìa cứng carton bọc màng mờ sang trọng, chống trầy xước và bám bẩn",
-                  "Gáy lò xo đôi kim loại chắc chắn, mở lật 360 độ tiện lợi",
-                  "Ruột 160 trang giấy Ford kem kẻ dòng chống mỏi mắt khi viết"
-                ],
-                "descriptionTraits": [
-                  "smooth-base",
-                  "digital-precision",
-                  "soft-light"
-                ],
-                "bestFor": [
-                  "Training seminars, workshop attendee kits, and trade shows",
-                  "Brand promotional merchandise and school kits",
-                  "Everyday office stationery and team notebooks"
-                ],
-                "bestForVi": [
-                  "Hội thảo tập huấn, workshop và tài liệu đại biểu sự kiện",
-                  "Quà tặng quảng bá thương hiệu cho khách tham quan triển lãm",
-                  "Sổ ghi chép nội bộ cho nhân viên văn phòng"
-                ],
-                "pureImage": "/images/product/gayloxo1.webp",
-                "pureImages": [
-                  "/images/product/gayloxo1.webp",
-                  "/images/product/soquatangloxo2.webp",
-                  "/images/product/soquatangloxo3.webp"
-                ],
-                "nameZh": "精装硬壳双线圈笔记本",
-                "nameJa": "ハードカバーリング綴じノート",
-                "nameKo": "하드커버 트윈 스프링 수첩",
-                "taglineZh": "厚实硬壳保护内页，360度轻松翻转书写？",
-                "taglineJa": "頑丈なハードカバーと、360度折り返せるリング製本のノートですか？",
-                "taglineKo": "탄탄한 양장 표지에 360도 반으로 접어 필기할 수 있는 실용적인 노트인가요?",
-                "descriptionZh": [
-                  "2mm高密冷压灰板覆哑膜硬质封面，站立无桌面也能稳固书写",
-                  "双股牢固金属线圈装订，360度完全向后翻折，极其节省空间",
-                  "内置高品质道林纸内页，附带实用缎带书签与弹力束带"
-                ],
-                "descriptionJa": [
-                  "頑丈なハードカバー仕様で、デスクがない場所でもしっかり筆記可能",
-                  "360度折り返せるツインリング製本で、狭いスペースでも快適",
-                  "書き心地の良い上質紙リフィルと、便利なゴムバンド・しおり紐付き"
-                ],
-                "descriptionKo": [
-                  "단단한 2mm 하드보드 커버로 책상이 없는 야외에서도 안정적인 필기 가능",
-                  "360도 반으로 접히는 트윈 와이어링 제본으로 좁은 공간 활용 극대화",
-                  "필기감 좋은 모조지 내지와 고정 밴드, 가름끈이 결합된 실용적 구성"
-                ],
-                "bestForZh": [
-                  "高校师生学术笔记、培训研讨会及创意脑暴速记本",
-                  "IT互联网、青年创业公司日常敏捷办公笔记本",
-                  "实用性高、书写舒适、使用频次极高的经典文具周边"
-                ],
-                "bestForJa": [
-                  "大学・専門学校の講義ノート、社内研修、クリエイティブミーティング",
-                  "スタートアップ、IT企業の日常業務ノート",
-                  "使い勝手が良く、毎日持ち歩きたくなる実力派ノート"
-                ],
-                "bestForKo": [
-                  "대학생 학술 노트, 사내 세미나 워크북, 아이디어 스케치북",
-                  "IT 테크 기업, 스타트업 임직원 일상 업무 수첩",
-                  "실용성이 뛰어나고 필기가 편리하여 누구나 만족하는 필수 굿즈"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "binh-giu-nhiet",
-        "nameEn": "Custom Logo Thermos Flasks",
-        "nameVi": "Bình giữ nhiệt in logo",
-        "description": "Stainless steel 304 thermos bottles with sharp UV print or laser engraved logos.",
-        "descriptionVi": "Bình giữ nhiệt inox 304 in UV sắc nét, khắc laser logo theo yêu cầu.",
-        "image": "/images/product/binhgiunhiet.webp",
-        "images": [
-          "/images/product/binhgiunhiet.webp",
-          "/images/product/binhgiunhietuv2.webp",
-          "/images/product/binhgiunhietlaser3.webp"
-        ],
-        "hideFoilCheckbox": true,
-        "hideDoubleSidedCheckbox": true,
-        "optionGroups": [
-          {
-            "options": [
-              {
-                "icon": "Sparkles",
-                "name": "High-Definition Full-Color UV Print",
-                "nameVi": "In UV Màu Nổi Bật",
-                "basePrice": 180000,
-                "doubleSidedPrice": 0,
-                "foilPrice": 0,
-                "foil2SidesPrice": 0,
-                "unitVi": "Bình",
-                "unitEn": "Bottles",
-                "hideFoilCheckbox": true,
-                "hideDoubleSidedCheckbox": true,
-                "tagline": "Vibrant full-color logo printing with durable UV gloss cure",
-                "taglineVi": "In logo đa màu sắc rực rỡ, lớp phủ UV bóng chống trầy xước",
-                "description": [
-                  "Double-wall 304 stainless steel keeps drinks hot 8h and cold 12h",
-                  "High-definition rotary UV printing with vivid brand pantone colors",
-                  "Scratch-resistant matte powder-coated exterior finish"
-                ],
-                "descriptionVi": [
-                  "Inox 304 hai lớp chân không giữ nóng 8h và giữ lạnh đến 12h",
-                  "Công nghệ in UV xoay tròn sắc nét, chuẩn mã màu thương hiệu",
-                  "Vỏ sơn tĩnh điện nhám mịn chống bám vân tay và chống trầy"
-                ],
-                "descriptionTraits": [
-                  "glossy-coat",
-                  "waterproof-durability",
-                  "digital-precision"
-                ],
-                "bestFor": [
-                  "Customer loyalty gifts and corporate anniversary sets",
-                  "Sporting events, fitness clubs, and employee welcome kits",
-                  "Marketing campaigns promoting eco-friendly habits"
-                ],
-                "bestForVi": [
-                  "Quà tặng tri ân khách hàng và kỷ niệm thành lập công ty",
-                  "Sự kiện thể thao, teambuilding và bộ kit nhân viên mới",
-                  "Chiến dịch marketing xanh lan tỏa thông điệp bảo vệ môi trường"
-                ],
-                "pureImage": "/images/product/inox304.webp",
-                "pureImages": [
-                  "/images/product/inox304.webp",
-                  "/images/product/binhgiunhietuv2.webp",
-                  "/images/product/binhgiunhietuv3.webp"
-                ],
-                "nameZh": "全彩高清立体UV喷印",
-                "nameJa": "高精細フルカラーUVプリント",
-                "nameKo": "고해상도 풀컬러 입체 UV 인쇄",
-                "taglineZh": "保温杯上印制色彩极其鲜活立体、不掉漆的企业彩色LOGO？",
-                "taglineJa": "鮮やかなフルカラーロゴを剥がれにくく美しくプリントしますか？",
-                "taglineKo": "텀블러 표면에 벗겨짐 없이 선명한 컬러 로고를 인쇄하고 싶으신가요?",
-                "descriptionZh": [
-                  "工业级高清彩色UV平板喷绘，直接在杯身呈现立体浮雕手感",
-                  "耐磨抗刮抗脱落，即使经常水洗依然色彩鲜亮如新",
-                  "支持渐变色、复杂插画及全彩企业品牌VI图文输出"
-                ],
-                "descriptionJa": [
-                  "高解像度UVインクジェットプリントで、鮮やかなフルカラーと立体感を両立",
-                  "密着性が高く剥がれにくい特殊インク、繰り返しの洗浄にも強い",
-                  "グラデーションや複雑なイラスト、写真も美しく再現可能"
-                ],
-                "descriptionKo": [
-                  "고해상도 풀컬러 UV 평판 인쇄로 로고 표면에 은은한 입체 질감 구현",
-                  "스크래치와 마모에 강한 특수 프라이머 코팅으로 세척 시에도 박리 방지",
-                  "그라데이션, 캐릭터 일러스트, 기업 풀컬러 로고를 오차 없이 정밀 출력"
-                ],
-                "bestForZh": [
-                  "新潮文创品牌联名周边、青年社团及二次元活动定制杯",
-                  "企业全彩Logo、丰富插画风格的员工新年福利保温杯",
-                  "追求年轻活力与丰富视觉表现力的现代商业礼品"
-                ],
-                "bestForJa": [
-                  "キャラクターコラボグッズ、イベント物販、アパレルブランドのノベルティ",
-                  "フルカラーロゴを入れた新入社員向けギフト、社内表彰品",
-                  "カラフルでインパクトのあるデザインを重視するプロモーション"
-                ],
-                "bestForKo": [
-                  "트렌디한 캐릭터 굿즈, 대학 축제 기념 보온병, 브랜드 팝업 굿즈",
-                  "풀컬러 로고를 살린 신입사원 웰컴 키트 및 창립 기념 선물",
-                  "젊은 감각과 다채로운 비주얼을 강조하는 트렌디한 판촉물"
-                ]
-              },
-              {
-                "icon": "Layers",
-                "name": "Precision Metal Laser Engraving",
-                "nameVi": "Khắc Laser Kim Loại",
-                "basePrice": 160000,
-                "doubleSidedPrice": 0,
-                "foilPrice": 0,
-                "foil2SidesPrice": 0,
-                "unitVi": "Bình",
-                "unitEn": "Bottles",
-                "hideFoilCheckbox": true,
-                "hideDoubleSidedCheckbox": true,
-                "tagline": "Timeless engraved metallic logo that never peels or fades",
-                "taglineVi": "Khắc laser ánh kim sắc sảo, vĩnh viễn không bong tróc",
-                "description": [
-                  "Precision fiber laser etching reveals shimmering base metal underneath",
-                  "Sleek minimalist look that endures thousands of washes without fading",
-                  "Optional personalized individual name engraving per bottle"
-                ],
-                "descriptionVi": [
-                  "Tia laser sợi quang khắc tinh xảo từng nét lộ cốt kim loại sáng bóng",
-                  "Vẻ đẹp tối giản, bền bỉ vĩnh viễn cùng tuổi thọ của bình",
-                  "Hỗ trợ khắc tên riêng từng nhân viên hoặc đối tác theo danh sách"
-                ],
-                "descriptionTraits": [
-                  "metallic-shine",
-                  "embossed-depth",
-                  "waterproof-durability"
-                ],
-                "bestFor": [
-                  "Executive gifts and board member presents",
-                  "Personalized staff gifts with individual names",
-                  "Luxury corporate gift boxes"
-                ],
-                "bestForVi": [
-                  "Quà tặng ban lãnh đạo, đối tác quan trọng",
-                  "Quà tặng cá nhân hóa khắc tên riêng cho từng nhân viên",
-                  "Set quà tặng doanh nghiệp kết hợp hộp quà cao cấp"
-                ],
-                "pureImage": "/images/product/inox304.webp",
-                "pureImages": [
-                  "/images/product/inox304.webp",
-                  "/images/product/binhgiunhietlaser2.webp",
-                  "/images/product/binhgiunhietlaser3.webp"
-                ],
-                "nameZh": "金属激光微米级精密雕刻",
-                "nameJa": "金属レーザー精密刻印（永年耐久）",
-                "nameKo": "정밀 레이저 금속 각인 (반영구)",
-                "taglineZh": "激光精准雕琢金属本色，永不磨损掉色？",
-                "taglineJa": "金属を削り出し、永久に消えないシャープな刻印を施しますか？",
-                "taglineKo": "레이저로 금속 표면을 정밀 조각하여 평생 지워지지 않는 로고 각인을 원하시나요?",
-                "descriptionZh": [
-                  "高精度微米级光纤激光雕刻，直接汽化表层漆面显露金属原色",
-                  "绝对永久不磨损不掉漆，历经数年依然清晰分明",
-                  "线条极度纤细锐利，散发精密工业与现代极简高级质感"
-                ],
-                "descriptionJa": [
-                  "ミクロン単位の高精度ファイバーレーザーで表面を精密に刻印",
-                  "塗料を使わないため剥がれることがなく、永久に消えないシャープな仕上がり",
-                  "ステンレスの地色が美しく輝き、洗練された高級感を演出"
-                ],
-                "descriptionKo": [
-                  "마이크로 단위 광섬유 레이저로 표면 코팅을 정밀 기화하여 스테인리스 본체 노출",
-                  "인쇄가 벗겨지거나 지워질 염려가 전혀 없는 영구적인 각인 마감",
-                  "머리카락보다 가는 미세한 선까지 선명하게 구현하여 모던한 럭셔리함 연출"
-                ],
-                "bestForZh": [
-                  "高端商务礼品、大型国际会议及论坛VIP嘉宾尊享礼",
-                  "企业高管礼品、长久纪念碑意义的周年入职表彰礼物",
-                  "注重沉稳内敛、永恒品质与高品位格调的品牌首选"
-                ],
-                "bestForJa": [
-                  "重役会議、国際フォーラム、株主総会のVIP記念品",
-                  "永年勤続表彰、退職記念品、大切なお祝いの贈り物",
-                  "シンプルで主張しすぎない、洗練された大人のギフト"
-                ],
-                "bestForKo": [
-                  "글로벌 콘퍼런스 VIP 참석자 기프트, 대기업 임원 증정품",
-                  "장기근속 임직원 포상 선물, 정년퇴임 축하 헌정 텀블러",
-                  "차분하고 절제된 미니멀리즘과 영원성을 추구하는 프리미엄 선물"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "ao-dong-phuc",
-        "nameEn": "Corporate Uniforms & Event Caps",
-        "nameVi": "Áo thun & Nón sự kiện",
-        "description": "Polo shirts, round-neck t-shirts and caps with embroidered or printed brand logos.",
-        "descriptionVi": "Áo thun polo, áo thun cổ tròn và nón kết in thêu logo doanh nghiệp.",
-        "image": "/images/product/aothunnonsukien.webp",
-        "images": [
-          "/images/product/aothunnonsukien.webp",
-          "/images/product/aopolo2.webp",
-          "/images/product/nonkaki2.webp"
-        ],
-        "hideFoilCheckbox": true,
-        "optionGroups": [
-          {
-            "options": [
-              {
-                "icon": "Feather",
-                "name": "4-Way Stretch Pique Polo (Embroidered Logo)",
-                "nameVi": "Áo Polo Cá Sấu 4 Chiều (Thêu Logo)",
-                "basePrice": 140000,
-                "doubleSidedPrice": 20000,
-                "foilPrice": 0,
-                "foil2SidesPrice": 0,
-                "unitVi": "Áo",
-                "unitEn": "Shirts",
-                "hideFoilCheckbox": true,
-                "hideDoubleSidedCheckbox": true,
-                "tagline": "Professional branded polo shirt for team coherence",
-                "taglineVi": "Áo thun polo đồng phục tạo sự chuyên nghiệp cho đội ngũ",
-                "description": [
-                  "4-way stretch lacoste fabric breathes well and resists wrinkles",
-                  "High-density embroidery on chest and silk screen print on back",
-                  "Available in 20+ corporate colors with full size range XS-4XL"
-                ],
-                "descriptionVi": [
-                  "Vải cá sấu 4 chiều thấm hút mồ hôi, co giãn thoải mái, không xù lông",
-                  "Thêu vi tính logo ngực sắc sảo kết hợp in lụa thông điệp sau lưng",
-                  "Đa dạng hơn 20 màu sắc chuẩn nhận diện, đủ size từ XS đến 4XL"
-                ],
-                "descriptionTraits": [
-                  "natural-grain",
-                  "smooth-base",
-                  "soft-light"
-                ],
-                "bestFor": [
-                  "Corporate team uniforms and retail store staff",
-                  "Trade fair booths, sales teams and company representatives",
-                  "Company outings and annual gala dinners"
-                ],
-                "bestForVi": [
-                  "Đồng phục nhân viên công ty, chuỗi showroom và cửa hàng",
-                  "Đội ngũ bán hàng, nhân sự tham gia hội chợ triển lãm",
-                  "Đồng phục sự kiện, teambuilding và kỷ niệm ngày thành lập"
-                ],
-                "pureImage": "/images/product/vaicasau.webp",
-                "pureImages": [
-                  "/images/product/vaicasau.webp",
-                  "/images/product/aopolo2.webp",
-                  "/images/product/aopolo3.webp"
-                ],
-                "nameZh": "四面弹力珠地棉Polo衫（电脑刺绣LOGO）",
-                "nameJa": "4WAYストレッチ 鹿の子ポロシャツ（高密度刺繍）",
-                "nameKo": "4방향 스판 피케 폴로셔츠 (컴퓨터 자수 로고)",
-                "taglineZh": "员工日常穿着透气舒适、胸前电脑精细刺绣企业徽标？",
-                "taglineJa": "通気性に優れ快適な着心地で、ロゴ刺繍が映えるユニフォームですか？",
-                "taglineKo": "통기성이 뛰어나 하루 종일 쾌적하며 고급 자수 로고가 돋보이는 단체 유니폼인가요?",
-                "descriptionZh": [
-                  "特选四面弹力珠地棉（Piqué），透气吸汗，挺括不易褶皱变形",
-                  "领口加厚织造洗涤多次不卷边，商务休闲两相宜",
-                  "胸前采用进口绣花机精密电脑刺绣Logo，立体饱满有档次"
-                ],
-                "descriptionJa": [
-                  "通気性と伸縮性に優れた4WAYストレッチ鹿の子生地、型崩れしにくい",
-                  "襟元がしっかり編み立てられ、洗濯を繰り返してもヨレない高耐久性",
-                  "胸元に施された高密度なコンピューター刺繍が、確かな高級感を演出"
-                ],
-                "descriptionKo": [
-                  "통기성과 신축성이 뛰어난 4방향 스판 피케 코튼으로 하루 종일 쾌적함 유지",
-                  "카라와 소매 시보리가 탄탄하게 직조되어 잦은 세탁에도 늘어남 없음",
-                  "가슴 전면에 정밀 컴퓨터 자수 로고를 도톰하게 입혀 뛰어난 입체감 선사"
-                ],
-                "bestForZh": [
-                  "公司全体员工日常办公制服、商务展会统一着装",
-                  "高尔夫俱乐部、客户答谢活动及户外运动统一队服",
-                  "注重团队专业形象、强调穿着舒适与长效耐穿的企业"
-                ],
-                "bestForJa": [
-                  "全社統一のオフィスカジュアル制服、展示会アテンドスタッフ",
-                  "ゴルフイベント、顧客招待アクティビティ、社内スポーツ大会",
-                  "プロフェッショナルな統一感と快適性を求める企業ユニフォーム"
-                ],
-                "bestForKo": [
-                  "전사 임직원 사계절 오피스 유니폼, 박람회 부스 운영 스태프복",
-                  "기업 골프 대회, 고객 초청 아웃도어 행사 단체 티셔츠",
-                  "단정하고 전문적인 프로페셔널 이미지와 활동성을 겸비한 유니폼"
-                ]
-              },
-              {
-                "icon": "Shield",
-                "name": "Premium Khaki Baseball Cap (3D Embroidery)",
-                "nameVi": "Nón Kết Kaki Cao Cấp (Thêu 3D)",
-                "basePrice": 65000,
-                "doubleSidedPrice": 0,
-                "foilPrice": 0,
-                "foil2SidesPrice": 0,
-                "unitVi": "Cái",
-                "unitEn": "Pieces",
-                "hideFoilCheckbox": true,
-                "hideDoubleSidedCheckbox": true,
-                "tagline": "Stylish branded baseball cap with 3D raised embroidery",
-                "taglineVi": "Nón kết kaki thời trang với logo thêu nổi 3D ấn tượng",
-                "description": [
-                  "Sturdy 100% cotton kaki material holds its shape perfectly",
-                  "3D raised puff embroidery makes brand logos pop with depth",
-                  "Adjustable metal clip buckle fits all head sizes comfortably"
-                ],
-                "descriptionVi": [
-                  "Chất liệu vải kaki 100% cotton đứng form, form nón chuẩn đẹp",
-                  "Kỹ thuật thêu nổi 3D dày dặn tạo độ nổi và chiều sâu cho logo",
-                  "Khóa kim loại phía sau dễ dàng điều chỉnh kích thước đầu"
-                ],
-                "descriptionTraits": [
-                  "embossed-depth",
-                  "textured-art",
-                  "waterproof-durability"
-                ],
-                "bestFor": [
-                  "Outdoor corporate retreats, charity marathons, and golf days",
-                  "Travel agency tour member kits and promotional giveaways",
-                  "Youth brand merchandise and fan clubs"
-                ],
-                "bestForVi": [
-                  "Hoạt động ngoại khóa, giải chạy marathon doanh nghiệp, giải golf",
-                  "Bộ kit du lịch công ty và quà tặng khách hàng tham gia tour",
-                  "Vật phẩm thương hiệu cho câu lạc bộ và sự kiện ngoài trời"
-                ],
-                "pureImage": "/images/product/vaikaki.webp",
-                "pureImages": [
-                  "/images/product/vaikaki.webp",
-                  "/images/product/nonkaki2.webp",
-                  "/images/product/nonkaki3.webp"
-                ],
-                "nameZh": "精选纯棉卡其布棒球帽（3D立体刺绣）",
-                "nameJa": "高級カーキキャップ（立体3D刺繍ロゴ）",
-                "nameKo": "프리미엄 카키 볼캡 (3D 입체 자수 로고)",
-                "taglineZh": "帽檐挺拔有型，正面立体3D饱满刺绣LOGO？",
-                "taglineJa": "立体刺繍が目を引く、イベントや日常使いに最適なキャップですか？",
-                "taglineKo": "도톰한 볼륨 자수로 브랜드 로고를 입체감 있게 살린 프리미엄 모자인가요?",
-                "descriptionZh": [
-                  "高支高密纯棉卡其斜纹面料，挺拔有型不塌软，防紫外线遮阳",
-                  "帽檐加固复合弧形板，弯折弧度优美，修饰脸型",
-                  "正面采用3D立体发泡发绣Logo，线条饱满凸起，潮流有型"
-                ],
-                "descriptionJa": [
-                  "しっかりとした厚手のコットンカツラギ生地、型崩れしない美しいシルエット",
-                  "カーブブリム（ツバ）が日差しを遮り、小顔効果も抜群",
-                  "正面に3D立体盛り上げ刺繍を施し、キャップの存在感を最大化"
-                ],
-                "descriptionKo": [
-                  "도톰하고 각 잡힌 고밀도 면 트윌 카키 원단으로 완벽한 핏감과 자외선 차단",
-                  "단단한 챙 심재로 아름다운 곡선 볼륨감을 오래도록 유지",
-                  "모자 전면에 3D 볼륨 입체 자수를 적용하여 브랜드 로고의 입체감 극대화"
-                ],
-                "bestForZh": [
-                  "户外拓展培训、大型马拉松赛事、企业运动会志愿者帽",
-                  "自驾游车友会、户外露营及品牌潮流衍生周边",
-                  "兼顾户外实用遮阳与时尚个性展示的高品质棒球帽"
-                ],
-                "bestForJa": [
-                  "野外イベント、マラソン大会、ボランティアスタッフ用キャップ",
-                  "アウトドアクラブ、ツーリングチーム、アパレルグッズ",
-                  "実用的な日よけ機能とファッション性を両立したオリジナルキャップ"
-                ],
-                "bestForKo": [
-                  "기업 야외 워크숍, 마라톤 대회, 대규모 페스티벌 스태프 모자",
-                  "동호회 단체 모자, 아웃도어 캠핑 클럽, 스트리트 브랜드 굿즈",
-                  "야외 활동 시 실용적인 햇빛 가림과 트렌디한 스타일을 동시에 만족"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "moc-khoa",
-        "nameEn": "Keychains & Enamel Pins",
-        "nameVi": "Móc khóa & Huy hiệu",
-        "description": "Acrylic keychains, leather key fobs, metal pin badges with epoxy coating.",
-        "descriptionVi": "Móc khóa mica, móc khóa da, huy hiệu cài áo kim loại phủ thủy tinh hữu cơ.",
-        "image": "/images/product/mockhoa.webp",
-        "images": [
-          "/images/product/mockhoa.webp",
-          "/images/product/mockhoamica2.webp",
-          "/images/product/huyhieu2.webp"
-        ],
-        "hideFoilCheckbox": true,
-        "optionGroups": [
-          {
-            "options": [
-              {
-                "icon": "Sparkles",
-                "name": "Double-Sided Acrylic Keychain",
-                "nameVi": "Móc Khóa Mica In 2 Mặt",
-                "basePrice": 12000,
-                "doubleSidedPrice": 3000,
-                "foilPrice": 0,
-                "foil2SidesPrice": 0,
-                "unitVi": "Cái",
-                "unitEn": "Pieces",
-                "hideFoilCheckbox": true,
-                "hideDoubleSidedCheckbox": true,
-                "tagline": "Cute, durable clear acrylic keychains cut to custom shapes",
-                "taglineVi": "Móc khóa mica trong suốt cắt theo khuôn hình dáng độc đáo",
-                "description": [
-                  "Crystal clear 3mm cast acrylic cut to custom silhouette with precision laser",
-                  "Vivid UV printing on both sides sandwiched inside acrylic to prevent scratches",
-                  "Stainless steel split ring and chain attachment"
-                ],
-                "descriptionVi": [
-                  "Mica Đài Loan trong suốt 3mm cắt laser chính xác theo hình dáng yêu cầu",
-                  "In UV 2 mặt ép nhiệt ở giữa 2 lớp mica chống trầy xước và bay màu",
-                  "Khoen móc inox chống gỉ chắc chắn, sáng bóng"
-                ],
-                "descriptionTraits": [
-                  "glossy-coat",
-                  "waterproof-durability",
-                  "digital-precision"
-                ],
-                "bestFor": [
-                  "Affordable promotional giveaways and event goodie bags",
-                  "Anime, character mascots, and creator merch",
-                  "Hotel room keys and real estate welcome tokens"
-                ],
-                "bestForVi": [
-                  "Quà tặng khuyến mãi số lượng lớn cho sự kiện, triển lãm",
-                  "Vật phẩm linh vật thương hiệu, quà tặng nhân vật",
-                  "Móc khóa phòng khách sạn, căn hộ bàn giao cho khách"
-                ],
-                "pureImage": "/images/product/mica.webp",
-                "pureImages": [
-                  "/images/product/mica.webp",
-                  "/images/product/mockhoamica2.webp",
-                  "/images/product/mockhoamica3.webp"
-                ],
-                "nameZh": "高透加厚亚克力双面夹层钥匙扣",
-                "nameJa": "両面フルカラー高透明アクリルキーホルダー",
-                "nameKo": "양면 풀컬러 고투명 아크릴 키링",
-                "taglineZh": "双面夹层图案永不磨损，高透晶莹的随身品牌周边？",
-                "taglineJa": "両面からイラストが見え、傷つきにくいアクリルキーホルダーですか？",
-                "taglineKo": "투명 아크릴 속에 인쇄면이 보호되어 긁힘 없이 영구적인 굿즈 키링인가요?",
-                "descriptionZh": [
-                  "超高透光率加厚亚克力板，双面夹层彩印，图案永不刮花褪色",
-                  "精准激光切割边缘光滑圆润不割手，晶莹剔透如水晶",
-                  "配备结实金属钥匙环或D字扣，耐磨抗拉拽"
-                ],
-                "descriptionJa": [
-                  "透明度の高い厚手アクリル樹脂に両面印刷、イラストが傷つかない安心仕様",
-                  "レーザーカットによる断面が滑らかで、手触りも安全・快適",
-                  "頑丈な金属製キーリングやナスカンが付属し、毎日の使用でも安心"
-                ],
-                "descriptionKo": [
-                  "투명도가 뛰어난 고투명 아크릴 속에 양면 인쇄면을 가두어 긁힘 완전 방지",
-                  "레이저 정밀 가공으로 모서리 절단면이 유리알처럼 매끄럽고 부드러움",
-                  "견고한 메탈 키링과 D형 고리가 장착되어 가방이나 열쇠에 튼튼하게 결합"
-                ],
-                "bestForZh": [
-                  "动漫展二次元周边、插画师个人艺术文创、同人周边",
-                  "新车提车车主赠品钥匙扣、房地产交房纪念钥匙链",
-                  "成本亲民、受众广泛、极具实用性与纪念价值的随身小物"
-                ],
-                "bestForJa": [
-                  "アニメ・マンガの同人グッズ、イラストレーターの物販アイテム",
-                  "新車納車記念、不動産の鍵引き渡し記念キーホルダー",
-                  "低コストで高い満足度を提供する定番ノベルティグッズ"
-                ],
-                "bestForKo": [
-                  "웹툰·애니메이션 캐릭터 굿즈, 일러스트 작가 팝업스토어 굿즈",
-                  "자동차 출고 기념 키홀더, 아파트 입주 기념 키링",
-                  "부담 없는 제작 단가로 남녀노소 누구나 좋아하는 실용적인 기념품"
-                ]
-              },
-              {
-                "icon": "Shield",
-                "name": "Epoxy Resin Coated Metal Pin Badge",
-                "nameVi": "Huy Hiệu Cài Áo Phủ Thủy Tinh Hữu Cơ",
-                "basePrice": 25000,
-                "doubleSidedPrice": 0,
-                "foilPrice": 0,
-                "foil2SidesPrice": 0,
-                "unitVi": "Cái",
-                "unitEn": "Pieces",
-                "hideFoilCheckbox": true,
-                "hideDoubleSidedCheckbox": true,
-                "tagline": "Polished metal lapel pin with glass-like protective epoxy dome",
-                "taglineVi": "Huy hiệu kim loại cài áo phủ keo bóng sang trọng cho doanh nghiệp",
-                "description": [
-                  "Brass or stainless steel base with electroplated gold or silver border",
-                  "Crystal-clear epoxy resin dome enhances colors and creates 3D shine",
-                  "Convenient magnetic back attachment protects delicate clothing from pinholes"
-                ],
-                "descriptionVi": [
-                  "Phôi kim loại mạ vàng hoặc bạc sang trọng, chống oxy hóa",
-                  "Phủ lớp keo thủy tinh hữu cơ trong suốt tạo độ bóng và chiều sâu 3D",
-                  "Khóa nam châm hít cực mạnh hoặc kim cài ghim tiện lợi"
-                ],
-                "descriptionTraits": [
-                  "metallic-shine",
-                  "embossed-depth",
-                  "glossy-coat"
-                ],
-                "bestFor": [
-                  "Staff name tags and corporate identity pin badges",
-                  "Club member insignia and award ceremony pins",
-                  "Diplomatic and executive delegation accessories"
-                ],
-                "bestForVi": [
-                  "Huy hiệu cài áo nhận diện thương hiệu cho nhân viên công ty",
-                  "Huy hiệu thành viên hiệp hội, hội đồng quản trị, ban giám đốc",
-                  "Vật phẩm lưu niệm cho các đoàn đại biểu và hội nghị trọng thể"
-                ],
-                "pureImage": "/images/product/mica.webp",
-                "pureImages": [
-                  "/images/product/mica.webp",
-                  "/images/product/huyhieu2.webp",
-                  "/images/product/huyhieu3.webp"
-                ],
-                "nameZh": "水晶滴胶金属烤漆胸针徽章",
-                "nameJa": "ポッティング加工 メタルピンバッジ",
-                "nameKo": "에폭시 코팅 금속 뱃지 (핀버튼/자석)",
-                "taglineZh": "金属光泽辅以圆润透明水晶滴胶，佩戴在西装胸前庄重大气？",
-                "taglineJa": "スーツの襟元を上品に飾る、高級感あるピンバッジをお求めですか？",
-                "taglineKo": "정장 카라나 가방에 착용하여 소속감과 자부심을 높여줄 메탈 뱃지인가요?",
-                "descriptionZh": [
-                  "精工锌合金或铜制金属底胚，表面电镀亮金或银色光泽",
-                  "表面手工注滴高透明水晶有机玻璃胶，光亮饱满呈圆润凸透镜效果",
-                  "背面配备安全刺马针或强力强磁扣，佩戴平整牢固不伤衣物"
-                ],
-                "descriptionJa": [
-                  "重厚な金属製ベースに、ゴールドやシルバーの上品なメッキ加工",
-                  "表面に透明度の高いエポキシ樹脂（ポッティング）をぷっくりと塗布",
-                  "衣服を傷めにくいバタフライクラッチや強力マグネット仕様を選択可能"
-                ],
-                "descriptionKo": [
-                  "묵직한 아연 합금 메탈 바디에 골드/실버 유광 도금으로 품격 완성",
-                  "표면에 맑고 투명한 에폭시 수지를 볼록하게 올려 렌즈 효과와 광택 선사",
-                  "옷감을 상하게 하지 않는 버터플라이 핀 또는 강력 자석 버튼 옵션 제공"
-                ],
-                "bestForZh": [
-                  "企业员工胸前司徽、重要商务论坛贵宾佩戴徽章",
-                  "行业协会理事会员证章、商会专属身份标识金属徽章",
-                  "微小精巧却极具庄严仪式感与身份认同感的金属饰品"
-                ],
-                "bestForJa": [
-                  "企業の社章、重要フォーラムの来賓用VIPピンバッジ",
-                  "業界団体・学会・ライオンズクラブの会員章",
-                  "スーツの襟元にさりげなく品格を添えるプレミアムバッジ"
-                ],
-                "bestForKo": [
-                  "기업 정식 사원 배지(사초), 국제 콘퍼런스 귀빈용 라펠 핀",
-                  "협회 및 전문직 클럽 회원 배지, 라이온스/로터리 클럽 메탈 핀",
-                  "정장 카라에 착용하여 소속감과 높은 자부심을 드러내는 신분 배지"
                 ]
               }
             ]

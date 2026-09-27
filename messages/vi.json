@@ -3,7 +3,7 @@
     "phone1": "0901 448 377",
     "phone2": "0919 510 543",
     "email": "contact@vietdragon.vn",
-    "address": "TP. Hồ Chí Minh & Bình Dương"
+    "address": "TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương"
   },
   "floatingContact": {
     "zalo": "Chat qua Zalo",
@@ -44,7 +44,7 @@
         "tag": "Giao hàng nhanh",
         "titleLine1": "48 giờ — nhanh hơn cả",
         "titleLine2": "kỳ vọng của bạn.",
-        "desc": "Từ ý tưởng đến thành phẩm chỉ 48h, khi ngành in thông thường mất 3–5 ngày. In thử miễn phí, giao tận nơi TP.HCM & Bình Dương."
+        "desc": "Từ ý tưởng đến thành phẩm chỉ 48h, khi ngành in thông thường mất 3–5 ngày. In thử miễn phí, giao tận nơi TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương."
       }
     ],
     "cta": "Nhận báo giá",
@@ -55,8 +55,8 @@
   },
   "shopBanner": {
     "banners": [
-      { "eyebrow": "Bán chạy nhất", "title": "Danh Thiếp Cao Cấp" },
-      { "eyebrow": "Xu hướng mới", "title": "Hộp Giấy Sang Trọng" }
+      { "eyebrow": "Bán chạy nhất", "title": "Catalogue / Cẩm Nang Sản Phẩm" },
+      { "eyebrow": "Bán chạy nhất", "title": "Túi Giấy Cao Cấp" }
     ],
     "cta": "Xem ngay"
   },
@@ -85,7 +85,7 @@
       { "title": "Tư Vấn", "desc": "Đội ngũ chuyên viên tư vấn tận tâm, hỗ trợ từ ý tưởng đến lựa chọn vật liệu phù hợp nhất." },
       { "title": "Thiết Kế", "desc": "Thiết kế chuyên nghiệp theo yêu cầu, phối hợp chỉnh sửa không giới hạn đến khi ưng ý." },
       { "title": "In Thử", "desc": "In thử miễn phí trước khi đặt hàng số lượng lớn — bạn thấy sản phẩm thực tế trước khi quyết định." },
-      { "title": "Giao Hàng", "desc": "Giao tận nơi nhanh chóng tại TP. Hồ Chí Minh và Bình Dương, không phụ phí giao hàng." }
+      { "title": "Giao Hàng", "desc": "Giao tận nơi nhanh chóng tại TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương, không phụ phí giao hàng." }
     ],
     "cta": "Nhận báo giá"
   },
@@ -149,14 +149,14 @@
       },
       {
         "q": "Thời gian giao hàng mất bao lâu?",
-        "a": "Đơn hàng tiêu chuẩn giao trong 24–48 giờ tại TP. Hồ Chí Minh & Bình Dương. Đơn hàng số lượng lớn hoặc yêu cầu đặc biệt có thể mất 3–5 ngày."
+        "a": "Đơn hàng tiêu chuẩn giao trong 24–48 giờ tại TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương. Đơn hàng số lượng lớn hoặc yêu cầu đặc biệt có thể mất 3–5 ngày."
       },
       {
         "q": "Tôi cần chuẩn bị file thiết kế như thế nào?",
         "a": "Chúng tôi nhận file AI, PDF, PSD ở chế độ CMYK, độ phân giải tối thiểu 300dpi. Nếu bạn chưa có file thiết kế, đội ngũ thiết kế miễn phí của chúng tôi sẽ hỗ trợ."
       },
       {
-        "q": "Có giao hàng ngoài khu vực TP.HCM & Bình Dương không?",
+        "q": "Có giao hàng ngoài khu vực TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương không?",
         "a": "Có. Chúng tôi giao hàng toàn quốc qua đối tác vận chuyển, phí và thời gian giao sẽ tuỳ thuộc vào khu vực nhận hàng."
       },
       {
@@ -188,7 +188,7 @@
     "steps": [
       { "title": "Tư Vấn & Báo Giá", "desc": "Chia sẻ nhu cầu, nhận báo giá minh bạch trong vòng 30 phút." },
       { "title": "Thiết Kế & Duyệt Mẫu", "desc": "Đội ngũ thiết kế dựng bản mẫu, in thử trước khi sản xuất hàng loạt." },
-      { "title": "In Ấn & Giao Hàng", "desc": "Sản xuất nhanh, giao tận nơi tại TP. Hồ Chí Minh & Bình Dương." }
+      { "title": "In Ấn & Giao Hàng", "desc": "Sản xuất nhanh, giao tận nơi tại TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương." }
     ]
   },
   "blogPreview": {
@@ -219,7 +219,7 @@
     "getQuote": "Nhận báo giá ngay"
   },
   "footer": {
-    "tagline": "Công ty in ấn chuyên nghiệp tại TP. Hồ Chí Minh & Bình Dương.",
+    "tagline": "Công ty in ấn chuyên nghiệp tại TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương.",
     "productsLabel": "Sản Phẩm",
     "companyLabel": "Công Ty",
     "usefulLabel": "Hữu Ích",
@@ -236,13 +236,13 @@
   },
   "productsPage": {
     "metaTitle": "Sản Phẩm | Viet Dragon – In Ấn Chuyên Nghiệp",
-    "metaDescription": "Xem toàn bộ danh mục sản phẩm in ấn của Viet Dragon: tiếp thị, văn phòng, bao bì, ấn phẩm Tết, ấn phẩm khác và nhiều hơn nữa.",
+    "metaDescription": "Xem toàn bộ danh mục sản phẩm in ấn của Viet Dragon: tiếp thị, văn phòng, bao bì, ấn phẩm Tết và nhiều hơn nữa.",
     "breadcrumbHome": "Trang Chủ",
     "breadcrumbCurrent": "Sản Phẩm",
     "eyebrow": "Tất Cả Sản Phẩm",
     "titleLine1": "Mọi thứ bạn cần,",
     "titleHighlight": "chúng tôi in được.",
-    "subtitle": "Đầy đủ các nhóm sản phẩm hoàn chỉnh từ danh thiếp, bao bì đến ấn phẩm khác.",
+    "subtitle": "Đầy đủ các nhóm sản phẩm hoàn chỉnh từ danh thiếp, văn phòng đến bao bì và ấn phẩm Tết.",
     "galleryCaption": "Ảnh minh hoạ — hình ảnh thực tế sản phẩm sẽ được cập nhật sớm.",
     "browseByCategory": "Khám phá theo danh mục",
     "viewDetail": "Xem chi tiết →",
@@ -272,7 +272,7 @@
     "optionDescriptionLabel": "Đặc Điểm",
     "optionBestForLabel": "Phù Hợp Cho",
     "optionViewImageHint": "Nhấn để xem hình chất liệu",
-    "optionBackToDetailsHint": "Nhấn để quay lại chi tiết",
+    "optionBackToDetailsHint": "Nhấn để xem chi tiết",
     "optionFoilCheckboxLabel": "Ép kim",
     "optionDoubleSidedCheckboxLabel": "In 2 mặt",
     "optionConsultCopyLabel": "Sao chép nội dung tư vấn",
