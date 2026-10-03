@@ -110,11 +110,11 @@ function getProductSizes(productName: string, locale: Locale): SizeItem[] {
 }
 
 const PRINT_TECHNIQUES: Record<string, string[]> = {
-  vi: ["In nhanh", "Offset", "Dập nổi dập chìm"],
-  en: ["Fast print", "Offset", "Emboss / deboss"],
-  zh: ["快印", "胶印 (Offset)", "压凸/压凹"],
-  ja: ["オンデマンド印刷", "オフセット", "型押し・エンボス"],
-  ko: ["디지털 인쇄", "옵셋", "형압 / 엠보싱"],
+  vi: ["In nhanh", "Offset", "Ép kim", "Dập nổi dập chìm"],
+  en: ["Fast print", "Offset", "Foil stamping", "Emboss / deboss"],
+  zh: ["快印", "胶印 (Offset)", "烫金", "压凸/压凹"],
+  ja: ["オンデマンド印刷", "オフセット", "箔押し", "型押し・エンボス"],
+  ko: ["디지털 인쇄", "옵셋", "박 인쇄", "형압 / 엠보싱"],
 };
 
 const FINISHING_OPTIONS: Record<string, string[]> = {
@@ -271,11 +271,25 @@ export function MaterialFlashcard({
   const finishingList = FINISHING_OPTIONS[locale] ?? FINISHING_OPTIONS.vi;
   const laminationList = LAMINATION_OPTIONS[locale] ?? LAMINATION_OPTIONS.vi;
 
-  let cardImages = option.images ?? (option.image ? [option.image] : [fallbackImage]);
-  if (option.pureImages) {
-    cardImages = option.pureImages;
+  let rawImages: string[] = [];
+  if (option.pureImages && option.pureImages.length > 0) {
+    rawImages = option.pureImages;
+  } else if (option.images && option.images.length > 0) {
+    rawImages = option.images;
   } else if (option.pureImage) {
-    cardImages = [option.pureImage];
+    rawImages = [option.pureImage];
+  } else if (option.image) {
+    rawImages = [option.image];
+  } else if (fallbackImage) {
+    rawImages = [fallbackImage];
+  }
+
+  // Ensure 3 images are always present so the 3-image collage style (left 1 large, right 2 stacked) is ALWAYS active
+  let cardImages = [...rawImages];
+  if (cardImages.length === 1) {
+    cardImages = [cardImages[0], cardImages[0], cardImages[0]];
+  } else if (cardImages.length === 2) {
+    cardImages = [cardImages[0], cardImages[1], cardImages[0]];
   }
 
   return (
@@ -297,7 +311,7 @@ export function MaterialFlashcard({
         >
           {/* Front face — image layer (hiển thị ảnh trước, mặc định) */}
           <div
-            className="relative w-full h-[300px] sm:h-[320px] bg-zinc-100 flex flex-col overflow-hidden"
+            className="relative w-full aspect-square sm:aspect-square lg:aspect-auto lg:h-[320px] max-h-[440px] lg:max-h-none bg-zinc-100 flex flex-col overflow-hidden"
             style={{ backfaceVisibility: "hidden" }}
           >
             <div
@@ -325,7 +339,7 @@ export function MaterialFlashcard({
                 </div>
               ))}
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/85 via-brand-dark/20 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-brand-dark/90 via-brand-dark/30 to-transparent pointer-events-none" />
             <div className="absolute inset-x-0 bottom-0 px-5 py-4 flex items-center gap-2.5">
               <OptIcon size={16} className="text-white shrink-0" />
               <span className="text-white font-black text-base line-clamp-2 flex-1">{name}</span>

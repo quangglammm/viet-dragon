@@ -14,6 +14,7 @@ import Process from "@/components/sections/Process";
 import BlogPreview from "@/components/sections/BlogPreview";
 import Brands from "@/components/sections/Brands";
 import CTA from "@/components/sections/CTA";
+import PartnerLogos from "@/components/sections/PartnerLogos";
 import Footer from "@/components/sections/Footer";
 
 export default function Home() {
@@ -35,6 +36,7 @@ export default function Home() {
       <BlogPreview />
       <Brands />
       <CTA />
+      <PartnerLogos />
       <Footer />
     </>
   );

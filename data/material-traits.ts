@@ -7,7 +7,7 @@
 
 import {
   Sparkles, Square, Stamp, Feather, CloudFog,
-  Palette, Shield, Layers, Zap,
+  Palette, Shield, Layers, Zap, Leaf, Scale,
   type LucideIcon,
 } from "lucide-react";
 
@@ -21,7 +21,9 @@ export type MaterialTraitKey =
   | "metallic-shine"
   | "waterproof-durability"
   | "embossed-depth"
-  | "digital-precision";
+  | "digital-precision"
+  | "thick-weight"
+  | "eco-friendly";
 
 export interface MaterialTrait {
   icon: LucideIcon;
@@ -101,5 +103,19 @@ export const materialTraits: Record<MaterialTraitKey, MaterialTrait> = {
     labelVi: "In Nhanh Kỹ Thuật Số",
     description: "High-speed digital printing with sharp colors and short turnaround.",
     descriptionVi: "In kỹ thuật số tốc độ cao, chuẩn màu sắc với thời gian hoàn thành nhanh chóng.",
+  },
+  "thick-weight": {
+    icon: Scale,
+    label: "Heavy Cardstock",
+    labelVi: "Định Lượng Dày Dặn",
+    description: "Rigid heavy paperweight providing sturdy, premium hand-feel.",
+    descriptionVi: "Độ dày định lượng cao tạo cảm giác cứng cáp, chắc chắn khi cầm.",
+  },
+  "eco-friendly": {
+    icon: Leaf,
+    label: "Eco-Friendly Material",
+    labelVi: "Thân Thiện Môi Trường",
+    description: "Biodegradable, recyclable paper stock supporting sustainability.",
+    descriptionVi: "Chất liệu giấy tự nhiên, dễ tái chế và thân thiện với môi trường.",
   },
 };

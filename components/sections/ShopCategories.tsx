@@ -7,6 +7,8 @@ import { Link } from "@/i18n/navigation";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import { productCategories } from "@/data/categories";
+import { getSubgroupsByCategory } from "@/data/subgroups-catalog";
+import { TET_SUBMENU_COLUMNS } from "@/data/tet-menu";
 import { CATEGORY_NAMES } from "@/data/translations";
 
 export default function ShopCategories() {
@@ -19,6 +21,10 @@ export default function ShopCategories() {
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-4 lg:gap-6">
           {productCategories.map((cat, i) => {
             const name = pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko);
+            const count =
+              cat.id === "tet"
+                ? TET_SUBMENU_COLUMNS.flatMap((c) => c.groups).length
+                : getSubgroupsByCategory(cat.id).length || cat.items.length;
             return (
               <motion.div
                 key={cat.id}
@@ -42,7 +48,7 @@ export default function ShopCategories() {
                     <p className="font-black text-zinc-900 text-sm group-hover:text-brand-primary transition-colors">
                       {name}
                     </p>
-                    <p className="text-zinc-400 text-xs mt-0.5">{t("itemCount", { count: cat.items.length })}</p>
+                    <p className="text-zinc-400 text-xs mt-0.5">{t("itemCount", { count })}</p>
                   </div>
                 </Link>
               </motion.div>

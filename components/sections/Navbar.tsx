@@ -13,6 +13,14 @@ import { productCategories, isFastPrint, type ProductCategory, type ProductItem 
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import { CATEGORY_NAMES, ITEM_NAMES } from "@/data/translations";
+import { OfficeDesktopSubmenu } from "@/components/sections/OfficeDesktopSubmenu";
+import { OfficeMobileSubmenu } from "@/components/sections/OfficeMobileSubmenu";
+import { MarketingDesktopSubmenu } from "@/components/sections/MarketingDesktopSubmenu";
+import { MarketingMobileSubmenu } from "@/components/sections/MarketingMobileSubmenu";
+import { PackagingDesktopSubmenu } from "@/components/sections/PackagingDesktopSubmenu";
+import { PackagingMobileSubmenu } from "@/components/sections/PackagingMobileSubmenu";
+import { TetDesktopSubmenu } from "@/components/sections/TetDesktopSubmenu";
+import { TetMobileSubmenu } from "@/components/sections/TetMobileSubmenu";
 
 const LANGUAGES: { code: Locale; flag: string; label: string; short: string }[] = [
   { code: "vi", flag: "🇻🇳", label: "Tiếng Việt", short: "VN" },
@@ -362,7 +370,7 @@ export default function Navbar() {
               return (
                 <div
                   key={cat.id}
-                  className="py-2 relative"
+                  className="py-2"
                   onMouseEnter={() => handleCatMouseEnter(cat.id)}
                   onMouseLeave={handleCatMouseLeave}
                 >
@@ -381,7 +389,43 @@ export default function Navbar() {
                     <span>{pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)}</span>
                   </Link>
 
-                  <DesktopCategoryDropdown cat={cat} locale={locale} isOpen={activeDesktopCat === cat.id} align={align} />
+                  <div
+                    onMouseEnter={() => handleCatMouseEnter(cat.id)}
+                    onMouseLeave={handleCatMouseLeave}
+                  >
+                    {cat.id === "marketing" ? (
+                      <MarketingDesktopSubmenu
+                        locale={locale}
+                        isOpen={activeDesktopCat === cat.id}
+                        onItemClick={() => setActiveDesktopCat(null)}
+                      />
+                    ) : cat.id === "office" ? (
+                      <OfficeDesktopSubmenu
+                        locale={locale}
+                        isOpen={activeDesktopCat === cat.id}
+                        onItemClick={() => setActiveDesktopCat(null)}
+                      />
+                    ) : cat.id === "packaging" ? (
+                      <PackagingDesktopSubmenu
+                        locale={locale}
+                        isOpen={activeDesktopCat === cat.id}
+                        onItemClick={() => setActiveDesktopCat(null)}
+                      />
+                    ) : cat.id === "tet" ? (
+                      <TetDesktopSubmenu
+                        locale={locale}
+                        isOpen={activeDesktopCat === cat.id}
+                        onItemClick={() => setActiveDesktopCat(null)}
+                      />
+                    ) : (
+                      <DesktopCategoryDropdown
+                        cat={cat}
+                        locale={locale}
+                        isOpen={activeDesktopCat === cat.id}
+                        align={align}
+                      />
+                    )}
+                  </div>
                 </div>
               );
             })}
@@ -457,27 +501,37 @@ export default function Navbar() {
 
               {/* Mobile Accordion Subcategories */}
               {openMobileCat === cat.id && (
-                <div className="pl-6 pr-4 py-2 flex flex-col gap-2 border-l-2 border-brand-primary/20 ml-4 my-1">
-                  <ul className="flex flex-col gap-1">
-                    {cat.items.map((item) => {
-                      const isActive = pathname === `/products/${cat.id}/${item.id}`;
-                      return (
-                        <li key={item.id}>
-                          <Link
-                            href={`/products/${cat.id}/${item.id}`}
-                            onClick={closeAllMenu}
-                            className={cn(
-                              "block py-2 text-base font-medium transition-colors hover:text-brand-primary",
-                              isActive ? "text-brand-primary font-bold" : "text-zinc-700"
-                            )}
-                          >
-                            {pickLocale(locale, item.nameVi, item.nameEn, ITEM_NAMES[item.id]?.zh, ITEM_NAMES[item.id]?.ja, ITEM_NAMES[item.id]?.ko)}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
+                cat.id === "marketing" ? (
+                  <MarketingMobileSubmenu locale={locale} onItemClick={closeAllMenu} />
+                ) : cat.id === "office" ? (
+                  <OfficeMobileSubmenu locale={locale} onItemClick={closeAllMenu} />
+                ) : cat.id === "packaging" ? (
+                  <PackagingMobileSubmenu locale={locale} onItemClick={closeAllMenu} />
+                ) : cat.id === "tet" ? (
+                  <TetMobileSubmenu locale={locale} onItemClick={closeAllMenu} />
+                ) : (
+                  <div className="pl-6 pr-4 py-2 flex flex-col gap-2 border-l-2 border-brand-primary/20 ml-4 my-1">
+                    <ul className="flex flex-col gap-1">
+                      {cat.items.map((item) => {
+                        const isActive = pathname === `/products/${cat.id}/${item.id}`;
+                        return (
+                          <li key={item.id}>
+                            <Link
+                              href={`/products/${cat.id}/${item.id}`}
+                              onClick={closeAllMenu}
+                              className={cn(
+                                "block py-2 text-base font-medium transition-colors hover:text-brand-primary",
+                                isActive ? "text-brand-primary font-bold" : "text-zinc-700"
+                              )}
+                            >
+                              {pickLocale(locale, item.nameVi, item.nameEn, ITEM_NAMES[item.id]?.zh, ITEM_NAMES[item.id]?.ja, ITEM_NAMES[item.id]?.ko)}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )
               )}
             </div>
           );
