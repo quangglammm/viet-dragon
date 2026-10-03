@@ -60,7 +60,7 @@ const PRINT_PRODUCTS = [
     descZh: "A5/A4 150–200gsm 铜版纸，表面保护性覆膜。",
     descJa: "A5/A4 コート紙 150–200gsm、表面保護PP加工。",
     descKo: "A5/A4 150–200gsm 아트지, 표면 보호 코팅.",
-    image: "/images/product/vd-item-flyer.jpeg",
+    image: "/images/category/toroi.webp",
     icon: FileText,
   },
   {

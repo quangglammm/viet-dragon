@@ -11,8 +11,16 @@ import { useSectionInView } from "@/hooks/use-section-in-view";
 // left column (tall top + 2 small below) | wide center | right column (2 stacked)
 const seeds = ["pf1", "pf2", "pf3", "pf4", "pf5", "pf6"];
 const slots = ["left-top", "left-bottom", "left-bottom", "center", "right", "right"] as const;
+const portfolioImages = [
+  "/images/portfolio/pf1.jpeg",
+  "/images/portfolio/pf2.jpeg",
+  "/images/portfolio/pf3.jpeg",
+  "/images/category/cataloguecaocap.webp",
+  "/images/portfolio/pf5.jpeg",
+  "/images/portfolio/pf6.jpeg",
+];
 
-type PortfolioItem = { label: string; cat: string; seed: string };
+type PortfolioItem = { label: string; cat: string; seed: string; image: string };
 
 function Tile({
   item,
@@ -26,7 +34,7 @@ function Tile({
   return (
     <div className={`group relative rounded-2xl overflow-hidden ${className ?? ""}`}>
       <Image
-        src={`/images/portfolio/${item.seed}.jpeg`}
+        src={item.image}
         alt={item.label}
         fill
         sizes={sizes}
@@ -46,8 +54,13 @@ function Tile({
 export default function Portfolio() {
   const { ref, inView } = useSectionInView();
   const t = useTranslations("portfolio");
-  const copy = t.raw("items") as PortfolioItem[];
-  const items = copy.map((c, i) => ({ ...c, seed: seeds[i], slot: slots[i] }));
+  const copy = t.raw("items") as Array<{ label: string; cat: string }>;
+  const items: PortfolioItem[] = copy.map((c, i) => ({
+    ...c,
+    seed: seeds[i],
+    slot: slots[i],
+    image: portfolioImages[i],
+  }));
 
   const [t1, t2, t3, t4, t5, t6] = items;
 

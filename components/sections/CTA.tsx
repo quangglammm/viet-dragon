@@ -15,7 +15,7 @@ export default function CTA() {
   return (
     <section
       id="cta"
-      className="relative w-full bg-brand-primary flex items-center overflow-hidden py-16 lg:py-24 scroll-mt-16 lg:scroll-mt-[104px]"
+      className="relative w-full bg-brand-primary flex items-center overflow-hidden py-8 lg:py-10 scroll-mt-16 lg:scroll-mt-[104px]"
     >
       {/* Decorative circles */}
       <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-white/5" />
@@ -23,8 +23,8 @@ export default function CTA() {
 
       <div ref={ref} className="max-w-7xl mx-auto px-6 w-full text-center">
         <motion.div
-          className="inline-block eyebrow-pill eyebrow-pill-dark mb-6"
-          initial={{ opacity: 0, y: 12 }}
+          className="inline-block eyebrow-pill eyebrow-pill-dark mb-2.5"
+          initial={{ opacity: 0, y: 10 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
         >
@@ -32,8 +32,8 @@ export default function CTA() {
         </motion.div>
 
         <motion.h2
-          className="text-5xl lg:text-7xl font-black text-white leading-tight mb-10"
-          initial={{ opacity: 0, y: 28 }}
+          className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-3"
+          initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
@@ -41,36 +41,36 @@ export default function CTA() {
         </motion.h2>
 
         <motion.p
-          className="text-white/80 text-lg max-w-xl mx-auto mb-10"
-          initial={{ opacity: 0, y: 16 }}
+          className="text-white/80 text-sm sm:text-base max-w-xl mx-auto mb-6"
+          initial={{ opacity: 0, y: 12 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
           {t("subtitle")}
         </motion.p>
 
         <motion.div
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          initial={{ opacity: 0, y: 20 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-3.5"
+          initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55, delay: 0.4 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <WipeButton href="tel:0901448377" tone="light" size="lg" className="text-brand-primary shadow-2xl">
+          <WipeButton href="tel:0901448377" tone="light" size="md" className="text-brand-primary shadow-xl">
             {t("getQuote")}
           </WipeButton>
-          <WipeButton href="mailto:contact@vietdragon.vn" tone="outline" size="lg" arrow={false}>
+          <WipeButton href="mailto:contact@vietdragon.vn" tone="outline" size="md" arrow={false}>
             {tContact("email")}
           </WipeButton>
         </motion.div>
 
         {/* Contact details */}
         <motion.div
-          className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-8 text-white/80 text-sm"
+          className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-6 text-white/80 text-xs sm:text-sm"
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5, delay: 0.55 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <span className="flex items-center gap-2.5">
+          <span className="flex items-center gap-2">
             <IconBadge icon={Phone} size="sm" className="bg-white/15 shrink-0" />
             <span className="flex flex-col lg:flex-row lg:items-center text-left leading-tight lg:leading-normal">
               <a href="tel:0901448377" className="hover:text-white transition-colors whitespace-nowrap">

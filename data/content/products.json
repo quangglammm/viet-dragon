@@ -60,17 +60,11 @@
                   "Thương hiệu nhà hàng, khách sạn, sự kiện sang trọng",
                   "Logo hoặc monogram cần bắt sáng, gây ấn tượng"
                 ],
-                "image": "/images/product/c300-foil.webp",
-                "images": [
-                  "/images/product/c300-foil.webp",
-                  "/images/product/card-c300-foil2.webp",
-                  "/images/product/card-c300-foil3.webp"
-                ],
-                "pureImage": "/images/product/c300.webp",
+                "pureImage": "/images/product/card-giayloaic.webp",
                 "pureImages": [
-                  "/images/product/c300.webp",
-                  "/images/product/c3002.webp",
-                  "/images/product/card-c300-3.webp"
+                  "/images/product/card-giayloaic.webp",
+                  "/images/product/card-giayloaic2.webp",
+                  "/images/product/card-giayloaic3.webp"
                 ],
                 "nameZh": "铜版纸 C300（标准款）",
                 "nameJa": "コート紙 C300（標準）",

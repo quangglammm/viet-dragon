@@ -38,6 +38,7 @@ const FOLDER_NAMES: Record<string, string> = {
   faq: "Hình FAQ",
   services: "Dịch Vụ",
   quality: "Chất Lượng",
+  partner: "Đối Tác & Logo (partner)",
   root: "Tệp Gốc (root)",
 };
 

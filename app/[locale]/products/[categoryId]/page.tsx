@@ -11,6 +11,31 @@ import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import { productCategories } from "@/data/categories";
 import { CATEGORY_NAMES, CATEGORY_DESCS, ITEM_NAMES, ITEM_DESCS } from "@/data/translations";
+import { getSubgroupsByCategory, getSubgroupById } from "@/data/subgroups-catalog";
+import { TET_SUBMENU_COLUMNS } from "@/data/tet-menu";
+
+interface DisplayProductItem {
+  id: string;
+  nameVi: string;
+  nameEn: string;
+  nameZh?: string;
+  nameJa?: string;
+  nameKo?: string;
+  descriptionVi: string;
+  description: string;
+  image: string;
+  images?: string[];
+  href?: string;
+  optionGroups?: Array<{ options: Array<{ images?: string[]; pureImages?: string[] }> }>;
+  shapes?: Array<{
+    id: string;
+    nameVi: string;
+    nameEn: string;
+    nameZh?: string;
+    nameJa?: string;
+    nameKo?: string;
+  }>;
+}
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 
@@ -47,6 +72,47 @@ export default async function CategoryPage({
   const idx = productCategories.findIndex((c) => c.id === categoryId);
   const prev = idx > 0 ? productCategories[idx - 1] : null;
   const next = idx < productCategories.length - 1 ? productCategories[idx + 1] : null;
+
+  // When categoryId is "tet", load the 8 product groups from TET_SUBMENU_COLUMNS so items match the megamenu exactly!
+  let items: DisplayProductItem[] = [];
+  if (categoryId === "tet") {
+    items = TET_SUBMENU_COLUMNS.flatMap((col) => col.groups).map((group) => {
+      const sub = getSubgroupById(group.id, categoryId);
+      return {
+        id: group.id,
+        nameVi: group.titleVi,
+        nameEn: group.titleEn,
+        nameZh: group.titleZh ?? sub?.titleZh,
+        nameJa: group.titleJa ?? sub?.titleJa,
+        nameKo: group.titleKo ?? sub?.titleKo,
+        descriptionVi: sub?.descriptionVi ?? "",
+        description: sub?.descriptionEn ?? "",
+        image: group.image,
+        images: [group.image, ...(sub?.shapes.map((s) => s.image) ?? [])],
+        href: group.href,
+        optionGroups: sub?.materials && sub.materials.length > 0 ? [{ options: sub.materials }] : [],
+        shapes: sub?.shapes,
+      };
+    });
+  } else {
+    const subgroups = getSubgroupsByCategory(categoryId);
+    items = subgroups.length > 0
+      ? subgroups.map((sub) => ({
+          id: sub.id,
+          nameVi: sub.titleVi,
+          nameEn: sub.titleEn,
+          nameZh: sub.titleZh,
+          nameJa: sub.titleJa,
+          nameKo: sub.titleKo,
+          descriptionVi: sub.descriptionVi,
+          description: sub.descriptionEn,
+          image: sub.coverImage,
+          images: [sub.coverImage, ...sub.shapes.map((s) => s.image)],
+          optionGroups: sub.materials?.length > 0 ? [{ options: sub.materials }] : [],
+          shapes: sub.shapes,
+        }))
+      : cat.items;
+  }
 
   return (
     <div className="bg-white">
@@ -108,24 +174,32 @@ export default async function CategoryPage({
       {/* ── Product items ── */}
       <div className="max-w-7xl mx-auto px-6 py-16">
         <p className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-8">
-          {t("itemCount", { count: cat.items.length })}
+          {t("itemCount", { count: items.length })}
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {cat.items.map((item) => {
-            const itemName = pickLocale(locale, item.nameVi, item.nameEn, ITEM_NAMES[item.id]?.zh, ITEM_NAMES[item.id]?.ja, ITEM_NAMES[item.id]?.ko);
+        <div className={items.length === 8 ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"}>
+          {items.map((item) => {
+            const itemHref = item.href ?? `/products/${cat.id}/${item.id}`;
+            const itemName = pickLocale(
+              locale,
+              item.nameVi,
+              item.nameEn,
+              item.nameZh ?? ITEM_NAMES[item.id]?.zh,
+              item.nameJa ?? ITEM_NAMES[item.id]?.ja,
+              item.nameKo ?? ITEM_NAMES[item.id]?.ko
+            );
             return (
               <div
                 key={item.id}
                 className="group flex flex-col rounded-2xl border border-zinc-100 overflow-hidden hover:border-zinc-200 hover:shadow-md transition-all duration-300"
               >
                 {/* Item image */}
-                <Link href={`/products/${cat.id}/${item.id}`} className="relative h-44 overflow-hidden bg-zinc-100 block">
+                <Link href={itemHref} className="relative h-52 overflow-hidden bg-zinc-100 block">
                   <Image
                     src={item.image}
                     alt={itemName}
                     fill
-                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </Link>
@@ -133,16 +207,24 @@ export default async function CategoryPage({
                 {/* Item info */}
                 <div className="flex flex-col gap-2 p-5 flex-1 bg-white">
                   <div>
-                    <Link href={`/products/${cat.id}/${item.id}`} className="font-black text-zinc-900 text-base hover:text-brand-primary transition-colors">
+                    <Link href={itemHref} className="font-black text-zinc-900 text-base hover:text-brand-primary transition-colors">
                       {itemName}
                     </Link>
                   </div>
                   <p className="text-zinc-500 text-sm leading-relaxed flex-1">
-                    {pickLocale(locale, item.descriptionVi, item.description, ITEM_DESCS[item.id]?.zh, ITEM_DESCS[item.id]?.ja, ITEM_DESCS[item.id]?.ko)}
+                    {pickLocale(
+                      locale,
+                      item.descriptionVi,
+                      item.description,
+                      ITEM_DESCS[item.id]?.zh,
+                      ITEM_DESCS[item.id]?.ja,
+                      ITEM_DESCS[item.id]?.ko
+                    )}
                   </p>
+
                   <Link
-                    href="/#cta"
-                    className="text-xs font-semibold text-brand-primary hover:opacity-70 transition-opacity self-start mt-1"
+                    href={itemHref}
+                    className="text-xs font-semibold text-brand-primary hover:opacity-70 transition-opacity self-start mt-2 inline-flex items-center gap-1 group-hover:gap-1.5 transition-all"
                   >
                     {t("getQuote")} →
                   </Link>
@@ -157,11 +239,14 @@ export default async function CategoryPage({
           <p className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-5">
             {t("referenceGallery")}
           </p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            {cat.items.map((item) => {
+          <div className={items.length === 8 ? "grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3" : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"}>
+            {items.map((item) => {
               let refImage = item.image;
               
-              if (item.optionGroups && item.optionGroups.length > 0) {
+              if (item.images && item.images.length > 1) {
+                const altImg = item.images.find((img) => img !== item.image);
+                if (altImg) refImage = altImg;
+              } else if (item.optionGroups && item.optionGroups.length > 0) {
                 const allMaterialImages: string[] = [];
                 for (const group of item.optionGroups) {
                   for (const option of group.options) {
@@ -170,26 +255,28 @@ export default async function CategoryPage({
                   }
                 }
                 
-                // Filter out the main item.image to avoid duplication
-                const uniqueImages = allMaterialImages.filter(img => img !== item.image);
-                
-                // Try to get the 2nd image (index 1), or 3rd (index 2) if possible
+                const uniqueImages = allMaterialImages.filter((img) => img !== item.image);
                 if (uniqueImages.length >= 2) {
                   refImage = uniqueImages[1]; 
                 } else if (uniqueImages.length === 1) {
                   refImage = uniqueImages[0];
                 }
-              } else if (item.images && item.images.length > 1) {
-                refImage = item.images[1];
               }
 
               return (
-                <div key={item.id} className="relative rounded-xl overflow-hidden group h-36 sm:h-44 lg:h-[200px]">
+                <div key={item.id} className="relative rounded-xl overflow-hidden group h-32 sm:h-36 lg:h-40">
                   <Image
                     src={refImage}
-                    alt={pickLocale(locale, item.nameVi, item.nameEn, ITEM_NAMES[item.id]?.zh, ITEM_NAMES[item.id]?.ja, ITEM_NAMES[item.id]?.ko)}
+                    alt={pickLocale(
+                      locale,
+                      item.nameVi,
+                      item.nameEn,
+                      item.nameZh ?? ITEM_NAMES[item.id]?.zh,
+                      item.nameJa ?? ITEM_NAMES[item.id]?.ja,
+                      item.nameKo ?? ITEM_NAMES[item.id]?.ko
+                    )}
                     fill
-                    sizes="(min-width: 1024px) 25vw, 50vw"
+                    sizes={items.length === 8 ? "(min-width: 1024px) 12.5vw, (min-width: 640px) 25vw, 50vw" : "(min-width: 1024px) 16vw, (min-width: 640px) 33vw, 50vw"}
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />

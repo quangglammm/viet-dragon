@@ -177,12 +177,28 @@ async function getUsedMediaMap(): Promise<Map<string, string[]>> {
             registerUsage(img, `Sản phẩm (phụ): ${prod.nameVi || prod.nameEn}`);
           }
         }
+        if (prod.pureImage) {
+          registerUsage(prod.pureImage, `Sản phẩm (ảnh mộc): ${prod.nameVi || prod.nameEn}`);
+        }
+        if (prod.pureImages) {
+          for (const img of prod.pureImages) {
+            registerUsage(img, `Sản phẩm (ảnh mộc): ${prod.nameVi || prod.nameEn}`);
+          }
+        }
         for (const group of prod.optionGroups || []) {
           for (const opt of group.options || []) {
             registerUsage(opt.image, `Tùy chọn "${opt.nameVi || opt.name}" (${prod.nameVi || prod.nameEn})`);
             if (opt.images) {
               for (const img of opt.images) {
                 registerUsage(img, `Tùy chọn (phụ) "${opt.nameVi || opt.name}" (${prod.nameVi || prod.nameEn})`);
+              }
+            }
+            if (opt.pureImage) {
+              registerUsage(opt.pureImage, `Tùy chọn (ảnh mộc) "${opt.nameVi || opt.name}" (${prod.nameVi || prod.nameEn})`);
+            }
+            if (opt.pureImages) {
+              for (const img of opt.pureImages) {
+                registerUsage(img, `Tùy chọn (ảnh mộc) "${opt.nameVi || opt.name}" (${prod.nameVi || prod.nameEn})`);
               }
             }
           }

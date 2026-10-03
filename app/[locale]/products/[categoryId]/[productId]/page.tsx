@@ -11,6 +11,8 @@ import { Link } from "@/i18n/navigation";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import { productCategories } from "@/data/categories";
+import { SUBGROUPS_CATALOG, getSubgroupById, getSubgroupsByCategory } from "@/data/subgroups-catalog";
+import { SubgroupShapesView } from "@/components/sections/SubgroupShapesView";
 import { MaterialFlashcard } from "@/components/ui/material-flashcard";
 import { MaterialGlossaryFab } from "@/components/ui/material-glossary-fab";
 import { CATEGORY_NAMES, ITEM_NAMES, ITEM_DESCS } from "@/data/translations";
@@ -18,9 +20,14 @@ import { CATEGORY_NAMES, ITEM_NAMES, ITEM_DESCS } from "@/data/translations";
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 
 export function generateStaticParams() {
-  return productCategories.flatMap((cat) =>
+  const productParams = productCategories.flatMap((cat) =>
     cat.items.map((item) => ({ categoryId: cat.id, productId: item.id }))
   );
+  const subgroupParams = SUBGROUPS_CATALOG.map((sub) => ({
+    categoryId: sub.categoryId,
+    productId: sub.id,
+  }));
+  return [...productParams, ...subgroupParams];
 }
 
 export async function generateMetadata({
@@ -29,6 +36,26 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale; categoryId: string; productId: string }>;
 }): Promise<Metadata> {
   const { locale, categoryId, productId } = await params;
+  
+  // 1. Check Subgroup first
+  const subgroup = getSubgroupById(productId, categoryId);
+  if (subgroup) {
+    const title = pickLocale(
+      locale,
+      subgroup.titleVi,
+      subgroup.titleEn,
+      subgroup.titleZh,
+      subgroup.titleJa,
+      subgroup.titleKo
+    );
+    const desc = pickLocale(locale, subgroup.descriptionVi, subgroup.descriptionEn);
+    return {
+      title: `${title} | Viet Dragon`,
+      description: desc,
+    };
+  }
+
+  // 2. Fallback to standard product
   const cat = productCategories.find((c) => c.id === categoryId);
   const item = cat?.items.find((i) => i.id === productId);
   if (!cat || !item) return {};
@@ -44,18 +71,67 @@ export default async function ProductDetailPage({
   params: Promise<{ locale: Locale; categoryId: string; productId: string }>;
 }>) {
   const { locale, categoryId, productId } = await params;
-  const t = await getTranslations({ locale, namespace: "productDetailPage" });
   const cat = productCategories.find((c) => c.id === categoryId);
-  const item = cat?.items.find((i) => i.id === productId);
+  const catName = cat
+    ? pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)
+    : "";
+
+  // ── BRANCH 1: Subgroup Shapes Page (e.g. /products/marketing/poster-bangron-standee) ──
+  const subgroup = getSubgroupById(productId, categoryId);
+  if (subgroup && subgroup.shapes.length > 0) {
+    return (
+      <SubgroupShapesView
+        locale={locale}
+        subgroup={subgroup}
+        categoryName={catName || subgroup.categoryId.toUpperCase()}
+      />
+    );
+  }
+
+  // ── BRANCH 2: Standard Product Detail Page / Direct Material Page ──
+  const t = await getTranslations({ locale, namespace: "productDetailPage" });
+  let item = cat?.items.find((i) => i.id === productId);
+
+  if (!item && subgroup) {
+    item = {
+      id: subgroup.id,
+      nameVi: subgroup.titleVi,
+      nameEn: subgroup.titleEn,
+      descriptionVi: subgroup.descriptionVi,
+      description: subgroup.descriptionEn,
+      image: subgroup.coverImage,
+      optionGroups: subgroup.materials && subgroup.materials.length > 0 ? [{ options: subgroup.materials }] : [],
+    };
+  }
+
   if (!cat || !item) notFound();
 
-  const name = pickLocale(locale, item.nameVi, item.nameEn, ITEM_NAMES[item.id]?.zh, ITEM_NAMES[item.id]?.ja, ITEM_NAMES[item.id]?.ko);
-  const catName = pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko);
-  const Icon = iconMap[cat.icon] ?? Briefcase;
+  const name = pickLocale(
+    locale,
+    item.nameVi,
+    item.nameEn,
+    ITEM_NAMES[item.id]?.zh ?? subgroup?.titleZh,
+    ITEM_NAMES[item.id]?.ja ?? subgroup?.titleJa,
+    ITEM_NAMES[item.id]?.ko ?? subgroup?.titleKo
+  );
+  const Icon = cat.icon && iconMap[cat.icon] ? iconMap[cat.icon] : Briefcase;
 
-  const idx = cat.items.findIndex((i) => i.id === productId);
-  const prev = idx > 0 ? cat.items[idx - 1] : null;
-  const next = idx < cat.items.length - 1 ? cat.items[idx + 1] : null;
+  const tetSubgroups = categoryId === "tet" ? getSubgroupsByCategory("tet") : [];
+  const navItems: { id: string; nameVi: string; nameEn: string; nameZh?: string; nameJa?: string; nameKo?: string }[] =
+    tetSubgroups.length > 0
+      ? tetSubgroups.map((s) => ({
+          id: s.id,
+          nameVi: s.titleVi,
+          nameEn: s.titleEn,
+          nameZh: s.titleZh,
+          nameJa: s.titleJa,
+          nameKo: s.titleKo,
+        }))
+      : cat.items;
+
+  const idx = navItems.findIndex((i) => i.id === productId);
+  const prev = idx > 0 ? navItems[idx - 1] : null;
+  const next = idx >= 0 && idx < navItems.length - 1 ? navItems[idx + 1] : null;
 
   return (
     <div className="bg-white">
@@ -180,7 +256,16 @@ export default async function ProductDetailPage({
               className="flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group"
             >
               <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-              <span className="hidden sm:inline">{pickLocale(locale, prev.nameVi, prev.nameEn, ITEM_NAMES[prev.id]?.zh, ITEM_NAMES[prev.id]?.ja, ITEM_NAMES[prev.id]?.ko)}</span>
+              <span className="hidden sm:inline">
+                {pickLocale(
+                  locale,
+                  prev.nameVi,
+                  prev.nameEn,
+                  ITEM_NAMES[prev.id]?.zh ?? ("nameZh" in prev ? (prev.nameZh as string) : undefined),
+                  ITEM_NAMES[prev.id]?.ja ?? ("nameJa" in prev ? (prev.nameJa as string) : undefined),
+                  ITEM_NAMES[prev.id]?.ko ?? ("nameKo" in prev ? (prev.nameKo as string) : undefined)
+                )}
+              </span>
               <span className="sm:hidden">{t("prevShort")}</span>
             </Link>
           ) : (
@@ -202,7 +287,16 @@ export default async function ProductDetailPage({
               href={`/products/${cat.id}/${next.id}`}
               className="flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group"
             >
-              <span className="hidden sm:inline">{pickLocale(locale, next.nameVi, next.nameEn, ITEM_NAMES[next.id]?.zh, ITEM_NAMES[next.id]?.ja, ITEM_NAMES[next.id]?.ko)}</span>
+              <span className="hidden sm:inline">
+                {pickLocale(
+                  locale,
+                  next.nameVi,
+                  next.nameEn,
+                  ITEM_NAMES[next.id]?.zh ?? ("nameZh" in next ? (next.nameZh as string) : undefined),
+                  ITEM_NAMES[next.id]?.ja ?? ("nameJa" in next ? (next.nameJa as string) : undefined),
+                  ITEM_NAMES[next.id]?.ko ?? ("nameKo" in next ? (next.nameKo as string) : undefined)
+                )}
+              </span>
               <span className="sm:hidden">{t("nextShort")}</span>
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </Link>
