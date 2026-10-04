@@ -95,9 +95,9 @@ export const MARKETING_SUBMENU_COLUMNS: {
             nameZh: "高端油画微喷Canvas",
             nameJa: "高精細キャンバスプリント",
             nameKo: "최고급 캔버스 아트 액자",
-            kind: "material",
-            href: "/products/marketing/poster-bangron-standee/decal-kho-lon",
-            image: "/images/category/poster-bangron-standee.webp",
+            kind: "shape",
+            href: "/products/marketing/poster-bangron-standee#tranh-canvas",
+            image: "/images/product/canvascotton.webp",
           },
           {
             id: "decal-mesh",

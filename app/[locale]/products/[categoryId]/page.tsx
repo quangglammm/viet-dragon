@@ -7,11 +7,10 @@ import {
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { productCategories } from "@/data/categories";
+import { pickLocale } from "@/lib/locale";
+import { MAIN_CATEGORIES, getSubgroupsByCategory, getSubgroupById } from "@/data/subgroups-catalog";
 import { CATEGORY_NAMES, CATEGORY_DESCS, ITEM_NAMES, ITEM_DESCS } from "@/data/translations";
-import { getSubgroupsByCategory, getSubgroupById } from "@/data/subgroups-catalog";
 import { TET_SUBMENU_COLUMNS } from "@/data/tet-menu";
 
 interface DisplayProductItem {
@@ -40,7 +39,7 @@ interface DisplayProductItem {
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 
 export function generateStaticParams() {
-  return productCategories.map((cat) => ({ categoryId: cat.id }));
+  return MAIN_CATEGORIES.map((cat) => ({ categoryId: cat.id }));
 }
 
 export async function generateMetadata({
@@ -49,7 +48,7 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale; categoryId: string }>;
 }): Promise<Metadata> {
   const { locale, categoryId } = await params;
-  const cat = productCategories.find((c) => c.id === categoryId);
+  const cat = MAIN_CATEGORIES.find((c) => c.id === categoryId);
   if (!cat) return {};
   return {
     title: `${pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)} | Viet Dragon`,
@@ -64,14 +63,14 @@ export default async function CategoryPage({
 }>) {
   const { locale, categoryId } = await params;
   const t = await getTranslations({ locale, namespace: "categoryPage" });
-  const cat = productCategories.find((c) => c.id === categoryId);
+  const cat = MAIN_CATEGORIES.find((c) => c.id === categoryId);
   if (!cat) notFound();
 
   const name = pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko);
   const Icon = iconMap[cat.icon] ?? Briefcase;
-  const idx = productCategories.findIndex((c) => c.id === categoryId);
-  const prev = idx > 0 ? productCategories[idx - 1] : null;
-  const next = idx < productCategories.length - 1 ? productCategories[idx + 1] : null;
+  const idx = MAIN_CATEGORIES.findIndex((c) => c.id === categoryId);
+  const prev = idx > 0 ? MAIN_CATEGORIES[idx - 1] : null;
+  const next = idx < MAIN_CATEGORIES.length - 1 ? MAIN_CATEGORIES[idx + 1] : null;
 
   // When categoryId is "tet", load the 8 product groups from TET_SUBMENU_COLUMNS so items match the megamenu exactly!
   let items: DisplayProductItem[] = [];
@@ -111,7 +110,7 @@ export default async function CategoryPage({
           optionGroups: sub.materials?.length > 0 ? [{ options: sub.materials }] : [],
           shapes: sub.shapes,
         }))
-      : cat.items;
+      : [];
   }
 
   return (

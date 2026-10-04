@@ -3,9 +3,9 @@
 import { Phone, Mail, MapPin } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { productCategories } from "@/data/categories";
+import { pickLocale } from "@/lib/locale";
+import { MAIN_CATEGORIES } from "@/data/subgroups-catalog";
 import { IconBadge } from "@/components/ui/icon-badge";
 import { cn } from "@/lib/utils";
 
@@ -118,7 +118,7 @@ export default function Footer() {
                   {ALL_PRODUCTS_LABEL[locale] || "All Products"}
                 </Link>
               </li>
-              {productCategories.map((cat) => {
+              {MAIN_CATEGORIES.map((cat) => {
                 const isActive =
                   pathname === `/products/${cat.id}` ||
                   pathname.startsWith(`/products/${cat.id}/`);

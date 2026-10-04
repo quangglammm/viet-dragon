@@ -1,7 +1,13 @@
 import fs from "fs/promises";
 import path from "path";
 import { routing, type Locale } from "@/i18n/routing";
-import { productCategories, type ProductCategory } from "@/data/categories";
+import { type ProductCategory, type ProductItem, showcaseImages } from "@/data/categories";
+import {
+  MAIN_CATEGORIES,
+  SUBGROUPS_CATALOG,
+  type SubgroupCategory,
+  type ProductCategoryDef,
+} from "@/data/subgroups-catalog";
 import { blogPosts, type BlogPost } from "@/data/posts";
 
 const ROOT_DIR = process.cwd();
@@ -57,25 +63,120 @@ export async function saveAllTranslations(bundle: TranslationBundle): Promise<vo
 }
 
 // -------------------------------------------------------------
-// PRODUCTS
+// PRODUCTS & SUBGROUPS
 // -------------------------------------------------------------
 
 const PRODUCTS_JSON_PATH = path.join(CONTENT_DIR, "products.json");
+const SUBGROUPS_JSON_PATH = path.join(CONTENT_DIR, "subgroups.json");
+
+/**
+ * Builds standard ProductCategory[] from the structured Subgroup catalog.
+ */
+export function buildProductCategoriesFromSubgroups(
+  categoriesDef: ProductCategoryDef[] = MAIN_CATEGORIES,
+  subgroupsList: SubgroupCategory[] = SUBGROUPS_CATALOG
+): ProductCategory[] {
+  return categoriesDef.map((cat) => {
+    const catSubgroups = subgroupsList.filter((s) => s.categoryId === cat.id);
+    const items: ProductItem[] = catSubgroups.map((sub) => ({
+      id: sub.id,
+      nameVi: sub.titleVi,
+      nameEn: sub.titleEn,
+      descriptionVi: sub.descriptionVi,
+      description: sub.descriptionEn,
+      image: sub.coverImage,
+      shapes: sub.shapes,
+      optionGroups:
+        sub.materials && sub.materials.length > 0 ? [{ options: sub.materials }] : [],
+    }));
+
+    return {
+      id: cat.id,
+      nameVi: cat.nameVi,
+      nameEn: cat.nameEn,
+      descriptionVi: cat.descriptionVi,
+      description: cat.description,
+      icon: cat.icon,
+      coverImage: cat.coverImage,
+      items,
+    };
+  });
+}
+
+export async function getStoredSubgroups(): Promise<SubgroupCategory[]> {
+  await ensureDirs();
+  try {
+    const content = await fs.readFile(SUBGROUPS_JSON_PATH, "utf-8");
+    const parsed = JSON.parse(content);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed;
+    }
+  } catch {
+    // If not written yet, return static SUBGROUPS_CATALOG
+  }
+  return SUBGROUPS_CATALOG;
+}
+
+export async function saveStoredSubgroups(subgroups: SubgroupCategory[]): Promise<void> {
+  await ensureDirs();
+  await fs.writeFile(SUBGROUPS_JSON_PATH, JSON.stringify(subgroups, null, 2), "utf-8");
+}
 
 export async function getStoredProducts(): Promise<ProductCategory[]> {
   await ensureDirs();
   try {
     const content = await fs.readFile(PRODUCTS_JSON_PATH, "utf-8");
-    return JSON.parse(content);
+    const parsed = JSON.parse(content);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed.map((cat: ProductCategory) => ({
+        ...cat,
+        items: Array.isArray(cat.items) ? cat.items : [],
+      }));
+    }
   } catch {
-    // If not written yet, return default static categories
-    return productCategories;
+    // File not found or invalid
   }
+
+  // Fallback to building from stored/static subgroups
+  const storedSubgroups = await getStoredSubgroups();
+  const defaultCats = buildProductCategoriesFromSubgroups(MAIN_CATEGORIES, storedSubgroups);
+  try {
+    await fs.writeFile(PRODUCTS_JSON_PATH, JSON.stringify(defaultCats, null, 2), "utf-8");
+  } catch {
+    // Ignore write failure on readonly systems
+  }
+  return defaultCats;
 }
 
 export async function saveStoredProducts(categories: ProductCategory[]): Promise<void> {
   await ensureDirs();
   await fs.writeFile(PRODUCTS_JSON_PATH, JSON.stringify(categories, null, 2), "utf-8");
+
+  // Keep subgroups.json synchronized with any updates made through the CMS Admin
+  try {
+    const currentSubgroups = await getStoredSubgroups();
+    const updatedSubgroups = currentSubgroups.map((sub) => {
+      for (const cat of categories) {
+        const matchedItem = cat.items?.find((item) => item.id === sub.id);
+        if (matchedItem) {
+          return {
+            ...sub,
+            titleVi: matchedItem.nameVi || sub.titleVi,
+            titleEn: matchedItem.nameEn || sub.titleEn,
+            descriptionVi: matchedItem.descriptionVi || sub.descriptionVi,
+            descriptionEn: matchedItem.description || sub.descriptionEn,
+            coverImage: matchedItem.image || sub.coverImage,
+            materials: matchedItem.optionGroups?.[0]?.options || sub.materials,
+          };
+        }
+      }
+      return sub;
+    });
+
+    await saveStoredSubgroups(updatedSubgroups);
+  } catch {
+    // Ignore auxiliary sync failure
+  }
 }
 
 // -------------------------------------------------------------
@@ -153,6 +254,73 @@ async function fileExists(filePath: string): Promise<boolean> {
   }
 }
 
+function registerSubgroupMedia(
+  subgroups: SubgroupCategory[],
+  register: (url: string | undefined | null, source: string) => void
+) {
+  for (const sub of subgroups) {
+    const sName = sub.titleVi || sub.titleEn;
+    register(sub.coverImage, `Nhóm sản phẩm: ${sName}`);
+    for (const shape of sub.shapes || []) {
+      register(shape.image, `Hình thức "${shape.nameVi}" (${sName})`);
+      for (const opt of shape.materials || []) {
+        const oName = opt.nameVi || opt.name || "Chất liệu";
+        register(opt.image, `Chất liệu "${oName}" (Hình thức ${shape.nameVi} - ${sName})`);
+        opt.images?.forEach((img) => register(img, `Chất liệu (phụ) "${oName}" (Hình thức ${shape.nameVi} - ${sName})`));
+        register(opt.pureImage, `Chất liệu (ảnh mộc) "${oName}" (Hình thức ${shape.nameVi} - ${sName})`);
+        opt.pureImages?.forEach((img) => register(img, `Chất liệu (ảnh mộc) "${oName}" (Hình thức ${shape.nameVi} - ${sName})`));
+      }
+    }
+    for (const opt of sub.materials || []) {
+      const oName = opt.nameVi || opt.name || "Chất liệu";
+      register(opt.image, `Chất liệu "${oName}" (${sName})`);
+      opt.images?.forEach((img) => register(img, `Chất liệu (phụ) "${oName}" (${sName})`));
+      register(opt.pureImage, `Chất liệu (ảnh mộc) "${oName}" (${sName})`);
+      opt.pureImages?.forEach((img) => register(img, `Chất liệu (ảnh mộc) "${oName}" (${sName})`));
+    }
+  }
+}
+
+function registerProductMedia(
+  items: Array<{
+    nameVi?: string;
+    nameEn?: string;
+    image?: string;
+    images?: string[];
+    pureImage?: string;
+    pureImages?: string[];
+    optionGroups?: Array<{
+      options: Array<{
+        name?: string;
+        nameVi?: string;
+        image?: string;
+        images?: string[];
+        pureImage?: string;
+        pureImages?: string[];
+      }>;
+    }>;
+  }>,
+  register: (url: string | undefined | null, source: string) => void
+) {
+  for (const prod of items) {
+    const pName = prod.nameVi || prod.nameEn || "Sản phẩm";
+    register(prod.image, `Sản phẩm: ${pName}`);
+    prod.images?.forEach((img) => register(img, `Sản phẩm (phụ): ${pName}`));
+    register(prod.pureImage, `Sản phẩm (ảnh mộc): ${pName}`);
+    prod.pureImages?.forEach((img) => register(img, `Sản phẩm (ảnh mộc): ${pName}`));
+
+    for (const group of prod.optionGroups || []) {
+      for (const opt of group.options || []) {
+        const oName = opt.nameVi || opt.name || "Chất liệu";
+        register(opt.image, `Tùy chọn "${oName}" (${pName})`);
+        opt.images?.forEach((img) => register(img, `Tùy chọn (phụ) "${oName}" (${pName})`));
+        register(opt.pureImage, `Tùy chọn (ảnh mộc) "${oName}" (${pName})`);
+        opt.pureImages?.forEach((img) => register(img, `Tùy chọn (ảnh mộc) "${oName}" (${pName})`));
+      }
+    }
+  }
+}
+
 async function getUsedMediaMap(): Promise<Map<string, string[]>> {
   const map = new Map<string, string[]>();
 
@@ -166,49 +334,36 @@ async function getUsedMediaMap(): Promise<Map<string, string[]>> {
     }
   };
 
+  // 1. Scan Main Categories
+  for (const cat of MAIN_CATEGORIES) {
+    registerUsage(cat.coverImage, `Danh mục chính: ${cat.nameVi || cat.nameEn}`);
+  }
+
+  // 2. Scan Showcase Images
+  for (const s of showcaseImages) {
+    registerUsage(s.src, `Showcase: ${s.label}`);
+  }
+
+  // 3. Scan Subgroups Catalog (including all shapes and 110+ materials)
+  try {
+    const subgroups = await getStoredSubgroups();
+    registerSubgroupMedia(subgroups, registerUsage);
+  } catch {
+    // Ignore reading error
+  }
+
+  // 4. Scan Stored Products in content/products.json
   try {
     const categories = await getStoredProducts();
     for (const cat of categories) {
       registerUsage(cat.coverImage, `Danh mục: ${cat.nameVi || cat.nameEn}`);
-      for (const prod of cat.items || []) {
-        registerUsage(prod.image, `Sản phẩm: ${prod.nameVi || prod.nameEn}`);
-        if (prod.images) {
-          for (const img of prod.images) {
-            registerUsage(img, `Sản phẩm (phụ): ${prod.nameVi || prod.nameEn}`);
-          }
-        }
-        if (prod.pureImage) {
-          registerUsage(prod.pureImage, `Sản phẩm (ảnh mộc): ${prod.nameVi || prod.nameEn}`);
-        }
-        if (prod.pureImages) {
-          for (const img of prod.pureImages) {
-            registerUsage(img, `Sản phẩm (ảnh mộc): ${prod.nameVi || prod.nameEn}`);
-          }
-        }
-        for (const group of prod.optionGroups || []) {
-          for (const opt of group.options || []) {
-            registerUsage(opt.image, `Tùy chọn "${opt.nameVi || opt.name}" (${prod.nameVi || prod.nameEn})`);
-            if (opt.images) {
-              for (const img of opt.images) {
-                registerUsage(img, `Tùy chọn (phụ) "${opt.nameVi || opt.name}" (${prod.nameVi || prod.nameEn})`);
-              }
-            }
-            if (opt.pureImage) {
-              registerUsage(opt.pureImage, `Tùy chọn (ảnh mộc) "${opt.nameVi || opt.name}" (${prod.nameVi || prod.nameEn})`);
-            }
-            if (opt.pureImages) {
-              for (const img of opt.pureImages) {
-                registerUsage(img, `Tùy chọn (ảnh mộc) "${opt.nameVi || opt.name}" (${prod.nameVi || prod.nameEn})`);
-              }
-            }
-          }
-        }
-      }
+      registerProductMedia(cat.items || [], registerUsage);
     }
   } catch {
     // Ignore reading error
   }
 
+  // 5. Scan Stored Blog Posts
   try {
     const posts = await getStoredBlogPosts();
     for (const post of posts) {
@@ -217,6 +372,11 @@ async function getUsedMediaMap(): Promise<Map<string, string[]>> {
   } catch {
     // Ignore reading error
   }
+
+  // 6. Scan Landing & Static Brand Assets
+  registerUsage("/images/cta/vd-cta-banner.jpg", "CTA Banner");
+  registerUsage("/images/about/vd-about-team.webp", "Giới thiệu / Về chúng tôi");
+  registerUsage("/videos/about.mp4", "Video giới thiệu (About loop)");
 
   return map;
 }
