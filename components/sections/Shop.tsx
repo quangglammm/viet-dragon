@@ -9,8 +9,7 @@ import { Link } from "@/i18n/navigation";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { productCategories } from "@/data/categories";
-import { getSubgroupsByCategory } from "@/data/subgroups-catalog";
+import { MAIN_CATEGORIES, getSubgroupsByCategory } from "@/data/subgroups-catalog";
 import { TET_SUBMENU_COLUMNS } from "@/data/tet-menu";
 import { cn } from "@/lib/utils";
 import { CATEGORY_NAMES, ITEM_NAMES } from "@/data/translations";
@@ -28,7 +27,7 @@ interface ShopDisplayItem {
 
 export default function Shop() {
   const [active, setActive] = useState(0);
-  const cat = productCategories[active];
+  const cat = MAIN_CATEGORIES[active] ?? MAIN_CATEGORIES[0];
   const t = useTranslations("shop");
   const locale = useLocale() as Locale;
 
@@ -46,24 +45,16 @@ export default function Shop() {
     }));
   } else {
     const subgroups = getSubgroupsByCategory(cat.id);
-    items = subgroups.length > 0
-      ? subgroups.map((sub) => ({
-          id: sub.id,
-          nameVi: sub.titleVi,
-          nameEn: sub.titleEn,
-          nameZh: sub.titleZh,
-          nameJa: sub.titleJa,
-          nameKo: sub.titleKo,
-          image: sub.coverImage,
-          href: `/products/${cat.id}/${sub.id}`,
-        }))
-      : cat.items.map((item) => ({
-          id: item.id,
-          nameVi: item.nameVi,
-          nameEn: item.nameEn,
-          image: item.image,
-          href: `/products/${cat.id}/${item.id}`,
-        }));
+    items = subgroups.map((sub) => ({
+      id: sub.id,
+      nameVi: sub.titleVi,
+      nameEn: sub.titleEn,
+      nameZh: sub.titleZh,
+      nameJa: sub.titleJa,
+      nameKo: sub.titleKo,
+      image: sub.coverImage,
+      href: `/products/${cat.id}/${sub.id}`,
+    }));
   }
 
   return (
@@ -77,7 +68,7 @@ export default function Shop() {
 
         {/* Tab nav */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
-          {productCategories.map((c, i) => (
+          {MAIN_CATEGORIES.map((c, i) => (
             <button
               key={c.id}
               onClick={() => setActive(i)}

@@ -121,9 +121,9 @@ export interface ProductCategory {
   items: ProductItem[];
 }
 
-import storedProducts from "./content/products.json";
+import { MAIN_CATEGORIES } from "./subgroups-catalog";
 
-export const productCategories: ProductCategory[] = storedProducts as unknown as ProductCategory[];
+export const productCategories: ProductCategory[] = MAIN_CATEGORIES as unknown as ProductCategory[];
 
 export const showcaseImages = [
   {
@@ -166,12 +166,20 @@ export const showcaseImages = [
 export function isFastPrint(id: string): boolean {
   return [
     "card",
+    "danh-thiep",
     "flyer",
+    "to-roi",
+    "to-gap",
     "voucher",
+    "vouchers",
     "envelope",
+    "bao-thu",
     "letterhead",
+    "giay-tieu-de",
     "decal",
+    "nhan-dan",
     "li-xi",
+    "bao-li-xi",
     "in-nhanh-danh-thiep",
     "in-nhanh-to-roi",
     "in-nhanh-voucher",
@@ -182,6 +190,7 @@ export function isFastPrint(id: string): boolean {
 export function getStartingPrice(id: string, locale: string): string {
   const isVi = locale === "vi";
   const prices: Record<string, { vi: string; en: string }> = {
+    // Legacy product keys
     card: { vi: "Chỉ từ 200.000đ/Hộp", en: "From 200,000đ/Box" },
     folder: { vi: "Chỉ từ 8.000đ/Cái", en: "From 8,000đ/Pcs" },
     catalogue: { vi: "Chỉ từ 25.000đ/Cuốn", en: "From 25,000đ/Book" },
@@ -200,6 +209,27 @@ export function getStartingPrice(id: string, locale: string): string {
     "in-nhanh-to-roi": { vi: "Chỉ từ 850đ/Tờ", en: "From 850đ/Sheet" },
     "in-nhanh-voucher": { vi: "Chỉ từ 1.100đ/Tờ", en: "From 1,100đ/Sheet" },
     "in-nhanh-tem-nhan": { vi: "Chỉ từ 400đ/Tem", en: "From 400đ/Stamp" },
+
+    // Subgroup catalog keys
+    "danh-thiep": { vi: "Chỉ từ 200.000đ/Hộp", en: "From 200,000đ/Box" },
+    "poster-bangron-standee": { vi: "Chỉ từ 65.000đ/M2", en: "From 65,000đ/m²" },
+    "to-roi": { vi: "Chỉ từ 850đ/Tờ", en: "From 850đ/Sheet" },
+    "to-gap": { vi: "Chỉ từ 1.200đ/Tờ", en: "From 1,200đ/Sheet" },
+    "bao-thu": { vi: "Chỉ từ 150.000đ/Hộp", en: "From 150,000đ/Box" },
+    "giay-tieu-de": { vi: "Chỉ từ 180.000đ/Ram", en: "From 180,000đ/Ream" },
+    "nhan-dan": { vi: "Chỉ từ 500đ/Tem", en: "From 500đ/Stamp" },
+    "tui-giay": { vi: "Chỉ từ 12.000đ/Túi", en: "From 12,000đ/Bag" },
+    "hop-giay": { vi: "Chỉ từ 15.000đ/Hộp", en: "From 15,000đ/Box" },
+    "mac-san-pham": { vi: "Chỉ từ 350đ/Cái", en: "From 350đ/Pcs" },
+    "lich-tet": { vi: "Chỉ từ 45.000đ/Cuốn", en: "From 45,000đ/Book" },
+    "bao-li-xi": { vi: "Chỉ từ 1.500đ/Cái", en: "From 1,500đ/Pcs" },
+    "thiep-tet": { vi: "Chỉ từ 5.000đ/Bộ", en: "From 5,000đ/Set" },
+    catalogues: { vi: "Chỉ từ 25.000đ/Cuốn", en: "From 25,000đ/Book" },
+    "bia-dung-ho-so": { vi: "Chỉ từ 8.000đ/Cái", en: "From 8,000đ/Pcs" },
+    "giay-ghi-chu": { vi: "Chỉ từ 15.000đ/Cuốn", en: "From 15,000đ/Book" },
+    "ve-tickets": { vi: "Chỉ từ 400đ/Vé", en: "From 400đ/Ticket" },
+    vouchers: { vi: "Chỉ từ 600đ/Phiếu", en: "From 600đ/Voucher" },
+    "ao-thun": { vi: "Chỉ từ 85.000đ/Áo", en: "From 85,000đ/Shirt" },
   };
   const match = prices[id];
   if (match) return isVi ? match.vi : match.en;

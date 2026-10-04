@@ -3,18 +3,18 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles,
-  ArrowLeft, ArrowRight,
+  ArrowLeft, ArrowRight, ImagePlus,
   type LucideIcon,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { productCategories } from "@/data/categories";
-import { SUBGROUPS_CATALOG, getSubgroupById } from "@/data/subgroups-catalog";
+import { pickLocale } from "@/lib/locale";
+import { MAIN_CATEGORIES, SUBGROUPS_CATALOG, getSubgroupById } from "@/data/subgroups-catalog";
 import { MaterialFlashcard } from "@/components/ui/material-flashcard";
 import { MaterialGlossaryFab } from "@/components/ui/material-glossary-fab";
 import { CATEGORY_NAMES } from "@/data/translations";
+import { checkPublicImageExists, sanitizeOptionImages } from "@/lib/image-check";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 
@@ -63,7 +63,7 @@ export default async function ShapeMaterialDetailPage({
   const shape = subgroup.shapes.find((s) => s.id === shapeId);
   if (!shape) notFound();
 
-  const cat = productCategories.find((c) => c.id === categoryId);
+  const cat = MAIN_CATEGORIES.find((c) => c.id === categoryId);
   const catName = cat
     ? pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)
     : subgroup.categoryId.toUpperCase();
@@ -109,14 +109,25 @@ export default async function ShapeMaterialDetailPage({
           {/* Left sticky square image */}
           <div className="aspect-square rounded-2xl border border-zinc-100 overflow-hidden bg-zinc-100 lg:sticky lg:top-28">
             <div className="relative w-full h-full">
-              <Image
-                src={shape.image}
-                alt={shapeName}
-                fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover"
-                preload
-              />
+              {checkPublicImageExists(shape.image) ? (
+                <Image
+                  src={shape.image}
+                  alt={shapeName}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
+                  preload
+                />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-zinc-50 via-zinc-100 to-zinc-200/50 p-6 select-none">
+                  <div className="p-4 rounded-2xl bg-white/80 shadow-2xs border border-zinc-200/60 mb-2">
+                    <ImagePlus size={36} strokeWidth={1.5} className="text-zinc-400" />
+                  </div>
+                  <span className="text-xs font-semibold text-zinc-400 tracking-wide text-center">
+                    {shapeName}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -139,38 +150,48 @@ export default async function ShapeMaterialDetailPage({
 
 
             {/* Material Flashcards stack */}
-            {subgroup.materials && subgroup.materials.length > 0 && (
-              <div className="flex flex-col gap-8 mt-2">
-                <div className="flex flex-col gap-6">
-                  {subgroup.materials.map((opt) => (
-                    <div key={opt.name}>
-                      <p className="font-black text-zinc-900 text-[15px] leading-snug mb-2.5">
-                        {pickLocale(locale, opt.taglineVi, opt.tagline, opt.taglineZh, opt.taglineJa, opt.taglineKo)}
-                      </p>
-                      <MaterialFlashcard
-                        option={opt}
-                        locale={locale}
-                        productName={`${shapeName} - ${pickLocale(locale, opt.nameVi, opt.name, opt.nameZh, opt.nameJa, opt.nameKo)}`}
-                        fallbackImage={shape.image}
-                        descriptionLabel={t("optionDescriptionLabel")}
-                        bestForLabel={t("optionBestForLabel")}
-                        viewImageHint={t("optionViewImageHint")}
-                        backToDetailsHint={t("optionBackToDetailsHint")}
-                        foilCheckboxLabel={t("optionFoilCheckboxLabel")}
-                        doubleSidedCheckboxLabel={t("optionDoubleSidedCheckboxLabel")}
-                        hideFoilCheckbox={opt.hideFoilCheckbox}
-                        hideDoubleSidedCheckbox={opt.hideDoubleSidedCheckbox}
-                      />
-                    </div>
-                  ))}
+            {(() => {
+              const displayMaterials = (shape.materials && shape.materials.length > 0)
+                ? shape.materials
+                : subgroup.materials;
+
+              if (!displayMaterials || displayMaterials.length === 0) return null;
+
+              return (
+                <div className="flex flex-col gap-8 mt-2">
+                  <div className="flex flex-col gap-6">
+                    {displayMaterials.map((opt) => (
+                      <div key={opt.name}>
+                        <p className="font-black text-zinc-900 text-[15px] leading-snug mb-2.5">
+                          {pickLocale(locale, opt.taglineVi, opt.tagline, opt.taglineZh, opt.taglineJa, opt.taglineKo)}
+                        </p>
+                        <MaterialFlashcard
+                          option={sanitizeOptionImages(opt)}
+                          locale={locale}
+                          productName={`${shapeName} - ${pickLocale(locale, opt.nameVi, opt.name, opt.nameZh, opt.nameJa, opt.nameKo)}`}
+                          fallbackImage={shape.image}
+                          descriptionLabel={t("optionDescriptionLabel")}
+                          bestForLabel={t("optionBestForLabel")}
+                          viewImageHint={t("optionViewImageHint")}
+                          backToDetailsHint={t("optionBackToDetailsHint")}
+                          foilCheckboxLabel={t("optionFoilCheckboxLabel")}
+                          doubleSidedCheckboxLabel={t("optionDoubleSidedCheckboxLabel")}
+                          hideFoilCheckbox={opt.hideFoilCheckbox}
+                          hideDoubleSidedCheckbox={opt.hideDoubleSidedCheckbox}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
         </div>
       </div>
 
-      {subgroup.materials && subgroup.materials.length > 0 && <MaterialGlossaryFab />}
+      {((shape.materials && shape.materials.length > 0) || (subgroup.materials && subgroup.materials.length > 0)) && (
+        <MaterialGlossaryFab />
+      )}
 
       {/* ── Quote CTA banner ── */}
       <div className="max-w-7xl mx-auto px-6 pb-16">

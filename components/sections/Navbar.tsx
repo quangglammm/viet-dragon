@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 import { Menu, X, Phone, Mail, MapPin, ChevronDown, Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles, type LucideIcon } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
@@ -9,10 +8,10 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { WipeButton } from "@/components/ui/wipe-button";
 import { cn } from "@/lib/utils";
-import { productCategories, isFastPrint, type ProductCategory, type ProductItem } from "@/data/categories";
+import { MAIN_CATEGORIES, getSubgroupsByCategory } from "@/data/subgroups-catalog";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { CATEGORY_NAMES, ITEM_NAMES } from "@/data/translations";
+import { CATEGORY_NAMES } from "@/data/translations";
 import { OfficeDesktopSubmenu } from "@/components/sections/OfficeDesktopSubmenu";
 import { OfficeMobileSubmenu } from "@/components/sections/OfficeMobileSubmenu";
 import { MarketingDesktopSubmenu } from "@/components/sections/MarketingDesktopSubmenu";
@@ -29,14 +28,6 @@ const LANGUAGES: { code: Locale; flag: string; label: string; short: string }[] 
   { code: "ja", flag: "🇯🇵", label: "日本語", short: "JA" },
   { code: "ko", flag: "🇰🇷", label: "한국어", short: "KO" },
 ];
-
-const FAST_PRINT_TAGS: Record<Locale, string> = {
-  vi: "in nhanh",
-  en: "fast",
-  zh: "快印",
-  ja: "特急",
-  ko: "당일인쇄",
-};
 
 /**
  * Floating Language Switcher rendered in topbar and navbar.
@@ -151,89 +142,7 @@ function FloatingLocaleSwitcher({
 }
 
 
-function DesktopCategoryDropdown({
-  cat,
-  locale,
-  isOpen,
-  align = "center",
-}: Readonly<{
-  cat: ProductCategory;
-  locale: Locale;
-  isOpen: boolean;
-  align?: "left" | "center" | "right";
-}>) {
-  const pathname = usePathname();
-  const [previewItem, setPreviewItem] = useState<ProductItem | null>(() => {
-    if (cat.items.length === 0) return null;
-    return cat.items.find((i) => pathname === `/products/${cat.id}/${i.id}`) ?? cat.items[0];
-  });
 
-  const itemCount = cat.items.length;
-  const isMultiCol = itemCount > 5;
-  const widthClass = isMultiCol ? "w-[560px]" : "w-[400px]";
-  const alignClass =
-    align === "left"
-      ? "left-0 translate-x-0"
-      : align === "right"
-      ? "right-0 left-auto translate-x-0"
-      : "left-1/2 -translate-x-1/2";
-
-  // No items (e.g. fast-print has its own dedicated page)
-  if (cat.items.length === 0 || previewItem === null) return null;
-
-  return (
-    <div className={cn(
-      "absolute top-full mt-1 rounded-2xl shadow-2xl border border-white/50 overflow-hidden transition-all duration-200 z-50 text-zinc-800 min-h-[350px] flex flex-col justify-center",
-      widthClass,
-      alignClass,
-      isOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-1"
-    )}>
-      {/* Layer 1: Background Image */}
-      <Image
-        src={previewItem.image}
-        alt=""
-        fill
-        sizes={isMultiCol ? "560px" : "400px"}
-        className="object-cover -z-20 transition-opacity duration-300"
-      />
-      
-      {/* Layer 2: Transparent Overlay */}
-      <div className="absolute inset-0 bg-white/70 -z-10" />
-
-      {/* Layer 3: Menu Items */}
-      <div className={cn(
-        "relative z-10 p-6",
-        isMultiCol ? "grid grid-cols-2 gap-x-6 gap-y-1" : "flex flex-col gap-1"
-      )}>
-        {cat.items.map((item) => {
-          const isActive = pathname === `/products/${cat.id}/${item.id}`;
-          return (
-            <Link
-              key={item.id}
-              href={`/products/${cat.id}/${item.id}`}
-              onMouseEnter={() => setPreviewItem(item)}
-              className={cn(
-                "px-4 py-3 text-[14px] font-medium rounded-lg transition-colors flex items-center justify-between gap-2",
-                isActive
-                  ? "bg-brand-primary/10 text-brand-primary font-bold"
-                  : "text-zinc-800 hover:text-brand-primary hover:bg-brand-primary/10"
-              )}
-            >
-              <span className={cn(isActive && "font-bold", isMultiCol && "truncate")}>
-                {pickLocale(locale, item.nameVi, item.nameEn, ITEM_NAMES[item.id]?.zh, ITEM_NAMES[item.id]?.ja, ITEM_NAMES[item.id]?.ko)}
-              </span>
-              {isFastPrint(item.id) && (
-                <span className="px-1.5 py-0.5 text-[10px] font-bold text-white bg-amber-500 rounded leading-none shadow-xs shrink-0">
-                  {FAST_PRINT_TAGS[locale] || "fast"}
-                </span>
-              )}
-            </Link>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -363,10 +272,9 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center justify-center flex-1 gap-1.5 xl:gap-3 2xl:gap-5 px-2 xl:px-4">
-            {productCategories.map((cat, idx) => {
+            {MAIN_CATEGORIES.map((cat) => {
               const Icon = iconMap[cat.icon] ?? Briefcase;
               const isActiveCat = pathname.startsWith(`/products/${cat.id}`);
-              const align = idx === 0 ? "left" : idx >= productCategories.length - 2 ? "right" : "center";
               return (
                 <div
                   key={cat.id}
@@ -417,14 +325,7 @@ export default function Navbar() {
                         isOpen={activeDesktopCat === cat.id}
                         onItemClick={() => setActiveDesktopCat(null)}
                       />
-                    ) : (
-                      <DesktopCategoryDropdown
-                        cat={cat}
-                        locale={locale}
-                        isOpen={activeDesktopCat === cat.id}
-                        align={align}
-                      />
-                    )}
+                    ) : null}
                   </div>
                 </div>
               );
@@ -470,7 +371,7 @@ export default function Navbar() {
         )}
       >
         <nav className="flex flex-col px-6 py-6 gap-2 flex-1 overflow-y-auto">
-          {productCategories.map((cat) => {
+          {MAIN_CATEGORIES.map((cat) => {
             const Icon = iconMap[cat.icon] ?? Briefcase;
             const isActiveCat = pathname.startsWith(`/products/${cat.id}`);
             return (
@@ -512,7 +413,7 @@ export default function Navbar() {
                 ) : (
                   <div className="pl-6 pr-4 py-2 flex flex-col gap-2 border-l-2 border-brand-primary/20 ml-4 my-1">
                     <ul className="flex flex-col gap-1">
-                      {cat.items.map((item) => {
+                      {getSubgroupsByCategory(cat.id).map((item) => {
                         const isActive = pathname === `/products/${cat.id}/${item.id}`;
                         return (
                           <li key={item.id}>
@@ -524,7 +425,7 @@ export default function Navbar() {
                                 isActive ? "text-brand-primary font-bold" : "text-zinc-700"
                               )}
                             >
-                              {pickLocale(locale, item.nameVi, item.nameEn, ITEM_NAMES[item.id]?.zh, ITEM_NAMES[item.id]?.ja, ITEM_NAMES[item.id]?.ko)}
+                              {pickLocale(locale, item.titleVi, item.titleEn, item.titleZh, item.titleJa, item.titleKo)}
                             </Link>
                           </li>
                         );

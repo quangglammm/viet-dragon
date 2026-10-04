@@ -6,8 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { productCategories } from "@/data/categories";
-import { getSubgroupsByCategory } from "@/data/subgroups-catalog";
+import { MAIN_CATEGORIES, getSubgroupsByCategory } from "@/data/subgroups-catalog";
 import { TET_SUBMENU_COLUMNS } from "@/data/tet-menu";
 import { CATEGORY_NAMES } from "@/data/translations";
 
@@ -19,12 +18,12 @@ export default function ShopCategories() {
     <section className="relative w-full bg-white py-10 lg:py-12 border-y border-zinc-100">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-4 lg:gap-6">
-          {productCategories.map((cat, i) => {
+          {MAIN_CATEGORIES.map((cat, i) => {
             const name = pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko);
             const count =
               cat.id === "tet"
                 ? TET_SUBMENU_COLUMNS.flatMap((c) => c.groups).length
-                : getSubgroupsByCategory(cat.id).length || cat.items.length;
+                : getSubgroupsByCategory(cat.id).length;
             return (
               <motion.div
                 key={cat.id}

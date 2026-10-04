@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ArrowRight, Layers, Sparkles } from "lucide-react";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
@@ -21,6 +21,9 @@ const SHAPE_ALIASES: Record<string, string> = {
   "hashtag-tay-cam-roi": "hashtag-tay-cam-roi",
   "decal-large-format": "decal-kho-lon",
   "decal-kho-lon": "decal-kho-lon",
+  "canvas-high-quality": "tranh-canvas",
+  "tranh-canvas": "tranh-canvas",
+  "tranh-canvas-chat-luong-cao": "tranh-canvas",
   // to-roi
   "flyer-budget": "to-roi-gia-re",
   "to-roi-gia-re": "to-roi-gia-re",
@@ -116,6 +119,22 @@ const SHAPE_ALIASES: Record<string, string> = {
   "bao-li-xi-ep-kim": "bao-li-xi-ep-kim",
   "invitation-event": "thiep-su-kien",
   "thiep-su-kien": "thiep-su-kien",
+  // danh-thiep
+  "card-standard": "danh-thiep-chuan",
+  "danh-thiep-chuan": "danh-thiep-chuan",
+  // ao-thun
+  "tshirt-polo": "ao-thun-co-tru",
+  "ao-thun-co-tru": "ao-thun-co-tru",
+  "tshirt-round-neck": "ao-thun-co-tron",
+  "ao-thun-co-tron": "ao-thun-co-tron",
+  // giay-ghi-chu
+  "note-block": "giay-ghi-chu-block",
+  "giay-ghi-chu-block": "giay-ghi-chu-block",
+  // giay-tieu-de
+  "letterhead-short-run": "giay-tieu-de-it",
+  "giay-tieu-de-it": "giay-tieu-de-it",
+  "letterhead-bulk": "giay-tieu-de-lon",
+  "giay-tieu-de-lon": "giay-tieu-de-lon",
 };
 
 export function SubgroupShapesView({
@@ -127,6 +146,7 @@ export function SubgroupShapesView({
   subgroup: SubgroupCategory;
   categoryName: string;
 }>) {
+  const router = useRouter();
   const isVi = locale === "vi";
   const [highlightedShapeId, setHighlightedShapeId] = useState<string | null>(null);
 
@@ -297,9 +317,13 @@ export function SubgroupShapesView({
                 key={shape.id}
                 id={shape.id}
                 onClick={() => {
-                  setHighlightedShapeId(shape.id);
-                  if (typeof window !== "undefined") {
-                    window.history.replaceState(null, "", `#${shape.id}`);
+                  if (isHighlighted) {
+                    router.push(detailHref);
+                  } else {
+                    setHighlightedShapeId(shape.id);
+                    if (typeof window !== "undefined") {
+                      window.history.replaceState(null, "", `#${shape.id}`);
+                    }
                   }
                 }}
                 className={cn(

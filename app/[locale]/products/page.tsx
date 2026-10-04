@@ -6,10 +6,11 @@ import {
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { productCategories, showcaseImages } from "@/data/categories";
-import { SHOWCASE_LABELS, CATEGORY_NAMES, CATEGORY_DESCS, ITEM_NAMES } from "@/data/translations";
+import { pickLocale } from "@/lib/locale";
+import { showcaseImages } from "@/data/categories";
+import { MAIN_CATEGORIES, getSubgroupsByCategory } from "@/data/subgroups-catalog";
+import { SHOWCASE_LABELS, CATEGORY_NAMES, CATEGORY_DESCS } from "@/data/translations";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 
@@ -158,10 +159,11 @@ export default async function ProductsPage({
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {productCategories.map((cat) => {
+            {MAIN_CATEGORIES.map((cat) => {
               const Icon = iconMap[cat.icon] ?? Briefcase;
               const name = pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko);
               const description = pickLocale(locale, cat.descriptionVi, cat.description, CATEGORY_DESCS[cat.id]?.zh, CATEGORY_DESCS[cat.id]?.ja, CATEGORY_DESCS[cat.id]?.ko);
+              const subgroups = getSubgroupsByCategory(cat.id);
               return (
                 <div key={cat.id} className="group block">
                   <div className="h-full rounded-2xl border border-zinc-100 overflow-hidden hover:border-zinc-300 hover:shadow-lg transition-all duration-300 bg-white flex flex-col">
@@ -200,13 +202,13 @@ export default async function ProductsPage({
                         </Link>
                         {/* Subcategory buttons: visible on mobile, smooth slide-up reveal on desktop hover */}
                         <div className="flex flex-wrap gap-2 pt-1 opacity-100 lg:opacity-0 lg:-translate-y-2 lg:pointer-events-none lg:group-hover:opacity-100 lg:group-hover:translate-y-0 lg:group-hover:pointer-events-auto transition-all duration-300">
-                          {cat.items.map((item) => (
+                          {subgroups.map((sub) => (
                             <Link
-                              key={item.id}
-                              href={`/products/${cat.id}/${item.id}`}
+                              key={sub.id}
+                              href={`/products/${cat.id}/${sub.id}`}
                               className="px-3.5 py-1.5 bg-zinc-50 hover:bg-brand-soft hover:text-brand-primary border border-zinc-200 hover:border-brand-primary/30 text-zinc-700 text-xs font-semibold rounded-full transition-all duration-200"
                             >
-                              {pickLocale(locale, item.nameVi, item.nameEn, ITEM_NAMES[item.id]?.zh, ITEM_NAMES[item.id]?.ja, ITEM_NAMES[item.id]?.ko)}
+                              {pickLocale(locale, sub.titleVi, sub.titleEn, sub.titleZh, sub.titleJa, sub.titleKo)}
                             </Link>
                           ))}
                         </div>
@@ -221,14 +223,14 @@ export default async function ProductsPage({
                         </Link>
                         <span className="text-xs text-zinc-400 font-medium">
                           {locale === "vi"
-                            ? `${cat.items.length} sản phẩm`
+                            ? `${subgroups.length} sản phẩm`
                             : locale === "zh"
-                            ? `${cat.items.length} 款产品`
+                            ? `${subgroups.length} 款产品`
                             : locale === "ja"
-                            ? `${cat.items.length} 製品`
+                            ? `${subgroups.length} 製品`
                             : locale === "ko"
-                            ? `${cat.items.length} 개 제품`
-                            : `${cat.items.length} products`}
+                            ? `${subgroups.length} 개 제품`
+                            : `${subgroups.length} products`}
                         </span>
                       </div>
                     </div>

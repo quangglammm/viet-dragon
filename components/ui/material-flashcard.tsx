@@ -5,7 +5,7 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import {
   Layers, Sparkles, Palette, Award, Gem, Feather, PenLine, Minimize2, StickyNote,
-  Stamp, ShieldCheck, Briefcase, Gift, ArrowLeftRight,
+  Stamp, ShieldCheck, Briefcase, Gift, ArrowLeftRight, ImagePlus,
   type LucideIcon,
 } from "lucide-react";
 import type { ProductOption } from "@/data/categories";
@@ -20,6 +20,56 @@ const optionIconMap: Record<string, LucideIcon> = {
   Layers, Sparkles, Palette, Award, Gem, Feather, PenLine, Minimize2, StickyNote,
   Stamp, ShieldCheck, Briefcase, Gift,
 };
+
+const SLOT_LABEL: Record<string, { main: string; detail: string }> = {
+  vi: { main: "Ảnh chính", detail: "Ảnh chi tiết" },
+  en: { main: "Main photo", detail: "Detail photo" },
+  zh: { main: "主图", detail: "细节图" },
+  ja: { main: "メイン写真", detail: "詳細写真" },
+  ko: { main: "대표 사진", detail: "상세 사진" },
+};
+
+interface ImageSlotProps {
+  src?: string;
+  alt: string;
+  aspectClass: string;
+  sizes: string;
+  isMain?: boolean;
+  locale?: string;
+}
+
+function ImageSlot({ src, alt, aspectClass, sizes, isMain, locale = "vi" }: Readonly<ImageSlotProps>) {
+  const [hasError, setHasError] = useState(false);
+  const labels = SLOT_LABEL[locale] ?? SLOT_LABEL.vi;
+
+  const showPlaceholder = !src || hasError;
+
+  return (
+    <div className={cn("relative w-full h-full bg-zinc-100 overflow-hidden", aspectClass)}>
+      {showPlaceholder ? (
+        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-zinc-50 via-zinc-100 to-zinc-200/50 p-2 select-none">
+          <div className="flex flex-col items-center justify-center gap-1.5 text-zinc-400">
+            <div className="p-2 rounded-xl bg-white/80 shadow-2xs border border-zinc-200/60">
+              <ImagePlus size={isMain ? 22 : 16} strokeWidth={1.5} className="text-zinc-400" />
+            </div>
+            <span className="text-[10px] font-medium tracking-wide text-zinc-400">
+              {isMain ? labels.main : labels.detail}
+            </span>
+          </div>
+        </div>
+      ) : (
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes={sizes}
+          className="object-cover"
+          onError={() => setHasError(true)}
+        />
+      )}
+    </div>
+  );
+}
 
 const ZALO_BUTTON_LABEL: Record<string, string> = {
   vi: "Tư vấn Zalo",
@@ -249,7 +299,6 @@ export function MaterialFlashcard({
   option,
   locale,
   productName,
-  fallbackImage,
   descriptionLabel,
   bestForLabel,
   viewImageHint,
@@ -273,29 +322,28 @@ export function MaterialFlashcard({
 
   let rawImages: string[] = [];
   if (option.pureImages && option.pureImages.length > 0) {
-    rawImages = option.pureImages;
+    rawImages = option.pureImages.map((s) => s?.trim() ?? "");
   } else if (option.images && option.images.length > 0) {
-    rawImages = option.images;
+    rawImages = option.images.map((s) => s?.trim() ?? "");
   } else if (option.pureImage) {
-    rawImages = [option.pureImage];
+    rawImages = [option.pureImage.trim()];
   } else if (option.image) {
-    rawImages = [option.image];
-  } else if (fallbackImage) {
-    rawImages = [fallbackImage];
+    rawImages = [option.image.trim()];
   }
 
-  // Ensure 3 images are always present so the 3-image collage style (left 1 large, right 2 stacked) is ALWAYS active
-  let cardImages = [...rawImages];
-  if (cardImages.length === 1) {
-    cardImages = [cardImages[0], cardImages[0], cardImages[0]];
-  } else if (cardImages.length === 2) {
-    cardImages = [cardImages[0], cardImages[1], cardImages[0]];
+  // Ensure 3 slots are always present for the collage
+  let cardImages: [string, string, string] = ["", "", ""];
+  if (rawImages.length === 1) {
+    cardImages = [rawImages[0], rawImages[0], rawImages[0]];
+  } else if (rawImages.length === 2) {
+    cardImages = [rawImages[0], rawImages[1], rawImages[0]];
+  } else if (rawImages.length >= 3) {
+    cardImages = [rawImages[0], rawImages[1], rawImages[2]];
   }
 
   return (
     <div className="w-full rounded-2xl border border-zinc-100 overflow-hidden">
-      {/* Flip control — material photo view (default) <-> description/best-for view. Holds no
-          interactive children, so the whole card face can stay one native button. */}
+      {/* Flip control — material photo view (default) <-> description/best-for view. */}
       <button
         type="button"
         onClick={() => setFlipped((f) => !f)}
@@ -309,35 +357,37 @@ export function MaterialFlashcard({
           style={{ transformStyle: "preserve-3d" }}
           className="relative"
         >
-          {/* Front face — image layer (hiển thị ảnh trước, mặc định) */}
+          {/* Front face — image layer */}
           <div
-            className="relative w-full aspect-square sm:aspect-square lg:aspect-auto lg:h-[320px] max-h-[440px] lg:max-h-none bg-zinc-100 flex flex-col overflow-hidden"
+            className="relative w-full aspect-[2/1] bg-zinc-100 flex flex-col overflow-hidden"
             style={{ backfaceVisibility: "hidden" }}
           >
-            <div
-              className={cn(
-                "grid w-full h-full gap-0.5 bg-white",
-                cardImages.length >= 3 ? "grid-cols-1 lg:grid-cols-2 lg:grid-rows-2" : "grid-cols-1"
-              )}
-            >
-              {cardImages.slice(0, 4).map((img, idx) => (
-                <div
-                  key={idx}
-                  className={cn(
-                    "relative w-full h-full bg-zinc-100",
-                    idx > 0 && "hidden lg:block",
-                    cardImages.length === 3 && idx === 0 && "lg:row-span-2"
-                  )}
-                >
-                  <Image
-                    src={img}
-                    alt={`${productName} — ${name} - ${idx}`}
-                    fill
-                    sizes="(min-width: 1024px) 25vw, 100vw"
-                    className="object-cover"
-                  />
-                </div>
-              ))}
+            <div className="grid grid-cols-2 w-full h-full gap-0.5 bg-white">
+              <ImageSlot
+                src={cardImages[0]}
+                alt={`${productName} — ${name} - 0`}
+                aspectClass="aspect-square"
+                sizes="(min-width: 1024px) 25vw, 50vw"
+                isMain
+                locale={locale}
+              />
+
+              <div className="grid grid-rows-2 gap-0.5 w-full h-full">
+                <ImageSlot
+                  src={cardImages[1]}
+                  alt={`${productName} — ${name} - 1`}
+                  aspectClass="aspect-[2/1]"
+                  sizes="(min-width: 1024px) 25vw, 50vw"
+                  locale={locale}
+                />
+                <ImageSlot
+                  src={cardImages[2]}
+                  alt={`${productName} — ${name} - 2`}
+                  aspectClass="aspect-[2/1]"
+                  sizes="(min-width: 1024px) 25vw, 50vw"
+                  locale={locale}
+                />
+              </div>
             </div>
             <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-brand-dark/90 via-brand-dark/30 to-transparent pointer-events-none" />
             <div className="absolute inset-x-0 bottom-0 px-5 py-4 flex items-center gap-2.5">
@@ -347,50 +397,50 @@ export function MaterialFlashcard({
             </div>
           </div>
 
-          {/* Back face — description + best-for bullets (lật thẻ để xem đặc tính chi tiết) */}
-          <div
-            className="absolute inset-0 bg-white flex flex-col justify-between overflow-y-auto"
-            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-          >
-            <div className="flex items-center gap-2.5 px-5 py-4 bg-zinc-50 border-b border-zinc-100">
-              <OptIcon size={16} className="text-brand-primary shrink-0" />
-              <h3 className="font-black text-zinc-900 text-base line-clamp-2 flex-1">{name}</h3>
-              <ArrowLeftRight size={14} strokeWidth={2} className="text-zinc-300 shrink-0" />
-            </div>
-            <div className="px-5 py-4 flex flex-col gap-4 flex-1 justify-between">
-              <div>
-                <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
-                  {descriptionLabel}
-                </span>
-                <ul className="mt-2 flex flex-col gap-2">
-                  {description.map((line, i) => {
-                    const TraitIcon = materialTraits[option.descriptionTraits[i]]?.icon ?? Layers;
-                    return (
-                      <li key={line} className="flex items-start gap-2.5 text-sm text-zinc-700 leading-relaxed">
-                        <TraitIcon size={14} strokeWidth={1.75} className="mt-0.5 text-brand-primary shrink-0" />
+            {/* Back face — description + best-for bullets */}
+            <div
+              className="absolute inset-0 bg-white flex flex-col justify-between overflow-y-auto"
+              style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+            >
+              <div className="flex items-center gap-2.5 px-5 py-4 bg-zinc-50 border-b border-zinc-100">
+                <OptIcon size={16} className="text-brand-primary shrink-0" />
+                <h3 className="font-black text-zinc-900 text-base line-clamp-2 flex-1">{name}</h3>
+                <ArrowLeftRight size={14} strokeWidth={2} className="text-zinc-300 shrink-0" />
+              </div>
+              <div className="px-5 py-4 flex flex-col gap-4 flex-1 justify-between">
+                <div>
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
+                    {descriptionLabel}
+                  </span>
+                  <ul className="mt-2 flex flex-col gap-2">
+                    {description.map((line, i) => {
+                      const TraitIcon = materialTraits[option.descriptionTraits?.[i]]?.icon ?? Layers;
+                      return (
+                        <li key={line} className="flex items-start gap-2.5 text-sm text-zinc-700 leading-relaxed">
+                          <TraitIcon size={14} strokeWidth={1.75} className="mt-0.5 text-brand-primary shrink-0" />
+                          <span>{line}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+                <div>
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
+                    {bestForLabel}
+                  </span>
+                  <ul className="mt-2 flex flex-col gap-1.5">
+                    {bestFor.map((line) => (
+                      <li key={line} className="flex items-start gap-2 text-sm text-zinc-700 leading-relaxed">
+                        <span className="mt-2 size-1 rounded-full bg-brand-primary shrink-0" />
                         <span>{line}</span>
                       </li>
-                    );
-                  })}
-                </ul>
-              </div>
-              <div>
-                <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
-                  {bestForLabel}
-                </span>
-                <ul className="mt-2 flex flex-col gap-1.5">
-                  {bestFor.map((line) => (
-                    <li key={line} className="flex items-start gap-2 text-sm text-zinc-700 leading-relaxed">
-                      <span className="mt-2 size-1 rounded-full bg-brand-primary shrink-0" />
-                      <span>{line}</span>
-                    </li>
-                  ))}
-                </ul>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
-        </motion.div>
-      </button>
+          </motion.div>
+        </button>
 
       {/* Form quy cách sản phẩm (Kích thước phổ biến, Kỹ thuật in, Thành phẩm, Cán màng) */}
       <div className="flex flex-col gap-4 p-5 bg-white border-t border-zinc-100">
