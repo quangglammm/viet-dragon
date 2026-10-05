@@ -11,8 +11,7 @@ const EXCLUDE_PUBLIC_FROM_TRACE = ["./public/**/*"];
 
 const nextConfig: NextConfig = {
   outputFileTracingExcludes: {
-    "/api/**": EXCLUDE_PUBLIC_FROM_TRACE,
-    "/admin/**": EXCLUDE_PUBLIC_FROM_TRACE,
+    "**/*": EXCLUDE_PUBLIC_FROM_TRACE,
   },
   images: {
     formats: ["image/avif", "image/webp"],
