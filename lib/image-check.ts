@@ -1,22 +1,12 @@
-import fs from "node:fs";
-import path from "node:path";
 import type { ProductOption } from "@/data/categories";
 
 /**
- * Checks whether an image path exists on disk under public/ (or is a valid external URL).
+ * Checks whether an image path is a valid non-empty string URL or path.
+ * Avoids node:fs to prevent Next.js NFT from tracing and bundling the entire public/ directory.
  */
 export function checkPublicImageExists(imgUrl?: string): boolean {
   if (!imgUrl || typeof imgUrl !== "string") return false;
-  if (imgUrl.startsWith("http://") || imgUrl.startsWith("https://")) return true;
-
-  try {
-    const relativePath = imgUrl.startsWith("/") ? imgUrl.slice(1) : imgUrl;
-    const cleanPath = relativePath.split("?")[0].split("#")[0];
-    const fullPath = path.join(process.cwd(), "public", cleanPath);
-    return fs.existsSync(fullPath);
-  } catch {
-    return false;
-  }
+  return imgUrl.trim().length > 0;
 }
 
 /**
