@@ -135,6 +135,16 @@ const SHAPE_ALIASES: Record<string, string> = {
   "giay-tieu-de-it": "giay-tieu-de-it",
   "letterhead-bulk": "giay-tieu-de-lon",
   "giay-tieu-de-lon": "giay-tieu-de-lon",
+  // nhan-dan
+  "label-sticker-sheets": "sticker-sheets",
+  "sticker-sheets": "sticker-sheets",
+  "nhan-sticker-dang-to": "sticker-sheets",
+  "label-uv-dtf": "decal-uv-dtf",
+  "decal-uv-dtf": "decal-uv-dtf",
+  "nhan-decal-uv-noi": "decal-uv-dtf",
+  "label-warranty-tamper": "decal-tem-be",
+  "decal-tem-be": "decal-tem-be",
+  "nhan-decal-tem-be": "decal-tem-be",
 };
 
 export function SubgroupShapesView({

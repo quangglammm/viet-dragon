@@ -1031,6 +1031,379 @@ export const CATALOGUE_MATERIALS: ProductOption[] = [
   }
 ];
 
+export const LABEL_MATERIALS: ProductOption[] = [
+  {
+    "icon": "Layers",
+    "name": "Paper Decal Labels",
+    "nameVi": "Nhãn decal giấy",
+    "nameZh": "铜版纸不干胶贴纸",
+    "nameJa": "上質紙・アート紙シール",
+    "nameKo": "아트지 종이 데칼 라벨",
+    "tagline": "Cost-effective self-adhesive label solution with sharp color fidelity and strong adhesion for dry packaging and boxes.",
+    "taglineVi": "Giải pháp in tem nhãn dán tiết kiệm, bám dính chắc chắn và lên màu sắc nét cho bao bì hộp, chai lọ khô ráo.",
+    "taglineZh": "经济实惠的自粘标签解决方案，色彩鲜艳，附着力强，适用于干燥包装盒与各类瓶罐。",
+    "taglineJa": "コストパフォーマンスに優れ、鮮やかな発色と強力な粘着力で乾燥した商品パッケージや箱に最適な紙製シール。",
+    "taglineKo": "선명한 인쇄 발색과 강력한 접착력을 자랑하는 경제적인 종이 스티커로 건조한 패키지 박스 및 용기에 이상적입니다.",
+    "description": [
+      "High-grade coated Couche or woodfree adhesive paper stock with strong, uniform pressure-sensitive glue backing",
+      "Optional glossy or matte lamination overlay protects print against scratches and enhances visual contrast",
+      "Precision die-cut or kiss-cut on sheets/rolls in any custom contour: circles, ovals, rectangles, or intricate shapes"
+    ],
+    "descriptionVi": [
+      "Chất liệu decal giấy Couche hoặc Ford tráng phủ cao cấp, có sẵn lớp keo dán bám chắc mọi bề mặt phẳng",
+      "Gia công cán màng bóng hoặc màng mờ bảo vệ mực in chống trầy xước và tăng tính thẩm mỹ",
+      "Hỗ trợ bế đứt từng con hoặc bế demi theo mọi hình tròn, oval, vuông, elip và biên dạng theo yêu cầu"
+    ],
+    "descriptionZh": [
+      "精选高白度铜版或道林不干胶材料，背胶强力均匀，贴合牢固不易脱落",
+      "可覆光膜或哑膜保护层，有效防刮擦磨损，大幅提升产品视觉质感",
+      "支持模切单张或半穿排版，圆形、方形、椭圆及异形轮廓均可高精度精密成型"
+    ],
+    "descriptionJa": [
+      "高白色コート紙・上質紙タック紙を使用。強力で均一な粘着層があらゆる平滑面にしっかり密着",
+      "グロス（光沢）またはマット（艶消し）PPラミネート加工により、耐擦過性と高級感を向上",
+      "丸型、楕円、四角形、自由形状の型抜き（ハーフカット／全抜き）に高精度で対応"
+    ],
+    "descriptionKo": [
+      "고품질 아트지 또는 모조지 스티커 원단으로 뒷면 점착력이 강력하고 균일하여 부착력이 우수합니다",
+      "유광 또는 무광 라미네이팅 코팅을 적용하여 인쇄면 스크래치를 방지하고 시각적 완성도를 높입니다",
+      "원형, 사각형, 타원형 및 자유로운 캐릭터 모양까지 정밀한 반칼(키스컷) 또는 완칼 도무송 지원"
+    ],
+    "descriptionTraits": [
+      "smooth-base",
+      "glossy-coat",
+      "digital-precision"
+    ],
+    "bestFor": [
+      "Labels for dry food packaging, confectionery, tea, coffee boxes, and pharmaceuticals",
+      "Imported product supplementary labels, logistics barcodes, and QR code tracking stickers",
+      "Gift box sealing stickers, paper cup logos, and branded takeout bags"
+    ],
+    "bestForVi": [
+      "Tem nhãn dán bao bì thực phẩm khô, hộp bánh kẹo, trà, cà phê, dược phẩm",
+      "Nhãn phụ hàng nhập khẩu, tem mã vạch barcode, QR code truy xuất nguồn gốc",
+      "Sticker niêm phong hộp quà, logo dán ly giấy, túi giấy kraft thương hiệu"
+    ],
+    "bestForZh": [
+      "干货食品包装、糕点糖果盒、茶叶咖啡罐及日常医药保健品标签",
+      "进口商品中文背标、物流条形码、防伪追溯二维码贴纸",
+      "礼品封口贴、纸杯及牛皮纸外卖袋品牌宣传标识贴"
+    ],
+    "bestForJa": [
+      "乾燥食品パッケージ、製菓箱、紅茶・コーヒー豆キャニスター、医薬品ラベル",
+      "輸入商品の日本語表示ラベル、商品管理バーコード、QRコード追跡シール",
+      "ギフトボックス封かんシール、テイクアウト用ペーパーカップ＆紙袋ロゴシール"
+    ],
+    "bestForKo": [
+      "건조 식품 패키지, 제과제빵 박스, 원두·티 패키지 및 의약외품 라벨",
+      "수입 상품 한글 표기 스티커, 물류 바코드 및 QR코드 이력 추적 라벨",
+      "선물 포장 봉인 스티커, 종이컵 및 배달 테이크아웃 쇼핑백 브랜드 스티커"
+    ],
+    "pureImage": "/images/product/decalgiay.webp",
+    "pureImages": [
+      "/images/product/decalgiay.webp",
+      "/images/product/decalgiay2.webp",
+      "/images/product/decalgiay3.webp"
+    ]
+  },
+  {
+    "icon": "Shield",
+    "name": "Plastic / PVC Decal Labels",
+    "nameVi": "Nhãn decal nhựa",
+    "nameZh": "防水塑料不干胶标签",
+    "nameJa": "ユポ・PVC耐水プラシール",
+    "nameKo": "방수 플라스틱 데칼 라벨",
+    "tagline": "100% waterproof and tear-proof synthetic film labels engineered for refrigerated, freezer, and cosmetic environments.",
+    "taglineVi": "Kháng nước 100%, không rách, chịu môi trường tủ đông, ẩm ướt và hóa mỹ phẩm cao cấp.",
+    "taglineZh": "100%防水抗撕裂塑料薄膜标签，专为冷藏冷冻、高湿及日化美妆环境定制。",
+    "taglineJa": "100%完全防水・耐破断性を誇る合成樹脂ラベル。冷凍冷蔵、多湿環境や化粧品・日用品に最適。",
+    "taglineKo": "100% 완전 방수 및 찢어짐 없는 플라스틱 필름 라벨로 냉장·냉동 보관 및 코스메틱 용기에 탁월합니다.",
+    "description": [
+      "Tear-proof synthetic PP, PVC, or clear/opaque film with permanent waterproof adhesive that never dissolves in moisture",
+      "Withstands freezer temperatures down to -20°C and resists friction, oils, and chemical cosmetics",
+      "Available in clear ultra-transparent film for seamless 'no-label' look or solid milky-white film for rich contrast"
+    ],
+    "descriptionVi": [
+      "Chất liệu nhựa PP, PVC hoặc Decal sữa/trong suốt dẻo dai, chống thấm nước tuyệt đối và không bị rách rách khi xé",
+      "Chịu được nhiệt độ lạnh sâu của tủ đông (-20°C) và môi trường cọ xát của chai lọ dầu gội, mỹ phẩm, nước ngọt",
+      "Lựa chọn decal nhựa trong suốt nhìn thấu sản phẩm hoặc decal nhựa sữa hiển thị màu in trung thực rực rỡ"
+    ],
+    "descriptionZh": [
+      "采用强韧PP、PVC或白墨透明合成膜，抗拉扯耐撕裂，遇水不褪色不脱胶",
+      "耐受-20°C超低温冷冻及潮湿水浸，有效抵御洗护用品油脂及日化溶剂侵蚀",
+      "提供通透无痕的超透膜或色泽饱满纯正的乳白膜，完美融入瓶身设计"
+    ],
+    "descriptionJa": [
+      "耐水性・引き裂き強度に優れたPP・PVC・白PET・透明フィルムを採用。水濡れでも剥がれずふやけない",
+      "-20℃の冷凍庫環境や結露、バスルームのシャンプー・コスメ油分にもしっかり耐える高性能",
+      "中身が透けて見える高透明クリアフィルムと、発色が鮮やかな乳白フィルムから選択可能"
+    ],
+    "descriptionKo": [
+      "질기고 견고한 PP·PVC 및 유포지·투명 필름 원단으로 수분에 젖거나 찢어지지 않는 완벽한 내구성",
+      "영하 20°C 냉동실 및 결로 환경, 샴푸·화장품의 오일과 화학 성분에도 끄떡없는 강력 방수 점착",
+      "용기 본연의 디자인을 살리는 고투명 원단 또는 쨍하고 선명한 발색의 백색 유포지 중 선택 가능"
+    ],
+    "descriptionTraits": [
+      "waterproof-durability",
+      "smooth-base",
+      "glossy-coat"
+    ],
+    "bestFor": [
+      "Chilled beverage bottles, beer, cold tea drinks, and frozen food packaging",
+      "Shampoo, shower gel, skincare bottles, and bathroom cosmetic items",
+      "Outdoor equipment, machinery compliance labels, and detergent containers"
+    ],
+    "bestForVi": [
+      "Tem dán chai lọ nước ngọt, bia, trà sữa ướp lạnh, thực phẩm đông lạnh",
+      "Nhãn dầu gội, sữa tắm, kem dưỡng da, mỹ phẩm tiếp xúc môi trường phòng tắm",
+      "Tem ngoài trời, máy móc thiết bị chịu mưa nắng, hóa chất tẩy rửa"
+    ],
+    "bestForZh": [
+      "冷藏饮品、冰镇啤酒、冷泡茶及速冻生鲜食品包装标签",
+      "沐浴露、洗发水、护肤品及潮湿卫浴环境下的个人护理产品",
+      "户外机械设备标贴、防水指示标签及日化清洁洗涤剂瓶身"
+    ],
+    "bestForJa": [
+      "清涼飲料水ボトル、ビール、冷蔵チルドスイーツ、冷凍食品パッケージ",
+      "シャンプー、ボディソープ、スキンケアコスメなど水回り用品ラベル",
+      "屋外機器・精密機械の定格銘板、耐候性ステッカー、洗剤ボトル"
+    ],
+    "bestForKo": [
+      "냉장 음료 페트병, 캔맥주, 콜드브루 커피 및 냉동 수산·정육 식품 라벨",
+      "욕실에서 사용하는 샴푸, 바디워시, 기초 스킨케어 및 코스메틱 용기",
+      "야외 노출 산업용 기기 라벨, 방수 주의 경고 스티커, 세제 용기"
+    ],
+    "pureImage": "/images/product/decalnhua.webp",
+    "pureImages": [
+      "/images/product/decalnhua.webp",
+      "/images/product/decalnhua2.webp",
+      "/images/product/decalnhua3.webp"
+    ]
+  },
+  {
+    "icon": "Leaf",
+    "name": "Kraft Paper Decal Labels",
+    "nameVi": "Nhãn decal giấy Kraft",
+    "nameZh": "复古牛皮纸不干胶标签",
+    "nameJa": "クラフト紙シール",
+    "nameKo": "크라프트지 데칼 라벨",
+    "tagline": "Rustic vintage brown paper with natural eco-friendly vibes, ideal for organic, handmade, and artisanal brands.",
+    "taglineVi": "Chất giấy nâu mộc mạc cổ điển, thân thiện môi trường, tôn vinh thương hiệu handmade và organic.",
+    "taglineZh": "质朴复古的自然棕褐色牛皮纸，天然环保质感，专为手作农品与有机有机品牌定制。",
+    "taglineJa": "温かみのある素朴なブラウンクラフト地。環境配慮とヴィンテージ感を醸し出すオーガニック＆ハンドメイド向けシール。",
+    "taglineKo": "따뜻하고 내추럴한 브라운 질감으로 친환경 감성과 오가닉·수제 핸드메이드 브랜드의 가치를 높여줍니다.",
+    "description": [
+      "Natural brown virgin kraft stock with authentic fibrous grain and strong permanent self-adhesive glue layer",
+      "Distinctive vintage earthy tone communicates organic authenticity, zero-waste consciousness, and artisanal charm",
+      "Exceptional print result with bold black or muted vintage colors, easily kiss-cut into circles, scalloped borders, or crests"
+    ],
+    "descriptionVi": [
+      "Giấy Kraft nâu tự nhiên mộc mạc, độ dẻo dai tốt cùng lớp keo acrylic bám dính chắc chắn trên bề mặt giấy, thủy tinh, nhôm",
+      "Màu sắc nâu hoài cổ đặc trưng tạo cảm giác thân thiện môi trường, an lành và giàu tính thủ công cao cấp",
+      "In mực đen tối giản hoặc in màu sắc vintage sắc nét, hỗ trợ bế theo mọi khuôn dáng viền tròn, răng cưa độc đáo"
+    ],
+    "descriptionZh": [
+      "原色木浆牛皮纸基材，纸纹自然质朴，配备高粘度压敏胶，牢固贴合纸盒、玻璃瓶与金属罐",
+      "经典复古大地色系，传递天然、健康、环保与纯手工精心制作的品牌温度",
+      "纯黑极简印刷或复古复色印刷表现出众，支持齿轮边、圆形、波浪边等各类个性化异形模切"
+    ],
+    "descriptionJa": [
+      "未漂白の天然パルプを使用したクラフトタック紙。ガラス瓶、紙箱、アルミ缶に強く密着する高性能接着剤",
+      "素材感あふれるナチュラルな茶色地が、サステナブル＆クラフトマンシップの温もりを演出",
+      "モノクロ単色印刷やアースカラー印刷と好相性。波型やスカラップなどこだわりの抜き型にも柔軟対応"
+    ],
+    "descriptionKo": [
+      "천연 펄프의 거친 결이 살아있는 브라운 크라프트 원단에 유리·종이·캔에 잘 붙는 강력 점착제 적용",
+      "내추럴한 어반 빈티지 브라운 톤이 에코 프렌들리, 오가닉 푸드, 수제 명품의 진정성을 전달",
+      "블랙 1도 미니멀 인쇄 및 빈티지 컬러 인쇄에 최적화되어 있으며 원형·물결 테두리 등 자유로운 톰슨 가공 가능"
+    ],
+    "descriptionTraits": [
+      "natural-grain",
+      "eco-friendly",
+      "soft-light"
+    ],
+    "bestFor": [
+      "Artisanal honey jars, organic nuts, aromatherapy candles, essential oils, and handmade soaps",
+      "Specialty roasted coffee bags, dried herbal tea tins, and farm-fresh organic produce",
+      "Kraft stand-up pouches, recycled gift packaging, and retro vintage craft products"
+    ],
+    "bestForVi": [
+      "Nhãn dán hũ hạt dinh dưỡng, mật ong, tinh dầu, nến thơm handmade, xà bông thủ công",
+      "Bao bì cà phê mộc rang xay, trà hoa thảo mộc, nông sản sạch organic",
+      "Tem dán túi zip giấy kraft, hộp quà tặng tái chế và phong cách mộc mạc vintage"
+    ],
+    "bestForZh": [
+      "手作蜂蜜罐、坚果零食瓶、香薰精油蜡烛、冷制手工皂标签",
+      "精品单品手冲咖啡豆袋、花草草本茶罐、生态有机绿色农产品",
+      "牛皮纸自立拉链袋、环保瓦楞礼品盒及复古文艺文创产品包装"
+    ],
+    "bestForJa": [
+      "オーガニック蜂蜜、ナッツ・ドライフルーツ瓶、アロマキャンドル、手作り無添加石鹸",
+      "自家焙煎スペシャルティコーヒー袋、ハーブティー缶、産直有機農産物",
+      "クラフトジップスタンド袋、再生段ボールギフト箱、ヴィンテージ風雑貨"
+    ],
+    "bestForKo": [
+      "수제 꿀병, 견과류 보틀, 아로마 캔들, 에센셜 오일, 천연 수제 비누",
+      "스페셜티 로스팅 원두 파우치, 수제 허브차 틴케이스, 유기농 친환경 농산물",
+      "크라프트 지퍼백, 재생지 선물 패키지 및 빈티지 레트로 감성 굿즈"
+    ],
+    "pureImage": "/images/product/decalgiaykraft.webp",
+    "pureImages": [
+      "/images/product/decalgiaykraft.webp",
+      "/images/product/decalgiaykraft2.webp",
+      "/images/product/decalgiaykraft3.webp"
+    ]
+  },
+  {
+    "icon": "Palette",
+    "name": "Fine Art Paper Decal Labels",
+    "nameVi": "Nhãn decal giấy mỹ thuật",
+    "nameZh": "特种艺术纸质感标签",
+    "nameJa": "高級アート紙ラベル",
+    "nameKo": "고급 수입지 감성 라벨",
+    "tagline": "Luxurious tactile textured paper with refined ink absorption, dedicated to fine wines, spirits, and luxury gifts.",
+    "taglineVi": "Bề mặt vân sần sang trọng, thấm mực sâu tinh tế, đẳng cấp dành riêng cho rượu vang và quà tặng thượng hạng.",
+    "taglineZh": "奢华细腻的艺术纹理纸面，吸墨温润雅致，专为高档红酒、烈酒及名贵礼品打造。",
+    "taglineJa": "優雅なテクスチャーと風合い豊かな手触り。高級ワインやスピリッツ、極上ギフトに捧げる特抄アートラベル。",
+    "taglineKo": "우아한 엠보 질감과 깊이 있는 잉크 발색으로 프리미엄 와인과 최고급 선물 패키지의 품격을 완성합니다.",
+    "description": [
+      "Imported luxury fine art labelstock featuring delicate felt markings, tactile laid textures, or pearlescent sheen",
+      "Treated with barrier technology to withstand ice bucket immersion without wrinkling or detachment",
+      "Flawlessly pairs with metallic hot foil stamping and 3D blind embossing for an unmistakable tactile prestige"
+    ],
+    "descriptionVi": [
+      "Dòng giấy mỹ thuật nhập khẩu cao cấp có sẵn keo, bề mặt vân gân sần nhẹ hoặc ánh nhũ ngọc trai quý phái",
+      "Được xử lý công nghệ chống hút ẩm chuyên dụng, giữ trọn vẻ đẹp trên vỏ chai ngay cả khi ướp đá trong xô lạnh",
+      "Dễ dàng kết hợp kỹ thuật ép kim foil vàng/bạc, dập nổi 3D logo tạo điểm chạm xúc giác đẳng cấp thượng lưu"
+    ],
+    "descriptionZh": [
+      "精选进口特种艺术纹理胶纸，表面具有独特布纹、云石纹或典雅珠光微闪",
+      "特别加入抗湿防透处理，即便置于冰桶浸泡也能持久平整不脱层不泛白",
+      "可与高精度烫金、击凸浮雕及局部微压纹工艺完美交融，尽显至臻奢华品味"
+    ],
+    "descriptionJa": [
+      "輸入高級美術紙タックを採用。フェルトマークや繊細な凹凸テクスチャー、上品なパール感を備えた極上の風合い",
+      "耐氷性・防湿処理が施され、ワインクーラーの氷水に浸しても浮きや剥がれを防ぐワイン専用仕様",
+      "箔押し（ゴールド・シルバー）やエンボス（浮き出し）加工と美しく融合し、極上の触感美を実現"
+    ],
+    "descriptionKo": [
+      "수입 프리미엄 특수 감성 라벨지로 섬세한 펠트 질감과 우아한 텍스처, 은은한 펄감의 고급스러운 외관",
+      "특수 방습 발수 코팅 처리로 아이스 버킷 얼음물 속에서도 들뜸이나 변형 없이 원형 유지",
+      "골드·실버 포일 박 인쇄 및 3D 엠보싱 형압 가공과 결합하여 압도적인 럭셔리 터치감 선사"
+    ],
+    "descriptionTraits": [
+      "textured-art",
+      "embossed-depth",
+      "soft-light"
+    ],
+    "bestFor": [
+      "Fine wines, champagne, single malt whisky, and premium tonic / herbal liquor bottles",
+      "Boutique organic skincare, niche luxury perfumes, and high-end beauty serums",
+      "Prestige Tet gift boxes, VIP sealed invitations, and ultra-premium loose-leaf tea canisters"
+    ],
+    "bestForVi": [
+      "Nhãn chai rượu vang, rượu vang nổ sâm-panh, rượu mạnh whisky, rượu đông trùng hạ thảo",
+      "Mỹ phẩm organic boutique, nước hoa niche cao cấp, tinh chất dưỡng da cao cấp",
+      "Hộp quà tết thượng hạng, thiệp niêm phong thư tay VIP, trà thượng phẩm xuất khẩu"
+    ],
+    "bestForZh": [
+      "名庄红酒、起泡香槟、单一麦芽威士忌及高端养生酒瓶身正背标",
+      "小众有机精品护肤品、沙龙香水及高端院线精油包装",
+      "奢华新年尊享礼盒、VIP封蜡印章请柬及特级私房茶叶礼罐"
+    ],
+    "bestForJa": [
+      "高級ワイン、シャンパン、シングルモルトウイスキー、薬膳・薬用酒のメインラベル",
+      "ブティックオーガニック化粧品、ニッチフレグランス香水、高機能美容液ボトル",
+      "プレミアムお年賀・旧正月ギフトボックス、VIP招待状の封かん、特選高級茶筒"
+    ],
+    "bestForKo": [
+      "프리미엄 와인, 샴페인, 싱글몰트 위스키 및 전통 증류주·담금주 라벨",
+      "부티크 오가닉 스킨케어, 니치 향수 보틀, 최고급 앰플 에센스 라벨",
+      "최고급 명절 VIP 선물세트, 프라이빗 초청장 봉인 씰, 프리미엄 잎차 패키지"
+    ],
+    "pureImage": "/images/product/decalgiaymythuat.webp",
+    "pureImages": [
+      "/images/product/decalgiaymythuat.webp",
+      "/images/product/decalgiaymythuat2.webp",
+      "/images/product/decalgiaymythuat3.webp"
+    ]
+  },
+  {
+    "icon": "Sparkles",
+    "name": "Metallic Silver / Gold Decals",
+    "nameVi": "Nhãn decal xi bạc/vàng",
+    "nameZh": "拉丝金/哑银耐磨金属标签",
+    "nameJa": "金・銀ホイル耐熱ラベル",
+    "nameKo": "은데드롱 / 금광 데칼 라벨",
+    "tagline": "Metallic mirror or brushed finish with high heat resistance, scratch protection, and rugged industrial durability.",
+    "taglineVi": "Bề mặt ánh kim loại sang trọng, siêu bền chịu nhiệt, chống trầy xước và bám dính cực tốt trên máy móc, linh kiện.",
+    "taglineZh": "奢华金属光泽，耐高温耐腐蚀抗刮擦，对电子电器与机械设备表面附着力极佳。",
+    "taglineJa": "メタリックな輝きとヘアライン質感。耐熱・耐油・耐摩耗性に優れ、工業機器や銘板に最適な高耐久シール。",
+    "taglineKo": "빛나는 메탈릭 질감과 뛰어난 내열성·내스크래치성으로 산업 기기 및 전자 부품에 강력 밀착되는 메탈 데칼.",
+    "description": [
+      "Premium metallized polyester film (matte silver, brushed silver, or lustrous gold) with industrial-strength adhesive",
+      "Outstanding heat resistance up to 120°C, resistant to oils, chemicals, and weathering without corrosion",
+      "High-definition UV printing ensures crisp micro-text, barcodes, and logos that never fade or rub off"
+    ],
+    "descriptionVi": [
+      "Chất liệu decal xi bạc (bạc mờ/bạc bóng) hoặc xi vàng ánh kim tuyến sang trọng, đế phủ kim loại bền bỉ",
+      "Khả năng chịu nhiệt độ cao lên tới 120°C, kháng dầu mỡ, hóa chất công nghiệp và không bị oxy hóa rỉ sét",
+      "Bề mặt in phủ UV sắc sảo, chống trôi mực, chống bay màu tuyệt đối qua nhiều năm sử dụng"
+    ],
+    "descriptionZh": [
+      "优质金属化PET聚酯材料（哑银、拉丝银或镜面金色），工业级背胶极强粘合",
+      "耐温高达120°C，耐机油、耐溶剂、耐摩擦刮擦，抗氧化永不生锈",
+      "UV精细印刷，微型铭牌参数、条形码及企业Logo清晰坚固，历久弥新"
+    ],
+    "descriptionJa": [
+      "シルバー（消し銀／銀ツヤ）およびゴールドの金属蒸着PETフィルム。強力な工業用粘着剤で金属・樹脂に固着",
+      "最高120℃の耐熱性を持ち、油分、薬品、経年劣化に強く、長期間屋外でも錆びや劣化を防止",
+      "UVインクによる高精細印刷で、微小文字やバーコードもかすれず半永久的な耐摩耗性を保持"
+    ],
+    "descriptionKo": [
+      "은무광(은데드롱) 및 금광 메탈릭 PET 필름으로 공업용 초강력 점착제가 도포되어 금속·플라스틱에 영구 밀착",
+      "최대 120°C의 고온 내열성과 내유성·내화학성을 갖추어 부식이나 변색 없이 오랜 기간 원형 보존",
+      "선명한 고화질 UV 인쇄로 미세 텍스트 규격표, 바코드, 인증 마크가 지워지지 않고 영구 지속"
+    ],
+    "descriptionTraits": [
+      "metallic-shine",
+      "foil-accent",
+      "waterproof-durability"
+    ],
+    "bestFor": [
+      "Technical specification plates, serial number rating labels for electronics, laptops, and machinery",
+      "Warranty tamper inspection seals, factory QC passed stickers, and export compliance labels",
+      "Luxury emblem stickers for high-end gift boxes, cosmetics, and imported liquor caps"
+    ],
+    "bestForVi": [
+      "Tem thông số kỹ thuật, tem model máy móc, thiết bị điện tử, laptop, camera",
+      "Nhãn niêm phong bảo hành máy móc, tem kiểm định chất lượng xuất khẩu",
+      "Nhãn logo dán nắp hộp quà cao cấp, mỹ phẩm xa xỉ, chai rượu ngoại nhập khẩu"
+    ],
+    "bestForZh": [
+      "电子数码、家用电器、机械设备及笔记本电脑的规格参数与序列号铭牌",
+      "出厂检验合格证、防拆保修封口贴及出口合规检验认证标签",
+      "高端礼品盒金属车标贴、奢华化妆品瓶盖及高端洋酒防伪标签"
+    ],
+    "bestForJa": [
+      "家電製品、電子機器、ノートPC、産業機械の仕様プレート・シリアル番号銘板ラベル",
+      "品質検査合格証、機器メンテナンス点検シール、輸出用安全基準マーク",
+      "高級化粧品キャップ、プレミアムギフト箱のメタリックロゴ、輸入酒ボトル"
+    ],
+    "bestForKo": [
+      "전자기기, 가전제품, 노트북, 산업용 모터의 규격 사양판 및 시리얼 번호 명판 라벨",
+      "공장 QC 검사 필증, A/S 보증 봉인 라벨, 해외 수출 규격 인증 마크",
+      "프리미엄 기프트 박스 메탈 엠블럼, 럭셔리 코스메틱 캡 및 고급 양주 씰"
+    ],
+    "pureImage": "/images/product/decalxibac.webp",
+    "pureImages": [
+      "/images/product/decalxibac.webp",
+      "/images/product/decalxibac2.webp",
+      "/images/product/decalxibac3.webp"
+    ]
+  }
+];
+
 export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
   {
       "id": "poster-bangron-standee",
@@ -4902,1189 +5275,7 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
         "badgeEn": "Warranty"
       }
     ],
-    "materials": [
-      {
-        "icon": "Layers",
-        "name": "Paper Decal Laminated (Couche Sticker)",
-        "nameVi": "Decal Giấy Cán Màng (Chuẩn Nhãn Hàng)",
-        "tagline": "Need the most cost-effective, vibrant sticker decal for dry indoor products?",
-        "taglineVi": "Bạn cần tem decal giấy sắc nét, kinh tế nhất cho sản phẩm khô và bao bì?",
-        "description": [
-          "Smooth coated paper adhesive decal with protective matte or glossy lamination",
-          "Vibrant CMYK printing that adheres firmly to paper boxes, jars, and bags",
-          "Optimal choice for products stored in normal indoor temperature and humidity"
-        ],
-        "descriptionVi": [
-          "Bề mặt láng mịn được cán màng mờ hoặc bóng bảo vệ chống trầy",
-          "In màu CMYK sắc nét, bám dính chắc chắn lên hộp giấy, chai lọ và túi bao bì",
-          "Lựa chọn tối ưu chi phí cho sản phẩm lưu trữ trong điều kiện nhiệt độ phòng"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "glossy-coat",
-          "soft-light"
-        ],
-        "bestFor": [
-          "Food packaging boxes, confectionery jars, and bakery containers",
-          "Dry cosmetic jars, perfume cartons, and candle vessels",
-          "Shipping parcel address labels and promotional giveaway stickers"
-        ],
-        "bestForVi": [
-          "Hộp bao bì thực phẩm, hũ bánh kẹo và hộp đồ ăn khô",
-          "Hũ mỹ phẩm khô, vỏ hộp nước hoa và cốc nến thơm tinh dầu",
-          "Nhãn dán địa chỉ gói hàng bưu phẩm và sticker khuyến mãi tặng kèm"
-        ],
-        "nameZh": "铜版纸不干胶覆膜（标准商品贴纸）",
-        "nameJa": "アート紙シール PPラミネート加工（定番ラベル）",
-        "nameKo": "코팅 코팅지 유포지 라벨 스티커",
-        "taglineZh": "大批量张贴于纸箱、干燥包装袋的经济型全彩贴纸？",
-        "taglineJa": "段ボールや乾いたパッケージに貼る、高コスパなカラーシールですか？",
-        "taglineKo": "박스나 건조 포장재에 부착하는 대량 가성비 컬러 스티커인가요?",
-        "descriptionZh": [
-          "高白度不干胶面纸，全彩印刷后表面覆盖哑膜或光膜",
-          "背胶初粘力强，贴合平整牢固，不易翘边起角",
-          "支持任意尺寸切平张或成卷，适配手工贴标或半自动贴标"
-        ],
-        "descriptionJa": [
-          "白色度の高いシール紙に高精細カラー印刷、表面にラミネート加工",
-          "初期粘着力が高く、一度貼れば角浮きせずしっかり密着",
-          "シート仕上げまたはロール仕上げに対応、手作業・機械貼付の両方に適合"
-        ],
-        "descriptionKo": [
-          "백색도가 뛰어난 스티커 전용지에 인쇄 후 무광/유광 코팅 마감",
-          "초기 접착력이 우수하여 들뜸이나 떨어짐 없이 탄탄하게 부착",
-          "재단 낱장형 또는 롤형 공급 가능하여 수작업 및 기계 라벨링 완벽 지원"
-        ],
-        "bestForZh": [
-          "纸箱外箱标志、产品外包装封口及快递发货贴纸",
-          "商场超市商品全彩宣传贴纸及折扣促销标签",
-          "大批量使用、讲求性价比的干燥环境通用贴纸"
-        ],
-        "bestForJa": [
-          "段ボールの表示ラベル、製品パッケージの封印シール",
-          "店頭商品のプロモーションシール、セールス告知ステッカー",
-          "乾燥した屋内で大量に使用する高コスパシール"
-        ],
-        "bestForKo": [
-          "박스 외관 표기, 제품 상자 봉인용 라벨, 배송 스티커",
-          "매장 상품 포인트 스티커, 할인 프로모션 홍보 라벨",
-          "건조한 환경에서 대량으로 사용하는 다목적 가성비 스티커"
-        ],
-        "pureImage": "/images/product/couche.webp",
-        "pureImages": [
-          "/images/product/couche.webp",
-          "/images/product/decal-laminate2.webp",
-          "/images/product/decal-laminate1.webp"
-        ]
-      },
-      {
-        "icon": "Feather",
-        "name": "Uncoated Writable Paper Decal (Ford)",
-        "nameVi": "Decal Giấy Ford (Dễ Viết Tay & Đóng Dấu)",
-        "tagline": "Want a writable sticker decal where you can fill in expiry dates or batch numbers?",
-        "taglineVi": "Bạn muốn tem decal giấy mộc tự nhiên có thể viết tay ngày sản xuất hay hạn dùng?",
-        "description": [
-          "Natural uncoated Ford paper adhesive surface without lamination glare",
-          "Absorbs ballpoint ink, markers, and date stamps immediately without smearing",
-          "Authentic, artisanal aesthetic for handmade goods and organic products"
-        ],
-        "descriptionVi": [
-          "Bề mặt mộc nhám tự nhiên, không tráng phủ hay cán màng",
-          "Bám mực viết tay, bút bi, bút lông và dấu mộc ngày tháng không bị nhòe",
-          "Thẩm mỹ thủ công chân thực cho sản phẩm handmade và đồ hữu cơ"
-        ],
-        "descriptionTraits": [
-          "natural-grain",
-          "soft-light",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Handmade bakery expiration stickers and harvest date labels",
-          "Medical laboratory test tube labels and pharmacy prescriptions",
-          "Artisan craft workshops and organic farmers' market packaging"
-        ],
-        "bestForVi": [
-          "Sticker ghi ngày sản xuất, hạn sử dụng cho bánh ngọt thủ công",
-          "Nhãn dán ống nghiệm phòng xét nghiệm và nhãn toa thuốc nhà thuốc",
-          "Sản phẩm thủ công truyền thống và nông sản sạch tự nhiên"
-        ],
-        "nameZh": "书写纸不干胶（易于盖章与圆珠笔书写）",
-        "nameJa": "上質紙シール（スタンプ・筆記適性抜群）",
-        "nameKo": "모조지 스티커 (스탬프 날인 및 필기용)",
-        "taglineZh": "需要现场盖印检验章、手写有效期或装箱数量的标签？",
-        "taglineJa": "検印スタンプや手書きでメモを書き加えたい管理用シールですか？",
-        "taglineKo": "검사 도장을 찍거나 유통기한을 펜으로 직접 적을 스티커인가요?",
-        "descriptionZh": [
-          "无涂层书写纸面层，墨水渗透吸收快，干燥迅速不蹭脏",
-          "铅笔、圆珠笔、签字笔均可顺畅书写，盖印章印迹清晰",
-          "背胶牢固耐温，适用于各类办公档案及仓储管理"
-        ],
-        "descriptionJa": [
-          "表面が無塗工の上質紙で、インクの吸収が早く乾きやすい仕様",
-          "鉛筆やボールペンでの書き込み、各種スタンプの押印に最適",
-          "一度貼ればしっかり固定され、書類管理や在庫識別に便利"
-        ],
-        "descriptionKo": [
-          "무광 비코팅 모조지 표면으로 잉크 흡수가 빠르고 번짐이 전혀 없음",
-          "연필, 볼펜, 만년필 필기는 물론 스탬프 도장 날인에 최적화",
-          "접착력이 강해 서류철, 보관 박스, 자산 관리 표기 시 영구 부착"
-        ],
-        "bestForZh": [
-          "需要现场手写生产日期、保质期、批次号的货品标签",
-          "企业文件档案分类标签、库房货架位置标识条",
-          "检验员质检签名章、出厂合格证及设备保养贴"
-        ],
-        "bestForJa": [
-          "製造年月日、賞味期限、ロット番号を手書きする商品ラベル",
-          "オフィス書類のインデックス、倉庫ラックの棚番表示",
-          "検品合格証、検査スタンプ用ラベル、保守点検ステッカー"
-        ],
-        "bestForKo": [
-          "제조일자, 유통기한, 담당자 이름을 펜으로 직접 수기하는 라벨",
-          "사무용 바인더 라벨, 창고 랙 번호 및 물품 분류 스티커",
-          "품질 검사원 합격 도장 날인용 씰 및 설비 정기 점검표"
-        ],
-        "pureImage": "/images/product/ford.webp",
-        "pureImages": [
-          "/images/product/ford.webp",
-          "/images/product/decal-ford2.webp",
-          "/images/product/decal-ford3.webp"
-        ]
-      },
-      {
-        "icon": "ShieldCheck",
-        "name": "100% Waterproof Transparent PVC Decal",
-        "nameVi": "Decal Nhựa Trong Suốt (Chống Nước 100%)",
-        "tagline": "Need a clear, invisible waterproof decal that lets your product show through?",
-        "taglineVi": "Bạn cần tem decal trong suốt chống nước 100%, nhìn thấu màu sản phẩm bên trong?",
-        "description": [
-          "Transparent synthetic PVC/PET film with strong water-resistant adhesive",
-          "Creates a seamless 'no-label' printed directly on bottle look",
-          "100% waterproof and tear-resistant, ideal for wet bathroom or chilled use"
-        ],
-        "descriptionVi": [
-          "Trong suốt với lớp keo chống thấm nước vượt trội",
-          "Tạo hiệu ứng 'nhãn tàng hình' như được in trực tiếp lên bề mặt chai lọ",
-          "Chống nước 100% và không rách, hoàn hảo cho môi trường phòng tắm hoặc ướp lạnh"
-        ],
-        "descriptionTraits": [
-          "waterproof-durability",
-          "smooth-base",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Clear glass beverage bottles, cold-pressed juice jars, and milk tea cups",
-          "Shampoo, shower gel, and skincare cosmetics used in bathrooms",
-          "Window decal branding and transparent gift box seals"
-        ],
-        "bestForVi": [
-          "Chai thủy tinh nước giải khát, chai nước ép lạnh và ly trà sữa",
-          "Chai dầu gội, sữa tắm và mỹ phẩm sử dụng trong môi trường ẩm ướt",
-          "Sticker dán kính cửa hàng và tem niêm phong hộp quà trong suốt"
-        ],
-        "nameZh": "超透PVC透明不干胶（防水耐撕）",
-        "nameJa": "高透明PVC耐水ステッカー（完全防水仕様）",
-        "nameKo": "100% 완전 방수 투명 PVC 데칼 스티커",
-        "taglineZh": "想要若隐若现如同直接印刷在瓶身玻璃上的透明无边感？",
-        "taglineJa": "ボトルの下地が透けて見え、直接印刷したような透明シールですか？",
-        "taglineKo": "유리병이나 용기 표면에 직접 인쇄한 듯 투명하고 깔끔한 라벨인가요?",
-        "descriptionZh": [
-          "采用高透明光学级PVC塑料基材，透光率极佳",
-          "贴在玻璃或透明瓶身时如同无缝直接丝网印刷",
-          "100%防水防潮防油，撕扯不破，耐脏污耐擦洗"
-        ],
-        "descriptionJa": [
-          "高い透明度を誇るクリアPVCフィルムを使用し、下地がそのまま透ける",
-          "ガラス瓶やクリアボトルに貼ると、まるで直接印刷したような一体感",
-          "100%完全耐水・耐油性で、破れにくく水拭き清掃も安心"
-        ],
-        "descriptionKo": [
-          "투명도가 뛰어난 광학급 투명 PVC 재질로 배경이 그대로 투과",
-          "유리병이나 투명 용기에 부착 시 용기에 직접 인쇄한 듯 일체감 선사",
-          "100% 완전 방수, 방유, 찢김 방지 재질로 오염 시 물세척 가능"
-        ],
-        "bestForZh": [
-          "玻璃门窗展示贴、透明饮料瓶、冷萃咖啡瓶标签",
-          "护肤品透明乳液瓶、香薰精油瓶及手工香水瓶贴",
-          "追求轻盈、前卫、现代极简裸妆视觉的产品包装"
-        ],
-        "bestForJa": [
-          "ガラス窓の店舗サイン、透明ボトル、コールドブリューコーヒー",
-          "コスメボトル、アロマオイル瓶、ハンドメイド香水ラベル",
-          "透明感を活かしたミニマルで洗練された商品パッケージ"
-        ],
-        "bestForKo": [
-          "유리창 쇼윈도 매장 데칼, 투명 페트병, 콜드브루 커피 라벨",
-          "화장품 에센스 보틀, 디퓨저 유리병, 수제 향수 라벨",
-          "투명한 용기의 내용물 색상을 그대로 살리는 감각적인 디자인"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/decaltrongsuot.webp",
-        "pureImages": [
-          "/images/product/decaltrongsuot.webp",
-          "/images/product/decal-pvc2.webp",
-          "/images/product/decal-pvc3.webp"
-        ]
-      },
-      {
-        "icon": "Award",
-        "name": "White Synthetic PVC Plastic Decal",
-        "nameVi": "Decal Nhựa Trắng Sữa (Siêu Bền Chống Nước)",
-        "tagline": "Need an indestructible white plastic sticker for refrigerated or chemical products?",
-        "taglineVi": "Bạn cần tem nhựa trắng sữa chống rách, chịu lạnh và nước cho chai lọ thủy hải sản?",
-        "description": [
-          "Opaque white synthetic plastic film with exceptional durability and opacity",
-          "Resists ice, freezing temperatures, condensation, and chemical oils",
-          "Vibrant CMYK colors stay sharp even after months in cold storage"
-        ],
-        "descriptionVi": [
-          "Màng nhựa tổng hợp màu trắng sữa đục, độ bền kéo và độ che phủ tuyệt đối",
-          "Chịu nước đá, nhiệt độ cấp đông, nước đọng và hóa chất dầu mỡ cực tốt",
-          "Màu in CMYK sắc nét, không phai kể cả sau nhiều tháng bảo quản lạnh"
-        ],
-        "descriptionTraits": [
-          "waterproof-durability",
-          "smooth-base",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Frozen seafood packaging, ice cream containers, and chilled dairy goods",
-          "Automotive chemical lubricants, industrial oils, and cleaning spray bottles",
-          "Outdoor machinery warning labels and weatherproof equipment stickers"
-        ],
-        "bestForVi": [
-          "Bao bì hải sản đông lạnh, hộp kem và các sản phẩm sữa ướp lạnh",
-          "Chai nhớt xe cộ, hóa chất công nghiệp và chai xịt tẩy rửa gia dụng",
-          "Nhãn cảnh báo trên máy móc ngoài trời và tem thiết bị chịu thời tiết"
-        ],
-        "nameZh": "哑白/亮白合成纸PP塑料不干胶",
-        "nameJa": "白塩ビ合成紙ステッカー（耐候性・耐水性抜群）",
-        "nameKo": "유백색 방수 합성 유포지 스티커",
-        "taglineZh": "常年经受冷水浸泡、冷藏冷冻依然牢固不脱胶不掉色？",
-        "taglineJa": "水濡れや冷蔵・冷凍環境でも剥がれず破れない高耐久シールですか？",
-        "taglineKo": "물에 젖거나 냉동 보관해도 떨어지지 않는 100% 방수 유포지 스티커인가요?",
-        "descriptionZh": [
-          "特种合成塑料薄膜面层，具有超强韧性，手工用力拉扯不破",
-          "优异的防水、防潮、抗冷凝水性能，冰桶浸泡不掉胶不卷边",
-          "表面平滑洁白，印刷色彩对比度极高，户外耐候性极佳"
-        ],
-        "descriptionJa": [
-          "引き裂き強度の高い合成樹脂フィルムを採用、手で引っ張っても破れない",
-          "水や湿気、結露に極めて強く、氷水や冷蔵庫に入れても剥がれない",
-          "滑らかな純白のベース紙で、発色が鮮明で屋外での耐候性も抜群"
-        ],
-        "descriptionKo": [
-          "질기고 강력한 합성 유포지 소재로 손으로 힘껏 잡아당겨도 절대 안 찢어짐",
-          "탁월한 방수 및 결로 방지 성능으로 얼음물에 담가도 라벨이 분리되지 않음",
-          "새하얀 베이스에서 뿜어져 나오는 선명한 색감과 뛰어난 내구성"
-        ],
-        "bestForZh": [
-          "冷冻生鲜食品、冰镇啤酒饮料、冷藏奶制品标签",
-          "潮湿浴室使用的沐浴露、洗发水及家庭日化清洁剂瓶贴",
-          "户外仪器设备铭牌、电动车及工业管道警示标识贴"
-        ],
-        "bestForJa": [
-          "冷凍食品、クラフトビール、要冷蔵乳製品のラベル",
-          "シャンプーやボディソープなど浴室で使う水回りボトル",
-          "屋外機器の銘板シール、機械・配管の注意警告ステッカー"
-        ],
-        "bestForKo": [
-          "냉동 밀키트, 냉장 맥주 및 탄산음료, 유제품 방수 라벨",
-          "욕실에서 물을 상시 접하는 샴푸, 바디워시 용기 라벨",
-          "야외 노출 산업 장비 명판, 전자기기 및 배관 안전 경고 스티커"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/decaltrangsua.webp",
-        "pureImages": [
-          "/images/product/decaltrangsua.webp",
-          "/images/product/decal-white1.webp",
-          "/images/product/decal-white3.webp"
-        ]
-      },
-      {
-        "icon": "Sparkles",
-        "name": "Custom Die-Cut Shape Decal + Foil",
-        "nameVi": "Decal Bế Theo Hình Dáng Bất Kỳ + Ép Kim",
-        "tagline": "Want custom contour-cut stickers with shimmering metallic foil logo accents?",
-        "taglineVi": "Bạn muốn tem decal bế theo hình dáng độc quyền kèm ép kim logo lấp lánh?",
-        "description": [
-          "Precision digital die-cutting following any intricate logo outline or shape",
-          "Combined with hot foil stamping in gold, silver, or holographic metallic sheen",
-          "Delivered on easy-peel kiss-cut sheets or individual promotional sticker die-cuts"
-        ],
-        "descriptionVi": [
-          "Bế cắt kỹ thuật số viền chính xác theo mọi hình dáng logo hay hoa văn phức tạp",
-          "Kết hợp ép kim nhũ vàng, nhũ bạc hoặc nhũ holographic lấp lánh điểm nhấn",
-          "Bàn giao dạng tờ cấn màng xé (Kiss-cut sheet) hoặc cắt rời từng hình (Die-cut)"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Luxury wine bottles, perfume seals, and high-end cosmetic labels",
-          "Branded promotional stickers for skateboards, laptops, and water bottles",
-          "Limited-edition holiday gift seals and VIP packaging authentication"
-        ],
-        "bestForVi": [
-          "Nhãn chai rượu vang sang trọng, tem niêm phong nước hoa và mỹ phẩm VIP",
-          "Sticker nhận diện thương hiệu dán laptop, bình nước, mũ bảo hiểm quà tặng",
-          "Tem niêm phong quà Tết giới hạn và chứng nhận hàng chính hãng"
-        ],
-        "nameZh": "任意异形精准模切 + 局部电化铝烫金",
-        "nameJa": "自由形状ダイカット + 箔押し加工シール",
-        "nameKo": "자유형 도무송 다이컷 + 금박 후가공 스티커",
-        "taglineZh": "贴纸裁切成品牌独特形状，辅以闪耀烫金工艺？",
-        "taglineJa": "ブランド独自の形状にカットし、箔押しで高級感をプラスしたシールですか？",
-        "taglineKo": "로고 모양 그대로 맞춤 재단하고 금박을 입힌 프리미엄 스티커인가요?",
-        "descriptionZh": [
-          "精准数控模切刀线，可切割成任意不规则曲线或品牌专属图形",
-          "局部结合烫亮金、哑金、烫镭射或银箔工艺，闪烁金属光芒",
-          "排废干净整齐，剥离撕取顺畅不粘连"
-        ],
-        "descriptionJa": [
-          "高精度ダイカット技術で、ハートやキャラクターなど自由な形状にカット",
-          "金・銀・ホログラム箔押しを組み合わせて、眩いメタリックの輝きをプラス",
-          "カス取りが綺麗に処理され、指先でサッと剥がしやすい快適仕様"
-        ],
-        "descriptionKo": [
-          "초정밀 레이저 도무송 가공으로 캐릭터나 브랜드 로고 모양 그대로 재단",
-          "골드박, 실버박, 홀로그램박 등 메탈릭 광택 후가공을 결합한 화려함",
-          "여백이 깔끔하게 탈착되어 손쉽게 떼어내 부착할 수 있는 완성도"
-        ],
-        "bestForZh": [
-          "文创IP周边、卡通插画贴纸、潮牌潮流手账贴",
-          "高端礼盒封口贴、奢侈品VIP防拆封口贴",
-          "为产品增添趣味性、收藏价值与高辨识度的创意贴标"
-        ],
-        "bestForJa": [
-          "キャラクターグッズ、イラストレーターの限定ステッカー",
-          "ギフトラッピングの封印シール、プレミアム会員向け特典シール",
-          "高いデザイン性とコレクター価値を持つオリジナルシール"
-        ],
-        "bestForKo": [
-          "인기 캐릭터 굿즈, 다이어리 꾸미기(다꾸) 스티커, 패션 브랜드 씰",
-          "스페셜 기프트 박스 봉인 스티커, VIP 브랜드 리워드 굿즈",
-          "독창적인 조형미와 반짝이는 금빛으로 소장 가치를 높인 라벨"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/decal-foil1.webp",
-        "pureImages": [
-          "/images/product/decal-foil1.webp",
-          "/images/product/decal-foil2.webp",
-          "/images/product/decal-foil3.webp"
-        ]
-      },
-      {
-        "icon": "Layers",
-        "name": "Couche Paper Stamp (Laminated Seal)",
-        "nameVi": "Tem Nhãn Giấy Couche Cán Màng",
-        "tagline": "Need affordable, crisp paper seals for product boxes and envelope closures?",
-        "taglineVi": "Bạn cần tem nhãn giấy láng mịn, kinh tế để niêm phong hộp giấy và bao thư?",
-        "description": [
-          "C150 or C200 coated adhesive paper with protective matte or glossy lamination",
-          "High-definition CMYK printing for barcodes, QR codes, and logo emblems",
-          "Strong permanent adhesive securing box flaps and gift bags reliably"
-        ],
-        "descriptionVi": [
-          "Láng mịn có keo dán, cán màng mờ/bóng bảo vệ",
-          "In CMYK sắc nét, hiển thị chính xác mã vạch, mã QR và biểu tượng logo",
-          "Lớp keo bám dính chắc chắn, niêm phong nắp hộp và túi quà an toàn"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "glossy-coat",
-          "soft-light"
-        ],
-        "bestFor": [
-          "Gift box seal closures, shopping bag seals, and envelope flaps",
-          "Retail product barcode stickers and SKU identifier labels",
-          "Food box closures for bakeries, pastry shops, and cafes"
-        ],
-        "bestForVi": [
-          "Tem niêm phong nắp hộp quà, miệng túi giấy shopping và nắp bao thư",
-          "Tem mã vạch sản phẩm bán lẻ và nhãn thông số SKU hàng hóa",
-          "Tem niêm phong hộp bánh ngọt, thực phẩm mang đi của nhà hàng"
-        ],
-        "nameZh": "铜版纸覆膜封口标签",
-        "nameJa": "コート紙ラミネート封印シール",
-        "nameKo": "스노우지 코팅 봉인 스티커",
-        "taglineZh": "包装盒开盖处需要一张彩色封口贴，确认未拆封？",
-        "taglineJa": "化粧箱の開口部に貼り、未開封であることを証明する封印シールですか？",
-        "taglineKo": "상자 개봉부에 부착하여 미개봉 상태를 보증하는 컬러 봉인 씰인가요?",
-        "descriptionZh": [
-          "优质铜版纸面覆哑膜或亮膜，表面防水防刮花",
-          "高粘性胶水，贴合纸箱、塑料盒与玻璃瓶牢固不脱落",
-          "全彩鲜明四色印刷，产品合格与真品识别一目了然"
-        ],
-        "descriptionJa": [
-          "コート紙にPPフィルムを施し、擦れや汚れから表面をガード",
-          "強粘着タイプの糊を採用し、紙箱・プラスチック・ガラスに密着",
-          "鮮明なフルカラー印刷で、正規品の証明や出荷管理に最適"
-        ],
-        "descriptionKo": [
-          "스노우지에 라미네이팅을 입혀 표면 스크래치와 오염 완벽 방지",
-          "강력 접착제를 적용하여 종이 상자, 플라스틱, 유리에 단단히 고정",
-          "선명한 풀컬러 인쇄로 정품 인증 및 출하 검수 표시에 최적"
-        ],
-        "bestForZh": [
-          "包装盒防拆封口贴、瓶盖密封标签",
-          "生产出厂质检合格贴（QC PASS）、生产批号标识",
-          "各类日常消费品防撕防调换封口贴"
-        ],
-        "bestForJa": [
-          "化粧箱の開口部封印シール、ボトルキャップの封緘",
-          "製造工程の出荷検査合格証（QC PASS）、ロット識別",
-          "製品の未開封を保証する各種パッケージシール"
-        ],
-        "bestForKo": [
-          "단상자 개봉부 봉인 라벨, 병마개 밀봉 스티커",
-          "출고 검수 합격증(QC PASS), 생산 로트 관리 라벨",
-          "개봉 방지 및 제품의 미개봉 상태를 보증하는 패키지 씰"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/temcouche.webp",
-        "pureImages": [
-          "/images/product/temcouche.webp",
-          "/images/product/tem-couche5.webp",
-          "/images/product/tem-couche6.webp"
-        ]
-      },
-      {
-        "icon": "Feather",
-        "name": "Ford Paper Writable Date Stamp",
-        "nameVi": "Tem Giấy Ford (Dễ Viết Ngày & Ký Tên)",
-        "tagline": "Want a natural uncoated stamp where inspectors can write signatures and dates?",
-        "taglineVi": "Bạn muốn tem giấy mộc tự nhiên để nhân viên kiểm tra ký tên và ghi ngày tháng?",
-        "description": [
-          "Uncoated natural Ford adhesive surface without slippery lamination",
-          "Absorbs pens, markers, and quality inspection QC stamps without smudging",
-          "Essential for manual quality control workflows and handmade date markings"
-        ],
-        "descriptionVi": [
-          "Bề mặt mộc tự nhiên có keo dán, không cán màng trơn trượt",
-          "Bám mực bút bi, bút lông và con dấu kiểm định QC không bị nhòe mực",
-          "Quy chuẩn thiết yếu cho quy trình kiểm tra chất lượng QC và ghi tay hạn dùng"
-        ],
-        "descriptionTraits": [
-          "natural-grain",
-          "soft-light",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "QC passed inspection seals and production shift sign-off stamps",
-          "Handwritten roast date seals for specialty coffee bean bags",
-          "Artisan workshop batch number stickers and pharmacy instruction seals"
-        ],
-        "bestForVi": [
-          "Tem kiểm định chất lượng QC passed và xác nhận xuất xưởng của nhà máy",
-          "Tem ghi tay ngày rang của bao bì cà phê đặc sản cao cấp",
-          "Sticker ghi số lô sản xuất thủ công và tem hướng dẫn sử dụng nhà thuốc"
-        ],
-        "nameZh": "道林纸日历质检标签（手写签名专用）",
-        "nameJa": "日付・署名用上質紙管理シール",
-        "nameKo": "날짜 및 서명 기입용 모조지 라벨",
-        "taglineZh": "出厂检测人员盖QC章、签署检验日期的专用质检贴？",
-        "taglineJa": "検査官のサインや日付を書き込む品質管理ステッカーですか？",
-        "taglineKo": "품질 검사원 사인과 검사 일자를 직접 수기하는 관리용 스탬프 라벨인가요?",
-        "descriptionZh": [
-          "无涂层道林书写纸，吸墨快，不易晕染模糊",
-          "方便使用圆珠笔、签字笔手写检验日期与检验员签名",
-          "可清晰盖印印油印章，印迹持久清晰"
-        ],
-        "descriptionJa": [
-          "インクがすばやく浸透する上質紙、手書き文字が滲まない",
-          "ボールペンや万年筆での日付記入、サインがスムーズ",
-          "検印スタンプのインクもしっかり定着し、鮮明さが持続"
-        ],
-        "descriptionKo": [
-          "잉크 흡수가 빠른 비코팅 모조지로 펜 글씨가 번지지 않음",
-          "검사 일자, 담당자 서명을 볼펜으로 손쉽게 수기 기입 가능",
-          "검사 스탬프 도장이 번짐 없이 선명하게 날인되어 장기 보존"
-        ],
-        "bestForZh": [
-          "需要标注开封日期、保质期限的日化品与试剂瓶",
-          "出厂检验员盖章标签、设备定期检修保养标签",
-          "库房入库登记贴与资产定期核验单"
-        ],
-        "bestForJa": [
-          "開封日や使用期限を記入する試薬瓶・コスメ容器",
-          "検査員の承認印を押す品質保証ラベル、保守点検票",
-          "倉庫の入庫管理ラベル、固定資産管理シール"
-        ],
-        "bestForKo": [
-          "개봉일 및 유통기한을 직접 수기하는 화장품, 실험 용기 라벨",
-          "품질 검사원 확인 도장 날인 라벨, 설비 정기 점검 필증",
-          "물류창고 입고 등록 스티커 및 사내 비품 자산 관리 라벨"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/temford.webp",
-        "pureImages": [
-          "/images/product/temford.webp",
-          "/images/product/tem-ford5.webp",
-          "/images/product/tem-ford6.webp"
-        ]
-      },
-      {
-        "icon": "ShieldCheck",
-        "name": "Tamper-Evident Destructible Warranty Stamp",
-        "nameVi": "Tem Bảo Hành Vỡ (Tem Niêm Phong)",
-        "tagline": "Need brittle security stamps that shatter upon attempted removal to prevent tampering?",
-        "taglineVi": "Bạn cần tem bảo hành vỡ tự hủy khi có hành vi bóc gỡ để bảo vệ linh kiện?",
-        "description": [
-          "Special brittle vinyl stock that shatters into fragments if peeled after sticking",
-          "Provides absolute proof of tampering for warranty and electronic seals",
-          "Sharp micro-text and serial number printing for verification tracking"
-        ],
-        "descriptionVi": [
-          "Giòn đặc biệt, tự động vỡ vụn thành từng mảnh nếu có tác động bóc gỡ",
-          "Bằng chứng tuyệt đối chống mở ốc, tháo máy và niêm phong bảo hành",
-          "In viền chữ siêu nhỏ và số nhảy serial theo dõi thời hạn bảo hành chính xác"
-        ],
-        "descriptionTraits": [
-          "waterproof-durability",
-          "smooth-base",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Electronic smartphone, computer, and appliance screw-hole warranty seals",
-          "High-value component authentication and repair shop warranty tracking",
-          "Cosmetic container lid security seals preventing in-store sampling"
-        ],
-        "bestForVi": [
-          "Tem niêm phong ốc vít bảo hành điện thoại, máy tính và thiết bị điện tử",
-          "Xác thực linh kiện chính hãng và theo dõi thời hạn bảo hành của trung tâm",
-          "Tem niêm phong nắp hộp mỹ phẩm chống mở dùng thử trước tại cửa hàng"
-        ],
-        "nameZh": "易碎纸防伪保修封口贴（一撕即碎）",
-        "nameJa": "改ざん防止脆化セキュリティシール（封印破断）",
-        "nameKo": "파손형 품질보증 봉인 스티커 (재사용 불가)",
-        "taglineZh": "电子产品或仪器保修，一旦有人试图撕开便粉碎破坏无法复原？",
-        "taglineJa": "剥がそうとすると破断し、再利用や改ざんを確実に防ぐ保証シールですか？",
-        "taglineKo": "떼어내려고 하면 산산조각 부서져 무단 개봉 및 재사용을 차단하는 보안 스티커인가요?",
-        "descriptionZh": [
-          "超薄专用易碎纸基材，抗拉强度极低，一旦粘贴无法完整揭下",
-          "试图揭除即破碎成微小碎片，具有不可逆的破坏痕迹",
-          "耐高温防油污，强力背胶粘附力极高"
-        ],
-        "descriptionJa": [
-          "極めて脆い特殊素材を採用、一度貼ると綺麗に剥がせない",
-          "剥がそうとするとバラバラに破断し、開封・改ざんの証拠を残す",
-          "強力な粘着力で剥がれにくく、電子機器の不正開封を抑止"
-        ],
-        "descriptionKo": [
-          "인장 강도가 극히 낮은 특수 파손형 용지로 떼어낼 때 온전한 분리 불가",
-          "떼어내려 하면 미세한 조각으로 바스러져 무단 개봉 흔적 영구 보존",
-          "강력 접착 성분으로 밀착되어 전자기기 무단 분해 및 위조 방지"
-        ],
-        "bestForZh": [
-          "手机、电脑、数码配件及精密仪器螺丝孔防拆封口",
-          "高价值商品保修封条，撕毁即失去保修资格",
-          "重要涉密文件袋、票据保险箱防拆封条"
-        ],
-        "bestForJa": [
-          "スマートフォン・PC・精密機器の分解防止ネジ封印",
-          "高額製品の保証期間シール（破断時は保証無効）",
-          "重要機密文書の封筒、セキュリティボックスの封印"
-        ],
-        "bestForKo": [
-          "스마트폰, PC, 카메라 등 전자기기 나사 홀 개봉 방지 씰",
-          "무상 AS 보증 라벨 (라벨 훼손 시 보증 혜택 소멸 공지용)",
-          "기밀 서류 봉투, 금고 및 보안 캐비닛 무단 열람 방지 봉인"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/temniemphong.webp",
-        "pureImages": [
-          "/images/product/temniemphong.webp",
-          "/images/product/tem-tamper2.webp",
-          "/images/product/tem-tamper3.webp"
-        ]
-      },
-      {
-        "icon": "Award",
-        "name": "Rainbow Holographic Security Seal",
-        "nameVi": "Tem Hologram 7 Màu (Chống Giả Cao Cấp)",
-        "tagline": "Want multi-spectrum holographic security stamps to authenticate your genuine products?",
-        "taglineVi": "Bạn muốn tem hologram lấp lánh 7 màu chống làm giả cho hàng chính hãng?",
-        "description": [
-          "Laser-etched rainbow holographic foil reflecting dynamic spectrum colors",
-          "Extremely difficult to counterfeit, building high consumer trust and prestige",
-          "Customized with 2D/3D optical motion logos and hidden security marks"
-        ],
-        "descriptionVi": [
-          "Màng hologram quang học khắc laser phản chiếu ánh sáng 7 màu",
-          "Cực kỳ khó làm giả, gia tăng sự an tâm tuyệt đối cho người tiêu dùng",
-          "Cá nhân hóa với logo quang học 2D/3D và các ký tự chống giả ẩn dưới đèn"
-        ],
-        "descriptionTraits": [
-          "metallic-shine",
-          "smooth-base",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Official brand authentication stamps for cosmetics and pharmaceuticals",
-          "Luxury garment authenticity hangtag seals and designer footwear",
-          "Software licenses, textbook security stamps, and VIP certificates"
-        ],
-        "bestForVi": [
-          "Tem xác thực hàng chính hãng cho mỹ phẩm, dược phẩm và thực phẩm chức năng",
-          "Tem niêm phong mác quần áo hàng hiệu và giày dép thời trang cao cấp",
-          "Tem bản quyền phần mềm, tem an ninh sách giáo khoa và chứng nhận VIP"
-        ],
-        "nameZh": "七彩动态激光全息防伪标签",
-        "nameJa": "ホログラム偽造防止セキュリティシール",
-        "nameKo": "레인보우 홀로그램 정품인증 보안 라벨",
-        "taglineZh": "在光线下折射绚丽动态全息彩虹光芒，高难度防伪防山寨？",
-        "taglineJa": "見る角度で虹色に変化し、模倣品をシャットアウトするホログラムですか？",
-        "taglineKo": "빛의 각도에 따라 무지갯빛 입체 홀로그램이 빛나 위조를 원천 차단하는 정품 라벨인가요?",
-        "descriptionZh": [
-          "多维激光光刻技术，光线照射下折射七彩动态立体全息光芒",
-          "可植入微缩文字、隐藏图案及防伪密码等多重防伪技术",
-          "极难仿制抄袭，瞬间提升产品档次与防伪公信力"
-        ],
-        "descriptionJa": [
-          "光の角度で虹色に煌めく高度なマルチカラーホログラム技術",
-          "マイクロ文字や隠しパターンなど、多層防御の偽造防止機能を搭載",
-          "偽造やコピーを徹底排除し、製品の真贋性を強力に証明"
-        ],
-        "descriptionKo": [
-          "빛의 각도에 따라 입체 무지갯빛으로 반짝이는 초정밀 레이저 홀로그램",
-          "미세 문자, 숨은 패턴 등 다단계 보안 기술 탑재로 위조 원천 차단",
-          "복제가 불가능하여 브랜드 정품 인증과 신뢰도를 극대화"
-        ],
-        "bestForZh": [
-          "高档烟酒、名贵保健滋补品及品牌专卖品防伪防串货",
-          "正版软件、游戏周边、限量潮玩及版权授权商品防伪",
-          "各类正品认证标签、荣誉证书与防伪会员凭证"
-        ],
-        "bestForJa": [
-          "高級酒・健康食品・ブランドコスメの正規品認証",
-          "公式ライセンスグッズ、限定フィギュア、ゲームソフト",
-          "各種鑑定証書、会員ステータス証明シール"
-        ],
-        "bestForKo": [
-          "고급 주류, 건강기능식품, 프리미엄 코스메틱 정품 인증",
-          "공식 라이선스 굿즈, 한정판 피규어, 소프트웨어 정품 라벨",
-          "명품 보증서, 자격 인증서 및 VIP 멤버십 보안 홀로그램"
-        ],
-        "pureImage": "/images/product/hologram.webp",
-        "pureImages": [
-          "/images/product/hologram.webp",
-          "/images/product/tem-anti2.webp",
-          "/images/product/tem-anti3.webp"
-        ]
-      },
-      {
-        "icon": "Sparkles",
-        "name": "Metallic Foil Stamped Stamp",
-        "nameVi": "Tem Ép Kim Nhũ Vàng / Nhũ Bạc Sang Trọng",
-        "tagline": "Want a shimmering metallic foil emblem sticker to elevate gift wrapping and cards?",
-        "taglineVi": "Bạn muốn tem dán điểm nhấn ép kim nhũ vàng sang trọng niêm phong hộp quà?",
-        "description": [
-          "Metallic gold, silver, or copper foil stamped onto paper or vinyl base",
-          "Creates a jewelry-like, embossed luxury finish that catches every light",
-          "Elevates standard packaging into an upscale boutique gifting experience"
-        ],
-        "descriptionVi": [
-          "Ép kim nhũ vàng, nhũ bạc hoặc nhũ đồng lên nền tem giấy hoặc tem nhựa",
-          "Tạo hiệu ứng sang trọng như món trang sức bắt sáng rực rỡ ở mọi góc nhìn",
-          "Nâng tầm gói quà thông thường thành trải nghiệm quà tặng thượng lưu"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Wedding invitation envelope seals and luxury stationery closures",
-          "Special holiday gift box badges (Tet, Mid-Autumn, Christmas)",
-          "Artisan chocolate, fine wine, and perfume box decorative stamps"
-        ],
-        "bestForVi": [
-          "Tem niêm phong thiệp cưới cao cấp và thiệp mời sự kiện quan trọng",
-          "Tem trang trí hộp quà lễ Tết (Tết Nguyên Đán, Trung Thu, Giáng Sinh)",
-          "Tem nhãn trang trí hộp sô-cô-la thủ công, rượu vang và nước hoa xa xỉ"
-        ],
-        "nameZh": "金属质感烫金/烫银奢华封口贴",
-        "nameJa": "金箔・銀箔押し高級ブランドシール",
-        "nameKo": "금박/은박 메탈릭 고급 씰 스티커",
-        "taglineZh": "用于信封火漆替代封口或高端礼盒包装，金碧辉煌？",
-        "taglineJa": "ギフトボックスや封筒を華やかに彩る、メタリックな輝きのブランドシールですか？",
-        "taglineKo": "봉투 마감이나 명품 선물 상자에 금빛 품격을 더해주는 메탈릭 씰인가요?",
-        "descriptionZh": [
-          "高贵金属电化铝烫印，金属反光璀璨耀眼，极具奢华感",
-          "字迹边缘锐利清晰，耐刮蹭不易氧化变暗",
-          "与圆形或异形花边模切相结合，典雅气派"
-        ],
-        "descriptionJa": [
-          "金箔・銀箔を熱転写し、本物の金属のような気品ある輝きを実現",
-          "細部までシャープに表現され、指で触れても剥がれにくい高品位仕上げ",
-          "円形やクラシカルな飾り罫デザインと相性抜群"
-        ],
-        "descriptionKo": [
-          "열전사 방식으로 리얼 메탈릭 골드/실버의 영롱한 광채 구현",
-          "미세한 라인까지 또렷하게 각인되며 긁힘이나 변색에 강함",
-          "원형이나 클래식 장식 테두리와 어우러져 화려하고 럭셔리한 인상"
-        ],
-        "bestForZh": [
-          "高端手工甜品盒、节日尊享礼盒信封封口",
-          "奢华珠宝首饰包装盒密封、高定香水瓶身贴",
-          "重要典礼邀请函、签约仪式文件密封名帖"
-        ],
-        "bestForJa": [
-          "高級スイーツのパッケージ、ギフトラッピングの封印",
-          "ジュエリーケース、香水ボトルのプレミアムラベル",
-          "招待状の封緘、公式セレモニーの書類装飾"
-        ],
-        "bestForKo": [
-          "수제 디저트 박스, 명절 스페셜 선물 세트 봉인 씰",
-          "주얼리 케이스, 니치 향수 보틀의 브랜드 포인트 라벨",
-          "VIP 초청장 봉투 마감 및 정식 협약서 봉인용 골드 씰"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/tem-foil4.webp",
-        "pureImages": [
-          "/images/product/tem-foil4.webp",
-          "/images/product/tem-foil5.webp",
-          "/images/product/tem-foil6.webp"
-        ]
-      },
-      {
-        "icon": "Layers",
-        "name": "Couche 80 - 100gsm Laminated Label",
-        "nameVi": "Nhãn Giấy Couche Cán Màng (Chuẩn Chai Lọ)",
-        "tagline": "Need standard, cost-effective product labels for bottles, jars, and cartons?",
-        "taglineVi": "Bạn cần nhãn dán chai lọ láng mịn, chuẩn màu và kinh tế cho bao bì?",
-        "description": [
-          "C80 or C100 coated adhesive paper with matte or glossy lamination",
-          "High-resolution CMYK graphics for ingredients, instructions, and branding",
-          "Adheres smoothly to curved glass, plastic bottles, and cardboard boxes"
-        ],
-        "descriptionVi": [
-          "Láng mịn có keo dán, cán màng mờ hoặc bóng bảo vệ",
-          "In đồ họa CMYK sắc nét cho thành phần, hướng dẫn sử dụng và logo",
-          "Bám dính mượt mà lên bề mặt cong của chai lọ thủy tinh, nhựa và hộp giấy"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "glossy-coat",
-          "soft-light"
-        ],
-        "bestFor": [
-          "Food jars, condiment bottles, and confectionery retail packs",
-          "Shampoo, lotion, and household cleaning spray bottle labels",
-          "Secondary nutritional and importer labels on retail packaging"
-        ],
-        "bestForVi": [
-          "Hũ thực phẩm, chai gia vị và hộp bánh kẹo trưng bày bán lẻ",
-          "Nhãn chai dầu gội, sữa dưỡng thể và bình xịt tẩy rửa gia dụng",
-          "Nhãn phụ thông tin nhập khẩu, hướng dẫn sử dụng trên hàng tiêu dùng"
-        ],
-        "nameZh": "铜版纸覆膜瓶贴（饮料调料标准）",
-        "nameJa": "ボトル用コート紙ラミネートラベル",
-        "nameKo": "병·용기용 스노우지 코팅 라벨",
-        "taglineZh": "瓶装饮料、罐头与调味品外包装的标准全彩商品标签？",
-        "taglineJa": "ペットボトルや調味料の容器に貼る、標準的な商品ラベルですか？",
-        "taglineKo": "음료수, 소스병, 유리 용기 외부에 부착하는 표준 상품 라벨인가요?",
-        "descriptionZh": [
-          "80-100gsm平滑铜版面纸，四色艳丽全彩印刷",
-          "表面覆光油或防水亮膜，有效隔绝常温水汽与污渍",
-          "适合平整塑料瓶、玻璃罐及纸盒表面，贴合平顺"
-        ],
-        "descriptionJa": [
-          "80〜100gsmのコート紙に鮮やかなフルカラーオフセット印刷",
-          "ニス引きまたはPP加工により、日常的な水滴や汚れから保護",
-          "ペットボトル・ガラス瓶・プラスチック容器にスムーズに密着"
-        ],
-        "descriptionKo": [
-          "80-100gsm 매끄러운 스노우지에 선명한 풀컬러 인쇄",
-          "코팅 마감으로 일상적인 수분과 유분으로부터 인쇄면 보호",
-          "플라스틱 보틀, 유리병, 캔 패키지에 기포 없이 매끄럽게 부착"
-        ],
-        "bestForZh": [
-          "常温保存的瓶装果汁、酱料调味品及休闲零食罐贴",
-          "电商发货纸盒正面商品主图说明贴",
-          "中大批量印刷、经济实用的常规商品标签"
-        ],
-        "bestForJa": [
-          "常温飲料、調味料、ドレッシング、ジャム瓶のラベル",
-          "通販商品の外箱に貼る商品詳細ステッカー",
-          "コストを抑えて大量に導入したい標準的な商品ラベル"
-        ],
-        "bestForKo": [
-          "상온 보관 주스, 드레싱 소스병, 수제 잼 유리병 라벨",
-          "택배 배송용 제품 상자 메인 상품 설명 라벨",
-          "합리적인 단가로 대량 생산하는 표준 상품 라벨"
-        ],
-        "pureImage": "/images/product/temcouche.webp",
-        "pureImages": [
-          "/images/product/temcouche.webp",
-          "/images/product/lable-couche2.webp",
-          "/images/product/lable-couche3.webp"
-        ]
-      },
-      {
-        "icon": "Feather",
-        "name": "Uncoated Ford Writable Product Label",
-        "nameVi": "Nhãn Giấy Ford (Dễ Viết Ngày & Lô Sản Xuất)",
-        "tagline": "Want an uncoated natural label where you can stamp batch codes or roast dates?",
-        "taglineVi": "Bạn muốn nhãn giấy mộc tự nhiên có thể viết tay hạn dùng hay số lô sản xuất?",
-        "description": [
-          "Uncoated Ford paper adhesive surface without shiny lamination",
-          "Absorbs pens, markers, and date-stamping inks immediately without smearing",
-          "Conveys an authentic, small-batch artisanal feel for handmade goods"
-        ],
-        "descriptionVi": [
-          "Bề mặt mộc tự nhiên có keo dán, không cán màng bóng",
-          "Bám mực bút viết tay và mực dấu đóng ngày tháng ngay lập tức không bị nhòe",
-          "Mang lại cảm giác thủ công, tinh tế cho sản phẩm số lượng nhỏ (small-batch)"
-        ],
-        "descriptionTraits": [
-          "natural-grain",
-          "soft-light",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Specialty coffee bag roast date labels and bakery freshness tags",
-          "Small-batch organic honey, jam jars, and artisanal sauce bottles",
-          "Pharmacy prescription bottles and laboratory reagent jar labels"
-        ],
-        "bestForVi": [
-          "Nhãn ghi ngày rang cà phê đặc sản và tem ngày hết hạn tiệm bánh",
-          "Hũ mật ong hữu cơ thủ công, mứt và gia vị truyền thống",
-          "Nhãn chai thuốc nhà thuốc và lọ hóa chất phòng xét nghiệm y khoa"
-        ],
-        "nameZh": "书写纸批次标签（生产日期填写专用）",
-        "nameJa": "ロット番号・製造日記入用上質ラベル",
-        "nameKo": "제조일자 및 로트번호 기입용 무광 라벨",
-        "taglineZh": "需要根据每日出产批次现场用打码机或签字笔填写生产日期？",
-        "taglineJa": "製造日や賞味期限を現場で印字・記入する管理ラベルですか？",
-        "taglineKo": "제조일자나 유통기한을 현장에서 직접 날인하고 기입할 라벨인가요?",
-        "descriptionZh": [
-          "无涂层进口道林纸，纸面微糙质朴，极易吸收油墨",
-          "可用打码机打印批次，也可用中性笔现场填写有效日期",
-          "胶水环保无毒，符合食品与接触级外包装标准"
-        ],
-        "descriptionJa": [
-          "無塗工の上質紙で、ペン先が滑らずインクが瞬時に定着",
-          "賞味期限印字機やスタンプ、手書きでの追記に完璧に対応",
-          "環境に優しく安全な接着剤を使用し、食品包装にも安心"
-        ],
-        "descriptionKo": [
-          "잉크 흡수가 빠른 모조지로 수기 작성 시 번짐 전혀 없음",
-          "날인기 프린팅은 물론 유성펜으로 제조일자 기입에 최적",
-          "식품 안전 기준에 적합한 무독성 친환경 접착제 사용"
-        ],
-        "bestForZh": [
-          "手工现烤烘焙、短保鲜食品的每日日期批次贴",
-          "有机农产、自酿蜂蜜果酱的生产信息标签",
-          "实验室试剂调配记录贴与药品分装说明"
-        ],
-        "bestForJa": [
-          "焼きたてパン、手作りスイーツ、賞味期限の短い食品",
-          "農産物直売所、自家製ジャム、ハチミツの生産者ラベル",
-          "調剤薬局の分包指示、試薬調合の管理ラベル"
-        ],
-        "bestForKo": [
-          "당일 생산 베이커리, 즉석 조리 식품의 제조시간 표기 라벨",
-          "유기농 농산물, 수제 과일청, 로컬 푸드 정보 라벨",
-          "조제약 분포 안내 및 실험실 샘플 관리용 스티커"
-        ],
-        "pureImage": "/images/product/temford.webp",
-        "pureImages": [
-          "/images/product/temford.webp",
-          "/images/product/lable-ford2.webp",
-          "/images/product/lable-ford3.webp"
-        ]
-      },
-      {
-        "icon": "Palette",
-        "name": "Wine Luxury Art Paper Label",
-        "nameVi": "Nhãn Giấy Mỹ Thuật Rượu Vang Cao Cấp",
-        "tagline": "Want a textured European wine-label paper that exudes cellar heritage and prestige?",
-        "taglineVi": "Bạn muốn nhãn chai mang vân giấy mỹ thuật châu Âu đẳng cấp như chai rượu vang?",
-        "description": [
-          "Premium European wine-label art paper with distinctive tactile texture",
-          "Treated for wet-strength resistance in wine ice buckets and refrigerators",
-          "Warm, classic ink absorption that looks exceptional with metallic foil"
-        ],
-        "descriptionVi": [
-          "Có vân nhám đặc trưng, xúc giác xa xỉ",
-          "Xử lý đặc biệt chống bong tróc khi ngâm trong xô đá rượu vang hoặc ướp lạnh",
-          "Màu in trầm tĩnh, hoàn hảo khi kết hợp cùng ép kim nhũ vàng hoặc nhũ đồng"
-        ],
-        "descriptionTraits": [
-          "textured-art",
-          "natural-grain",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Fine red wine, champagne, and craft botanical gin bottles",
-          "Luxury perfume bottles, scented candles, and artisan room sprays",
-          "High-end gourmet olive oil and imported balsamic vinegar bottles"
-        ],
-        "bestForVi": [
-          "Chai rượu vang cao cấp, rượu sâm-panh và rượu thủ công",
-          "Chai nước hoa xa xỉ, cốc nến thơm tinh dầu và chai xịt phòng cao cấp",
-          "Chai dầu ô-liu thượng hạng và dấm lên men nhập khẩu"
-        ],
-        "nameZh": "高端特种棉纸红酒标签（耐湿抗冷凝）",
-        "nameJa": "高級ワイン用特殊アート紙ラベル",
-        "nameKo": "고급 와인용 수입 질감지 방습 라벨",
-        "taglineZh": "冰桶浸泡与冷藏结露时，标签纸张依然紧贴不脱落变黄？",
-        "taglineJa": "ワインセラーや氷水に入れてもふやけない、気品あるワイン専用ラベルですか？",
-        "taglineKo": "와인 아이스버킷에 담가도 젖어 떨어지지 않는 프리미엄 와인 전용 라벨인가요?",
-        "descriptionZh": [
-          "精选高克重特种棉浆艺术纸，自带厚实纸纹与温润触感",
-          "特制抗冷凝水粘胶，冰桶浸泡数小时纸张不烂不掉胶",
-          "完美搭配烫金、凹凸工艺，彰显名庄佳酿非凡品质"
-        ],
-        "descriptionJa": [
-          "コットンを配合した厚手の特殊アート紙、深い風合いと高級感",
-          "耐水・耐結露グルーを採用し、ワインクーラーの氷水でも剥がれない",
-          "箔押しやエンボス加工が際立つ、名門ワイナリーに選ばれる仕様"
-        ],
-        "descriptionKo": [
-          "도톰한 면 펄프 수입 예술지로 손에 닿는 깊이감 있는 텍스처",
-          "방습 특수 글루를 적용하여 와인 쿨러 얼음물 속에서도 안 떨어짐",
-          "섬세한 금박과 엠보싱이 조화를 이루어 최고급 와인의 품격 완성"
-        ],
-        "bestForZh": [
-          "高端红酒、白葡萄酒、起泡酒及威士忌酒瓶标签",
-          "高级冷榨初榨橄榄油、精品陈年果醋玻璃瓶标",
-          "注重产区文化与匠心酿造工艺的高端饮品包装"
-        ],
-        "bestForJa": [
-          "赤ワイン・白ワイン・シャンパン・プレミアムウイスキー",
-          "高級エキストラバージンオリーブオイル、熟成バルサミコ酢",
-          "産地の伝統と職人のこだわりを伝えるプレミアムボトル"
-        ],
-        "bestForKo": [
-          "프리미엄 와인, 샴페인, 싱글몰트 위스키 바틀 라벨",
-          "최고급 엑스트라 버진 올리브오일, 발사믹 식초 유리병 라벨",
-          "전통과 장인정신을 담아내는 부티크 주류 및 식음료 패키지"
-        ],
-        "pureImage": "/images/product/lable-art3.webp",
-        "pureImages": [
-          "/images/product/lable-art3.webp",
-          "/images/product/lable-art2.webp",
-          "/images/product/lable-art1.webp"
-        ]
-      },
-      {
-        "icon": "ShieldCheck",
-        "name": "Waterproof White Synthetic PVC Label",
-        "nameVi": "Nhãn Nhựa PVC Chống Nước (Ướt & Lạnh)",
-        "tagline": "Need an indestructible waterproof label for chilled beverages or bath cosmetics?",
-        "taglineVi": "Bạn cần nhãn nhựa chống nước 100%, chịu lạnh cho chai đồ uống hay mỹ phẩm phòng tắm?",
-        "description": [
-          "100% waterproof synthetic PVC/PET film with permanent waterproof adhesive",
-          "Survives ice immersion, condensation, refrigeration, and hot humid showers",
-          "Crisp, vibrant colors that won't scratch, peel, or fade in harsh environments"
-        ],
-        "descriptionVi": [
-          "Màng nhựa PVC/PET chống thấm nước 100% với lớp keo dán chịu lạnh đặc biệt",
-          "Bền bỉ khi ngâm nước đá, nhiệt độ tủ lạnh, nước đọng và môi trường phòng tắm",
-          "Màu in sắc nét, không trầy xước, không bong tróc kể cả khi tiếp xúc nước hằng ngày"
-        ],
-        "descriptionTraits": [
-          "waterproof-durability",
-          "smooth-base",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Cold-pressed juice bottles, craft beer cans, and refrigerated dairy milk",
-          "Shampoo, shower gel, and bathroom cosmetic bottles",
-          "Outdoor agricultural chemical bottles and marine supply containers"
-        ],
-        "bestForVi": [
-          "Chai nước ép lạnh, lon bia thủ công và các sản phẩm sữa ướp lạnh",
-          "Chai dầu gội, sữa tắm và mỹ phẩm chăm sóc sử dụng trong phòng tắm",
-          "Chai thuốc nông nghiệp ngoài trời và bao bì thiết bị hằng hải"
-        ],
-        "nameZh": "防水防冷冻PVC塑料瓶贴",
-        "nameJa": "耐水・冷蔵対応合成PVCボトルラベル",
-        "nameKo": "방수 및 냉장 보관용 합성 PVC 라벨",
-        "taglineZh": "沐浴露、洗发水在潮湿浴室长期使用，标签依然崭新如初？",
-        "taglineJa": "バスルームや水回りで使用しても文字が消えない完全耐水ラベルですか？",
-        "taglineKo": "욕실의 샴푸나 바디워시처럼 습기가 가득한 환경에서도 온전한 라벨인가요?",
-        "descriptionZh": [
-          "高分子合成PVC塑料基材，耐撕裂抗磨损抗低温冷冻",
-          "遇水完全不吸水起泡，长久耐潮湿、耐冷藏冷冻结霜",
-          "强力防水胶水，即使瓶身结露依然牢固抓附不移位"
-        ],
-        "descriptionJa": [
-          "高分子合成PVCフィルムを採用、破れや水濡れに極めて強い",
-          "完全防水仕様で、冷蔵庫や冷凍庫での長期保管でも剥がれ知らず",
-          "結露したボトルの表面にも強力に密着する特殊耐水粘着剤"
-        ],
-        "descriptionKo": [
-          "고분자 합성 PVC 소재로 물에 젖거나 찢어지지 않는 영구 방수",
-          "냉장 및 냉동 보관 시 발생하는 결로에도 들뜸 없이 완벽 밀착",
-          "습기 찬 욕실이나 얼음물 속에서도 떨어지지 않는 강력 내구성"
-        ],
-        "bestForZh": [
-          "浴室沐浴露、洗发水、洗面奶等潮湿环境日化用品",
-          "冷冻牛排海鲜、冷藏酸奶鲜奶等生鲜冷链食品",
-          "户外使用的防晒喷雾、汽车洗车养护清洁剂瓶标"
-        ],
-        "bestForJa": [
-          "バスルームで使うシャンプー・ボディソープ・洗顔料",
-          "冷凍肉・海鮮・要冷蔵のヨーグルト・牛乳パック",
-          "洗車用品・アウトドア用スプレー・工業用ケミカルボトル"
-        ],
-        "bestForKo": [
-          "욕실의 샴푸, 바디워시, 클렌징 폼 등 수분 접촉이 많은 용기",
-          "냉동 육류, 신선 수산물, 냉장 요거트 등 콜드체인 유통 라벨",
-          "세차 케미컬 용기, 야외용 아웃도어 스프레이 라벨"
-        ],
-        "pureImage": "/images/product/decaltrongsuot.webp",
-        "pureImages": [
-          "/images/product/decaltrongsuot.webp",
-          "/images/product/lable-PVC1.webp",
-          "/images/product/lable-PVC3.webp"
-        ]
-      },
-      {
-        "icon": "Sparkles",
-        "name": "Foil Stamped & Spot UV Luxury Label",
-        "nameVi": "Nhãn Ép Kim & Phủ UV Định Hình Sang Trọng",
-        "tagline": "Want your brand logo on the bottle to shimmer with metallic foil and raised 3D UV?",
-        "taglineVi": "Bạn muốn logo thương hiệu trên chai lọ lấp lánh ép kim và nổi bật với UV 3D?",
-        "description": [
-          "Metallic gold, silver, or bronze hot foil stamping applied to focal logos",
-          "Raised Spot UV coating adds sculptural 3D gloss over a velvety matte background",
-          "Maximum shelf presence that elevates perceived product value instantly"
-        ],
-        "descriptionVi": [
-          "Gia công ép kim nhũ vàng, nhũ bạc hoặc nhũ đồng cho logo và biểu tượng chính",
-          "Phủ UV bóng định hình tạo độ tương phản nổi 3D trên nền màng mờ mịn màng",
-          "Tạo sức hút mãnh liệt trên quầy kệ, nâng tầm giá trị cảm nhận của sản phẩm"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Luxury facial serums, anti-aging creams, and VIP beauty collections",
-          "Premium spirits, limited-edition whisky, and celebration champagne",
-          "High-end nutritional supplements and VIP corporate gifts"
-        ],
-        "bestForVi": [
-          "Chai mỹ phẩm serum, kem dưỡng cao cấp và bộ sưu tập làm đẹp VIP",
-          "Chai rượu ngoại sang trọng, rượu whisky giới hạn và rượu mừng sự kiện",
-          "Hộp thực phẩm chức năng cao cấp và giỏ quà tặng doanh nghiệp VIP"
-        ],
-        "nameZh": "烫金 + 局部凸起UV光油高档标签",
-        "nameJa": "箔押し + スポットUV立体加工ラベル",
-        "nameKo": "금박 + 부분 에폭시 UV 고급 라벨",
-        "taglineZh": "指尖抚过有明显的浮雕凸起感，高端化妆品与香水专用？",
-        "taglineJa": "立体感のある手触りと輝きで、香水やコスメの価値を高めるラベルですか？",
-        "taglineKo": "손끝에 입체감이 느껴지는 양각 UV와 금박으로 향수나 화장품 가치를 높일 라벨인가요?",
-        "descriptionZh": [
-          "高贵金属电化铝烫金搭配局部3D立体水晶凸起UV光油",
-          "光影流转间层次分明，指尖触摸有圆润立体的浮雕感",
-          "极致工艺大幅提升商品货架身价，激发消费者购买欲"
-        ],
-        "descriptionJa": [
-          "上品な箔押しと、透明度の高いぷっくりとした立体スポットUV",
-          "光を捉えて華やかに輝き、指先に伝わる立体感がプレミアム感を演出",
-          "店頭で圧倒的な高級感を放ち、購買意欲を高める最高峰ラベル"
-        ],
-        "descriptionKo": [
-          "빛나는 메탈릭 금박에 투명하게 도톰한 3D 입체 에폭시 UV 코팅",
-          "빛의 각도에 따라 반짝이며 만졌을 때 볼록한 양각 촉감 선사",
-          "진열대에서 시선을 압도하여 상품의 가치와 신뢰도를 수직 상승"
-        ],
-        "bestForZh": [
-          "高端奢华护肤品、面霜眼霜精油瓶身标签",
-          "高档香氛香水瓶贴、顶级手工蜡烛玻璃罐标",
-          "品牌旗舰主推款商品、限量发售礼盒产品标签"
-        ],
-        "bestForJa": [
-          "高級アンチエイジングコスメ、美容液、アロマオイル",
-          "香水ボトル、フレグランスキャンドルの正面ラベル",
-          "ブランドのフラッグシップ商品、限定プレミアムライン"
-        ],
-        "bestForKo": [
-          "안티에이징 에센스, 프리미엄 크림 등 럭셔리 코스메틱 라벨",
-          "니치 향수 보틀, 최고급 소이 캔들 유리 용기 라벨",
-          "브랜드 플래그십 신제품 및 한정판 시그니처 에디션"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/lable-luxury1.webp",
-        "pureImages": [
-          "/images/product/lable-luxury1.webp",
-          "/images/product/lable-luxury2.webp",
-          "/images/product/lable-luxury3.webp"
-        ]
-      },
-      {
-          "icon": "Tag",
-          "name": "Paper, Plastic PVC & Kraft Decal",
-          "nameVi": "Decal Giấy, Nhựa Trong/Sữa, Kraft, Xi Bạc",
-          "tagline": "Waterproof synthetic, transparent film, or vintage kraft with permanent adhesive",
-          "taglineVi": "Đa dạng chất liệu decal giấy tiết kiệm, decal nhựa chống nước, decal xi bạc chịu nhiệt",
-          "description": [
-              "Super-strong acrylic permanent adhesive sticks to glass, plastic, and cardboard",
-              "Waterproof PVC vinyl resists refrigerator condensation and oil spills",
-              "Precision computer laser die-cutting to any outline contour"
-          ],
-          "descriptionVi": [
-              "Keo dán acrylic bám dính chắc chắn trên bề mặt chai thủy tinh, hộp nhựa và túi giấy",
-              "Chất liệu decal nhựa kháng nước 100%, chịu lạnh trong tủ mát không bong tróc",
-              "Bế đứt demi theo đúng viền thiết kế tròn, vuông, elip hoặc hình dáng tự do"
-          ],
-          "descriptionTraits": [
-              "waterproof-durability",
-              "digital-precision"
-          ],
-          "bestFor": [
-              "Beverage bottle labels, cosmetic jars, bakery seals, shipping boxes"
-          ],
-          "bestForVi": [
-              "Tem dán chai trà sữa, hũ mỹ phẩm, hộp thức ăn, niêm phong kiện hàng"
-          ],
-          "pureImage": "/images/product/vd-item-decal.jpeg",
-          "pureImages": [
-              "/images/product/vd-item-decal.jpeg",
-              "/images/product/vd-item-decal.jpeg",
-              "/images/product/vd-item-decal.jpeg"
-          ],
-          "nameZh": "多材质不干胶标签 (铜版纸/防水PVC/透明/牛皮/消银龙)",
-          "nameJa": "高機能マルチステッカー（紙・耐水PVC・透明・クラフト・銀ホイル）",
-          "nameKo": "다용도 종합 라벨 스티커 (아트지/방수PVC/투명/크라프트/은무데드롱)",
-          "taglineZh": "根据产品使用环境选择经济型纸质、100%防水PVC、复古牛皮纸或耐温消银龙贴纸？",
-          "taglineJa": "用途に合わせて紙、耐水PVC、透明フィルム、クラフト紙、耐熱シルバーから選べる定番ラベルですか？",
-          "taglineKo": "용도에 맞춰 경제적인 아트지, 완전 방수 PVC, 투명 비침, 빈티지 크라프트, 내열 은데드롱을 선택하시나요?",
-          "descriptionZh": [
-              "强力亚克力永久油胶，牢固粘贴于玻璃瓶、塑料盒、瓦楞纸箱及金属表面",
-              "防水PVC材质100%防潮耐冷冻，冷藏柜水汽浸泡绝不脱胶起翘",
-              "高精度数控激光全切/半切排废，圆形、椭圆、圆角矩形及任意异形裁切"
-          ],
-          "descriptionJa": [
-              "強力なアクリル系永久粘着剤を採用し、ガラス・プラスチック・紙箱・金属に強力密着",
-              "完全耐水のPVCフィルムは冷蔵庫内の結露や油分に強く、剥がれやふやけを防止",
-              "高精度レーザーダイカットにより、円形・正方形・自由形状の輪郭に沿って美しくハーフカット"
-          ],
-          "descriptionKo": [
-              "강력 아크릴 영구 점착제로 유리병, 플라스틱 용기, 종이 박스 및 캔 표면에 견고하게 부착",
-              "100% 방수 PVC 유포지는 냉장고 습기와 수분, 기름때에도 들뜸 없이 완벽 점착 유지",
-              "초정밀 톰슨 반칼(하프컷) 가공으로 사각, 원형, 타원형 및 브랜드 로고 모양 그대로 깔끔한 떼어냄"
-          ],
-          "bestForZh": [
-              "饮品咖啡瓶贴、护肤美妆包装标、烘焙封口签、快递包裹发货封箱贴"
-          ],
-          "bestForJa": [
-              "ボトル飲料ラベル、化粧品ジャーシール、ベーカリー封緘シール、配送箱の製品表示"
-          ],
-          "bestForKo": [
-              "음료 및 캔 라벨, 화장품 용기 스티커, 베이커리 포장 봉인 라벨, 물류 박스 패키지"
-          ]
-      }
-    ]
+    "materials": LABEL_MATERIALS
   },
   {
     "id": "tui-giay",
@@ -6245,18 +5436,12 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "기업 박람회 부스, 콘퍼런스 기념품 및 자료 배포용 백",
           "브랜드 인지도 제고와 실용성을 모두 갖춘 표준 종이 쇼핑백"
         ],
-        "pureImage": "/images/product/couche.webp",
+        "pureImage": "/images/product/tuigiay-giayloaic.webp",
         "pureImages": [
-          "/images/product/couche.webp",
-          "/images/product/bag-couche-foil2.webp",
-          "/images/product/bag-couche3.webp"
+          "/images/product/tuigiay-giayloaic.webp",
+          "/images/product/tuigiay-giayloaic2.webp",
+          "/images/product/tuigiay-giayloaic3.webp"
         ],
-        "image": "/images/product/foil.webp",
-        "images": [
-          "/images/product/foil.webp",
-          "/images/product/bag-couche2.webp",
-          "/images/product/bag-couche-foil3.webp"
-        ]
       },
       {
         "icon": "ShieldCheck",
@@ -6325,98 +5510,12 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "하이엔드 패션 액세서리, 최신 IT 디바이스 쇼핑백",
           "구김 없이 반듯한 명품 브랜드의 완벽한 핏을 원하는 매장"
         ],
-        "pureImage": "/images/product/ivory.webp",
+        "pureImage": "/images/product/tuigiay-giayloaii.webp",
         "pureImages": [
-          "/images/product/ivory.webp",
-          "/images/product/bag-ivory2.webp",
-          "/images/product/bag-ivory3.webp"
+          "/images/product/tuigiay-giayloaii.webp",
+          "/images/product/tuigiay-giayloaii2.webp",
+          "/images/product/tuigiay-giayloaii3.webp"
         ],
-        "image": "/images/product/foil.webp",
-        "images": [
-          "/images/product/foil.webp",
-          "/images/product/bag-ivory-foil2.webp",
-          "/images/product/bag-ivory-foil3.webp"
-        ]
-      },
-      {
-        "icon": "Feather",
-        "name": "Natural Kraft 180 - 250gsm (Eco-Bag)",
-        "nameVi": "Giấy Kraft Nâu / Trắng Tự Nhiên (Eco-Bag)",
-        "tagline": "Want eco-friendly carry bags that signal your sustainability commitment?",
-        "taglineVi": "Bạn muốn túi giấy xanh, thân thiện môi trường cho nhà hàng hoặc cửa hàng?",
-        "description": [
-          "100% recycled natural brown or bleached white Kraft paper",
-          "High wood-fiber tensile strength with twisted paper or cotton rope handles",
-          "Biodegradable material looking authentic with minimalist ink or foil branding"
-        ],
-        "descriptionVi": [
-          "Màu nâu tự nhiên hoặc trắng tái chế 100% thân thiện môi trường",
-          "Độ dai xơ giấy cao, kết hợp quai dây giấy xoắn hoặc quai cotton mộc mạc",
-          "Dễ phân hủy hữu cơ, thẩm mỹ ấn tượng khi in logo đơn sắc hoặc ép kim"
-        ],
-        "descriptionTraits": [
-          "natural-grain",
-          "soft-light",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Artisan bakeries, specialty coffee shops, and organic food takeaways",
-          "Sustainable clothing brands and eco-friendly cosmetics boutiques",
-          "Corporate CSR campaigns and environmental conference gift bags"
-        ],
-        "bestForVi": [
-          "Tiệm bánh thủ công, cafe mang đi và chuỗi thực phẩm hữu cơ",
-          "Thương hiệu thời trang bền vững, cửa hàng mỹ phẩm thiên nhiên",
-          "Túi quà trong các chiến dịch xanh và hội thảo bảo vệ môi trường"
-        ],
-        "nameZh": "天然本色/白色牛皮纸（环保手提袋）",
-        "nameJa": "未晒・晒クラフト紙（エコショッパー）",
-        "nameKo": "친환경 크라프트 종이 쇼핑백 (갈색/흰색)",
-        "taglineZh": "倡导绿色环保无塑料覆膜，自带简约天然生活美学？",
-        "taglineJa": "環境に優しく、ナチュラルな魅力が伝わるクラフト紙袋ですか？",
-        "taglineKo": "비닐 코팅 없이 친환경적이며 자연스러운 미학을 담은 종이 가방인가요?",
-        "descriptionZh": [
-          "天然环保原色黄牛皮纸或精白牛皮纸，纯天然无涂层",
-          "纸张长纤维交织，抗拉拽性能极佳，绿色可自然降解",
-          "无需覆膜即可防刮蹭，践行零塑料环保承诺"
-        ],
-        "descriptionJa": [
-          "無漂白の未晒クラフトまたは晒クラフト紙を使用、完全生分解性",
-          "繊維が長くしなやかで破れにくく、環境負荷を最小限に抑制",
-          "ラミネート不要でリサイクルが容易、プラスチックフリーを実現"
-        ],
-        "descriptionKo": [
-          "친환경 천연 무표백 브라운 크라프트 또는 퓨어 화이트 크라프트지",
-          "긴 천연 펄프 섬유가 촘촘히 얽혀 찢어짐에 매우 강하고 자연 분해",
-          "비닐 코팅 없이도 내마모성이 우수하여 100% 재활용 가능한 제로웨이스트"
-        ],
-        "bestForZh": [
-          "有机绿色食品、现烘面包甜品店、精品咖啡外带袋",
-          "极简生活方式品牌、书店、环保主题文创小店",
-          "倡导可持续绿色发展的现代创新企业与机构"
-        ],
-        "bestForJa": [
-          "オーガニック食品、ベーカリー、テイクアウトカフェ",
-          "ライフスタイルショップ、書店、エコ雑貨店",
-          "サステナビリティや環境配慮を前面に打ち出す企業"
-        ],
-        "bestForKo": [
-          "유기농 마켓, 베이커리, 스페셜티 커피 테이크아웃 백",
-          "라이프스타일 편집숍, 독립 서점, 친환경 제로웨이스트 샵",
-          "지속가능성과 자연 친화적 가치를 고객과 공유하는 브랜드"
-        ],
-        "pureImage": "/images/product/kraft.webp",
-        "pureImages": [
-          "/images/product/kraft.webp",
-          "/images/product/bag-kraft2.webp",
-          "/images/product/bag-kraft3.webp"
-        ],
-        "image": "/images/product/kraft-foil.webp",
-        "images": [
-          "/images/product/kraft-foil.webp",
-          "/images/product/bag-kraft-foil2.webp",
-          "/images/product/bag-kraft-foil3.webp"
-        ]
       },
       {
         "icon": "Palette",
@@ -6485,93 +5584,12 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "프라이빗 뱅크 VVIP 사은품 백, 프리미엄 갤러리 옥션 쇼퍼백",
           "품격의 정점을 추구하는 최상위 VIP를 위한 럭셔리 패키징"
         ],
-        "pureImage": "/images/product/paperart.webp",
+        "pureImage": "/images/product/tuigiay-giaymythuat.webp",
         "pureImages": [
-          "/images/product/paperart.webp",
-          "/images/product/bag-art2.webp",
-          "/images/product/bag-art1.webp"
+          "/images/product/tuigiay-giaymythuat.webp",
+          "/images/product/tuigiay-giaymythuat2.webp",
+          "/images/product/tuigiay-giaymythuat3.webp"
         ],
-        "image": "/images/product/paperart-foil.webp",
-        "images": [
-          "/images/product/paperart-foil.webp",
-          "/images/product/bag-art-foil2.webp",
-          "/images/product/bag-art-foil1.webp"
-        ]
-      },
-      {
-        "icon": "Sparkles",
-        "name": "Foil Stamping & Silk Ribbon Handle Bag",
-        "nameVi": "Ép Kim Logo & Quai Dây Lụa / Ruy Băng",
-        "tagline": "Want your brand logo on the bag to shimmer in metallic gold with silk handles?",
-        "taglineVi": "Bạn muốn túi giấy lấp lánh ép kim nhũ vàng kết hợp quai lụa ruy băng sang trọng?",
-        "description": [
-          "Metallic hot foil stamping applied to central brand logos and crests",
-          "Soft satin silk ribbon or grosgrain handles color-matched to brand identity",
-          "Transforms packaging into an unforgettable luxury walking billboard"
-        ],
-        "descriptionVi": [
-          "Ép kim nhũ vàng, nhũ bạc hoặc nhũ đồng trực tiếp lên logo chính trên túi",
-          "Quai xách bằng dây lụa satin mềm mại hoặc ruy băng gân đồng màu nhận diện",
-          "Biến chiếc túi shopping thành biển quảng cáo di động đẳng cấp trên phố"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "5-star hotel resorts, luxury spa retreats, and fine jewelry brands",
-          "Corporate anniversary gala gift bags and CEO partner gifts",
-          "High-end confectionery and seasonal luxury hamper bags"
-        ],
-        "bestForVi": [
-          "Khách sạn resort 5 sao, spa xa xỉ và thương hiệu trang sức đá quý",
-          "Túi quà sự kiện kỷ niệm thành lập tập đoàn và quà biếu của CEO",
-          "Túi xách hộp bánh trung thu, quà Tết hạng sang và yến sào"
-        ],
-        "nameZh": "烫金品牌LOGO + 丝绸丝带手提绳",
-        "nameJa": "箔押しロゴ + サテンリボンハンドル仕様",
-        "nameKo": "브랜드 로고 금박 + 실크 리본 손잡이",
-        "taglineZh": "丝缎手提带配以精致烫金，尽显极致尊贵礼品体验？",
-        "taglineJa": "サテンリボンと箔押しロゴが織りなす、贅沢なギフト体験をお届けしますか？",
-        "taglineKo": "부드러운 실크 리본 손잡이와 빛나는 금박으로 최고의 감동을 선사할 포장인가요?",
-        "descriptionZh": [
-          "袋身品牌Logo采用高精电化铝热烫金或哑金、亮金工艺",
-          "搭配宽幅双面真丝缎带手提绳，柔软亲肤不勒手",
-          "烫金光泽与缎带垂坠感交织，带来开箱拆礼的浓厚仪式感"
-        ],
-        "descriptionJa": [
-          "ブランドロゴに施された美しいゴールド箔押し（マット金・ツヤ金対応）",
-          "手肌に優しい上質なサテンリボンハンドルが、持ち歩く楽しさを演出",
-          "箔の煌めきとリボンの優雅さが織りなす、完璧なギフト体験"
-        ],
-        "descriptionKo": [
-          "전면 브랜드 로고에 정밀 금박 가공 (무광 골드/유광 골드 선택 가능)",
-          "손바닥에 닿는 느낌이 부드러운 고급 더블페이스 사틴 실크 리본 핸들",
-          "황금빛 각인과 실크 리본의 우아함이 어우러져 완벽한 선물 언박싱 연출"
-        ],
-        "bestForZh": [
-          "高端节日礼盒包装手提袋、婚宴伴手礼尊享礼袋",
-          "香氛香水、护肤品及高端美发沙龙会员专属礼袋",
-          "用于重大节日或庆典赠送的体面气派手提袋"
-        ],
-        "bestForJa": [
-          "新春・中元・歳暮などの特別ギフトバッグ、ウェディング引き出物袋",
-          "高級香水、スキンケア、プレミアムスパサロンの会員向けバッグ",
-          "記念イベントやセレモニーで来賓に手渡す特別な引き出物袋"
-        ],
-        "bestForKo": [
-          "명절 설/추석 스페셜 선물 세트 백, 호텔 결혼식 하객 답례품 백",
-          "니치 향수, 에스테틱 화장품, 프라이빗 뷰티 살롱 VIP 기프트 백",
-          "기업 창립기념일 및 대형 컨벤션 VIP 귀빈 증정용 쇼핑백"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/foil.webp",
-        "pureImages": [
-          "/images/product/foil.webp",
-          "/images/product/bag-logo1.webp",
-          "/images/product/bag-logo3.webp"
-        ]
       },
       {
           "icon": "ShieldCheck",
@@ -6600,11 +5618,11 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "bestForVi": [
               "Cửa hàng thực phẩm sạch, tiệm bánh, thời trang vintage, quán cafe"
           ],
-          "pureImage": "/images/product/bag-kraft1.webp",
+          "pureImage": "/images/product/tuigiay-giaykraft.webp",
           "pureImages": [
-              "/images/product/bag-kraft1.webp",
-              "/images/product/bag-kraft1.webp",
-              "/images/product/bag-kraft1.webp"
+              "/images/product/tuigiay-giaykraft.webp",
+              "/images/product/tuigiay-giaykraft2.webp",
+              "/images/product/tuigiay-giaykraft3.webp"
           ],
           "nameZh": "环保牛皮纸手提袋 (Natural Eco Kraft)",
           "nameJa": "エコクラフト紙手提げ袋（無漂白・リサイクル）",
@@ -6637,70 +5655,6 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
               "친환경 패션 브랜드, 수제 베이커리 전문점, 유기농 뷰티 샵, 스페셜티 로스터리 카페"
           ]
       },
-      {
-          "icon": "Layers",
-          "name": "Premium Couche / Ivory Paper",
-          "nameVi": "Giấy Couche / Ivory",
-          "tagline": "Crisp white coated paperboard with matte lamination for vivid full-bleed graphics",
-          "taglineVi": "Giấy trắng cứng cáp cán màng mờ, in màu sắc tràn viền rực rỡ và sang trọng",
-          "description": [
-              "Pure white background allows full-color CMYK photo printing and sharp brand colors",
-              "Coated with protective water-resistant matte lamination",
-              "Reinforced top turn-in and bottom card for maximum load capacity up to 5kg"
-          ],
-          "descriptionVi": [
-              "Bề mặt trắng mịn cho màu in chuẩn xác, sắc nét đến từng dải màu thương hiệu",
-              "Cán màng mờ chống trầy xước và hạn chế nước mưa ngấm vào",
-              "Gia cố bìa cứng ở miệng túi và đáy túi giúp chịu lực xách đến 5kg"
-          ],
-          "descriptionTraits": [
-              "smooth-base",
-              "glossy-coat",
-              "thick-weight"
-          ],
-          "bestFor": [
-              "Fashion boutiques, cosmetics, luxury jewelry, event corporate gifts"
-          ],
-          "bestForVi": [
-              "Shop quần áo, showroom mỹ phẩm, quà tặng sự kiện doanh nghiệp"
-          ],
-          "pureImage": "/images/product/bag-couche1.webp",
-          "pureImages": [
-              "/images/product/bag-couche1.webp",
-              "/images/product/bag-couche1.webp",
-              "/images/product/bag-couche1.webp"
-          ],
-          "nameZh": "高白铜版纸 & 白卡纸手提袋 (Couche / Ivory)",
-          "nameJa": "高級コート紙＆アイボリー紙手提げ袋（フルカラー・マットPP）",
-          "nameKo": "고급 스노우지 & 아이보리지 쇼핑백 (전면 풀컬러 매트코팅)",
-          "taglineZh": "白净硬挺、全彩印刷无色差、外覆防划哑膜并配有加固底板的高端商务纸袋？",
-          "taglineJa": "純白の紙肌に鮮やかなフルカラー印刷。口折れと底に厚紙補强を施した高級ブランド紙袋ですか？",
-          "taglineKo": "순백의 깔끔한 용지에 화사한 브랜드 컬러 인쇄와 입구·바닥 보강판으로 5kg까지 거뜬한 고급 쇼핑백인가요?",
-          "descriptionZh": [
-              "高白度涂布表面，实现高保真CMYK四色全彩印刷与精准的企业Pantone品牌色",
-              "表面覆盖高韧性哑光保护膜，防水防刮蹭，耐反复提拿不易破裂",
-              "袋口折边与袋底均内衬高克重加强卡板，提手受力均匀，最大承重可达5公斤"
-          ],
-          "descriptionJa": [
-              "高純度の白色度を誇る紙肌が、CMYKフルカラー写真やブランドロゴを極めて鮮明に表現",
-              "表面の撥水マットPPラミネート加工により、雨の日の水濡れや擦れ傷をガード",
-              "口折部と底面に厚手の補強板を挿入し、最大5kgまでの重さに耐える高耐久設計"
-          ],
-          "descriptionKo": [
-              "고백색 코팅 표면으로 CMYK 풀컬러 사진 및 브랜드 팬톤 컬러를 오차 없이 선명하게 재현",
-              "외면 무광 매트 코팅으로 스크래치를 방지하고 빗물 침투를 완벽하게 차단",
-              "가방 입구 안쪽 턴인 접기와 바닥면에 하드보드 보강판을 덧대어 최대 5kg 하중까지 안정적 지탱"
-          ],
-          "bestForZh": [
-              "高端服装精品店、专柜美妆护肤品、轻奢珠宝首饰包装、企业大型发布会伴手礼"
-          ],
-          "bestForJa": [
-              "ファッションブティック、コスメブランド、ジュエリーショップ、企業イベントの手土産袋"
-          ],
-          "bestForKo": [
-              "프리미엄 패션 부티크, 코스메틱 뷰티 샵, 주얼리 악세서리 매장, 기업 VIP 행사 기념품 백"
-          ]
-      }
     ]
   },
   {
@@ -6797,18 +5751,12 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "이커머스 배송용 개별 제품 컬러 패키지 박스",
           "합리적인 단가로 대량 생산 가능한 가장 널리 쓰이는 포장 상자"
         ],
-        "pureImage": "/images/product/couche.webp",
+        "pureImage": "/images/product/hopgiay-giayloaic.webp",
         "pureImages": [
-          "/images/product/couche.webp",
-          "/images/product/box-couche2.webp",
-          "/images/product/box-couche3.webp"
+          "/images/product/hopgiay-giayloaic.webp",
+          "/images/product/hopgiay-giayloaic2.webp",
+          "/images/product/hopgiay-giayloaic3.webp"
         ],
-        "image": "/images/product/foil.webp",
-        "images": [
-          "/images/product/foil.webp",
-          "/images/product/box-couche-foil2.webp",
-          "/images/product/box-couche-foil3.webp"
-        ]
       },
       {
         "icon": "ShieldCheck",
@@ -6877,103 +5825,91 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "고기능성 세럼, 프리미엄 크림, 수입 향수 럭셔리 단상자",
           "상자를 열었을 때 안쪽까지 하얗고 완벽한 마감을 원하는 브랜드"
         ],
-        "pureImage": "/images/product/ivory.webp",
+        "pureImage": "/images/product/hopgiay-giayloaii.webp",
         "pureImages": [
-          "/images/product/ivory.webp",
-          "/images/product/box-ivory2.webp",
-          "/images/product/box-ivory3.webp"
+          "/images/product/hopgiay-giayloaii.webp",
+          "/images/product/hopgiay-giayloaii2.webp",
+          "/images/product/hopgiay-giayloaii3.webp"
         ],
-        "image": "/images/product/foil.webp",
-        "images": [
-          "/images/product/foil.webp",
-          "/images/product/box-ivory-foil2.webp",
-          "/images/product/box-ivory-foil3.webp"
-        ]
       },
-      {
-        "icon": "Award",
-        "name": "Couche Mounted on E/B-Flute Corrugated Board",
-        "nameVi": "Couche Bồi Carton Sóng E / Sóng B",
-        "tagline": "Need extra shock-proof protection for heavier items or e-commerce shipping?",
-        "taglineVi": "Bạn cần hộp bồi sóng cứng cáp chịu lực va đập khi gửi hàng chuyển phát nhanh?",
-        "description": [
-          "Laminated C250/C300 printed sheet mounted onto strong E-flute corrugated cardboard",
-          "Provides superior cushioning and compression resistance during transit",
-          "Combines high-definition retail print quality with shipping box ruggedness"
-        ],
-        "descriptionVi": [
-          "In màu sắc nét được bồi lên lớp carton sóng E hoặc sóng B cứng cáp",
-          "Khả năng chống va đập, chịu lực đè nén vượt trội trong quá trình vận chuyển",
-          "Kết hợp hoàn hảo giữa thẩm mỹ in ấn bán lẻ và độ bền của hộp bảo vệ"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "waterproof-durability",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "E-commerce subscription boxes and courier shipping mailers",
-          "Heavy glass bottles, wine, ceramics, and electronic appliances",
-          "Fruit gift boxes, agricultural exports, and bulk retail packs"
-        ],
-        "bestForVi": [
-          "Hộp ship COD thương mại điện tử, hộp quà gửi chuyển phát nhanh",
-          "Hộp đựng chai lọ thủy tinh nặng, rượu vang, gốm sứ và thiết bị điện",
-          "Hộp quà trái cây, nông sản xuất khẩu và giỏ quà thực phẩm"
-        ],
-        "nameZh": "彩色铜版纸裱E坑/B坑加强瓦楞纸盒",
-        "nameJa": "コート紙合紙 E段/B段 段ボール箱",
-        "nameKo": "컬러 스노우지 합지 E골/B골 골판지 박스",
-        "taglineZh": "需要抵抗快递暴力分拣、兼顾高清彩色印刷与坚硬防撞缓冲？",
-        "taglineJa": "配送時の衝撃から製品を守り、鮮やかな外装印刷も両立させたいですか？",
-        "taglineKo": "택배 배송 충격으로부터 제품을 안전하게 보호하면서 컬러풀한 외관을 유지할 박스인가요?",
-        "descriptionZh": [
-          "面纸彩印高精铜版纸，手工裱贴加强型E坑或B坑瓦楞芯纸",
-          "抗压耐摔防撞缓冲，有效吸收快递长途颠簸冲击",
-          "折叠卡扣设计，免胶水即插即锁，打包发货极速高效"
-        ],
-        "descriptionJa": [
-          "コート紙に鮮やかに印刷し、E段またはB段の段ボール芯に合紙",
-          "輸送時の落下や衝撃から中の商品をしっかりガードする高強度",
-          "ワンタッチで組み立て可能な効率的なロック構造"
-        ],
-        "descriptionKo": [
-          "선명하게 인쇄된 스노우지를 탄탄한 E골/B골 강화 골판지에 합지 가공",
-          "택배 배송 중 던짐과 적재 하중을 거뜬히 견뎌내는 강력한 완충력",
-          "테이프 없이 원터치 조립이 가능한 편리한 스마트 락 구조"
-        ],
-        "bestForZh": [
-          "电商快递发货飞机盒、易碎玻璃瓶罐外发箱",
-          "电子数码产品外箱、家用小电器及五金工具箱",
-          "兼顾外表全彩精美与内在强力保护的电商首选"
-        ],
-        "bestForJa": [
-          "EC通販の配送用メール便ボックス、割れ物・ボトルの発送箱",
-          "家電製品・ガジェット・工具・シューズボックス",
-          "見た目の美しさと配送時の保護性能を両立した発送用化粧箱"
-        ],
-        "bestForKo": [
-          "이커머스 배송용 프리미엄 컬러 날개 박스, 유리병 완충 배송 상자",
-          "스마트 기기, 소형 가전, 생활 가전 컬러 골판지 박스",
-          "택배 상자 자체가 하나의 세련된 선물 포장이 되는 브랜드 박스"
-        ],
-        "pureImage": "/images/product/carbon.webp",
-        "pureImages": [
-          "/images/product/carbon.webp",
-          "/images/product/box-board2.webp",
-          "/images/product/box-board3.webp"
-        ],
-        "image": "/images/product/carton-foil.webp",
-        "images": [
-          "/images/product/carton-foil.webp",
-          "/images/product/box-board-foil2.webp",
-          "/images/product/box-board-foil3.webp"
-        ]
-      },
+      // {
+      //   "icon": "Award",
+      //   "name": "Couche Mounted on E/B-Flute Corrugated Board",
+      //   "nameVi": "Couche Bồi Carton Sóng E / Sóng B",
+      //   "tagline": "Need extra shock-proof protection for heavier items or e-commerce shipping?",
+      //   "taglineVi": "Bạn cần hộp bồi sóng cứng cáp chịu lực va đập khi gửi hàng chuyển phát nhanh?",
+      //   "description": [
+      //     "Laminated C250/C300 printed sheet mounted onto strong E-flute corrugated cardboard",
+      //     "Provides superior cushioning and compression resistance during transit",
+      //     "Combines high-definition retail print quality with shipping box ruggedness"
+      //   ],
+      //   "descriptionVi": [
+      //     "In màu sắc nét được bồi lên lớp carton sóng E hoặc sóng B cứng cáp",
+      //     "Khả năng chống va đập, chịu lực đè nén vượt trội trong quá trình vận chuyển",
+      //     "Kết hợp hoàn hảo giữa thẩm mỹ in ấn bán lẻ và độ bền của hộp bảo vệ"
+      //   ],
+      //   "descriptionTraits": [
+      //     "smooth-base",
+      //     "waterproof-durability",
+      //     "glossy-coat"
+      //   ],
+      //   "bestFor": [
+      //     "E-commerce subscription boxes and courier shipping mailers",
+      //     "Heavy glass bottles, wine, ceramics, and electronic appliances",
+      //     "Fruit gift boxes, agricultural exports, and bulk retail packs"
+      //   ],
+      //   "bestForVi": [
+      //     "Hộp ship COD thương mại điện tử, hộp quà gửi chuyển phát nhanh",
+      //     "Hộp đựng chai lọ thủy tinh nặng, rượu vang, gốm sứ và thiết bị điện",
+      //     "Hộp quà trái cây, nông sản xuất khẩu và giỏ quà thực phẩm"
+      //   ],
+      //   "nameZh": "彩色铜版纸裱E坑/B坑加强瓦楞纸盒",
+      //   "nameJa": "コート紙合紙 E段/B段 段ボール箱",
+      //   "nameKo": "컬러 스노우지 합지 E골/B골 골판지 박스",
+      //   "taglineZh": "需要抵抗快递暴力分拣、兼顾高清彩色印刷与坚硬防撞缓冲？",
+      //   "taglineJa": "配送時の衝撃から製品を守り、鮮やかな外装印刷も両立させたいですか？",
+      //   "taglineKo": "택배 배송 충격으로부터 제품을 안전하게 보호하면서 컬러풀한 외관을 유지할 박스인가요?",
+      //   "descriptionZh": [
+      //     "面纸彩印高精铜版纸，手工裱贴加强型E坑或B坑瓦楞芯纸",
+      //     "抗压耐摔防撞缓冲，有效吸收快递长途颠簸冲击",
+      //     "折叠卡扣设计，免胶水即插即锁，打包发货极速高效"
+      //   ],
+      //   "descriptionJa": [
+      //     "コート紙に鮮やかに印刷し、E段またはB段の段ボール芯に合紙",
+      //     "輸送時の落下や衝撃から中の商品をしっかりガードする高強度",
+      //     "ワンタッチで組み立て可能な効率的なロック構造"
+      //   ],
+      //   "descriptionKo": [
+      //     "선명하게 인쇄된 스노우지를 탄탄한 E골/B골 강화 골판지에 합지 가공",
+      //     "택배 배송 중 던짐과 적재 하중을 거뜬히 견뎌내는 강력한 완충력",
+      //     "테이프 없이 원터치 조립이 가능한 편리한 스마트 락 구조"
+      //   ],
+      //   "bestForZh": [
+      //     "电商快递发货飞机盒、易碎玻璃瓶罐外发箱",
+      //     "电子数码产品外箱、家用小电器及五金工具箱",
+      //     "兼顾外表全彩精美与内在强力保护的电商首选"
+      //   ],
+      //   "bestForJa": [
+      //     "EC通販の配送用メール便ボックス、割れ物・ボトルの発送箱",
+      //     "家電製品・ガジェット・工具・シューズボックス",
+      //     "見た目の美しさと配送時の保護性能を両立した発送用化粧箱"
+      //   ],
+      //   "bestForKo": [
+      //     "이커머스 배송용 프리미엄 컬러 날개 박스, 유리병 완충 배송 상자",
+      //     "스마트 기기, 소형 가전, 생활 가전 컬러 골판지 박스",
+      //     "택배 상자 자체가 하나의 세련된 선물 포장이 되는 브랜드 박스"
+      //   ],
+      //   "pureImage": "/images/product/carbon.webp",
+      //   "pureImages": [
+      //     "/images/product/carbon.webp",
+      //     "/images/product/box-board2.webp",
+      //     "/images/product/box-board3.webp"
+      //   ],
+      // },
       {
         "icon": "Feather",
         "name": "Natural Kraft 250 - 350gsm (Eco-Box)",
-        "nameVi": "Hộp Giấy Kraft Nâu Tự Nhiên (Eco-Box)",
+        "nameVi": "Hộp Giấy Kraft",
         "tagline": "Want sustainable, rustic packaging that appeals to eco-conscious consumers?",
         "taglineVi": "Bạn muốn bao bì hộp giấy mộc mạc, thân thiện môi trường cho sản phẩm xanh?",
         "description": [
@@ -7037,393 +5973,87 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "수제 쿠키, 로스팅 원두, 건강 견과류 및 프리미엄 농산물 상자",
           "지속가능한 친환경 가치와 진정성을 전달하는 에코 브랜드"
         ],
-        "pureImage": "/images/product/kraft.webp",
+        "pureImage": "/images/product/hopgiay-giaykraft.webp",
         "pureImages": [
-          "/images/product/kraft.webp",
-          "/images/product/box-kraft2.webp",
-          "/images/product/box-kraft3.webp"
+          "/images/product/hopgiay-giaykraft.webp",
+          "/images/product/hopgiay-giaykraft2.webp",
+          "/images/product/hopgiay-giaykraft3.webp"
         ],
-        "image": "/images/product/kraft-foil.webp",
-        "images": [
-          "/images/product/kraft-foil.webp",
-          "/images/product/box-kraft-foil2.webp",
-          "/images/product/box-kraft-foil3.webp"
-        ]
       },
-      {
-        "icon": "Gem",
-        "name": "Premium Rigid Gift Box (2mm Greyboard)",
-        "nameVi": "Hộp Cứng Cao Cấp (Bồi Carton 2mm)",
-        "tagline": "Want a luxurious rigid gift box that creates an unforgettable unboxing moment?",
-        "taglineVi": "Bạn muốn hộp quà cứng cao cấp tạo trải nghiệm mở hộp đẳng cấp khó quên?",
-        "description": [
-          "2mm to 3mm rigid greyboard wrapped in printed C150 paper or luxury art paper",
-          "Available in magnetic closure, lift-off lid, or sliding drawer box styles",
-          "Enhanced with hot foil stamping, embossing, and custom velvet/EVA inserts"
-        ],
-        "descriptionVi": [
-          "Dày 2 - 3mm bồi giấy Couche in màu hoặc giấy mỹ thuật xa xỉ",
-          "Quy cách hộp nam châm nắp gập, hộp âm dương hoặc hộp kéo bao diêm sang trọng",
-          "Tích hợp ép kim nhũ vàng, dập nổi logo và khay mút lót nhung bảo vệ sản phẩm"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "VIP corporate Tet gift hampers and Mid-Autumn mooncake boxes",
-          "High-end spirits, vintage wine, and premium jewelry boxes",
-          "Luxury cosmetics gift sets and VIP commemorative watches"
-        ],
-        "bestForVi": [
-          "Hộp quà Tết doanh nghiệp VIP và bộ hộp bánh trung thu cao cấp",
-          "Hộp rượu ngoại sang trọng, yến sào và trang sức giá trị cao",
-          "Bộ hộp quà mỹ phẩm giới hạn và đồng hồ kỷ niệm cho đại biểu"
-        ],
-        "nameZh": "奢华精装天地盖硬盒（裱2mm高密灰板）",
-        "nameJa": "特製高級貼り箱（2mm芯材・ギフトボックス）",
-        "nameKo": "프리미엄 고급 싸바리 박스 (2mm 하드보드)",
-        "taglineZh": "用于名酒、贵重礼品或高端手表，需要永不变形的奢华开箱礼遇？",
-        "taglineJa": "高級酒、時計、ジュエリーにふさわしい、絶対に歪まない最高級貼り箱ですか？",
-        "taglineKo": "명품 와인, 고급 시계, 프리미엄 선물용으로 변형 없이 영구 소장할 상자인가요?",
-        "descriptionZh": [
-          "内部以2-3mm超厚高密工业灰板为骨架，坚若磐石永不变形",
-          "外层手工裱糊特种艺术纸或彩印铜版纸，天地盖或书本翻盖式",
-          "内部可定制高密度EVA或海绵丝绸开槽内托，固定保护贵重产品"
-        ],
-        "descriptionJa": [
-          "2〜3mmの頑丈な高密度芯材を用いた、歪みのない本格貼り箱仕様",
-          "熟練職人による手作業の美しい貼り込み、天地蓋やマグネット式",
-          "製品の形状に合わせてウレタンやサテン布の専用トレーをオーダー可能"
-        ],
-        "descriptionKo": [
-          "2~3mm 고밀도 압축 하드보드를 뼈대로 제작하여 절대 찌그러지지 않는 싸바리 박스",
-          "외면에 고급 수입지나 스노우지를 정밀 수작업으로 마감한 상하 분리형/자석형",
-          "내부에 맞춤형 고밀도 EVA 폼 스펀지와 실크 공단 완충 트레이 내장 가능"
-        ],
-        "bestForZh": [
-          "高端洋酒名茶、燕窝海参花胶等名贵滋补礼盒",
-          "奢华珠宝首饰、名表、高档钢笔及定制企业收藏品",
-          "供重要贵宾永久典藏、传递至尊敬意的旗舰产品包装"
-        ],
-        "bestForJa": [
-          "高級酒、銘茶、高級健康食品のプレミアムギフト箱",
-          "ジュエリー、高級時計、万年筆、記念メダルボックス",
-          "最高の敬意と特別感を伝える、永久保存版パッケージ"
-        ],
-        "bestForKo": [
-          "고급 양주, 전통 명차, 산삼, 홍삼 등 프리미엄 명절 선물 세트",
-          "명품 주얼리, 명품 시계, 만년필, 귀금속 수납 하드 케이스",
-          "귀빈과 주요 고객에게 잊지 못할 감동을 선사하는 최고급 싸바리 패키지"
-        ],
-        "pureImage": "/images/product/carton.webp",
-        "pureImages": [
-          "/images/product/carton.webp",
-          "/images/product/box-rigid2.webp",
-          "/images/product/box-rigid3.webp"
-        ],
-        "image": "/images/product/carton-foil.webp",
-        "images": [
-          "/images/product/carton-foil.webp",
-          "/images/product/box-rigid-foil2.webp",
-          "/images/product/box-rigid-foil1.webp"
-        ]
-      },
-      {
-        "icon": "Gem",
-        "name": "VIP Rigid Hardcover Gift Box (2-3mm Board)",
-        "nameVi": "Hộp Cứng Bồi Carton 2 - 3mm (Hộp Quà VIP)",
-        "tagline": "Want an opulent rigid hamper box that makes a monumental VIP statement?",
-        "taglineVi": "Bạn muốn hộp quà cứng cao cấp bồi carton dày 2-3mm cho đối tác VVIP?",
-        "description": [
-          "2mm to 3mm rigid greyboard wrapped in printed C150 or luxury art paper",
-          "Available in magnetic closure, lift-off lid, or sliding drawer box styles",
-          "Enhanced with hot foil stamping, embossing, and custom velvet/EVA inserts"
-        ],
-        "descriptionVi": [
-          "Dày 2 - 3mm bồi giấy Couche in màu hoặc giấy mỹ thuật xa xỉ",
-          "Quy cách hộp nam châm nắp gập, hộp âm dương hoặc hộp kéo bao diêm sang trọng",
-          "Tích hợp ép kim nhũ vàng, dập nổi logo và khay mút lót nhung bảo vệ sản phẩm"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "VIP corporate Tet gift hampers and C-suite executive presents",
-          "High-end imported spirits, vintage wine, and premium cigar hampers",
-          "Luxury limited-edition holiday sets for major shareholders"
-        ],
-        "bestForVi": [
-          "Hộp quà Tết doanh nghiệp VIP và quà tri ân đối tác cấp cao C-suite",
-          "Hộp rượu ngoại nhập khẩu sang trọng, xì gà và quà thượng hạng",
-          "Bộ hộp quà giới hạn mừng xuân dành cho các cổ đông và nhà đầu tư lớn"
-        ],
-        "nameZh": "VIP特制手工裱2-3mm灰板精装礼盒",
-        "nameJa": "VIP特製 2-3mm厚紙貼り箱（最高級仕様）",
-        "nameKo": "VIP 전용 2-3mm 싸바리 하드박스",
-        "taglineZh": "名酒、燕窝等名贵礼品专用的尊贵天地盖硬板大礼盒？",
-        "taglineJa": "高級酒や健康食品を収める、重厚で格式高いプレミアム貼り箱ですか？",
-        "taglineKo": "명품 와인, 홍삼 등 귀한 분께 드리는 설 명절 최고급 싸바리 선물 상자인가요?",
-        "descriptionZh": [
-          "2-3mm高密度工业灰板手工精密贴合，天地盖或书本翻盖式",
-          "永不翘边变形，能承受高处跌落与长途运输颠簸",
-          "内衬定制开槽高密海绵覆金色或红色缎布，倍显高贵奢华"
-        ],
-        "descriptionJa": [
-          "2〜3mmの頑丈な高密度芯材を用いた、歪みのない本格貼り箱仕様",
-          "職人の手作業による美しい貼り込み、天地蓋やマグネット開閉式",
-          "製品に合わせて型抜きした高密度ウレタンとサテン布の内装が付属"
-        ],
-        "descriptionKo": [
-          "2~3mm 고밀도 압축 하드보드를 정밀 수작업으로 마감한 최고급 싸바리 박스",
-          "뒤틀림이나 찌그러짐 없이 묵직하여 완벽한 보호력 자랑",
-          "내부에 맞춤 성형 스펀지와 레드/골드 실크 공단 내장으로 극상의 럭셔리 연출"
-        ],
-        "bestForZh": [
-          "名酒名烟、极品冬虫夏草、深海花胶及名贵海参礼篮",
-          "高档金银纪念币、名表、奢华定制节日尊荣大礼",
-          "专为战略合作伙伴与政商高管量身定制的殿堂级重礼"
-        ],
-        "bestForJa": [
-          "高級銘酒、極上フカヒレ、高麗人参などの最高級食品",
-          "記念金貨、高級腕時計、特製美術品の贈呈用パッケージ",
-          "最重要顧客（VIP）や経営陣へ贈る至高のマスターピース"
-        ],
-        "bestForKo": [
-          "최고급 양주, 전통 명주, 산삼 및 자연산 해산물 VIP 설 세트",
-          "순금 기념 메달, 명품 시계 수납 케이스 겸용 럭셔리 박스",
-          "그룹사 회장 및 최고위 귀빈에게 전하는 최고의 설맞이 패키지"
-        ],
-        "pureImage": "/images/product/carton.webp",
-        "pureImages": [
-          "/images/product/carton.webp",
-          "/images/product/hopquatet-carton2.webp",
-          "/images/product/hopquatet-carton3.webp"
-        ],
-        "image": "/images/product/carton-foil.webp",
-        "images": [
-          "/images/product/carton-foil.webp",
-          "/images/product/hopquatet-carton-foil2.webp",
-          "/images/product/hopquatet-carton-foil3.webp"
-        ]
-      },
-      {
-        "icon": "Feather",
-        "name": "Natural Kraft 300 - 350gsm (Eco Tet Box)",
-        "nameVi": "Hộp Quà Giấy Kraft Nâu (Rustic Tet)",
-        "tagline": "Want a sustainable, rustic Tet hamper box with traditional Vietnamese warmth?",
-        "taglineVi": "Bạn muốn hộp quà Tết mang phong cách mộc mạc, truyền thống và thân thiện?",
-        "description": [
-          "100% recycled natural brown Kraft paper with authentic organic texture",
-          "High tear resistance and traditional wood-fiber visual warmth",
-          "Looks stunning with red calligraphy, black ink, or gold foil stamping"
-        ],
-        "descriptionVi": [
-          "Màu nâu tự nhiên tái chế 100% với vân xơ giấy mộc mạc, chân thực",
-          "Độ dai cao, mang lại thiện cảm thẩm mỹ truyền thống ấm áp ngày Tết",
-          "Hiệu ứng thị giác tuyệt đẹp khi kết hợp thư pháp đỏ, mực đen hoặc ép kim"
-        ],
-        "descriptionTraits": [
-          "natural-grain",
-          "soft-light",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Traditional Vietnamese dried fruits (mứt tết), tea, and organic nuts",
-          "Artisan agricultural cooperatives and eco-friendly brand gift sets",
-          "Rustic holiday hampers celebrating heritage and natural wellness"
-        ],
-        "bestForVi": [
-          "Hộp mứt Tết truyền thống, trà đặc sản, hạt điều và hoa quả sấy tự nhiên",
-          "Quà Tết từ các hợp tác xã nông sản sạch và thương hiệu hữu cơ",
-          "Giỏ quà xuân mộc mạc tôn vinh văn hóa truyền thống và lối sống xanh"
-        ],
-        "nameZh": "天然环保原色牛皮纸新年风味礼盒",
-        "nameJa": "ナチュラルクラフト迎春ギフトボックス",
-        "nameKo": "친환경 천연 크라프트 설맞이 선물 상자",
-        "taglineZh": "原生态农产、手作点心偏爱的纯朴复古年味礼盒？",
-        "taglineJa": "特産品やオーガニック食品に似合う、素朴で温かみのあるエコギフト箱ですか？",
-        "taglineKo": "지역 특산품이나 친환경 식품을 담기 좋은 아날로그 감성 선물 상자인가요?",
-        "descriptionZh": [
-          "未经漂白的纯正高厚度牛皮纸，天然长纤维交织成原木质感",
-          "粗粝中透出自然的质朴温润，自带浓厚的田园年味",
-          "完全不含塑料覆膜，100%可降解回收，践行绿色新春"
-        ],
-        "descriptionJa": [
-          "無漂白の天然クラフト紙を使用、木の温もりが伝わる素朴な質感",
-          "ナチュラルで飾らないアースカラーがお正月料理を引き立てる",
-          "プラスチックフリーで環境に優しく、完全生分解可能なエコ設計"
-        ],
-        "descriptionKo": [
-          "표백을 거치지 않은 도톰한 천연 크라프트 보드지로 내추럴 감성 완성",
-          "자연스러운 나무 섬유의 따스함으로 시골 고향의 정겨운 설 명절 연출",
-          "비닐 코팅을 배제하여 100% 자연 분해 및 종이 재활용이 가능한 착한 포장"
-        ],
-        "bestForZh": [
-          "原生态农产、高山有机茶叶、纯天然农家自酿蜜酒",
-          "手工传统年糕、天然果干坚果及乡村特色年货大礼包",
-          "主打天然、有机、可持续理念的现代创新农业品牌"
-        ],
-        "bestForJa": [
-          "オーガニック食品、有機栽培茶、天然ハチミツの詰め合わせ",
-          "昔ながらの手作り餅、ドライフルーツ、自然派おつまみセット",
-          "サステナビリティやエシカル消費を大切にするブランド"
-        ],
-        "bestForKo": [
-          "유기농 농특산물, 지리산 전통 명차, 천연 생꿀 설 선물 세트",
-          "수제 쌀떡, 전통 약과, 무농약 건과일 명절 선물 상자",
-          "친환경 가치와 진정성 있는 로컬 푸드를 전하는 에코 브랜드"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/kraft.webp",
-        "pureImages": [
-          "/images/product/kraft.webp",
-          "/images/product/hopqutet-kraft2.webp",
-          "/images/product/hopqutet-kraft1.webp"
-        ]
-      },
-      {
-        "icon": "Sparkles",
-        "name": "Foil Stamped & Spot UV Festive Pattern",
-        "nameVi": "Ép Kim Hoa Văn Tết & UV Định Hình 3D",
-        "tagline": "Want your Tet box to shimmer with 24K gold foil dragons and raised gloss motifs?",
-        "taglineVi": "Bạn muốn hộp quà Tết rực rỡ ép kim nhũ vàng linh vật và nổi bật UV 3D?",
-        "description": [
-          "Metallic gold or holographic foil applied to dragons, blossoms, and logos",
-          "Raised Spot UV gloss creates tactile contrast against velvet matte covers",
-          "Maximum festive luxury that commands prestige in any living room"
-        ],
-        "descriptionVi": [
-          "Ép kim nhũ vàng 24K hoặc ánh kim hologram cho rồng, hoa mai và logo",
-          "Phủ UV bóng định hình tạo họa tiết nổi 3D tương phản trên nền cán mờ mịn",
-          "Tạo vẻ đẹp đẳng cấp vượt trội, bừng sáng không gian phòng khách ngày xuân"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Top-tier corporate Tet hampers for strategic business partners",
-          "5-star hotel and luxury restaurant festive takeaway hampers",
-          "Brands seeking an unforgettable, prosperous Lunar New Year statement"
-        ],
-        "bestForVi": [
-          "Hộp quà Tết doanh nghiệp đẳng cấp cao nhất gửi đối tác chiến lược",
-          "Giỏ quà mang đi (Hamper takeaway) của chuỗi khách sạn 5 sao, nhà hàng sang trọng",
-          "Doanh nghiệp muốn tạo ấn tượng thịnh vượng, đẳng cấp dịp Tết Nguyên Đán"
-        ],
-        "nameZh": "新春吉祥纹样全彩烫金 + 3D立体水晶UV",
-        "nameJa": "新春文様箔押し + 3D立体スポットUV",
-        "nameKo": "설날 전통 문양 금박 + 3D 입체 에폭시 UV",
-        "taglineZh": "礼盒表面布满闪耀金光与如水滴般晶莹剔透的立体祥纹？",
-        "taglineJa": "金箔の輝きと立体UV加工が織りなす、極上の新春パッケージですか？",
-        "taglineKo": "황금빛 전통 문양과 투명 에폭시 코팅이 어우러져 화려함의 극치를 보여주는 상자인가요?",
-        "descriptionZh": [
-          "满版精细电化铝全彩多色套烫，金碧辉煌璀璨夺目",
-          "结合局部凸起3D高光水晶UV，祥云龙凤纹理触手可及",
-          "高科技光影防伪技术融入其中，瞬间点燃节日豪门气派"
-        ],
-        "descriptionJa": [
-          "美しいマルチカラー金箔押しと、透明感あふれる立体3DスポットUV",
-          "光を反射して煌めく吉祥文様が、指先にリアルな凹凸として伝わる",
-          "最高峰の印刷技術を集約した、贅沢を極めた新春パッケージ"
-        ],
-        "descriptionKo": [
-          "다채로운 컬러 호일 스탬핑으로 완성된 화려한 황금빛 전통 문양",
-          "볼록하게 도톰한 3D 크리스탈 에폭시 UV 코팅으로 입체 촉감 극대화",
-          "시각과 촉각을 동시에 만족시키며 압도적인 명절 선물 가치를 창출"
-        ],
-        "bestForZh": [
-          "大集团、上市公司专属定制的新年迎春商务旗舰礼盒",
-          "知名白酒、洋酒品牌的新年龙年特别纪念版包装",
-          "追求极致奢华视觉冲击与浓郁节日喜庆气氛的尊崇之作"
-        ],
-        "bestForJa": [
-          "大手上場企業が特注する迎春ビジネスフラッグシップギフト",
-          "有名酒造メーカーの新春限定プレミアムパッケージ",
-          "圧倒的な豪華さと祝祭感を追求した最高級記念ボックス"
-        ],
-        "bestForKo": [
-          "대기업 및 금융그룹 전용 신년 시그니처 비즈니스 햄퍼 박스",
-          "전통 명주 및 프리미엄 위스키 신년 리미티드 에디션 패키지",
-          "극상의 화려함과 축제의 품격을 담아내는 마스터피스 선물 상자"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/hopquatet-uv1.webp",
-        "pureImages": [
-          "/images/product/hopquatet-uv1.webp",
-          "/images/product/hopquatet-uv2.webp",
-          "/images/product/hopquatet-uv3.webp"
-        ]
-      },
-      {
-          "icon": "Package",
-          "name": "Ivory, Kraft & Corrugated Board",
-          "nameVi": "Giấy Ivory, Kraft & Carton Sóng E/B",
-          "tagline": "Sturdy structural paperboards certified safe for product storage and shipping",
-          "taglineVi": "Chất liệu Ivory cứng cáp, Kraft mộc mạc hoặc carton sóng chịu lực va đập tuyệt vời",
-          "description": [
-              "High structural rigidity protects delicate bottles and glass jars",
-              "Optional matte lamination and foil stamping on the exterior",
-              "Available with custom die-cut foam or paperboard inserts"
-          ],
-          "descriptionVi": [
-              "Độ nén và độ bục cao giúp bảo vệ an toàn chai lọ thủy tinh bên trong",
-              "Cán màng mờ bảo vệ chống ẩm và hỗ trợ ép kim nổi bật",
-              "Gia công khay định hình mút xốp hoặc carton khít theo sản phẩm"
-          ],
-          "descriptionTraits": [
-              "thick-weight",
-              "smooth-base",
-              "eco-friendly"
-          ],
-          "bestFor": [
-              "Perfume boxes, skincare jars, premium tea, electronic gadgets"
-          ],
-          "bestForVi": [
-              "Hộp nước hoa, mỹ phẩm, trà hảo hạng, phụ kiện công nghệ"
-          ],
-          "pureImage": "/images/product/vd-item-box.jpg",
-          "pureImages": [
-              "/images/product/vd-item-box.jpg",
-              "/images/product/vd-item-box.jpg",
-              "/images/product/vd-item-box.jpg"
-          ],
-          "nameZh": "白卡纸、牛皮纸 & E/B坑瓦楞彩盒",
-          "nameJa": "アイボリー紙・クラフト紙＆E/Bフルート段ボール化粧箱",
-          "nameKo": "아이보리지, 크라프트지 & E/B골 골판지 합지 패키지 상자",
-          "taglineZh": "兼顾高颜值彩印外观与抗压耐摔防撞击结构，专为瓶装商品与礼品定制的硬核包装盒？",
-          "taglineJa": "美しい外装印刷と優れた耐衝撃性を両立。デリケートな瓶や商品を保護する構造化粧箱ですか？",
-          "taglineKo": "화사한 외관 컬러 인쇄와 강력한 완충 완충력으로 깨지기 쉬운 유리병과 상품을 보호하는 맞춤 박스인가요?",
-          "descriptionZh": [
-              "高抗压耐折结构，有效抵御快递运输中的挤压跌落冲击，保护易碎玻璃瓶与精密仪器",
-              "外层支持高精彩印、覆哑膜、局部UV上光及烫金烫银工艺，外观轻奢尊贵",
-              "支持量身开模定制高密度珍珠棉(EPE)、EVA或卡纸定型内托，紧密贴合产品"
-          ],
-          "descriptionJa": [
-              "高い耐圧・耐衝撃強度を持ち、輸送時の落下や外圧から繊細なガラス瓶や精密機器をしっかり保護",
-              "表面は高精細印刷に加え、マットラミネート・部分UV・金銀箔押し加工で高級感を演出",
-              "商品の形状に合わせて成形するウレタンスポンジや段ボール製の中枠（トレイ）に対応"
-          ],
-          "descriptionKo": [
-              "우수한 압축 및 파열 강도로 택배 배송 중 충격과 낙하로부터 유리병과 내용물을 안전하게 보호",
-              "외부 표면 정밀 인쇄, 무광 코팅, 부분 UV 코팅 및 금은박 후가공으로 럭셔리한 개봉 경험 선사",
-              "상품 규격에 맞춘 EVA 스폰지, 고밀도 스티로폼 또는 친환경 종이 맞춤 지함 인서트 완벽 제작"
-          ],
-          "bestForZh": [
-              "高档香水礼盒、精华乳霜护肤品套装、特级有机名茶、高端数码智能配件"
-          ],
-          "bestForJa": [
-              "香水ボトル箱、高級コスメセット、特選茶葉ギフト、精密電子ガジェットパッケージ"
-          ],
-          "bestForKo": [
-              "명품 향수 패키지, 프리미엄 스킨케어 세트, 유기농 명품 다도 세트, 스마트 전자기기 포장 상자"
-          ]
-      }
+      // {
+      //   "icon": "Gem",
+      //   "name": "Premium Rigid Gift Box (2mm Greyboard)",
+      //   "nameVi": "Hộp Cứng Cao Cấp (Bồi Carton 2mm)",
+      //   "tagline": "Want a luxurious rigid gift box that creates an unforgettable unboxing moment?",
+      //   "taglineVi": "Bạn muốn hộp quà cứng cao cấp tạo trải nghiệm mở hộp đẳng cấp khó quên?",
+      //   "description": [
+      //     "2mm to 3mm rigid greyboard wrapped in printed C150 paper or luxury art paper",
+      //     "Available in magnetic closure, lift-off lid, or sliding drawer box styles",
+      //     "Enhanced with hot foil stamping, embossing, and custom velvet/EVA inserts"
+      //   ],
+      //   "descriptionVi": [
+      //     "Dày 2 - 3mm bồi giấy Couche in màu hoặc giấy mỹ thuật xa xỉ",
+      //     "Quy cách hộp nam châm nắp gập, hộp âm dương hoặc hộp kéo bao diêm sang trọng",
+      //     "Tích hợp ép kim nhũ vàng, dập nổi logo và khay mút lót nhung bảo vệ sản phẩm"
+      //   ],
+      //   "descriptionTraits": [
+      //     "foil-accent",
+      //     "embossed-depth",
+      //     "glossy-coat"
+      //   ],
+      //   "bestFor": [
+      //     "VIP corporate Tet gift hampers and Mid-Autumn mooncake boxes",
+      //     "High-end spirits, vintage wine, and premium jewelry boxes",
+      //     "Luxury cosmetics gift sets and VIP commemorative watches"
+      //   ],
+      //   "bestForVi": [
+      //     "Hộp quà Tết doanh nghiệp VIP và bộ hộp bánh trung thu cao cấp",
+      //     "Hộp rượu ngoại sang trọng, yến sào và trang sức giá trị cao",
+      //     "Bộ hộp quà mỹ phẩm giới hạn và đồng hồ kỷ niệm cho đại biểu"
+      //   ],
+      //   "nameZh": "奢华精装天地盖硬盒（裱2mm高密灰板）",
+      //   "nameJa": "特製高級貼り箱（2mm芯材・ギフトボックス）",
+      //   "nameKo": "프리미엄 고급 싸바리 박스 (2mm 하드보드)",
+      //   "taglineZh": "用于名酒、贵重礼品或高端手表，需要永不变形的奢华开箱礼遇？",
+      //   "taglineJa": "高級酒、時計、ジュエリーにふさわしい、絶対に歪まない最高級貼り箱ですか？",
+      //   "taglineKo": "명품 와인, 고급 시계, 프리미엄 선물용으로 변형 없이 영구 소장할 상자인가요?",
+      //   "descriptionZh": [
+      //     "内部以2-3mm超厚高密工业灰板为骨架，坚若磐石永不变形",
+      //     "外层手工裱糊特种艺术纸或彩印铜版纸，天地盖或书本翻盖式",
+      //     "内部可定制高密度EVA或海绵丝绸开槽内托，固定保护贵重产品"
+      //   ],
+      //   "descriptionJa": [
+      //     "2〜3mmの頑丈な高密度芯材を用いた、歪みのない本格貼り箱仕様",
+      //     "熟練職人による手作業の美しい貼り込み、天地蓋やマグネット式",
+      //     "製品の形状に合わせてウレタンやサテン布の専用トレーをオーダー可能"
+      //   ],
+      //   "descriptionKo": [
+      //     "2~3mm 고밀도 압축 하드보드를 뼈대로 제작하여 절대 찌그러지지 않는 싸바리 박스",
+      //     "외면에 고급 수입지나 스노우지를 정밀 수작업으로 마감한 상하 분리형/자석형",
+      //     "내부에 맞춤형 고밀도 EVA 폼 스펀지와 실크 공단 완충 트레이 내장 가능"
+      //   ],
+      //   "bestForZh": [
+      //     "高端洋酒名茶、燕窝海参花胶等名贵滋补礼盒",
+      //     "奢华珠宝首饰、名表、高档钢笔及定制企业收藏品",
+      //     "供重要贵宾永久典藏、传递至尊敬意的旗舰产品包装"
+      //   ],
+      //   "bestForJa": [
+      //     "高級酒、銘茶、高級健康食品のプレミアムギフト箱",
+      //     "ジュエリー、高級時計、万年筆、記念メダルボックス",
+      //     "最高の敬意と特別感を伝える、永久保存版パッケージ"
+      //   ],
+      //   "bestForKo": [
+      //     "고급 양주, 전통 명차, 산삼, 홍삼 등 프리미엄 명절 선물 세트",
+      //     "명품 주얼리, 명품 시계, 만년필, 귀금속 수납 하드 케이스",
+      //     "귀빈과 주요 고객에게 잊지 못할 감동을 선사하는 최고급 싸바리 패키지"
+      //   ],
+      //   "pureImage": "/images/product/carton.webp",
+      //   "pureImages": [
+      //     "/images/product/carton.webp",
+      //     "/images/product/box-rigid2.webp",
+      //     "/images/product/box-rigid3.webp"
+      //   ],
+      // },
     ]
   },
   {
@@ -7572,18 +6202,12 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "가방, 신발, 패션 잡화 매장 가격표 및 바코드 태그",
           "합리적인 제작비로 높은 브랜드 이미지를 전달하는 대중적 행택"
         ],
-        "pureImage": "/images/product/maccouche.webp",
+        "pureImage": "/images/product/mac-giayloaic.webp",
         "pureImages": [
-          "/images/product/maccouche.webp",
-          "/images/product/tag-couche2.webp",
-          "/images/product/tag-couche3.webp"
+          "/images/product/mac-giayloaic.webp",
+          "/images/product/mac-giayloaic2.webp",
+          "/images/product/mac-giayloaic3.webp"
         ],
-        "image": "/images/product/foil.webp",
-        "images": [
-          "/images/product/foil.webp",
-          "/images/product/tag-couche-foil2.webp",
-          "/images/product/tag-couche-foil3.webp"
-        ]
       },
       {
         "icon": "Feather",
@@ -7652,18 +6276,12 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "빈티지 구제 샵, 수제 가죽 공예품, 핸드메이드 주얼리",
           "슬로우 패션과 손글씨의 정성을 전하고자 하는 독립 디자이너 브랜드"
         ],
-        "pureImage": "/images/product/macford.webp",
+        "pureImage": "/images/product/mac-giayloaif.webp",
         "pureImages": [
-          "/images/product/macford.webp",
-          "/images/product/tag-ford1.webp",
-          "/images/product/tag-ford3.webp"
+          "/images/product/mac-giayloaif.webp",
+          "/images/product/mac-giayloaif2.webp",
+          "/images/product/mac-giayloaif3.webp"
         ],
-        "image": "/images/product/ford-foil.webp",
-        "images": [
-          "/images/product/ford-foil.webp",
-          "/images/product/tag-ford-foil1.webp",
-          "/images/product/tag-ford-foil3.webp"
-        ]
       },
       {
         "icon": "ShieldCheck",
@@ -7732,18 +6350,12 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "명품 수제 가죽 가방, 천연 가죽 구두 전용 라벨",
           "국제적인 명품 수준의 빳빳한 하드 핏을 추구하는 패션 브랜드"
         ],
-        "pureImage": "/images/product/macivory.webp",
+        "pureImage": "/images/product/mac-giayloaii.webp",
         "pureImages": [
-          "/images/product/macivory.webp",
-          "/images/product/tag-ivory1.webp",
-          "/images/product/tag-ivory3.webp"
+          "/images/product/mac-giayloaii.webp",
+          "/images/product/mac-giayloaii2.webp",
+          "/images/product/mac-giayloaii3.webp"
         ],
-        "image": "/images/product/foil.webp",
-        "images": [
-          "/images/product/foil.webp",
-          "/images/product/tag-ivory-foil2.webp",
-          "/images/product/tag-ivory-foil3.webp"
-        ]
       },
       {
         "icon": "Palette",
@@ -7812,158 +6424,77 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "실크 원피스, 최고급 캐시미어 머플러, 파인 액세서리 행택",
           "타협 없는 미학과 절제된 럭셔리를 지향하는 프리미엄 브랜드"
         ],
-        "pureImage": "/images/product/macart.webp",
+        "pureImage": "/images/product/mac-giaymythuat.webp",
         "pureImages": [
-          "/images/product/macart.webp",
-          "/images/product/tag-art1.webp",
-          "/images/product/tag-art3.webp"
+          "/images/product/mac-giaymythuat.webp",
+          "/images/product/mac-giaymythuat2.webp",
+          "/images/product/mac-giaymythuat3.webp"
         ],
-        "image": "/images/product/paperart-foil.webp",
-        "images": [
-          "/images/product/paperart-foil.webp",
-          "/images/product/tag-art-foil2.webp",
-          "/images/product/tag-art-foil3.webp"
-        ]
       },
-      {
-        "icon": "Sparkles",
-        "name": "Custom Die-Cut & Foil Stamped Tag",
-        "nameVi": "Mác Bế Hình Đặc Biệt + Ép Kim Logo",
-        "tagline": "Want a custom silhouette and shimmering metallic logo to distinguish your brand?",
-        "taglineVi": "Bạn muốn mác treo bế theo hình dáng độc quyền kèm ép kim logo lấp lánh?",
-        "description": [
-          "Custom die-cutting for round, arched, folded, or sculptural tag silhouettes",
-          "Metallic hot foil stamping (gold/silver/bronze) highlighting the brand crest",
-          "Optional metal eyelet grommet reinforcement around the drill hole"
-        ],
-        "descriptionVi": [
-          "Bế khuôn tạo hình dáng độc đáo (tròn, vòm, gập đôi hoặc hình tượng đặc thù)",
-          "Ép kim logo nhũ vàng, nhũ bạc hoặc nhũ đồng nổi bật trên mặt chính",
-          "Có thể đóng thêm khoen kim loại bảo vệ lỗ xỏ dây thêm phần chắc chắn"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Premium denim brands, streetwear capsules, and luxury menswear",
-          "High-fashion lingerie, swimwear, and bespoke accessory brands",
-          "Brands seeking an unforgettable, sculptural swing tag presentation"
-        ],
-        "bestForVi": [
-          "Thương hiệu denim cao cấp, streetwear bộ sưu tập và thời trang nam xa xỉ",
-          "Nội y cao cấp, trang phục bãi biển và phụ kiện thiết kế độc quyền",
-          "Các thương hiệu muốn tạo dấu ấn hình ảnh khác biệt qua chiếc mác treo"
-        ],
-        "nameZh": "异形圆角模切 + 烫金品牌LOGO",
-        "nameJa": "変形ダイカット + 箔押しブランドタグ",
-        "nameKo": "도무송 맞춤형 가공 + 로고 금박 행택",
-        "taglineZh": "突破方正外形，以特殊造型与金属闪耀征服消费者？",
-        "taglineJa": "オリジナルの形状と箔押しの煌めきで、ブランドの個性をアピールしますか？",
-        "taglineKo": "독특한 실루엣 커팅과 눈부신 금박 로고로 브랜드 이미지를 각인시킬 행택인가요?",
-        "descriptionZh": [
-          "支持任意异形模切（圆形、盾形、几何多边形或定制轮廓）",
-          "标志与品牌字母采用电化铝烫红金、亮金或哑光黑金",
-          "极富视觉张力与辨识度，大幅提升服饰附加值"
-        ],
-        "descriptionJa": [
-          "丸型・楕円・ブランドロゴのアウトラインなど自由な形状にカット",
-          "ロゴ部分にゴールド・シルバーの美しい箔押し加工を適用",
-          "店頭で圧倒的な存在感を放ち、商品の付加価値を最大化"
-        ],
-        "descriptionKo": [
-          "원형, 타원형, 육각형, 브랜드 심볼 윤곽 그대로 자유형 도무송 커팅",
-          "로고와 슬로건에 정밀 골드박, 실버박, 매트블랙박 포인트 각인",
-          "매장에서 단연 돋보이는 비주얼로 의류의 프리미엄 가치 배가"
-        ],
-        "bestForZh": [
-          "潮流街头服饰、潮牌卫衣T恤、先锋运动品牌",
-          "高端礼品包装配签、轻奢首饰配件专属身份标牌",
-          "致力于打破常规、给消费者留下强烈第一印象的品牌"
-        ],
-        "bestForJa": [
-          "ストリート系ファッション、スニーカー、スポーツブランド",
-          "ギフトパッケージのタグ、ジュエリー、デザイナーズ雑貨",
-          "若年層向けに強いインパクトと洗練さをアピールしたいブランド"
-        ],
-        "bestForKo": [
-          "스트리트 캐주얼, 디자이너 후드티, 트렌디 애슬레저 브랜드",
-          "선물 세트 포인트 태그, 커스텀 주얼리 시그니처 네임택",
-          "독창적인 디자인으로 MZ세대 고객의 시선을 사로잡는 브랜드"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/tag-foil3.webp",
-        "pureImages": [
-          "/images/product/tag-foil1.webp",
-          "/images/product/tag-foil3.webp",
-          "/images/product/tag-foil2.webp"
-        ]
-      },
-      {
-          "icon": "Tag",
-          "name": "Couche 300, Kraft & Art Paper",
-          "nameVi": "Giấy C300, Giấy Kraft & Giấy Mỹ Thuật",
-          "tagline": "Rigid heavy paper stock with pre-punched string hole",
-          "taglineVi": "Giấy dày dặn bấm sẵn lỗ xỏ dây, cán màng mờ hoặc giữ vân mộc tự nhiên",
-          "description": [
-              "Pre-drilled 3mm or 5mm string hole ready for tag pins or wax cords",
-              "Smooth matte lamination protects against ink rubbing onto clothing fabrics",
-              "Rich color fidelity for barcode and care instruction icons"
-          ],
-          "descriptionVi": [
-              "Bấm sẵn lỗ xỏ dây 3mm hoặc 5mm tiện luồn dây dù gắn cúc áo",
-              "Cán màng mờ bảo vệ chống lem mực sang vải quần áo",
-              "Màu in chuẩn xác rõ ràng mã vạch và ký hiệu hướng dẫn giặt ủi"
-          ],
-          "descriptionTraits": [
-              "thick-weight",
-              "smooth-base",
-              "eco-friendly"
-          ],
-          "bestFor": [
-              "Clothing brands, leather bags, handmade jewelry, cosmetic gift bundles"
-          ],
-          "bestForVi": [
-              "Thương hiệu thời trang, túi xách đồ da, trang sức thủ công"
-          ],
-          "pureImage": "/images/product/vd-item-tag.jpeg",
-          "pureImages": [
-              "/images/product/vd-item-tag.jpeg",
-              "/images/product/vd-item-tag.jpeg",
-              "/images/product/vd-item-tag.jpeg"
-          ],
-          "nameZh": "高克重吊牌纸 (铜版纸300g/牛皮纸/特种艺术纸)",
-          "nameJa": "厚口下げ札用紙（コート300g・クラフト・高級アート紙）",
-          "nameKo": "고평량 의류 행택 용지 (스노우 300g/크라프트/수입지)",
-          "taglineZh": "预打穿绳孔、平整硬挺不刮伤衣物，条形码与洗涤图标清晰易读的服饰吊牌？",
-          "taglineJa": "糸通し穴加工済み。衣服を傷つけず、バーコードや洗濯絵表示が鮮明に読める高品質タグですか？",
-          "taglineKo": "끈 타공 홀 가공이 완료되어 걸기 편하고 의류에 잉크가 묻어나지 않는 고선명 행택인가요?",
-          "descriptionZh": [
-              "预钻3mm或5mm精密穿绳孔，可直接搭配塑料子弹头吊粒、麻绳或棉蜡绳",
-              "双面表面覆哑光保护膜，防潮防刮花，彻底防止油墨意外摩擦蹭染浅色布料",
-              "高解像度极细线条输出，微型条形码、防伪二维码及国际洗涤标清晰锐利"
-          ],
-          "descriptionJa": [
-              "3mmまたは5mmの糸通し穴が標準でパンチ済み。ロックスループラスチックや蝋引き紐に即座に対応",
-              "両面マットラミネート加工により、インクが衣服の生地に色移りするリスクをシャットアウト",
-              "高精細プリントにより、小さなバーコード、QRコード、洗濯取扱い表示ピクトグラムも鮮明"
-          ],
-          "descriptionKo": [
-              "3mm 또는 5mm 끈 타공 홀이 정밀 가공되어 옷핀, 스트링, 왁스 코드에 손쉽게 결착",
-              "양면 매트 무광 코팅으로 마찰에 의한 잉크 번짐과 밝은 의류 원단 오염을 원천 차단",
-              "초정밀 마이크로 인쇄로 소형 바코드, 정품 인증 QR코드, 세탁 관리 기호가 또렷하고 선명"
-          ],
-          "bestForZh": [
-              "时尚原创设计师服装、轻奢皮具箱包、手作纯银饰品、高端美妆礼盒随赠吊牌"
-          ],
-          "bestForJa": [
-              "アパレルブランド、本革バッグ、ハンドメイドジュエリー、コスメギフトセットの下げ札"
-          ],
-          "bestForKo": [
-              "패션 디자이너 의류 브랜드, 수제 가죽 가방, 핸드메이드 주얼리 행택, 뷰티 기프트 태그"
-          ]
-      }
+      // {
+      //     "icon": "Tag",
+      //     "name": "Couche 300, Kraft & Art Paper",
+      //     "nameVi": "Giấy C300, Giấy Kraft & Giấy Mỹ Thuật",
+      //     "tagline": "Rigid heavy paper stock with pre-punched string hole",
+      //     "taglineVi": "Giấy dày dặn bấm sẵn lỗ xỏ dây, cán màng mờ hoặc giữ vân mộc tự nhiên",
+      //     "description": [
+      //         "Pre-drilled 3mm or 5mm string hole ready for tag pins or wax cords",
+      //         "Smooth matte lamination protects against ink rubbing onto clothing fabrics",
+      //         "Rich color fidelity for barcode and care instruction icons"
+      //     ],
+      //     "descriptionVi": [
+      //         "Bấm sẵn lỗ xỏ dây 3mm hoặc 5mm tiện luồn dây dù gắn cúc áo",
+      //         "Cán màng mờ bảo vệ chống lem mực sang vải quần áo",
+      //         "Màu in chuẩn xác rõ ràng mã vạch và ký hiệu hướng dẫn giặt ủi"
+      //     ],
+      //     "descriptionTraits": [
+      //         "thick-weight",
+      //         "smooth-base",
+      //         "eco-friendly"
+      //     ],
+      //     "bestFor": [
+      //         "Clothing brands, leather bags, handmade jewelry, cosmetic gift bundles"
+      //     ],
+      //     "bestForVi": [
+      //         "Thương hiệu thời trang, túi xách đồ da, trang sức thủ công"
+      //     ],
+      //     "pureImage": "/images/product/vd-item-tag.jpeg",
+      //     "pureImages": [
+      //         "/images/product/vd-item-tag.jpeg",
+      //         "/images/product/vd-item-tag.jpeg",
+      //         "/images/product/vd-item-tag.jpeg"
+      //     ],
+      //     "nameZh": "高克重吊牌纸 (铜版纸300g/牛皮纸/特种艺术纸)",
+      //     "nameJa": "厚口下げ札用紙（コート300g・クラフト・高級アート紙）",
+      //     "nameKo": "고평량 의류 행택 용지 (스노우 300g/크라프트/수입지)",
+      //     "taglineZh": "预打穿绳孔、平整硬挺不刮伤衣物，条形码与洗涤图标清晰易读的服饰吊牌？",
+      //     "taglineJa": "糸通し穴加工済み。衣服を傷つけず、バーコードや洗濯絵表示が鮮明に読める高品質タグですか？",
+      //     "taglineKo": "끈 타공 홀 가공이 완료되어 걸기 편하고 의류에 잉크가 묻어나지 않는 고선명 행택인가요?",
+      //     "descriptionZh": [
+      //         "预钻3mm或5mm精密穿绳孔，可直接搭配塑料子弹头吊粒、麻绳或棉蜡绳",
+      //         "双面表面覆哑光保护膜，防潮防刮花，彻底防止油墨意外摩擦蹭染浅色布料",
+      //         "高解像度极细线条输出，微型条形码、防伪二维码及国际洗涤标清晰锐利"
+      //     ],
+      //     "descriptionJa": [
+      //         "3mmまたは5mmの糸通し穴が標準でパンチ済み。ロックスループラスチックや蝋引き紐に即座に対応",
+      //         "両面マットラミネート加工により、インクが衣服の生地に色移りするリスクをシャットアウト",
+      //         "高精細プリントにより、小さなバーコード、QRコード、洗濯取扱い表示ピクトグラムも鮮明"
+      //     ],
+      //     "descriptionKo": [
+      //         "3mm 또는 5mm 끈 타공 홀이 정밀 가공되어 옷핀, 스트링, 왁스 코드에 손쉽게 결착",
+      //         "양면 매트 무광 코팅으로 마찰에 의한 잉크 번짐과 밝은 의류 원단 오염을 원천 차단",
+      //         "초정밀 마이크로 인쇄로 소형 바코드, 정품 인증 QR코드, 세탁 관리 기호가 또렷하고 선명"
+      //     ],
+      //     "bestForZh": [
+      //         "时尚原创设计师服装、轻奢皮具箱包、手作纯银饰品、高端美妆礼盒随赠吊牌"
+      //     ],
+      //     "bestForJa": [
+      //         "アパレルブランド、本革バッグ、ハンドメイドジュエリー、コスメギフトセットの下げ札"
+      //     ],
+      //     "bestForKo": [
+      //         "패션 디자이너 의류 브랜드, 수제 가죽 가방, 핸드메이드 주얼리 행택, 뷰티 기프트 태그"
+      //     ]
+      // }
     ]
   },
   {
@@ -8019,86 +6550,6 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
       }
     ],
     "materials": [
-      {
-        "icon": "Layers",
-        "name": "A-Frame Desk Calendar (C230gsm Laminated)",
-        "nameVi": "Lịch Để Bàn Chữ A (C230 - C250 Cán Màng)",
-        "tagline": "Need a practical 13-sheet corporate Tet desk calendar for client gifting?",
-        "taglineVi": "Bạn cần lịch để bàn 13 tờ chuẩn mực làm quà Tết tặng đối tác và nhân viên?",
-        "description": [
-          "13-sheet A-frame desk calendar printed on smooth C230 or C250 coated paper",
-          "Sturdy rigid cardboard base in dark blue, red, or custom brand colors",
-          "Twin-loop metallic Wire-O binding for smooth year-round page turning"
-        ],
-        "descriptionVi": [
-          "Quy cách 13 tờ (1 tờ bìa + 12 tháng) in trên giấy Couche 230 - 250gsm mịn đẹp",
-          "Đế bìa cứng bồi chắc chắn với màu đỏ Tết, xanh đen hoặc theo nhận diện riêng",
-          "Lò xo kim loại đôi (Wire-O) siêu bền, lật trang nhẹ nhàng không cộm"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "glossy-coat",
-          "soft-light"
-        ],
-        "bestFor": [
-          "Corporate New Year gifting for clients, vendors, and partners",
-          "Year-round brand visibility on executive office desks",
-          "Employee onboarding and internal company Tet gifts"
-        ],
-        "bestForVi": [
-          "Quà tặng tri ân dịp Tết dành cho đối tác, khách hàng và nhà cung cấp",
-          "Tăng độ nhận diện thương hiệu suốt 365 ngày trên bàn làm việc",
-          "Quà tặng nhân viên và ấn phẩm văn phòng mừng xuân mới"
-        ],
-        "nameZh": "精美新春三角A型台历（覆膜耐磨）",
-        "nameJa": "迎春A型スタンド卓上カレンダー（PP加工）",
-        "nameKo": "새해 A형 삼각 탁상 캘린더 (코팅 가공)",
-        "taglineZh": "企业新年赠送客户的招牌台历，陪伴客户每一个工作日？",
-        "taglineJa": "オフィスのデスクに馴染む、企業ギフトに最適な迎春卓上カレンダーですか？",
-        "taglineKo": "기업 연말연시 선물로 고객 데스크에 상시 거치될 실속형 캘린더인가요?",
-        "descriptionZh": [
-          "精美立式A型三角硬板底座，摆放稳固，正面背面皆可展示",
-          "内页精选C230-C250高克重铜版纸覆哑膜，防划耐磨防翘曲",
-          "全彩四色高精度印刷，企业定制画面整年陪伴客户桌面"
-        ],
-        "descriptionJa": [
-          "デスク上で安定して自立する、定番のA型スタンド卓上カレンダー",
-          "C230〜C250コート紙に両面マットPP加工で、反りや擦れを防止",
-          "高精細フルカラー印刷で、1年中美しいビジュアルが視界に入る"
-        ],
-        "descriptionKo": [
-          "책상 위에 흔들림 없이 안정적으로 세워지는 표준 삼각대 탁상 달력",
-          "C230-C250 평량 스노우지에 양면 무광 코팅으로 종이 휨 방지",
-          "초고화질 컬러 인쇄로 1년 내내 고객의 시야에 머무는 홍보 효과"
-        ],
-        "bestForZh": [
-          "企事业单位年终答谢客户与合作伙伴的标准定制伴手礼",
-          "全体员工新年福利开工大礼包必备品",
-          "兼顾长期广告曝光效果与高性价比的经典企业年历"
-        ],
-        "bestForJa": [
-          "企業の年末年始のご挨拶、取引先への贈答用定番品",
-          "社員への新春プレゼント、自社オフィス内の共通備品",
-          "1年を通じてブランドを想起させる持続性の高いプロモーション"
-        ],
-        "bestForKo": [
-          "기업 연말연시 거래처 감사 선물 및 신년 단체 판촉물",
-          "전사 임직원 신년 웰컴 패키지 및 사내 업무 데스크 달력",
-          "1년 내내 지속적인 브랜드 노출과 최고의 가성비를 제공하는 달력"
-        ],
-        "pureImage": "/images/product/couche.webp",
-        "pureImages": [
-          "/images/product/couche.webp",
-          "/images/product/calendertet-a2.webp",
-          "/images/product/calendertet-a3.webp"
-        ],
-        "image": "/images/product/foil.webp",
-        "images": [
-          "/images/product/foil.webp",
-          "/images/product/calendertet-a-foil2.webp",
-          "/images/product/calendertet-a-foil3.webp"
-        ]
-      },
       {
         "icon": "Feather",
         "name": "Ford 230 - 250gsm (Writable Tet Calendar)",
@@ -8167,396 +6618,11 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "실용성과 필기 편의성을 최우선으로 고려하는 기업"
         ],
         "hideFoilCheckbox": true,
-        "pureImage": "/images/product/ford.webp",
+        "pureImage": "/images/product/lich-giayloaif.webp",
         "pureImages": [
-          "/images/product/ford.webp",
-          "/images/product/calndertet-ford2.webp",
-          "/images/product/calndertet-ford3.webp"
-        ]
-      },
-      {
-        "icon": "Award",
-        "name": "Large Wall Calendar 7 Sheets (Wire-O)",
-        "nameVi": "Lịch Treo Tường Lò Xo 7 Tờ Khổ Lớn",
-        "tagline": "Need large-format wall calendars showcasing auspicious spring landscapes?",
-        "taglineVi": "Bạn cần lịch treo tường khổ lớn in ảnh phong cảnh xuân rực rỡ may mắn?",
-        "description": [
-          "Large-format 7-sheet (bi-monthly) wall calendar with top wire loop",
-          "High-resolution CMYK lamination preserving vivid seasonal colors all year",
-          "Strong central hanger loop designed to support large sheet weights without sagging"
-        ],
-        "descriptionVi": [
-          "Lịch treo tường khổ lớn 7 tờ (2 tháng/tờ) gắn lò xo kim loại trên đỉnh",
-          "In màu CMYK độ phân giải cao, hiển thị hình ảnh xuân thịnh vượng rực rỡ",
-          "Móc treo kim loại chịu lực chắc chắn, giữ lịch thẳng thớm suốt năm"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "glossy-coat",
-          "soft-light"
-        ],
-        "bestFor": [
-          "Construction firms, architecture studios, and real estate developers",
-          "Manufacturing, aviation, and logistics corporate giveaways",
-          "High-impact wall branding in client reception areas and lobbies"
-        ],
-        "bestForVi": [
-          "Công ty xây dựng, kiến trúc và chủ đầu tư dự án bất động sản",
-          "Quà tặng doanh nghiệp ngành sản xuất, hàng không và logistics",
-          "Trang trí và truyền thông thương hiệu tại khu vực lễ tân, phòng khách"
-        ],
-        "nameZh": "大幅新春7张线圈挂历（气派迎春）",
-        "nameJa": "大判迎春7枚綴じ壁掛けカレンダー",
-        "nameKo": "대형 7장 스프링 벽걸이 캘린더",
-        "taglineZh": "大幅传统年画或企业风光摄影，悬挂墙面气势恢宏？",
-        "taglineJa": "美しい写真が大迫力で広がる、壁面を飾る大判カレンダーですか？",
-        "taglineKo": "시원스러운 대형 화보와 날짜판으로 벽면을 화려하게 장식할 달력인가요?",
-        "descriptionZh": [
-          "大幅面大尺寸气派挂墙年历，会议室与客厅墙面的视觉中心",
-          "精选7张（双月单面）或13张（单月单面）高品质铜版纸",
-          "结实金属线圈配专用圆孔挂钩，悬挂整年不脱落变形"
-        ],
-        "descriptionJa": [
-          "オフィスの壁面やリビングをダイナミックに飾る特大カレンダー",
-          "7枚（2ヶ月表記）または13枚（1ヶ月表記）の美しい大判プリント",
-          "丈夫な金属製ハンガーリングで、1年間美しく水平をキープ"
-        ],
-        "descriptionKo": [
-          "회의실이나 거실 벽면에 걸어두는 시원시원한 대형 벽걸이 달력",
-          "7장(격월) 또는 13장(매월) 구성으로 큼직한 날짜판과 화보 제공",
-          "단단한 메탈 행거 링 제본으로 1년 동안 안전하게 수평 거치"
-        ],
-        "bestForZh": [
-          "集团大会议室、企业前台大厅、工厂生产车间办公室",
-          "知名摄影师作品集、风光大片与传统国画大主题展示",
-          "大型国企、建筑工程单位及传统制造业高端新春定制"
-        ],
-        "bestForJa": [
-          "大会議室、エントランスロビー、工場管理室の壁面",
-          "風景写真、日本画、建築実績を大迫力で見せる作品カレンダー",
-          "格式ある大企業や公的機関への新春のご挨拶品"
-        ],
-        "bestForKo": [
-          "그룹사 본사 대회의실, 호텔 로비, 생산 현장 사무실 벽면",
-          "풍경 사진, 한국화, 건축 포트폴리오의 압도적인 파노라마 화보집",
-          "전통과 신뢰를 중시하는 대기업 및 공공기관 신년 선물"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/cmyk.webp",
-        "pureImages": [
-          "/images/product/cmyk.webp",
-          "/images/product/calendertet-sheet2.webp",
-          "/images/product/calendertet-sheet3.webp"
-        ]
-      },
-      {
-        "icon": "Gem",
-        "name": "Luxury Bloc Calendar + Foil Board",
-        "nameVi": "Lịch Bloc Siêu Đại Bìa Cứng Ép Kim",
-        "tagline": "Want a monumental 365-day bloc calendar mounted on an embossed foil backboard?",
-        "taglineVi": "Bạn muốn lịch bloc siêu đại 365 ngày bồi bìa cứng ép kim vàng đẳng cấp?",
-        "description": [
-          "365-day tear-off calendar bloc mounted onto a 3mm rigid embossed backboard",
-          "Extensive hot foil stamping in 24K gold on traditional dragons and symbols",
-          "A monumental corporate Tet gift that anchors office or living room decor"
-        ],
-        "descriptionVi": [
-          "Lịch bloc xé từng ngày 365 tờ bồi lên bìa cứng carton lạnh 3mm sang trọng",
-          "Ép kim nhũ vàng 24K rực rỡ trên biểu tượng linh vật, Thần Tài và Phúc/Lộc",
-          "Món quà Tết trọng lượng, khẳng định uy tín vượt trội của thương hiệu"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Top-tier corporate gifting for major shareholders and VIP customers",
-          "Traditional Vietnamese enterprises, banking groups, and conglomerates",
-          "Prestigious New Year presents designed to occupy pride of place in homes"
-        ],
-        "bestForVi": [
-          "Quà tặng tri ân đặc biệt cho cổ đông lớn và khách hàng VIP chiến lược",
-          "Tập đoàn truyền thống, ngân hàng, bảo hiểm và các tổng công ty",
-          "Món quà xuân đẳng cấp được treo ở vị trí trang trọng nhất trong nhà"
-        ],
-        "nameZh": "特大豪华日撕撕历 + 烫金精装大红背板",
-        "nameJa": "特大日めくりカレンダー + 箔押し上製台紙",
-        "nameKo": "특대형 일력 캘린더 + 금박 하드보드",
-        "taglineZh": "每天撕下一页开启好运，烫金硬板底座福禄双全？",
-        "taglineJa": "毎日1枚ずつめくる伝統の日めくりと、豪華な金箔押し台紙のセットですか？",
-        "taglineKo": "매일 한 장씩 뜯으며 복을 맞이하는 전통 일력과 황금빛 하드보드 세트인가요?",
-        "descriptionZh": [
-          "豪华特大号传统日历芯，每天撕下一页，开启每日好运",
-          "精装高密度硬板大红背板，满版烫金浮雕福禄寿喜图腾",
-          "附带精美高档礼品手提盒封装，尊贵传统年味十足"
-        ],
-        "descriptionJa": [
-          "毎日1枚ずつめくる伝統の特大日めくりカレンダー",
-          "豪華な金箔押しと3Dエンボスが施された重厚な上製台紙",
-          "持ち帰り用の特製ギフト化粧箱付きで、贈答時の格調高さ抜群"
-        ],
-        "descriptionKo": [
-          "매일 한 장씩 뜯으며 하루의 복을 맞이하는 전통 특대형 일력",
-          "황금빛 금박과 입체 엠보싱으로 장식된 묵직한 하드보드 백판",
-          "고급 선물용 손잡이 박스 패키지로 전통 설 명절의 푸짐한 정 전달"
-        ],
-        "bestForZh": [
-          "向老一辈企业家、宗亲长辈致赠的传统重礼",
-          "商会协会理事会、传统大型商业机构年终感恩赠礼",
-          "注重中华传统民俗仪式感与红火鸿运的企业新春定制"
-        ],
-        "bestForJa": [
-          "年配の経営者や恩師へ贈る、伝統と格式ある新春の重箱ギフト",
-          "商工会議所、同業組合、老舗企業の年末年始のご挨拶",
-          "古き良き日本の伝統と縁起の良さを大切にする企業"
-        ],
-        "bestForKo": [
-          "어르신, 대선배 기업인에게 드리는 정성 가득한 전통 신년 선물",
-          "상공회의소, 종친회, 협회 회원사 연말연시 감사 헌정품",
-          "전통의 미덕과 매일매일의 소망을 담은 품격 있는 일력 세트"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/calendertet-board1.webp",
-        "pureImages": [
-          "/images/product/calendertet-board1.webp",
-          "/images/product/calendertet-board2.webp",
-          "/images/product/calendertet-board3.webp"
-        ]
-      },
-      {
-        "icon": "Palette",
-        "name": "Wooden Stand VIP Corporate Calendar",
-        "nameVi": "Lịch Đế Gỗ Cao Cấp Doanh Nghiệp",
-        "tagline": "Want a bespoke calendar with individual art paper sheets on a solid wood base?",
-        "taglineVi": "Bạn muốn bộ lịch đế gỗ tự nhiên sang trọng kèm từng tờ lịch giấy mỹ thuật?",
-        "description": [
-          "Individual monthly sheets printed on European textured art paper",
-          "Mounted on a custom-crafted natural walnut or beech wooden base",
-          "Refined executive tabletop accessory that doubles as an art piece"
-        ],
-        "descriptionVi": [
-          "Từng tờ lịch tháng rời được in trên giấy mỹ thuật châu Âu vân nhám cao cấp",
-          "Đặt trên chân đế bằng gỗ sồi hoặc gỗ óc chó tự nhiên gia công tinh xảo",
-          "Vật phẩm để bàn sang trọng, vừa xem ngày vừa làm điểm nhấn trang trí VIP"
-        ],
-        "descriptionTraits": [
-          "textured-art",
-          "natural-grain",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "C-suite executive desk gifts for CEO partners and private wealth clients",
-          "Luxury interior design, architecture studios, and boutique hotels",
-          "Limited-edition corporate gifts for key brand ambassadors"
-        ],
-        "bestForVi": [
-          "Quà tặng để bàn lãnh đạo CEO, đối tác VIP và khách hàng tài chính riêng",
-          "Studio kiến trúc, thiết kế nội thất và chuỗi khách sạn boutique 5 sao",
-          "Quà tặng phiên bản giới hạn dành cho các đại sứ thương hiệu trọng điểm"
-        ],
-        "nameZh": "实木底座高端企业定制台历",
-        "nameJa": "天然木製スタンド VIP卓上カレンダー",
-        "nameKo": "고급 원목 스탠드 VIP 기업 맞춤 달력",
-        "taglineZh": "温润实木底座可激光刻印公司名，兼具手机支架功能的文创年历？",
-        "taglineJa": "天然木の温もりと洗練されたデザインが調和した、VIP向け特製カレンダーですか？",
-        "taglineKo": "친환경 천연 원목 받침대에 로고를 각인한 프리미엄 VIP 탁상 달력인가요?",
-        "descriptionZh": [
-          "底座选用纯天然实木（橡胶木或榉木）精细打磨抛光，温润环保",
-          "木座正面可激光镭雕企业品牌Logo及座右铭，永不磨损",
-          "内页精选特种艺术纸，台历用毕底座可长期作为手机支架"
-        ],
-        "descriptionJa": [
-          "天然無垢材（ブナ・ラバーウッド）を丁寧に磨き上げた高級木製スタンド",
-          "レーザー精密彫刻で企業ロゴを刻み、永久に消えない刻印",
-          "カレンダー使用後も、スマートフォンスタンドとして長く愛用可能"
-        ],
-        "descriptionKo": [
-          "천연 원목(비치우드/러버우드)을 부드럽게 가공한 친환경 우드 스탠드",
-          "원목 표면에 레이저 정밀 각인으로 기업 로고를 영구 조각",
-          "달력 사용 후에도 데스크 위 스마트폰 거치대로 반영구 활용 가능"
-        ],
-        "bestForZh": [
-          "高端科技创新企业、新潮文创品牌及互联网大厂",
-          "赠送给高净值战略VIP客户的独具匠心设计感新年礼盒",
-          "倡导绿色生态、追求极简北欧风桌面美学的现代办公空间"
-        ],
-        "bestForJa": [
-          "IT・テクノロジー企業、サステナブルを掲げる先進ブランド",
-          "VIP顧客へ贈る、デザイン性と実用性を兼ね備えた特製ギフト",
-          "北欧テイストの洗練されたデスク環境を好むオフィス"
-        ],
-        "bestForKo": [
-          "IT 테크 기업, 혁신 스타트업, 지속가능성을 선도하는 친환경 브랜드",
-          "VIP 고객에게 전달하는 감각적이고 차별화된 프리미엄 기프트",
-          "북유럽풍 원목 데스크테리어를 선호하는 트렌디한 오피스 공간"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/paperart.webp",
-        "pureImages": [
-          "/images/product/paperart.webp",
-          "/images/product/calendertet-vip2.webp",
-          "/images/product/calendertetvip1.webp"
-        ]
-      },
-      {
-        "icon": "Layers",
-        "name": "A-Frame Desk Calendar (C230/C250)",
-        "nameVi": "Lịch Để Bàn Chữ A (C230 - C250)",
-        "tagline": "Need a practical, year-round corporate desk calendar for clients and staff?",
-        "taglineVi": "Bạn cần lịch để bàn 13 tờ chuẩn mực làm quà tặng đối tác và nhân viên?",
-        "description": [
-          "13-sheet A-frame desk calendar printed on smooth C230 or C250 coated paper",
-          "Sturdy rigid cardboard base in dark blue, black, or custom brand colors",
-          "Twin-loop metallic Wire-O binding for smooth page turning"
-        ],
-        "descriptionVi": [
-          "Quy cách 13 tờ (1 tờ bìa + 12 tháng) in trên giấy Couche 230 - 250gsm mịn đẹp",
-          "Đế bìa cứng bồi chắc chắn với màu xanh đen, đen hoặc theo nhận diện riêng",
-          "Lò xo kim loại đôi (Wire-O) siêu bền, lật trang nhẹ nhàng không cộm"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "glossy-coat",
-          "soft-light"
-        ],
-        "bestFor": [
-          "Corporate New Year gifting for clients, vendors, and partners",
-          "Year-round brand visibility on executive office desks",
-          "Employee onboarding and internal company gifts"
-        ],
-        "bestForVi": [
-          "Quà tặng tri ân cuối năm dành cho đối tác, khách hàng và nhà cung cấp",
-          "Tăng độ nhận diện thương hiệu suốt 365 ngày trên bàn làm việc",
-          "Quà tặng nhân viên và ấn phẩm văn phòng nội bộ doanh nghiệp"
-        ],
-        "nameZh": "标准A型立式三角台历",
-        "nameJa": "定番A型スタンド卓上カレンダー",
-        "nameKo": "표준 삼각대 A형 탁상 달력",
-        "taglineZh": "摆在客户办公桌上整整一年的企业品牌代言物？",
-        "taglineJa": "取引先のデスクに1年間置かれる、企業のPRカレンダーですか？",
-        "taglineKo": "거래처 데스크 위에 1년 내내 놓여 브랜드를 알릴 탁상 달력인가요?",
-        "descriptionZh": [
-          "加厚三角卡纸底座，稳固挺立于办公桌上不滑动不歪斜",
-          "C230-C250高克重铜版纸内页，双面覆哑膜防止划痕与翘边",
-          "全彩高精印刷，每月一张精美画面陪伴客户365天"
-        ],
-        "descriptionJa": [
-          "厚手の頑丈な三角台紙で、デスク上にしっかり安定自立",
-          "C230〜C250コート紙に両面マットPP加工を施し、反りを防止",
-          "高精細フルカラー印刷で、1年中美しいビジュアルをお届け"
-        ],
-        "descriptionKo": [
-          "두꺼운 하드 삼각대 베이스로 책상 위에 흔들림 없이 안정적으로 거치",
-          "C230-C250 도톰한 스노우지에 양면 무광 코팅으로 종이 말림 방지",
-          "초고화질 풀컬러 인쇄로 1년 365일 고객 곁을 지키는 홍보 효과"
-        ],
-        "bestForZh": [
-          "企业年度赠礼、VIP客户年终答谢伴手礼",
-          "员工新年福利大礼包、工位日常工作台历",
-          "各大行业品牌宣传贯穿全年的长效广告载体"
-        ],
-        "bestForJa": [
-          "企業の年末年始のご挨拶、取引先への贈答品",
-          "社員向けの新春記念品、オフィス用共通カレンダー",
-          "1年を通じてブランドを想起させる持続性の高い販促品"
-        ],
-        "bestForKo": [
-          "기업 연말연시 거래처 감사 선물 및 VIP 신년 판촉물",
-          "임직원 신년 웰컴 키트 및 사내 업무용 표준 데스크 캘린더",
-          "365일 내내 브랜드 로고가 노출되는 최고의 가성비 마케팅 도구"
-        ],
-        "pureImage": "/images/product/couche.webp",
-        "pureImages": [
-          "/images/product/couche.webp",
-          "/images/product/calender-desk2.webp",
-          "/images/product/calender-desk3.webp"
-        ],
-        "image": "/images/product/foil.webp",
-        "images": [
-          "/images/product/foil.webp",
-          "/images/product/calender-desk-foil2.webp",
-          "/images/product/calender-desk-foil3.webp"
-        ]
-      },
-      {
-        "icon": "Award",
-        "name": "Wall Calendar 7 / 13 Sheets (Wire-O)",
-        "nameVi": "Lịch Treo Tường Lò Xo 7 / 13 Tờ",
-        "tagline": "Need large-format wall calendars to showcase stunning project photography?",
-        "taglineVi": "Bạn cần lịch treo tường khổ lớn in ảnh công trình hay cảnh quan ấn tượng?",
-        "description": [
-          "Large-format 7-sheet (bi-monthly) or 13-sheet wall calendar with top wire loop",
-          "High-resolution CMYK lamination preserving vivid photography colors all year",
-          "Strong central hanger loop designed to support large sheet weights without sagging"
-        ],
-        "descriptionVi": [
-          "Lịch treo tường khổ lớn 7 tờ (2 tháng/tờ) hoặc 13 tờ gắn lò xo kim loại trên đỉnh",
-          "In màu CMYK độ phân giải cao, hiển thị hình ảnh công trình và phong cảnh rực rỡ",
-          "Móc treo kim loại chịu lực chắc chắn, giữ lịch thẳng thớm suốt năm"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "glossy-coat",
-          "soft-light"
-        ],
-        "bestFor": [
-          "Construction firms, architecture studios, and real estate developers",
-          "Manufacturing, aviation, and logistics corporate giveaways",
-          "High-impact wall branding in client reception areas and lobbies"
-        ],
-        "bestForVi": [
-          "Công ty xây dựng, kiến trúc và chủ đầu tư dự án bất động sản",
-          "Quà tặng doanh nghiệp ngành sản xuất, hàng không và logistics",
-          "Trang trí và truyền thông thương hiệu tại khu vực lễ tân, phòng khách"
-        ],
-        "nameZh": "大尺寸挂式挂历（7张/13张线圈装）",
-        "nameJa": "壁掛けカレンダー（7枚・13枚綴じ）",
-        "nameKo": "벽걸이 대형 캘린더 (7장/13장 스프링형)",
-        "taglineZh": "需要大幅精美画面悬挂在会议室与客厅墙面的气派年历？",
-        "taglineJa": "リビングやオフィスの壁を彩る、迫力ある大判カレンダーをお求めですか？",
-        "taglineKo": "거실이나 회의실 벽면에 걸어두는 시원시원한 대형 캘린더인가요?",
-        "descriptionZh": [
-          "大幅面尺寸挂墙悬挂，会议室及客厅整面墙的视觉焦点",
-          "精选7张或13张高品质进口铜版纸，色彩绚烂气势磅礴",
-          "结实金属挂钩线圈，长久悬挂牢固不掉落"
-        ],
-        "descriptionJa": [
-          "リビングやオフィスの壁面をダイナミックに飾る特大サイズ",
-          "厳選された7枚または13枚構成、大迫力のフルカラープリント",
-          "丈夫な金属製ハンガーリングで、1年間美しく水平をキープ"
-        ],
-        "descriptionKo": [
-          "사무실 벽면이나 회의실, 거실에 걸어두는 웅장한 대형 포맷",
-          "7장(격월) 또는 13장(매월) 구성으로 시원시원한 대형 화보 연출",
-          "견고한 메탈 핀 고리로 1년 내내 떨어짐 없이 안전하게 수평 유지"
-        ],
-        "bestForZh": [
-          "集团总部会议室、企业前台接待大厅、工厂办公室",
-          "高规格摄影、艺术国画、建筑工程项目的全景视觉展示",
-          "面向传统大型企业与政府机构的年终高端礼赠"
-        ],
-        "bestForJa": [
-          "本社大会議室、エントランスロビー、工場管理室",
-          "風景写真、日本画、建築実績を大迫力で見せる作品カレンダー",
-          "格式ある老舗企業や公的機関への新春のご挨拶品"
-        ],
-        "bestForKo": [
-          "그룹사 본사 대회의실, 로비 안내 데스크, 공장 현장 사무실",
-          "건축 프로젝트, 풍경 사진, 전통 회화의 압도적인 파노라마 화보집",
-          "전통과 권위를 중시하는 대기업 및 공공기관 신년 선물"
-        ],
-        "pureImage": "/images/product/cmyk.webp",
-        "pureImages": [
-          "/images/product/cmyk.webp",
-          "/images/product/calendar-wall6.webp",
-          "/images/product/calendar-wall4.webp"
-        ],
-        "image": "/images/product/foil.webp",
-        "images": [
-          "/images/product/foil.webp",
-          "/images/product/calendar-wall-foil2.webp",
-          "/images/product/calendar-wall-foil1.webp"
+          "/images/product/lich-giayloaif.webp",
+          "/images/product/lich-giayloaif2.webp",
+          "/images/product/lich-giayloaif3.webp"
         ]
       },
       {
@@ -8627,86 +6693,11 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "최상위 핵심 VIP 파트너와 의사결정권자를 위한 특별한 헌정 기프트"
         ],
         "hideFoilCheckbox": true,
-        "pureImage": "/images/product/paperart.webp",
+        "pureImage": "/images/product/lich-giaymythuat.webp",
         "pureImages": [
-          "/images/product/paperart.webp",
-          "/images/product/calender-art-2.webp",
-          "/images/product/calender-art-3.webp"
-        ]
-      },
-      {
-        "icon": "Sparkles",
-        "name": "Foil Stamped & Embossed Stand",
-        "nameVi": "Đế Bìa Cứng Ép Kim & Dập Nổi",
-        "tagline": "Want your brand logo on the calendar stand to gleam in metallic gold or silver?",
-        "taglineVi": "Bạn muốn logo thương hiệu trên đế lịch lấp lánh ép kim nhũ vàng và dập nổi 3D?",
-        "description": [
-          "Precision metallic foil stamping applied directly to the rigid calendar base",
-          "Optional 3D embossing creates tactile depth for crests and year titles",
-          "Ensure your corporate identity stands out immediately on any desk"
-        ],
-        "descriptionVi": [
-          "Ép kim nhũ vàng, nhũ bạc hoặc nhũ đồng trực tiếp lên phần chân đế lịch",
-          "Kết hợp dập nổi 3D tạo chiều sâu xúc giác cho logo và con số năm mới",
-          "Đảm bảo thương hiệu nổi bật và đẳng cấp ở vị trí trang trọng nhất"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Top-tier corporate gifting for C-suite partners and investors",
-          "Luxury hotel brands, fine dining groups, and fashion houses",
-          "Companies seeking maximum brand prestige throughout the calendar year"
-        ],
-        "bestForVi": [
-          "Quà tặng đẳng cấp cao nhất dành cho đối tác chiến lược và nhà đầu tư",
-          "Tập đoàn khách sạn, ẩm thực cao cấp và thương hiệu thời trang",
-          "Doanh nghiệp muốn khẳng định vị thế và uy tín thương hiệu suốt cả năm"
-        ],
-        "nameZh": "硬板厚底座 + 烫金击凸企业信息",
-        "nameJa": "箔押し・エンボス加工付き硬質台座",
-        "nameKo": "금박 및 형압 가공 고급 하드 삼각대",
-        "taglineZh": "底座彰显非凡工艺，立体烫金企业名称贯穿全年？",
-        "taglineJa": "台座に企業名を美しく箔押しし、存在感を際立たせたいですか？",
-        "taglineKo": "삼각대 하단에 로고를 금박 각인하여 1년 내내 브랜드를 각인시키고 싶으신가요?",
-        "descriptionZh": [
-          "底座采用加厚硬板裱糊特种黑卡或深蓝皮纹纸，沉稳庄重",
-          "企业品牌Logo及年号采用整版精细立体烫金与深压凹工艺",
-          "金属反光耀眼，赋予办公桌极强的尊荣感与品牌辨识度"
-        ],
-        "descriptionJa": [
-          "重厚なブラックやネイビーの特厚台紙を採用し、圧倒的な安定感",
-          "企業ロゴと年号をメタリック箔押しと空押しで立体成型",
-          "光を受けてキラリと輝き、オフィスで圧倒的な存在感を放つ台座"
-        ],
-        "descriptionKo": [
-          "칠흑 같은 블랙 또는 미드나잇 네이비 하드보드로 묵직한 중후함 연출",
-          "기업 로고와 신년 연호를 입체 금박과 깊은 디보싱으로 정밀 조각",
-          "빛의 각도에 따라 황금빛으로 빛나며 책상 위의 품격을 완성하는 하드 삼각대"
-        ],
-        "bestForZh": [
-          "注重品牌权威与行业领袖形象的大型跨国集团与上市公司",
-          "金融证券公司、知名律所、知名会计师事务所合伙人台历",
-          "追求每个细节都经得起挑剔考量的极致企业定制要求"
-        ],
-        "bestForJa": [
-          "上場企業、グローバルコングロマリット、金融機関",
-          "大手法律事務所、監査法人、コンサルティングファーム",
-          "妥協のないディテールでブランドの威信を示したい企業"
-        ],
-        "bestForKo": [
-          "업계 리더의 위상을 확립하고자 하는 대기업 및 코스피 상장사",
-          "투자증권사, 대형 로펌, 글로벌 회계법인 파트너 데스크 달력",
-          "모든 디테일에서 최고만을 고집하는 프리미엄 기업 고객"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/lichin3d.webp",
-        "pureImages": [
-          "/images/product/lichin3d.webp",
-          "/images/product/calendar-embossed2.webp",
-          "/images/product/calendar-embossed4.webp"
+          "/images/product/lich-giaymythuat.webp",
+          "/images/product/lich-giaymythuat2.webp",
+          "/images/product/lich-giaymythuat3.webp"
         ]
       },
       {
@@ -8736,11 +6727,11 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "bestForVi": [
               "Quà tặng Tết tri ân đối tác ngân hàng, doanh nghiệp, nhân viên công ty"
           ],
-          "pureImage": "/images/product/vd-item-lichtet.jpg",
+          "pureImage": "/images/product/lich-giayloaic.webp",
           "pureImages": [
-              "/images/product/vd-item-lichtet.jpg",
-              "/images/product/vd-item-lichtet.jpg",
-              "/images/product/vd-item-lichtet.jpg"
+              "/images/product/lich-giayloaic.webp",
+              "/images/product/lich-giayloaic2.webp",
+              "/images/product/lich-giayloaic3.webp"
           ],
           "nameZh": "铜版纸250g内页 & 人造革/亚麻硬板台历架",
           "nameJa": "コート紙250g＆高級レザー調・リネン貼合台紙（卓上カレンダー）",
@@ -8895,18 +6886,12 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "신년 맞이 매장 방문 고객 사은품 증정용 복주머니 봉투",
           "합리적인 예산으로 대량 제작하여 널리 배포하는 기업 표준 홍보물"
         ],
-        "pureImage": "/images/product/couche.webp",
+        "pureImage": "/images/product/lixi-giayloaic.webp",
         "pureImages": [
-          "/images/product/couche.webp",
-          "/images/product/lixi-couche2.webp",
-          "/images/product/lixi-couche3.webp"
+          "/images/product/lixi-giayloaic.webp",
+          "/images/product/lixi-giayloaic2.webp",
+          "/images/product/lixi-giayloaic3.webp"
         ],
-        "image": "/images/product/foil.webp",
-        "images": [
-          "/images/product/foil.webp",
-          "/images/product/lixi-couche-foil2.webp",
-          "/images/product/lixi-couche-foil3.webp"
-        ]
       },
       {
         "icon": "Feather",
@@ -8976,11 +6961,11 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "진심 어린 손글씨와 전통적인 예의를 갖추고자 하는 품격 있는 선물"
         ],
         "hideFoilCheckbox": true,
-        "pureImage": "/images/product/ford.webp",
+        "pureImage": "/images/product/lixi-giayloaif.webp",
         "pureImages": [
-          "/images/product/ford.webp",
-          "/images/product/lixi-ford2.webp",
-          "/images/product/lixi-ford3.webp"
+          "/images/product/lixi-giayloaif.webp",
+          "/images/product/lixi-giayloaif2.webp",
+          "/images/product/lixi-giayloaif3.webp"
         ]
       },
       {
@@ -9051,11 +7036,11 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "임원진 특별 신년 격려금 및 중요 비즈니스 축하금 봉투"
         ],
         "hideFoilCheckbox": true,
-        "pureImage": "/images/product/paperart.webp",
+        "pureImage": "/images/product/lixi-giaymythuat.webp",
         "pureImages": [
-          "/images/product/paperart.webp",
-          "/images/product/lixi-art2.webp",
-          "/images/product/lixi-art3.webp"
+          "/images/product/lixi-giaymythuat.webp",
+          "/images/product/lixi-giaymythuat2.webp",
+          "/images/product/lixi-giaymythuat3.webp"
         ]
       },
       {
@@ -9126,215 +7111,13 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "트렌디한 카페 및 베이커리 매장의 설 명절 스페셜 굿즈"
         ],
         "hideFoilCheckbox": true,
-        "pureImage": "/images/product/kraft.webp",
+        "pureImage": "/images/product/lixi-giaykraft.webp",
         "pureImages": [
-          "/images/product/kraft.webp",
-          "/images/product/lixi-kraft2.webp",
-          "/images/product/lixi-kraft3.webp"
+          "/images/product/lixi-giaykraft.webp",
+          "/images/product/lixi-giaykraft2.webp",
+          "/images/product/lixi-giaykraft3.webp"
         ]
       },
-      {
-        "icon": "Layers",
-        "name": "3D Embossed Festive Mascot Red Envelope",
-        "nameVi": "Dập Nổi 3D Hoa Văn Thần Tài / Linh Vật",
-        "tagline": "Want intricate 3D sculptural relief for auspicious symbols and traditional crests?",
-        "taglineVi": "Bạn muốn họa tiết linh vật hay Thần Tài nổi bật với độ sâu 3D trên bao lì xì?",
-        "description": [
-          "Tactile 3D embossing raising dragons, blossoms, and prosperity symbols",
-          "Adds sculptural luxury that recipients can feel immediately in their hands",
-          "Combined with gold foil for a multi-sensory Lunar New Year masterpiece"
-        ],
-        "descriptionVi": [
-          "Kỹ thuật dập nổi 3D tạo khối cho rồng, hoa mai, hoa đào và chữ Lộc/Phúc",
-          "Tạo cảm giác xúc giác sống động, sang trọng khi người nhận cầm trên tay",
-          "Kết hợp cùng ép kim vàng tạo nên tác phẩm nghệ thuật chúc xuân hoàn hảo"
-        ],
-        "descriptionTraits": [
-          "embossed-depth",
-          "natural-grain",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Top-tier corporate jubilee Tet gifts and VIP investor correspondence",
-          "Luxury resort Tet welcome packages for VIP guests",
-          "Collector's edition red envelopes designed for permanent remembrance"
-        ],
-        "bestForVi": [
-          "Quà Tết cao cấp nhất của tập đoàn gửi đối tác chiến lược và nhà đầu tư",
-          "Bộ quà mừng xuân chào mừng khách VIP tại các khu nghỉ dưỡng 5 sao",
-          "Bao lì xì phiên bản sưu tầm mang tính nghệ thuật và lưu niệm cao"
-        ],
-        "nameZh": "3D立体浮雕财神/新春生肖利是封",
-        "nameJa": "3D立体浮き彫り 招福干支ポチ袋",
-        "nameKo": "3D 입체 엠보싱 복주머니/십이지 봉투",
-        "taglineZh": "财神爷、生肖萌兽立体跃然纸上，摸得到的吉祥福气？",
-        "taglineJa": "縁起の良い干支や福の神が立体的に浮き出る贅沢なポチ袋ですか？",
-        "taglineKo": "새해 복을 기원하는 입체 형압 조각이 손끝으로 느껴지는 명품 봉투인가요?",
-        "descriptionZh": [
-          "高精雕刻铜模热压，财神、生肖与吉祥福字3D高凸浮雕",
-          "浮雕深度高挺不塌陷，指尖抚摸有极强立体凹凸雕塑感",
-          "金箔光彩夺目，带来极佳的招财进宝美好新年寓意"
-        ],
-        "descriptionJa": [
-          "高精度な金属彫刻金型による、迫力ある3D立体の浮き出し加工",
-          "干支や福の神がダイナミックに浮き彫りになり、指先で実感できる凹凸",
-          "眩い金箔の輝きとともに、圧倒的な福を呼び込む縁起物ポチ袋"
-        ],
-        "descriptionKo": [
-          "정밀 조각 금형으로 완성된 복주머니, 십이지신 캐릭터의 3D 입체 양각",
-          "섬세하고 깊이 있는 엠보싱으로 손끝을 스칠 때마다 느껴지는 조각 예술",
-          "눈부신 골드박이 더해져 새해 부와 행운을 부르는 최고의 명품 봉투"
-        ],
-        "bestForZh": [
-          "新春开运祈福、长辈派发给小辈的吉祥压岁钱红包",
-          "各大银行、保险机构向VIP大客户赠送的开门红招财红包",
-          "注重传统吉祥福泽意象与精湛工艺表现的高端礼品定制"
-        ],
-        "bestForJa": [
-          "子どもの成長と幸運を祈る、特別なお正月のお年玉袋",
-          "銀行・保険会社が初商いでVIP顧客に配る開運招福グッズ",
-          "伝統工芸の粋を集めた、めでたさ満点のプレミアム仕様"
-        ],
-        "bestForKo": [
-          "자녀와 조카의 새해 건강과 대박을 기원하는 복주머니 세뱃돈 봉투",
-          "금융기관, 보험사에서 고객에게 증정하는 신년 대박 기원 봉투",
-          "전통적인 복의 상징과 화려한 입체 가공이 돋보이는 최고급 봉투"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/lixi-3d1.webp",
-        "pureImages": [
-          "/images/product/lixi-3d1.webp",
-          "/images/product/lixi-3d2.webp",
-          "/images/product/lixi-3d3.webp"
-        ]
-      },
-      {
-          "icon": "Sparkles",
-          "name": "Artistic Textured Red Paper",
-          "nameVi": "Giấy Mỹ Thuật Đỏ Ánh Nhũ",
-          "tagline": "Luxurious textured red stock with subtle metallic glitter that catches ambient light",
-          "taglineVi": "Giấy mỹ thuật đỏ thắm có ánh kim tuyến lấp lánh nhẹ nhàng, đẳng cấp trang trọng cho Tết",
-          "description": [
-              "Vibrant ceremonial red paper texture with sparkling metallic sheen",
-              "Heavy paper stock resists creases and holds banknotes securely",
-              "Specially formulated for crisp 3D gold foil stamping"
-          ],
-          "descriptionVi": [
-              "Màu đỏ lễ hội tươi tắn kết hợp bột nhũ kim tuyến phản chiếu ánh sáng",
-              "Chất giấy đầm tay, giữ form phẳng phiu không bị nhăn gãy",
-              "Bám dính nhũ vàng cực tốt khi ép kim chữ Phúc - Lộc - Thọ"
-          ],
-          "descriptionTraits": [
-              "metallic-shine",
-              "textured-art",
-              "foil-accent"
-          ],
-          "bestFor": [
-              "Corporate VIP Tet gifts, banking red packets, luxury brands"
-          ],
-          "bestForVi": [
-              "Quà tặng tri ân khách hàng VIP ngân hàng, doanh nghiệp lớn"
-          ],
-          "pureImage": "/images/product/vd-item-lixi.jpeg",
-          "pureImages": [
-              "/images/product/vd-item-lixi.jpeg",
-              "/images/product/vd-item-lixi.jpeg",
-              "/images/product/vd-item-lixi.jpeg"
-          ],
-          "nameZh": "璀璨红金微闪艺术纸 (春节利是封专用)",
-          "nameJa": "ラメ輝く深紅のアート特殊紙（迎春ポチ袋・お年玉袋）",
-          "nameKo": "메탈릭 펄 레드 고급 수입지 (새해 프리미엄 세뱃돈 봉투)",
-          "taglineZh": "纸质带有细腻微光星粉、纸张厚实平挺、烫金浮雕福字立体闪耀的尊贵新年红包？",
-          "taglineJa": "光を受けると繊細にラメが煌めく深紅の特殊紙。3D金箔押しが際立つ新春お年玉袋ですか？",
-          "taglineKo": "은은한 금빛 펄이 감도는 붉은색 수입지로 두툼하고 구김 없이 금박 후가공이 돋보이는 명품 세뱃돈 봉투인가요?",
-          "descriptionZh": [
-              "典雅喜庆的大红节庆纸基，表面细微铺布金属晶粉，不同光线下流转灵动微光",
-              "手感扎实厚重，坚韧不易折皱，容纳平整大额纸币不易鼓胀变形",
-              "特种纸配方对电化铝具有极高附着力，烫制3D浮雕金字或立体浮凸生肖格外清晰耀眼"
-          ],
-          "descriptionJa": [
-              "格式高い祝祭の深紅を基調に、微細なメタリックラメが光の角度で上品にきらめく特殊アート紙",
-              "しっかりとした重厚な紙厚で、お札を入れても型崩れせず美しい直線をキープ",
-              "3D箔押し適性が極めて高く、「福・禄・寿」の金箔や干支の立体エンボスが鮮明に密着"
-          ],
-          "descriptionKo": [
-              "전통의 품격을 담은 딥 레드 컬러 바탕에 미세한 골드 펄 입자가 은은하게 빛나는 특수 예술 지류",
-              "손에 쥐었을 때 도톰한 두께감으로 지폐를 넉넉히 넣어도 접히거나 구겨지지 않는 단단한 탄력",
-              "핫스탬핑 금박 전이력이 탁월하여 '복(福)' 문양과 신년 타이포그래피가 입체적으로 선명하게 부착"
-          ],
-          "bestForZh": [
-              "大型银行金融机构VIP定制利是封、跨国企业年终贺岁红包、奢侈品牌新春赠礼"
-          ],
-          "bestForJa": [
-              "大手銀行・証券会社のVIP向け新春ポチ袋、企業の正月挨拶用祝儀袋、ラグジュアリーブランド"
-          ],
-          "bestForKo": [
-              "은행 및 금융권 VIP 전용 신년 세뱃돈 봉투, 대기업 신년 하례회 복봉투, 럭셔리 브랜드 기프트"
-          ]
-      },
-      {
-          "icon": "ShieldCheck",
-          "name": "Vintage Kraft Paper",
-          "nameVi": "Giấy Kraft Vintage",
-          "tagline": "Nostalgic retro brown kraft paper creating an authentic traditional folk aesthetic",
-          "taglineVi": "Giấy kraft nâu mộc mạc gợi nhắc không khí Tết xưa truyền thống, ấm áp",
-          "description": [
-              "100% eco-friendly recycled brown kraft paper",
-              "Pairs wonderfully with nostalgic calligraphy and folk art illustrations",
-              "Popular choice for young consumers, coffee shops, and creative studios"
-          ],
-          "descriptionVi": [
-              "Giấy xi măng nâu tái chế thân thiện môi trường",
-              "Tôn vinh nét đẹp thư pháp và tranh vẽ dân gian ngày Tết",
-              "Phong cách hoài niệm được giới trẻ và các chuỗi cafe cực kỳ yêu thích"
-          ],
-          "descriptionTraits": [
-              "natural-grain",
-              "eco-friendly"
-          ],
-          "bestFor": [
-              "Youth brands, coffee shops, artisan bakeries, cultural events"
-          ],
-          "bestForVi": [
-              "Thương hiệu thời trang trẻ, quán cafe, studio nghệ thuật"
-          ],
-          "pureImage": "/images/product/bag-kraft1.webp",
-          "pureImages": [
-              "/images/product/bag-kraft1.webp",
-              "/images/product/bag-kraft1.webp",
-              "/images/product/bag-kraft1.webp"
-          ],
-          "nameZh": "美式复古环保牛皮纸 (传统年味利是封)",
-          "nameJa": "ヴィンテージクラフト紙（レトロ和風・ポチ袋）",
-          "nameKo": "빈티지 에코 크라프트지 (아날로그 전통 세뱃돈 봉투)",
-          "taglineZh": "采用质朴粗糙的原色牛皮纸，勾勒民间年画与书法笔触、散发传统温情的新年利是封？",
-          "taglineJa": "どこか懐かしい素朴なクラフト感。伝統的な書道や民画イラストが映える新春ポチ袋ですか？",
-          "taglineKo": "따뜻하고 정감 있는 브라운 컬러로 전통 서예와 민화 일러스트가 멋스럽게 어우러지는 빈티지 봉투인가요?",
-          "descriptionZh": [
-              "100%环保再生未漂白水泥棕色牛皮纸，纤维强韧，触感温润朴实",
-              "完美烘托传统挥春书法、东湖民间木版年画及水墨复古插画的深厚文化底蕴",
-              "深受年轻创意群体、新中式国潮品牌及独立咖啡文创馆追捧的热门年货单品"
-          ],
-          "descriptionJa": [
-              "100%リサイクル可能な未漂白クラフト紙。繊維がぎっしり詰まった素朴で温かい手触り",
-              "伝統的な毛筆の書や新春の民画イラストと相性抜群で、アコースティックな風情を演出",
-              "若年層やオーガニックカフェ、レトロなクリエイティブスタジオから絶大な支持"
-          ],
-          "descriptionKo": [
-              "100% 친환경 재생 펄프로 화학 표백을 거치지 않아 자연 그대로의 거칠고 따뜻한 텍스처",
-              "전통 붓글씨 캘리그라피와 민화 일러스트의 멋을 가장 극대화하는 레트로 감성",
-              "MZ세대 트렌드와 뉴트로 콘셉트를 지향하는 카페 및 디자인 스튜디오의 인기 아이템"
-          ],
-          "bestForZh": [
-              "青年独立设计师潮牌、手冲精品咖啡馆、文创艺术空间及传统非遗文化展"
-          ],
-          "bestForJa": [
-              "若者向けストリートブランド、自家焙煎カフェ、アートギャラリー、文化イベント"
-          ],
-          "bestForKo": [
-              "영 캐주얼 브랜드, 감성 베이커리 및 카페, 디자인 문구 스튜디오, 문화 예술 행사"
-          ]
-      }
     ]
   },
   {
@@ -9431,18 +7214,12 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "멤버십 회원 대상 설맞이 감사 인사 엽서",
           "합리적인 제작비로 대량 우편 발송이 가능한 표준 새해 카드"
         ],
-        "pureImage": "/images/product/couche.webp",
+        "pureImage": "/images/product/thiep-giayloaic.webp",
         "pureImages": [
-          "/images/product/couche.webp",
-          "/images/product/thieptet-couche2.webp",
-          "/images/product/thieptet-couche3.webp"
+          "/images/product/thiep-giayloaic.webp",
+          "/images/product/thiep-giayloaic2.webp",
+          "/images/product/thiep-giayloaic3.webp"
         ],
-        "image": "/images/product/foil.webp",
-        "images": [
-          "/images/product/foil.webp",
-          "/images/product/thieptet-couche-foil2.webp",
-          "/images/product/thieptet-couche-foil3.webp"
-        ]
       },
       {
         "icon": "Feather",
@@ -9511,18 +7288,12 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "학계, 문화예술계 은사님과 자문위원에게 올리는 신년 문안 카드",
           "기계적인 인쇄를 넘어 손글씨의 진정성을 전하고자 하는 카드"
         ],
-        "pureImage": "/images/product/ford.webp",
+        "pureImage": "/images/product/thiep-giayloaif.webp",
         "pureImages": [
-          "/images/product/ford.webp",
-          "/images/product/thieptet-ford2.webp",
-          "/images/product/thieptet-ford3.webp"
+          "/images/product/thiep-giayloaif.webp",
+          "/images/product/thiep-giayloaif2.webp",
+          "/images/product/thiep-giayloaif3.webp"
         ],
-        "image": "/images/product/ford-foil.webp",
-        "images": [
-          "/images/product/ford-foil.webp",
-          "/images/product/thieptet-ford-foil2.webp",
-          "/images/product/thieptet-ford-foil3.webp"
-        ]
       },
       {
         "icon": "Palette",
@@ -9591,393 +7362,87 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "프라이빗 뱅킹(PB), 명품 플래그십 스토어 고객 연하장",
           "사회 지도층 인사 및 업계 리더에게 전하는 최고 격식의 신년 서신"
         ],
-        "pureImage": "/images/product/paperart.webp",
+        "pureImage": "/images/product/thiep-giaymythuat.webp",
         "pureImages": [
-          "/images/product/paperart.webp",
-          "/images/product/thieptet-art2.webp",
-          "/images/product/thieptet-art3.webp"
+          "/images/product/thiep-giaymythuat.webp",
+          "/images/product/thiep-giaymythuat2.webp",
+          "/images/product/thiep-giaymythuat3.webp"
         ],
-        "image": "/images/product/paperart-foil.webp",
-        "images": [
-          "/images/product/paperart-foil.webp",
-          "/images/product/thieptet-art-foil2.webp",
-          "/images/product/thieptet-art-foil3.webp"
-        ]
       },
-      {
-        "icon": "Feather",
-        "name": "Natural Kraft 250 - 300gsm (Eco Greeting Card)",
-        "nameVi": "Giấy Kraft Nâu Mộc Mạc",
-        "tagline": "Want a sustainable, rustic Tet greeting card with traditional Vietnamese warmth?",
-        "taglineVi": "Bạn muốn thiệp chúc Tết mang phong cách mộc mạc, hoài niệm và thân thiện môi trường?",
-        "description": [
-          "100% recycled natural brown Kraft paper with authentic organic texture",
-          "Warm, vintage aesthetic that evokes feelings of nostalgia and heritage",
-          "Looks stunning with red calligraphy, black ink, or gold foil stamping"
-        ],
-        "descriptionVi": [
-          "Màu nâu tự nhiên tái chế 100% với vân xơ giấy mộc mạc, chân thực",
-          "Mang lại thiện cảm thẩm mỹ truyền thống ấm áp, hoài niệm ngày Tết",
-          "Hiệu ứng thị giác tuyệt đẹp khi kết hợp thư pháp đỏ, mực đen hoặc ép kim"
-        ],
-        "descriptionTraits": [
-          "natural-grain",
-          "soft-light",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Artisan agricultural cooperatives and eco-friendly brand greetings",
-          "F&B brands, coffee shops, and businesses promoting natural wellness",
-          "Rustic holiday correspondence celebrating heritage and sustainability"
-        ],
-        "bestForVi": [
-          "Thiệp chúc Tết từ các hợp tác xã nông sản sạch và thương hiệu hữu cơ",
-          "Thương hiệu F&B, quán cà phê và doanh nghiệp hướng tới lối sống xanh",
-          "Thiệp xuân mộc mạc tôn vinh văn hóa truyền thống và sự phát triển bền vững"
-        ],
-        "nameZh": "复古质朴牛皮纸新年明信片/贺卡",
-        "nameJa": "クラフト紙レトロ年賀カード（エコ調）",
-        "nameKo": "친환경 빈티지 크라프트 연하장",
-        "taglineZh": "以环保质朴的方式表达最纯粹的新年祝福？",
-        "taglineJa": "飾らない素朴な温もりを届ける、クラフト紙のエコ年賀状ですか？",
-        "taglineKo": "과장 없이 담백하고 진심 어린 새해 인사를 전할 크라프트 카드인가요?",
-        "descriptionZh": [
-          "250-300gsm加厚原生态天然牛皮纸，散发浓郁复古年味",
-          "红金色图腾与牛皮纸底色交织，质朴中流淌着真挚温情",
-          "完全不含塑料覆膜，践行绿色低碳环保新年生活方式"
-        ],
-        "descriptionJa": [
-          "250〜300gsmの厚口天然クラフト紙、レトロで温かみのある風合い",
-          "クラフトの素朴な茶色と金箔の対比がモダンなエコ年賀状",
-          "プラスチックフリーで環境に優しく、サステナブルな新年の誓い"
-        ],
-        "descriptionKo": [
-          "250-300gsm 도톰한 천연 크라프트지로 빈티지한 아날로그 명절 감성",
-          "따뜻한 브라운 컬러와 반짝이는 골드박이 조화를 이루는 감성 디자인",
-          "비닐 코팅을 배제한 친환경 종이 재질로 따뜻한 온기 전달"
-        ],
-        "bestForZh": [
-          "年轻人推崇的国潮文创、新潮独立工作室新年贺卡",
-          "主打生态有机、自然环保理念的可持续品牌客户贺信",
-          "充满乡村自然田园气息与文艺小资情怀的新年问候"
-        ],
-        "bestForJa": [
-          "若手クリエイター、デザインスタジオの個性的な年賀状",
-          "オーガニックブランド、エシカル企業のサステナブル賀状",
-          "気取らない自然体の温もりを伝えたい新年のご挨拶"
-        ],
-        "bestForKo": [
-          "MZ세대 인기 디자인 스튜디오, 감성 라이프스타일 브랜드 연하장",
-          "친환경 가치와 유기농을 지향하는 소셜 벤처 기업의 새해 편지",
-          "격식에 얽매이지 않고 따스한 마음을 전하고 싶은 감성 카드"
-        ],
-        "pureImage": "/images/product/kraft.webp",
-        "pureImages": [
-          "/images/product/kraft.webp",
-          "/images/product/thieptet-kraft2.webp",
-          "/images/product/thieptet-kraft3.webp"
-        ],
-        "image": "/images/product/kraft-foil.webp",
-        "images": [
-          "/images/product/kraft-foil.webp",
-          "/images/product/thieptet-kraft-foil2.webp",
-          "/images/product/thieptet-kraft-foil3.webp"
-        ]
-      },
-      {
-        "icon": "Layers",
-        "name": "Gold Foil Stamped & 3D Embossed Card",
-        "nameVi": "Ép Kim Nhũ Vàng & Dập Nổi 3D",
-        "tagline": "Want auspicious New Year calligraphy to gleam in gold foil and raised 3D relief?",
-        "taglineVi": "Bạn muốn chữ Lộc/Phúc và hoa xuân lấp lánh ép kim vàng cùng dập nổi 3D?",
-        "description": [
-          "Precision hot foil stamping applied to holiday greetings and brand logos",
-          "3D embossing raises festive dragon or floral motifs into sculptural relief",
-          "Delivers an unforgettable multi-sensory masterpiece of holiday respect"
-        ],
-        "descriptionVi": [
-          "Ép kim nhũ vàng 24K sắc nét cho lời chúc mừng năm mới và logo công ty",
-          "Dập nổi 3D tạo khối cho hoa mai, hoa đào, linh vật và chữ Phúc/Lộc/Thọ",
-          "Tạo tác phẩm chúc xuân đa giác quan hoàn hảo, khẳng định vị thế thương hiệu"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Top-tier corporate gifting for C-suite partners and investors",
-          "Luxury hotel brands, fine dining groups, and fashion houses",
-          "Companies seeking maximum brand prestige during the Lunar New Year"
-        ],
-        "bestForVi": [
-          "Quà tặng đẳng cấp cao nhất dành cho đối tác chiến lược và nhà đầu tư",
-          "Tập đoàn khách sạn, ẩm thực cao cấp và thương hiệu thời trang",
-          "Doanh nghiệp muốn khẳng định uy tín và lời chúc thịnh vượng đầu xuân"
-        ],
-        "nameZh": "鎏金烫印 + 3D浮雕立体工艺贺卡",
-        "nameJa": "金箔押し + 3D立体エンボス賀状",
-        "nameKo": "골드박 + 3D 입체 엠보싱 명품 연하장",
-        "taglineZh": "金碧辉煌、浮雕凸起的最高仪式感新年贺卡？",
-        "taglineJa": "金箔の煌めきと立体的な浮き彫りが最高峰の敬意を表す賀状ですか？",
-        "taglineKo": "황금박과 섬세한 입체 형압으로 받는 이에게 깊은 감동을 줄 최고급 연하장인가요?",
-        "descriptionZh": [
-          "整版电化铝鎏金烫印辅以3D模具浮雕工艺，轮廓栩栩如生",
-          "祥云、游龙、金凤等新春元素立体凸起，触手可及",
-          "金碧辉煌，极具喜庆吉祥感与中国传统宫廷皇家仪式感"
-        ],
-        "descriptionJa": [
-          "金箔押しと3D立体エンボス加工を融合させた至高の仕立て",
-          "龍や鳳凰、吉祥文様がダイナミックに浮き彫りになり圧倒的な存在感",
-          "伝統と格式を感じさせる、格式高い新春の特別なカード"
-        ],
-        "descriptionKo": [
-          "정밀 금박 후가공과 입체 3D 엠보싱이 결합되어 살아 움직이듯 생생함",
-          "전통 용 문양, 청룡, 복주머니 등 길상 문양이 손끝에 볼록하게 만져짐",
-          "황금빛으로 빛나는 압도적인 품격으로 새해 만복을 기원하는 명작"
-        ],
-        "bestForZh": [
-          "企业董事长致呈战略大客户、终身合作伙伴的极崇礼敬",
-          "高端金融投资机构、知名商会重要庆典的新春迎福卡",
-          "注重传统祥瑞寓意与精湛极致工艺的顶级商务礼遇"
-        ],
-        "bestForJa": [
-          "最重要パートナーへ最高峰の敬意を表す特別な新春カード",
-          "金融機関、有力企業、財界要人への公式年賀状",
-          "縁起の良さと贅を尽くしたディテールで新年の門出を祝う逸品"
-        ],
-        "bestForKo": [
-          "평생의 비즈니스 동반자와 대형 파트너사에 바치는 최고의 헌정 카드",
-          "금융 투자사, 대형 협회 및 상공회 VIP 공식 신년 연하장",
-          "새해의 대길(大吉)과 만사형통을 비는 최고의 정성을 담은 카드"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/dapnoi-foil.webp",
-        "pureImages": [
-          "/images/product/dapnoi-foil.webp",
-          "/images/product/thieptet-embossed2.webp",
-          "/images/product/thieptet-embossed3.webp"
-        ]
-      },
-      {
-        "icon": "Palette",
-        "name": "Art Paper",
-        "nameVi": "Giấy Mỹ Thuật (Cao Cấp)",
-        "tagline": "Handcrafted invitation feel with delicate paper texture",
-        "taglineVi": "Thiệp mời cao cấp mang lại cảm giác thủ công và sang trọng",
-        "description": [
-          "Premium imported art stock with fine tactile texture",
-          "Crisp foil stamping combined with precision embossing",
-          "Includes matching customized envelope and wax seal sticker"
-        ],
-        "descriptionVi": [
-          "Giấy mỹ thuật nhập khẩu với bề mặt vân sần tinh tế",
-          "Chi tiết ép kim vàng kết hợp dập nổi sắc nét",
-          "Kèm phong bì đồng bộ và tem dán niêm phong"
-        ],
-        "descriptionTraits": [
-          "textured-art",
-          "soft-light",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "High-end wedding invitations and save-the-date cards",
-          "Milestone birthday celebrations and gala invites",
-          "Personal thank-you cards and private dinner menus"
-        ],
-        "bestForVi": [
-          "Thiệp cưới cao cấp, thiệp đính hôn theo phong cách hiện đại",
-          "Thiệp sinh nhật, mừng thọ, tiệc kỷ niệm trang trọng",
-          "Thiệp cảm ơn cá nhân và thực đơn tiệc riêng tư"
-        ],
-        "nameZh": "特种艺术纸怀旧纪念画册",
-        "nameJa": "特殊アート紙 記念フォトアルバム",
-        "nameKo": "수입 예술지 기념 사진 앨범",
-        "taglineZh": "想要让照片拥有如同艺术馆典藏画卷般的细腻纸质触感？",
-        "taglineJa": "美術館の画集のような、しっとりとした風合いと手触りを求めますか？",
-        "taglineKo": "미술관 도록처럼 감성적이고 깊이 있는 촉감의 사진 앨범을 원하시나요?",
-        "descriptionZh": [
-          "精选高克重欧洲进口特种艺术纸，质地厚重典雅",
-          "边缘可加烫金边或手工撕边工艺，彰显独一无二",
-          "配以同色系特种纸信封与定制火漆印章"
-        ],
-        "descriptionJa": [
-          "ヨーロッパ輸入の超厚口高級特殊紙、気品あふれる極上の手触り",
-          "エッジの金箔加工やハンドメイドのちぎり加工にも対応",
-          "同素材の専用封筒とシーリングワックスで完璧な演出"
-        ],
-        "descriptionKo": [
-          "유럽산 최고급 고평량 수입 예술지로 손에 닿는 묵직하고 우아한 촉감",
-          "카드 테두리 금박 엣지 가공 및 핸드메이드 엣지 커팅 선택 가능",
-          "동일한 최고급 지류 봉투와 맞춤형 실링 왁스 인장 패키지"
-        ],
-        "bestForZh": [
-          "高端浪漫婚礼喜帖、豪门婚宴专属邀请函",
-          "私人顶级晚宴、艺术展VIP私享酒会邀请函",
-          "宝宝出生满月答谢宴与寿辰喜庆名帖"
-        ],
-        "bestForJa": [
-          "ラグジュアリーウェディング招待状、格式ある披露宴案内",
-          "プライベートディナー、ギャラリーレセプションのVIP招待状",
-          "誕生祝い、アニバーサリーパーティーの特別な案内状"
-        ],
-        "bestForKo": [
-          "호텔 웨딩, 하우스 웨딩 및 프라이빗 결혼식 청첩장",
-          "VIP 프라이빗 디너, 아트 갤러리 오프닝 리셉션 초대장",
-          "돌잔치 초대장 및 가족 명예 기념식 프리미엄 카드"
-        ],
-        "pureImage": "/images/product/paperart.webp",
-        "pureImages": [
-          "/images/product/paperart.webp",
-          "/images/product/thiepcuoiart3.webp",
-          "/images/product/thiepcuoiart4.webp"
-        ],
-        "image": "/images/product/art-foil.webp",
-        "images": [
-          "/images/product/art-foil.webp",
-          "/images/product/thiepcuoiart2.webp",
-          "/images/product/thiepcuoiart.webp"
-        ]
-      },
-      {
-        "icon": "Sparkles",
-        "name": "C300 with Gold Foil Stamping",
-        "nameVi": "C300 Ép Kim Vàng",
-        "tagline": "Sleek and polished invitation with dazzling metallic accents",
-        "taglineVi": "Thiệp mời hiện đại, sắc nét với ánh kim nổi bật",
-        "description": [
-          "Heavy C300 stock with soft-touch matte lamination",
-          "Refined gold or silver hot foil on key name and date details",
-          "Bright, vibrant color printing with sharp typography"
-        ],
-        "descriptionVi": [
-          "Giấy Couche 300 dày dặn cán màng mờ mịn tay",
-          "Ép kim vàng/bạc điểm nhấn tên cô dâu chú rể hoặc ngày lễ",
-          "In màu sắc nét, kiểu chữ hiện đại chuẩn xu hướng"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "foil-accent",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Modern wedding invitation suites",
-          "Birthday and anniversary party cards",
-          "Holiday and New Year greeting cards to friends and family"
-        ],
-        "bestForVi": [
-          "Bộ thiệp cưới phong cách tối giản, hiện đại",
-          "Thiệp mời sinh nhật, thôi nôi, tiệc gia đình",
-          "Thiệp chúc mừng năm mới gửi người thân, bạn bè"
-        ],
-        "nameZh": "铜版纸 C300 烫红金/黄金",
-        "nameJa": "コート紙 C300 金箔押し加工",
-        "nameKo": "스노우지 C300 리얼 골드박",
-        "taglineZh": "经典高光卡纸配以璀璨电化铝烫金，隆重喜庆？",
-        "taglineJa": "定番の光沢カードに華やかな金箔押しを施した上品な招待状ですか？",
-        "taglineKo": "선명한 코팅 용지에 화려한 금박을 더해 정성을 담은 카드인가요?",
-        "descriptionZh": [
-          "经典300gsm高密平滑铜版纸，双面覆哑光保护膜",
-          "新郎新娘姓名与婚礼主题烫印闪耀电化铝红金/黄金",
-          "简约大气现代风格，色彩艳丽且不易刮伤"
-        ],
-        "descriptionJa": [
-          "定番の300gsmコート紙に両面マットPP加工で上品な質感",
-          "新郎新婦のお名前やメッセージに眩いゴールド箔押しを適用",
-          "モダンで洗練されたデザインと高いコストパフォーマンス"
-        ],
-        "descriptionKo": [
-          "탄탄한 300gsm 스노우지에 고급 무광 코팅으로 스크래치 방지",
-          "신랑 신부 영문 이름과 핵심 문구에 정밀 리얼 골드박 각인",
-          "세련된 모던 미니멀 스타일에 화려한 금빛 포인트를 더한 청첩장"
-        ],
-        "bestForZh": [
-          "现代极简风格城市婚礼、草坪轻婚礼",
-          "公司年会晚宴邀请函、开业庆典请帖",
-          "兼顾高级感与预算考量的大众婚礼首选"
-        ],
-        "bestForJa": [
-          "カジュアルなガーデンウェディング、ホテルパーティー",
-          "企業の創立記念式典、レセプションパーティー招待状",
-          "上品さとコストパフォーマンスを両立したいカップル"
-        ],
-        "bestForKo": [
-          "야외 가든 웨딩, 모던 호텔 예식, 스몰 웨딩 청첩장",
-          "기업 창립 기념식, 신년 하례회 및 공식 초청장",
-          "고급스러운 비주얼과 합리적인 예산을 모두 만족하는 실속 청첩장"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/c300-foil.webp",
-        "pureImages": [
-          "/images/product/c300-foil.webp",
-          "/images/product/thiepcuoic3002.webp",
-          "/images/product/thiepcuoic3003.webp"
-        ]
-      },
-      {
-          "icon": "Mail",
-          "name": "Fine Art Shimmer Cardstock",
-          "nameVi": "Giấy Mỹ Thuật Ánh Kim & Bao Thư Đỏ",
-          "tagline": "Fine-textured cardstock paired with custom ceremonial envelope",
-          "taglineVi": "Giấy mỹ thuật ánh kim lấp lánh đi kèm bao thư đỏ trang trọng",
-          "description": [
-              "Smooth heavy paper stock with radiant pearl or gold shimmer",
-              "Accompanied by matching custom envelope with gold foil sticker",
-              "Crisp interior text for handwritten or printed greetings"
-          ],
-          "descriptionVi": [
-              "Chất giấy dày dặn phủ ánh xà cừ hoặc nhũ vàng lấp lánh",
-              "Kèm theo bao thư đỏ nắp tam giác ép kim đồng bộ",
-              "Mặt trong giấy dễ viết bút mực không lem hoặc in sẵn lời chúc"
-          ],
-          "descriptionTraits": [
-              "textured-art",
-              "metallic-shine",
-              "foil-accent"
-          ],
-          "bestFor": [
-              "Corporate Lunar New Year greetings, Year End Party invitations"
-          ],
-          "bestForVi": [
-              "Thiệp chúc mừng năm mới doanh nghiệp, thiệp mời tiệc tất niên"
-          ],
-          "pureImage": "/images/product/vd-item-thieptet.jpg",
-          "pureImages": [
-              "/images/product/vd-item-thieptet.jpg",
-              "/images/product/vd-item-thieptet.jpg",
-              "/images/product/vd-item-thieptet.jpg"
-          ],
-          "nameZh": "星光珠光微闪艺术卡纸 & 典雅大红信封 (贺年卡套装)",
-          "nameJa": "パール煌めくファインアート紙＆祝祭レッド封筒（新春グリーティングセット）",
-          "nameKo": "은은한 펄감의 파인아트 카드지 & 프리미엄 레드 봉투 (신년 연하장 세트)",
-          "taglineZh": "卡纸覆有微光珍珠贝壳光泽，附带专属三角折边烫金红信封的高贵新春贺卡？",
-          "taglineJa": "真珠のような上品な光沢を放つ厚紙と、お揃いの赤封筒がセットになった格式高い年賀状ですか？",
-          "taglineKo": "고급스러운 진주빛 광택이 감도는 카드지와 품격 있는 삼각 플랩 레드 봉투가 함께 구성된 연하장 세트인가요?",
-          "descriptionZh": [
-              "纸张厚实挺括，表面流光溢彩散发云母珠光与碎金微芒，触感滑润高雅",
-              "配套定制三角形折盖喜庆大红信封，搭配烫金封口火漆贴纸，仪式感十足",
-              "内页涂层吸墨性能优异，钢笔亲笔手写签名干爽不洇墨，印刷新春贺词清晰锐利"
-          ],
-          "descriptionJa": [
-              "上品な真珠貝（パール）のようなきらめきを放つ高坪量アート紙で、手に取った瞬間伝わる上質感",
-              "金箔押しが施された三角フラップの祝儀用赤封筒が付属し、開ける瞬間から特別感を演出",
-              "万年筆や水性ペンでの手書きメッセージもにじまず滑らか。印刷された賀詞もシャープに定着"
-          ],
-          "descriptionKo": [
-              "은은한 진주 펄 코팅이 빛을 받을 때마다 우아하게 반사되는 탄탄한 고평량 수입 예술지",
-              "금박 후가공으로 포인트를 준 전용 삼각 플랩 레드 봉투가 한 세트로 품격 있는 증정",
-              "만년필이나 펜으로 직접 새해 덕담을 자필 작성해도 번짐 없이 즉시 마르는 최적의 필기감"
-          ],
-          "bestForZh": [
-              "企业致董事会与战略伙伴的新春贺卡、年终答谢晚宴邀请函、高净值客户问候信"
-          ],
-          "bestForJa": [
-              "企業の新年ご挨拶状・賀状、年越し感謝ディナーの招待状、重要顧客への親書"
-          ],
-          "bestForKo": [
-              "기업 임원진 및 주요 파트너사 신년 감사 연하장, 송년회 초대장, VIP 고객 감사 카드"
-          ]
-      }
+      // {
+      //   "icon": "Feather",
+      //   "name": "Natural Kraft 250 - 300gsm (Eco Greeting Card)",
+      //   "nameVi": "Giấy Kraft Nâu Mộc Mạc",
+      //   "tagline": "Want a sustainable, rustic Tet greeting card with traditional Vietnamese warmth?",
+      //   "taglineVi": "Bạn muốn thiệp chúc Tết mang phong cách mộc mạc, hoài niệm và thân thiện môi trường?",
+      //   "description": [
+      //     "100% recycled natural brown Kraft paper with authentic organic texture",
+      //     "Warm, vintage aesthetic that evokes feelings of nostalgia and heritage",
+      //     "Looks stunning with red calligraphy, black ink, or gold foil stamping"
+      //   ],
+      //   "descriptionVi": [
+      //     "Màu nâu tự nhiên tái chế 100% với vân xơ giấy mộc mạc, chân thực",
+      //     "Mang lại thiện cảm thẩm mỹ truyền thống ấm áp, hoài niệm ngày Tết",
+      //     "Hiệu ứng thị giác tuyệt đẹp khi kết hợp thư pháp đỏ, mực đen hoặc ép kim"
+      //   ],
+      //   "descriptionTraits": [
+      //     "natural-grain",
+      //     "soft-light",
+      //     "foil-accent"
+      //   ],
+      //   "bestFor": [
+      //     "Artisan agricultural cooperatives and eco-friendly brand greetings",
+      //     "F&B brands, coffee shops, and businesses promoting natural wellness",
+      //     "Rustic holiday correspondence celebrating heritage and sustainability"
+      //   ],
+      //   "bestForVi": [
+      //     "Thiệp chúc Tết từ các hợp tác xã nông sản sạch và thương hiệu hữu cơ",
+      //     "Thương hiệu F&B, quán cà phê và doanh nghiệp hướng tới lối sống xanh",
+      //     "Thiệp xuân mộc mạc tôn vinh văn hóa truyền thống và sự phát triển bền vững"
+      //   ],
+      //   "nameZh": "复古质朴牛皮纸新年明信片/贺卡",
+      //   "nameJa": "クラフト紙レトロ年賀カード（エコ調）",
+      //   "nameKo": "친환경 빈티지 크라프트 연하장",
+      //   "taglineZh": "以环保质朴的方式表达最纯粹的新年祝福？",
+      //   "taglineJa": "飾らない素朴な温もりを届ける、クラフト紙のエコ年賀状ですか？",
+      //   "taglineKo": "과장 없이 담백하고 진심 어린 새해 인사를 전할 크라프트 카드인가요?",
+      //   "descriptionZh": [
+      //     "250-300gsm加厚原生态天然牛皮纸，散发浓郁复古年味",
+      //     "红金色图腾与牛皮纸底色交织，质朴中流淌着真挚温情",
+      //     "完全不含塑料覆膜，践行绿色低碳环保新年生活方式"
+      //   ],
+      //   "descriptionJa": [
+      //     "250〜300gsmの厚口天然クラフト紙、レトロで温かみのある風合い",
+      //     "クラフトの素朴な茶色と金箔の対比がモダンなエコ年賀状",
+      //     "プラスチックフリーで環境に優しく、サステナブルな新年の誓い"
+      //   ],
+      //   "descriptionKo": [
+      //     "250-300gsm 도톰한 천연 크라프트지로 빈티지한 아날로그 명절 감성",
+      //     "따뜻한 브라운 컬러와 반짝이는 골드박이 조화를 이루는 감성 디자인",
+      //     "비닐 코팅을 배제한 친환경 종이 재질로 따뜻한 온기 전달"
+      //   ],
+      //   "bestForZh": [
+      //     "年轻人推崇的国潮文创、新潮独立工作室新年贺卡",
+      //     "主打生态有机、自然环保理念的可持续品牌客户贺信",
+      //     "充满乡村自然田园气息与文艺小资情怀的新年问候"
+      //   ],
+      //   "bestForJa": [
+      //     "若手クリエイター、デザインスタジオの個性的な年賀状",
+      //     "オーガニックブランド、エシカル企業のサステナブル賀状",
+      //     "気取らない自然体の温もりを伝えたい新年のご挨拶"
+      //   ],
+      //   "bestForKo": [
+      //     "MZ세대 인기 디자인 스튜디오, 감성 라이프스타일 브랜드 연하장",
+      //     "친환경 가치와 유기농을 지향하는 소셜 벤처 기업의 새해 편지",
+      //     "격식에 얽매이지 않고 따스한 마음을 전하고 싶은 감성 카드"
+      //   ],
+      //   "pureImage": "/images/product/kraft.webp",
+      //   "pureImages": [
+      //     "/images/product/kraft.webp",
+      //     "/images/product/thieptet-kraft2.webp",
+      //     "/images/product/thieptet-kraft3.webp"
+      //   ],
+      // },
     ]
   },
   {
@@ -9990,7 +7455,7 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
     "titleKo": "상품 행택 - Product Tags",
     "descriptionVi": "Thẻ treo quà Tết, tag cảm ơn đính kèm hộp quà, giỏ quà xuân sang trọng và khẳng định dấu ấn thương hiệu.",
     "descriptionEn": "Festive Tet product hangtags and thank-you cards for holiday gift hampers and luxury packaging.",
-    "coverImage": "/images/category/macsanpham.webp",
+    "coverImage": "/images/category/tagsanphamtet.webp",
     "shapes": [
       {
         "id": "tag-san-pham",
@@ -10001,7 +7466,7 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
         "nameKo": "설 선물 상품 태그",
         "descriptionVi": "Mác treo hộp quà Tết, đục lỗ xỏ dây dù hoặc nơ đỏ may mắn, cấn xé giá tiện lợi.",
         "descriptionEn": "Branded hangtags for New Year gift hampers with pre-punched string hole and festive accents.",
-        "image": "/images/product/vd-item-tag.jpeg"
+        "image": "/images/category/tagsanpham.webp"
       },
       {
         "id": "tag-cam-on",
@@ -10012,405 +7477,10 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
         "nameKo": "새해 감사 카드 택",
         "descriptionVi": "Thiết kế thiệp mini gửi lời tri ân ngọt ngào và lời chúc tân xuân an khang đến khách hàng.",
         "descriptionEn": "Charming mini thank-you cards conveying warm holiday wishes in every Tet parcel.",
-        "image": "/images/category/tagcamon.webp"
+        "image": "/images/category/tagcamontet.webp"
       }
     ],
     "materials": [
-      {
-        "icon": "Layers",
-        "name": "Type C Paper",
-        "nameVi": "Giấy loại C",
-        "tagline": "Need clean, rigid hang tags with drilled holes for your apparel collection?",
-        "taglineVi": "Bạn cần mác treo quần áo dày dặn, khoan lỗ chuẩn mực cho bộ sưu tập thời trang?",
-        "description": [
-          "Smooth C300 or C350 coated paper laminated matte or glossy for extra rigidity",
-          "Vibrant CMYK printing for brand logos, barcodes, sizes, and care instructions",
-          "Precision 3mm or 4mm drilled hole ready for stringing or tagging guns"
-        ],
-        "descriptionVi": [
-          "Láng mịn, cán màng mờ hoặc bóng cứng cáp",
-          "In màu CMYK sắc nét logo thương hiệu, mã vạch, kích cỡ và hướng dẫn giặt ủi",
-          "Khoan lỗ tròn 3mm hoặc 4mm chuẩn xác, sẵn sàng xỏ dây hoặc gắn súng bắn mác"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "glossy-coat",
-          "soft-light"
-        ],
-        "bestFor": [
-          "Fashion retail apparel, denim wear, and casual clothing collections",
-          "Luggage tags, handbag identification tags, and footwear labels",
-          "Retail price tags and barcode swing tags for department stores"
-        ],
-        "bestForVi": [
-          "Quần áo thời trang bán lẻ, trang phục denim và bộ sưu tập thường nhật",
-          "Mác treo túi xách, hành lý và mác giày dép thời trang",
-          "Mác giá bán lẻ và thẻ treo mã vạch tại các trung tâm thương mại"
-        ],
-        "nameZh": "铜版纸 300-350gsm 服装吊牌（标准款）",
-        "nameJa": "コート紙 300-350gsm アパレル下げ札",
-        "nameKo": "스노우지 300-350gsm 표준 의류 행택",
-        "taglineZh": "服装商场零售必备、厚实平整的标准品牌吊牌？",
-        "taglineJa": "アパレル製品に欠かせない、しっかりとした厚みの定番ブランドタグですか？",
-        "taglineKo": "의류 매장에서 널리 쓰이는 탄탄하고 깔끔한 표준 브랜드 행택인가요?",
-        "descriptionZh": [
-          "300-350gsm优质加厚铜版纸，双面覆哑光膜手感细腻",
-          "表面平整挺括不易起皱，全彩印刷色彩饱满锐利",
-          "预打标准圆孔，穿挂麻绳、丝带或吊粒极为顺畅"
-        ],
-        "descriptionJa": [
-          "300〜350gsmの厚手コート紙に両面マットPP加工で上品な仕上がり",
-          "しっかりとしたコシがあり、店頭で触れてもシワになりにくい",
-          "標準パンチ穴加工済みで、紐やタグピンの取り付けが簡単"
-        ],
-        "descriptionKo": [
-          "300-350gsm 도톰한 스노우지에 양면 무광 코팅으로 고급스러운 질감",
-          "구김 없이 반듯하고 탄탄하여 수많은 피팅에도 형태 유지",
-          "정밀 타공 가공으로 행택 끈이나 옷핀을 부드럽게 결합"
-        ],
-        "bestForZh": [
-          "快时尚男女服饰、童装、运动服饰标准品牌吊牌",
-          "箱包手袋、鞋靴专柜日常价格与条形码信息牌",
-          "大批量采购、兼顾品牌形象与成本效益的理想选择"
-        ],
-        "bestForJa": [
-          "メンズ・レディース・キッズのアパレル定番ブランドタグ",
-          "バッグ・シューズ・ファッション小物のプライスタグ",
-          "コストとクオリティを両立したいアパレルブランド"
-        ],
-        "bestForKo": [
-          "남녀 캐주얼 의류, 아동복, 스포츠웨어 표준 브랜드 행택",
-          "가방, 신발, 패션 잡화 매장 가격표 및 바코드 태그",
-          "합리적인 제작비로 높은 브랜드 이미지를 전달하는 대중적 행택"
-        ],
-        "pureImage": "/images/product/maccouche.webp",
-        "pureImages": [
-          "/images/product/maccouche.webp",
-          "/images/product/tag-couche2.webp",
-          "/images/product/tag-couche3.webp"
-        ],
-        "image": "/images/product/foil.webp",
-        "images": [
-          "/images/product/foil.webp",
-          "/images/product/tag-couche-foil2.webp",
-          "/images/product/tag-couche-foil3.webp"
-        ]
-      },
-      {
-        "icon": "Feather",
-        "name": "Type F Paper",
-        "nameVi": "Giấy loại F",
-        "tagline": "Want an uncoated natural tag where sales staff can write prices or batch codes?",
-        "taglineVi": "Bạn muốn mác treo giấy mộc tự nhiên để nhân viên ghi tay giá tiền hay mã lô?",
-        "description": [
-          "Natural matte uncoated Ford 300gsm paper with soft light diffusion",
-          "Zero glare under boutique spotlights, making typography clean and readable",
-          "Absorbs pens and stamps easily for handwritten price tags or SKU markers"
-        ],
-        "descriptionVi": [
-          "Nhám mịn tự nhiên, không tráng phủ hay cán màng trơn",
-          "Hoàn toàn không chói sáng dưới đèn showroom, giúp đọc thông tin rõ ràng",
-          "Dễ dàng viết tay giá bán, mã lô hoặc đóng dấu mộc bảo hành lên mác"
-        ],
-        "descriptionTraits": [
-          "natural-grain",
-          "soft-light",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Boutique apparel brands, vintage thrift stores, and handmade crafts",
-          "Artisan ceramic, homeware, and organic textile hang tags",
-          "Minimalist fashion brands favoring an organic, uncoated aesthetic"
-        ],
-        "bestForVi": [
-          "Thương hiệu thời trang boutique, cửa hàng đồ vintage và thủ công",
-          "Mác treo đồ gốm sứ thủ công, đồ trang trí nhà cửa và vải vóc hữu cơ",
-          "Thương hiệu thời trang tối giản ưu tiên phong cách mộc mạc, tự nhiên"
-        ],
-        "nameZh": "道林纸 300gsm 素雅吊牌（便于书写价格）",
-        "nameJa": "上質紙 300gsm 手書き用ナチュラル下げ札",
-        "nameKo": "모조지 300gsm 수기용 내추럴 가격택",
-        "taglineZh": "棉麻服饰、复古手作店需要手写价格和尺码的吊牌？",
-        "taglineJa": "リネンやナチュラル服に似合う、手書きで価格を記入できるタグですか？",
-        "taglineKo": "린넨 의류나 핸드메이드 제품에 손글씨로 가격을 적을 수 있는 내추럴 택인가요?",
-        "descriptionZh": [
-          "300gsm无涂层道林厚卡纸，保留自然细腻纸张纤维",
-          "吸墨渗透好，便于圆珠笔、打码机现场填写价格与尺码",
-          "手感纯朴温润，展现回归自然的品牌设计初心"
-        ],
-        "descriptionJa": [
-          "300gsmの未塗工上質紙、さらりとした手触りで自然な風合い",
-          "インクが素早く馴染み、手書きでの価格・サイズ記入に最適",
-          "オーガニックで素朴な世界観を表現するナチュラルタグ"
-        ],
-        "descriptionKo": [
-          "300gsm 두꺼운 모조지로 눈부심 없는 내추럴한 천연 질감",
-          "볼펜이나 스탬프로 가격, 사이즈를 현장에서 직접 적기에 최적",
-          "자연 친화적이고 아날로그한 감성을 중시하는 브랜드에 적합"
-        ],
-        "bestForZh": [
-          "棉麻天然材质服饰、手工针织毛衣及手作布艺包",
-          "文创小店手工饰品、陶艺工艺品与古着复古服饰",
-          "倡导可持续慢时尚、注重手写温度的独立设计师品牌"
-        ],
-        "bestForJa": [
-          "リネン・コットンウェア、ハンドメイドニット、布小物",
-          "ヴィンテージ古着、クラフト雑貨、陶器・アクセサリー",
-          "スローファッションや手作りの温もりを大切にするブランド"
-        ],
-        "bestForKo": [
-          "린넨 의류, 친환경 오가닉 코튼, 핸드메이드 니트웨어",
-          "빈티지 구제 샵, 수제 가죽 공예품, 핸드메이드 주얼리",
-          "슬로우 패션과 손글씨의 정성을 전하고자 하는 독립 디자이너 브랜드"
-        ],
-        "pureImage": "/images/product/macford.webp",
-        "pureImages": [
-          "/images/product/macford.webp",
-          "/images/product/tag-ford1.webp",
-          "/images/product/tag-ford3.webp"
-        ],
-        "image": "/images/product/ford-foil.webp",
-        "images": [
-          "/images/product/ford-foil.webp",
-          "/images/product/tag-ford-foil1.webp",
-          "/images/product/tag-ford-foil3.webp"
-        ]
-      },
-      {
-        "icon": "ShieldCheck",
-        "name": "Type I Paper",
-        "nameVi": "Giấy loại I",
-        "tagline": "Need maximum tag stiffness and a crisp high-white executive appearance?",
-        "taglineVi": "Bạn cần mác treo siêu cứng, độ trắng mịn chuẩn mực cho thời trang hàng hiệu?",
-        "description": [
-          "Bright-white coated front side with exceptional structural stiffness",
-          "Prevents bending or curling when garments are handled on store racks",
-          "Holds sharp metallic foil stamping and embossed crests beautifully"
-        ],
-        "descriptionVi": [
-          "Mặt ngoài trắng mịn tráng phủ cao cấp, độ cứng và chịu lực vượt trội",
-          "Không bị quăn mép hay cong vênh khi khách hàng xem quần áo trên giá treo",
-          "Khả năng bắt nhũ ép kim và dập nổi biểu tượng thương hiệu cực kỳ sắc nét"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "natural-grain",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Designer fashion collections, tailoring houses, and luxury coats",
-          "High-end leather goods, luxury handbags, and leather footwear",
-          "VIP corporate gift swing tags and warranty cards"
-        ],
-        "bestForVi": [
-          "Bộ sưu tập thời trang thiết kế, tiệm may đo cao cấp và áo khoác xa xỉ",
-          "Đồ da hàng hiệu, túi xách cao cấp và giày da sang trọng",
-          "Mác treo quà tặng doanh nghiệp VIP và thẻ bảo hành sản phẩm"
-        ],
-        "nameZh": "超厚白卡 Ivory 300-350gsm（挺括硬挺）",
-        "nameJa": "厚紙アイボリー 300-350gsm 高品位タグ",
-        "nameKo": "아이보리지 300-350gsm 고강도 럭셔리 행택",
-        "taglineZh": "吊牌需要足够硬朗挺直，绝不轻易卷曲或折断？",
-        "taglineJa": "曲がりにくくピンと張った、高級感を演出する厚手下げ札ですか？",
-        "taglineKo": "쉽게 구부러지지 않고 빳빳함을 유지하는 프리미엄 브랜드 태그인가요?",
-        "descriptionZh": [
-          "300-350gsm进口单铜超白白卡纸，纸质紧实超高挺度",
-          "正反面皆雪白无瑕，边缘裁切平直光滑不掉屑",
-          "抗折弯抗变形性能出众，挂在厚重外套上依然笔挺"
-        ],
-        "descriptionJa": [
-          "300〜350gsmの高密度アイボリー紙、抜群の剛性と白色度",
-          "両面とも清潔感のある白さで、エッジの裁断面も滑らか",
-          "厚手のコートに吊るしてもへたらない、高級感あふれるタフさ"
-        ],
-        "descriptionKo": [
-          "300-350gsm 고밀도 아이보리지로 제작되어 압도적인 탄성과 강도",
-          "양면 모두 티끌 없이 새하얗고 매끄러우며 절단면이 깔끔함",
-          "두꺼운 겨울 코트나 패딩에 걸어두어도 빳빳함을 잃지 않는 단단함"
-        ],
-        "bestForZh": [
-          "高端商务西装、羊绒大衣、羽绒服及设计师时装",
-          "高端皮具真皮手袋、真皮皮鞋专柜专属吊牌",
-          "注重包装挺拔硬朗与国际大牌质感的中高端品牌"
-        ],
-        "bestForJa": [
-          "テーラードスーツ、カシミヤコート、ダウンジャケット",
-          "高級レザートート、本革シューズ、フォーマルウェア",
-          "一流ブランドの風格と耐久性を求めるアパレルメーカー"
-        ],
-        "bestForKo": [
-          "맞춤 정장, 캐시미어 코트, 프리미엄 다운 점퍼 브랜드 행택",
-          "명품 수제 가죽 가방, 천연 가죽 구두 전용 라벨",
-          "국제적인 명품 수준의 빳빳한 하드 핏을 추구하는 패션 브랜드"
-        ],
-        "pureImage": "/images/product/macivory.webp",
-        "pureImages": [
-          "/images/product/macivory.webp",
-          "/images/product/tag-ivory1.webp",
-          "/images/product/tag-ivory3.webp"
-        ],
-        "image": "/images/product/foil.webp",
-        "images": [
-          "/images/product/foil.webp",
-          "/images/product/tag-ivory-foil2.webp",
-          "/images/product/tag-ivory-foil3.webp"
-        ]
-      },
-      {
-        "icon": "Palette",
-        "name": "Luxury Art Paper Hang Tag",
-        "nameVi": "Mác Giấy Mỹ Thuật Nhám Cao Cấp",
-        "tagline": "Want a bespoke European textured art tag that feels like an artisan label?",
-        "taglineVi": "Bạn muốn mác treo mang vân giấy mỹ thuật châu Âu khác biệt khi chạm tay?",
-        "description": [
-          "Printed on European textured art paper with subtle tactile grain",
-          "Muted, warm color absorption conveying couture craftsmanship",
-          "Pairs beautifully with cotton string, eyelet grommets, and foil stamping"
-        ],
-        "descriptionVi": [
-          "In trên giấy mỹ thuật châu Âu có vân nhám đặc trưng, sang trọng khi chạm",
-          "Màu mực thấm tự nhiên tạo sắc thái trầm tĩnh, tôn vinh kỹ thuật may đo",
-          "Kết hợp hoàn hảo với dây cotton, khoen kim loại và chi tiết ép kim logo"
-        ],
-        "descriptionTraits": [
-          "textured-art",
-          "natural-grain",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Haute couture apparel, wedding dresses, and evening gowns",
-          "Artisan jewelry collections and luxury cashmere/silk garments",
-          "Exclusive designer collaborations and limited-edition releases"
-        ],
-        "bestForVi": [
-          "Thời trang thiết kế cao cấp, váy cưới và dạ hội hạng sang",
-          "Bộ sưu tập trang sức thủ công và trang phục cashmere/lụa xa xỉ",
-          "Các phiên bản hợp tác đặc biệt của nhà thiết kế và hàng giới hạn"
-        ],
-        "nameZh": "高端进口粗纹特种纸吊牌",
-        "nameJa": "特殊テクスチャ紙 高級ファッションタグ",
-        "nameKo": "수입 예술 질감지 프리미엄 패션 행택",
-        "taglineZh": "高端独立设计师品牌，需要浓郁纸张触感传达品味？",
-        "taglineJa": "デザイナーズブランドにふさわしい、個性的な紙肌を持つタグですか？",
-        "taglineKo": "디자이너 브랜드의 철학과 감성을 전해줄 독특한 결이 있는 행택인가요?",
-        "descriptionZh": [
-          "欧洲进口高端特种棉纹艺术纸，独特触感纸纹极富艺术张力",
-          "无过多涂层，纸质天然厚重，沉稳深邃的大牌气质",
-          "与素雅凹凸压印或单色典雅印刷完美契合"
-        ],
-        "descriptionJa": [
-          "ヨーロッパ直輸入の特殊テクスチャ紙、指先で違いがわかる質感",
-          "紙本来の温かみと高級感を活かし、ブランドの哲学を表現",
-          "シンプルな空押しや単色プリントが美しく映える設計"
-        ],
-        "descriptionKo": [
-          "유럽 직수입 최고급 질감지로 손끝에서 느껴지는 차별화된 아우라",
-          "과도한 광택을 배제한 자연스럽고 묵직한 오트쿠튀르 감성",
-          "은은한 형압과 절제된 미니멀 타이포그래피의 완벽한 조화"
-        ],
-        "bestForZh": [
-          "高级时装周秀款、小众设计师独立品牌吊牌",
-          "天然真丝服饰、贵重羊绒制品及高端配饰标签",
-          "追求极致艺术美学与低调奢华格调的先锋品牌"
-        ],
-        "bestForJa": [
-          "コレクション出展ブランド、オートクチュール、限定品",
-          "シルク製品、高級ニット、こだわり派セレクトショップ",
-          "アート性の高いデザインと圧倒的な差別化を図りたいブランド"
-        ],
-        "bestForKo": [
-          "서울패션위크 런웨이 컬렉션, 독립 하이엔드 디자이너 의류",
-          "실크 원피스, 최고급 캐시미어 머플러, 파인 액세서리 행택",
-          "타협 없는 미학과 절제된 럭셔리를 지향하는 프리미엄 브랜드"
-        ],
-        "pureImage": "/images/product/macart.webp",
-        "pureImages": [
-          "/images/product/macart.webp",
-          "/images/product/tag-art1.webp",
-          "/images/product/tag-art3.webp"
-        ],
-        "image": "/images/product/paperart-foil.webp",
-        "images": [
-          "/images/product/paperart-foil.webp",
-          "/images/product/tag-art-foil2.webp",
-          "/images/product/tag-art-foil3.webp"
-        ]
-      },
-      {
-        "icon": "Sparkles",
-        "name": "Custom Die-Cut & Foil Stamped Tag",
-        "nameVi": "Mác Bế Hình Đặc Biệt + Ép Kim Logo",
-        "tagline": "Want a custom silhouette and shimmering metallic logo to distinguish your brand?",
-        "taglineVi": "Bạn muốn mác treo bế theo hình dáng độc quyền kèm ép kim logo lấp lánh?",
-        "description": [
-          "Custom die-cutting for round, arched, folded, or sculptural tag silhouettes",
-          "Metallic hot foil stamping (gold/silver/bronze) highlighting the brand crest",
-          "Optional metal eyelet grommet reinforcement around the drill hole"
-        ],
-        "descriptionVi": [
-          "Bế khuôn tạo hình dáng độc đáo (tròn, vòm, gập đôi hoặc hình tượng đặc thù)",
-          "Ép kim logo nhũ vàng, nhũ bạc hoặc nhũ đồng nổi bật trên mặt chính",
-          "Có thể đóng thêm khoen kim loại bảo vệ lỗ xỏ dây thêm phần chắc chắn"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Premium denim brands, streetwear capsules, and luxury menswear",
-          "High-fashion lingerie, swimwear, and bespoke accessory brands",
-          "Brands seeking an unforgettable, sculptural swing tag presentation"
-        ],
-        "bestForVi": [
-          "Thương hiệu denim cao cấp, streetwear bộ sưu tập và thời trang nam xa xỉ",
-          "Nội y cao cấp, trang phục bãi biển và phụ kiện thiết kế độc quyền",
-          "Các thương hiệu muốn tạo dấu ấn hình ảnh khác biệt qua chiếc mác treo"
-        ],
-        "nameZh": "异形圆角模切 + 烫金品牌LOGO",
-        "nameJa": "変形ダイカット + 箔押しブランドタグ",
-        "nameKo": "도무송 맞춤형 가공 + 로고 금박 행택",
-        "taglineZh": "突破方正外形，以特殊造型与金属闪耀征服消费者？",
-        "taglineJa": "オリジナルの形状と箔押しの煌めきで、ブランドの個性をアピールしますか？",
-        "taglineKo": "독특한 실루엣 커팅과 눈부신 금박 로고로 브랜드 이미지를 각인시킬 행택인가요?",
-        "descriptionZh": [
-          "支持任意异形模切（圆形、盾形、几何多边形或定制轮廓）",
-          "标志与品牌字母采用电化铝烫红金、亮金或哑光黑金",
-          "极富视觉张力与辨识度，大幅提升服饰附加值"
-        ],
-        "descriptionJa": [
-          "丸型・楕円・ブランドロゴのアウトラインなど自由な形状にカット",
-          "ロゴ部分にゴールド・シルバーの美しい箔押し加工を適用",
-          "店頭で圧倒的な存在感を放ち、商品の付加価値を最大化"
-        ],
-        "descriptionKo": [
-          "원형, 타원형, 육각형, 브랜드 심볼 윤곽 그대로 자유형 도무송 커팅",
-          "로고와 슬로건에 정밀 골드박, 실버박, 매트블랙박 포인트 각인",
-          "매장에서 단연 돋보이는 비주얼로 의류의 프리미엄 가치 배가"
-        ],
-        "bestForZh": [
-          "潮流街头服饰、潮牌卫衣T恤、先锋运动品牌",
-          "高端礼品包装配签、轻奢首饰配件专属身份标牌",
-          "致力于打破常规、给消费者留下强烈第一印象的品牌"
-        ],
-        "bestForJa": [
-          "ストリート系ファッション、スニーカー、スポーツブランド",
-          "ギフトパッケージのタグ、ジュエリー、デザイナーズ雑貨",
-          "若年層向けに強いインパクトと洗練さをアピールしたいブランド"
-        ],
-        "bestForKo": [
-          "스트리트 캐주얼, 디자이너 후드티, 트렌디 애슬레저 브랜드",
-          "선물 세트 포인트 태그, 커스텀 주얼리 시그니처 네임택",
-          "독창적인 디자인으로 MZ세대 고객의 시선을 사로잡는 브랜드"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/tag-foil3.webp",
-        "pureImages": [
-          "/images/product/tag-foil1.webp",
-          "/images/product/tag-foil3.webp",
-          "/images/product/tag-foil2.webp"
-        ]
-      },
       {
           "icon": "Tag",
           "name": "Couche 300gsm Matte Laminated",
@@ -10437,11 +7507,11 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "bestForVi": [
               "Hộp quà Tết, giỏ quà bánh mứt doanh nghiệp, phụ kiện thời trang xuân"
           ],
-          "pureImage": "/images/product/vd-item-tag.jpeg",
+          "pureImage": "/images/product/mactet-giayloaic.webp",
           "pureImages": [
-              "/images/product/vd-item-tag.jpeg",
-              "/images/category/macsanphamphothong.webp",
-              "/images/category/tagcamon.webp"
+              "/images/product/mactet-giayloaic.webp",
+              "/images/product/mactet-giayloaic2.webp",
+              "/images/product/mactet-giayloaic3.webp"
           ],
           "nameZh": "铜版纸300g双面覆哑膜 (高质感服饰标/宣传卡)",
           "nameJa": "コート紙300g 両面マットラミネート加工（高級下げ札・カード）",
@@ -10501,11 +7571,11 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "bestForVi": [
               "Giỏ quà đặc sản quê, hộp trà hạt mộc, quà tặng Tết handmade organic"
           ],
-          "pureImage": "/images/product/bag-kraft1.webp",
+          "pureImage": "/images/product/mactet-giaykraft.webp",
           "pureImages": [
-              "/images/product/bag-kraft1.webp",
-              "/images/product/bag-kraft3.webp",
-              "/images/category/tagcamon.webp"
+              "/images/product/mactet-giaykraft.webp",
+              "/images/product/mactet-giaykraft2.webp",
+              "/images/product/mactet-giaykraft3.webp"
           ],
           "nameZh": "加厚复古牛皮纸300g (天然棕色未漂白)",
           "nameJa": "特厚クラフト紙300g（無漂白・ヴィンテージブラウン）",
@@ -10565,11 +7635,11 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "bestForVi": [
               "Hộp quà Tết VIP, chai rượu vang nhập khẩu, yến sào đông trùng hạ thảo"
           ],
-          "pureImage": "/images/category/macsanphamcaocap.webp",
+          "pureImage": "/images/product/mactet-giaymythuat.webp",
           "pureImages": [
-              "/images/category/macsanphamcaocap.webp",
-              "/images/product/vd-item-tag.jpeg",
-              "/images/product/art-foil.webp"
+              "/images/product/mactet-giaymythuat.webp",
+              "/images/product/mactet-giaymythuat2.webp",
+              "/images/product/mactet-giaymythuat3.webp",
           ],
           "nameZh": "奢华金闪红艺术纸 + 烫金工艺 (年节尊享版)",
           "nameJa": "金ラメ真紅アート紙 + 箔押し加工（新春プレミアム仕様）",
@@ -10642,1378 +7712,7 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
     "descriptionEn": "Custom product packaging labels and decorative stickers for Tet gift baskets, wine bottles, and confectionery.",
     "coverImage": "/images/category/nhandan.webp",
     "shapes": [],
-    "materials": [
-      {
-        "icon": "Layers",
-        "name": "Paper Decal Laminated (Couche Sticker)",
-        "nameVi": "Decal Giấy Cán Màng (Chuẩn Nhãn Hàng)",
-        "tagline": "Need the most cost-effective, vibrant sticker decal for dry indoor products?",
-        "taglineVi": "Bạn cần tem decal giấy sắc nét, kinh tế nhất cho sản phẩm khô và bao bì?",
-        "description": [
-          "Smooth coated paper adhesive decal with protective matte or glossy lamination",
-          "Vibrant CMYK printing that adheres firmly to paper boxes, jars, and bags",
-          "Optimal choice for products stored in normal indoor temperature and humidity"
-        ],
-        "descriptionVi": [
-          "Bề mặt láng mịn được cán màng mờ hoặc bóng bảo vệ chống trầy",
-          "In màu CMYK sắc nét, bám dính chắc chắn lên hộp giấy, chai lọ và túi bao bì",
-          "Lựa chọn tối ưu chi phí cho sản phẩm lưu trữ trong điều kiện nhiệt độ phòng"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "glossy-coat",
-          "soft-light"
-        ],
-        "bestFor": [
-          "Food packaging boxes, confectionery jars, and bakery containers",
-          "Dry cosmetic jars, perfume cartons, and candle vessels",
-          "Shipping parcel address labels and promotional giveaway stickers"
-        ],
-        "bestForVi": [
-          "Hộp bao bì thực phẩm, hũ bánh kẹo và hộp đồ ăn khô",
-          "Hũ mỹ phẩm khô, vỏ hộp nước hoa và cốc nến thơm tinh dầu",
-          "Nhãn dán địa chỉ gói hàng bưu phẩm và sticker khuyến mãi tặng kèm"
-        ],
-        "nameZh": "铜版纸不干胶覆膜（标准商品贴纸）",
-        "nameJa": "アート紙シール PPラミネート加工（定番ラベル）",
-        "nameKo": "코팅 코팅지 유포지 라벨 스티커",
-        "taglineZh": "大批量张贴于纸箱、干燥包装袋的经济型全彩贴纸？",
-        "taglineJa": "段ボールや乾いたパッケージに貼る、高コスパなカラーシールですか？",
-        "taglineKo": "박스나 건조 포장재에 부착하는 대량 가성비 컬러 스티커인가요?",
-        "descriptionZh": [
-          "高白度不干胶面纸，全彩印刷后表面覆盖哑膜或光膜",
-          "背胶初粘力强，贴合平整牢固，不易翘边起角",
-          "支持任意尺寸切平张或成卷，适配手工贴标或半自动贴标"
-        ],
-        "descriptionJa": [
-          "白色度の高いシール紙に高精細カラー印刷、表面にラミネート加工",
-          "初期粘着力が高く、一度貼れば角浮きせずしっかり密着",
-          "シート仕上げまたはロール仕上げに対応、手作業・機械貼付の両方に適合"
-        ],
-        "descriptionKo": [
-          "백색도가 뛰어난 스티커 전용지에 인쇄 후 무광/유광 코팅 마감",
-          "초기 접착력이 우수하여 들뜸이나 떨어짐 없이 탄탄하게 부착",
-          "재단 낱장형 또는 롤형 공급 가능하여 수작업 및 기계 라벨링 완벽 지원"
-        ],
-        "bestForZh": [
-          "纸箱外箱标志、产品外包装封口及快递发货贴纸",
-          "商场超市商品全彩宣传贴纸及折扣促销标签",
-          "大批量使用、讲求性价比的干燥环境通用贴纸"
-        ],
-        "bestForJa": [
-          "段ボールの表示ラベル、製品パッケージの封印シール",
-          "店頭商品のプロモーションシール、セールス告知ステッカー",
-          "乾燥した屋内で大量に使用する高コスパシール"
-        ],
-        "bestForKo": [
-          "박스 외관 표기, 제품 상자 봉인용 라벨, 배송 스티커",
-          "매장 상품 포인트 스티커, 할인 프로모션 홍보 라벨",
-          "건조한 환경에서 대량으로 사용하는 다목적 가성비 스티커"
-        ],
-        "pureImage": "/images/product/couche.webp",
-        "pureImages": [
-          "/images/product/couche.webp",
-          "/images/product/decal-laminate2.webp",
-          "/images/product/decal-laminate1.webp"
-        ]
-      },
-      {
-        "icon": "Feather",
-        "name": "Uncoated Writable Paper Decal (Ford)",
-        "nameVi": "Decal Giấy Ford (Dễ Viết Tay & Đóng Dấu)",
-        "tagline": "Want a writable sticker decal where you can fill in expiry dates or batch numbers?",
-        "taglineVi": "Bạn muốn tem decal giấy mộc tự nhiên có thể viết tay ngày sản xuất hay hạn dùng?",
-        "description": [
-          "Natural uncoated Ford paper adhesive surface without lamination glare",
-          "Absorbs ballpoint ink, markers, and date stamps immediately without smearing",
-          "Authentic, artisanal aesthetic for handmade goods and organic products"
-        ],
-        "descriptionVi": [
-          "Bề mặt mộc nhám tự nhiên, không tráng phủ hay cán màng",
-          "Bám mực viết tay, bút bi, bút lông và dấu mộc ngày tháng không bị nhòe",
-          "Thẩm mỹ thủ công chân thực cho sản phẩm handmade và đồ hữu cơ"
-        ],
-        "descriptionTraits": [
-          "natural-grain",
-          "soft-light",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Handmade bakery expiration stickers and harvest date labels",
-          "Medical laboratory test tube labels and pharmacy prescriptions",
-          "Artisan craft workshops and organic farmers' market packaging"
-        ],
-        "bestForVi": [
-          "Sticker ghi ngày sản xuất, hạn sử dụng cho bánh ngọt thủ công",
-          "Nhãn dán ống nghiệm phòng xét nghiệm và nhãn toa thuốc nhà thuốc",
-          "Sản phẩm thủ công truyền thống và nông sản sạch tự nhiên"
-        ],
-        "nameZh": "书写纸不干胶（易于盖章与圆珠笔书写）",
-        "nameJa": "上質紙シール（スタンプ・筆記適性抜群）",
-        "nameKo": "모조지 스티커 (스탬프 날인 및 필기용)",
-        "taglineZh": "需要现场盖印检验章、手写有效期或装箱数量的标签？",
-        "taglineJa": "検印スタンプや手書きでメモを書き加えたい管理用シールですか？",
-        "taglineKo": "검사 도장을 찍거나 유통기한을 펜으로 직접 적을 스티커인가요?",
-        "descriptionZh": [
-          "无涂层书写纸面层，墨水渗透吸收快，干燥迅速不蹭脏",
-          "铅笔、圆珠笔、签字笔均可顺畅书写，盖印章印迹清晰",
-          "背胶牢固耐温，适用于各类办公档案及仓储管理"
-        ],
-        "descriptionJa": [
-          "表面が無塗工の上質紙で、インクの吸収が早く乾きやすい仕様",
-          "鉛筆やボールペンでの書き込み、各種スタンプの押印に最適",
-          "一度貼ればしっかり固定され、書類管理や在庫識別に便利"
-        ],
-        "descriptionKo": [
-          "무광 비코팅 모조지 표면으로 잉크 흡수가 빠르고 번짐이 전혀 없음",
-          "연필, 볼펜, 만년필 필기는 물론 스탬프 도장 날인에 최적화",
-          "접착력이 강해 서류철, 보관 박스, 자산 관리 표기 시 영구 부착"
-        ],
-        "bestForZh": [
-          "需要现场手写生产日期、保质期、批次号的货品标签",
-          "企业文件档案分类标签、库房货架位置标识条",
-          "检验员质检签名章、出厂合格证及设备保养贴"
-        ],
-        "bestForJa": [
-          "製造年月日、賞味期限、ロット番号を手書きする商品ラベル",
-          "オフィス書類のインデックス、倉庫ラックの棚番表示",
-          "検品合格証、検査スタンプ用ラベル、保守点検ステッカー"
-        ],
-        "bestForKo": [
-          "제조일자, 유통기한, 담당자 이름을 펜으로 직접 수기하는 라벨",
-          "사무용 바인더 라벨, 창고 랙 번호 및 물품 분류 스티커",
-          "품질 검사원 합격 도장 날인용 씰 및 설비 정기 점검표"
-        ],
-        "pureImage": "/images/product/ford.webp",
-        "pureImages": [
-          "/images/product/ford.webp",
-          "/images/product/decal-ford2.webp",
-          "/images/product/decal-ford3.webp"
-        ]
-      },
-      {
-        "icon": "ShieldCheck",
-        "name": "100% Waterproof Transparent PVC Decal",
-        "nameVi": "Decal Nhựa Trong Suốt (Chống Nước 100%)",
-        "tagline": "Need a clear, invisible waterproof decal that lets your product show through?",
-        "taglineVi": "Bạn cần tem decal trong suốt chống nước 100%, nhìn thấu màu sản phẩm bên trong?",
-        "description": [
-          "Transparent synthetic PVC/PET film with strong water-resistant adhesive",
-          "Creates a seamless 'no-label' printed directly on bottle look",
-          "100% waterproof and tear-resistant, ideal for wet bathroom or chilled use"
-        ],
-        "descriptionVi": [
-          "Trong suốt với lớp keo chống thấm nước vượt trội",
-          "Tạo hiệu ứng 'nhãn tàng hình' như được in trực tiếp lên bề mặt chai lọ",
-          "Chống nước 100% và không rách, hoàn hảo cho môi trường phòng tắm hoặc ướp lạnh"
-        ],
-        "descriptionTraits": [
-          "waterproof-durability",
-          "smooth-base",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Clear glass beverage bottles, cold-pressed juice jars, and milk tea cups",
-          "Shampoo, shower gel, and skincare cosmetics used in bathrooms",
-          "Window decal branding and transparent gift box seals"
-        ],
-        "bestForVi": [
-          "Chai thủy tinh nước giải khát, chai nước ép lạnh và ly trà sữa",
-          "Chai dầu gội, sữa tắm và mỹ phẩm sử dụng trong môi trường ẩm ướt",
-          "Sticker dán kính cửa hàng và tem niêm phong hộp quà trong suốt"
-        ],
-        "nameZh": "超透PVC透明不干胶（防水耐撕）",
-        "nameJa": "高透明PVC耐水ステッカー（完全防水仕様）",
-        "nameKo": "100% 완전 방수 투명 PVC 데칼 스티커",
-        "taglineZh": "想要若隐若现如同直接印刷在瓶身玻璃上的透明无边感？",
-        "taglineJa": "ボトルの下地が透けて見え、直接印刷したような透明シールですか？",
-        "taglineKo": "유리병이나 용기 표면에 직접 인쇄한 듯 투명하고 깔끔한 라벨인가요?",
-        "descriptionZh": [
-          "采用高透明光学级PVC塑料基材，透光率极佳",
-          "贴在玻璃或透明瓶身时如同无缝直接丝网印刷",
-          "100%防水防潮防油，撕扯不破，耐脏污耐擦洗"
-        ],
-        "descriptionJa": [
-          "高い透明度を誇るクリアPVCフィルムを使用し、下地がそのまま透ける",
-          "ガラス瓶やクリアボトルに貼ると、まるで直接印刷したような一体感",
-          "100%完全耐水・耐油性で、破れにくく水拭き清掃も安心"
-        ],
-        "descriptionKo": [
-          "투명도가 뛰어난 광학급 투명 PVC 재질로 배경이 그대로 투과",
-          "유리병이나 투명 용기에 부착 시 용기에 직접 인쇄한 듯 일체감 선사",
-          "100% 완전 방수, 방유, 찢김 방지 재질로 오염 시 물세척 가능"
-        ],
-        "bestForZh": [
-          "玻璃门窗展示贴、透明饮料瓶、冷萃咖啡瓶标签",
-          "护肤品透明乳液瓶、香薰精油瓶及手工香水瓶贴",
-          "追求轻盈、前卫、现代极简裸妆视觉的产品包装"
-        ],
-        "bestForJa": [
-          "ガラス窓の店舗サイン、透明ボトル、コールドブリューコーヒー",
-          "コスメボトル、アロマオイル瓶、ハンドメイド香水ラベル",
-          "透明感を活かしたミニマルで洗練された商品パッケージ"
-        ],
-        "bestForKo": [
-          "유리창 쇼윈도 매장 데칼, 투명 페트병, 콜드브루 커피 라벨",
-          "화장품 에센스 보틀, 디퓨저 유리병, 수제 향수 라벨",
-          "투명한 용기의 내용물 색상을 그대로 살리는 감각적인 디자인"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/decaltrongsuot.webp",
-        "pureImages": [
-          "/images/product/decaltrongsuot.webp",
-          "/images/product/decal-pvc2.webp",
-          "/images/product/decal-pvc3.webp"
-        ]
-      },
-      {
-        "icon": "Award",
-        "name": "White Synthetic PVC Plastic Decal",
-        "nameVi": "Decal Nhựa Trắng Sữa (Siêu Bền Chống Nước)",
-        "tagline": "Need an indestructible white plastic sticker for refrigerated or chemical products?",
-        "taglineVi": "Bạn cần tem nhựa trắng sữa chống rách, chịu lạnh và nước cho chai lọ thủy hải sản?",
-        "description": [
-          "Opaque white synthetic plastic film with exceptional durability and opacity",
-          "Resists ice, freezing temperatures, condensation, and chemical oils",
-          "Vibrant CMYK colors stay sharp even after months in cold storage"
-        ],
-        "descriptionVi": [
-          "Màng nhựa tổng hợp màu trắng sữa đục, độ bền kéo và độ che phủ tuyệt đối",
-          "Chịu nước đá, nhiệt độ cấp đông, nước đọng và hóa chất dầu mỡ cực tốt",
-          "Màu in CMYK sắc nét, không phai kể cả sau nhiều tháng bảo quản lạnh"
-        ],
-        "descriptionTraits": [
-          "waterproof-durability",
-          "smooth-base",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Frozen seafood packaging, ice cream containers, and chilled dairy goods",
-          "Automotive chemical lubricants, industrial oils, and cleaning spray bottles",
-          "Outdoor machinery warning labels and weatherproof equipment stickers"
-        ],
-        "bestForVi": [
-          "Bao bì hải sản đông lạnh, hộp kem và các sản phẩm sữa ướp lạnh",
-          "Chai nhớt xe cộ, hóa chất công nghiệp và chai xịt tẩy rửa gia dụng",
-          "Nhãn cảnh báo trên máy móc ngoài trời và tem thiết bị chịu thời tiết"
-        ],
-        "nameZh": "哑白/亮白合成纸PP塑料不干胶",
-        "nameJa": "白塩ビ合成紙ステッカー（耐候性・耐水性抜群）",
-        "nameKo": "유백색 방수 합성 유포지 스티커",
-        "taglineZh": "常年经受冷水浸泡、冷藏冷冻依然牢固不脱胶不掉色？",
-        "taglineJa": "水濡れや冷蔵・冷凍環境でも剥がれず破れない高耐久シールですか？",
-        "taglineKo": "물에 젖거나 냉동 보관해도 떨어지지 않는 100% 방수 유포지 스티커인가요?",
-        "descriptionZh": [
-          "特种合成塑料薄膜面层，具有超强韧性，手工用力拉扯不破",
-          "优异的防水、防潮、抗冷凝水性能，冰桶浸泡不掉胶不卷边",
-          "表面平滑洁白，印刷色彩对比度极高，户外耐候性极佳"
-        ],
-        "descriptionJa": [
-          "引き裂き強度の高い合成樹脂フィルムを採用、手で引っ張っても破れない",
-          "水や湿気、結露に極めて強く、氷水や冷蔵庫に入れても剥がれない",
-          "滑らかな純白のベース紙で、発色が鮮明で屋外での耐候性も抜群"
-        ],
-        "descriptionKo": [
-          "질기고 강력한 합성 유포지 소재로 손으로 힘껏 잡아당겨도 절대 안 찢어짐",
-          "탁월한 방수 및 결로 방지 성능으로 얼음물에 담가도 라벨이 분리되지 않음",
-          "새하얀 베이스에서 뿜어져 나오는 선명한 색감과 뛰어난 내구성"
-        ],
-        "bestForZh": [
-          "冷冻生鲜食品、冰镇啤酒饮料、冷藏奶制品标签",
-          "潮湿浴室使用的沐浴露、洗发水及家庭日化清洁剂瓶贴",
-          "户外仪器设备铭牌、电动车及工业管道警示标识贴"
-        ],
-        "bestForJa": [
-          "冷凍食品、クラフトビール、要冷蔵乳製品のラベル",
-          "シャンプーやボディソープなど浴室で使う水回りボトル",
-          "屋外機器の銘板シール、機械・配管の注意警告ステッカー"
-        ],
-        "bestForKo": [
-          "냉동 밀키트, 냉장 맥주 및 탄산음료, 유제품 방수 라벨",
-          "욕실에서 물을 상시 접하는 샴푸, 바디워시 용기 라벨",
-          "야외 노출 산업 장비 명판, 전자기기 및 배관 안전 경고 스티커"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/decaltrangsua.webp",
-        "pureImages": [
-          "/images/product/decaltrangsua.webp",
-          "/images/product/decal-white1.webp",
-          "/images/product/decal-white3.webp"
-        ]
-      },
-      {
-        "icon": "Sparkles",
-        "name": "Custom Die-Cut Shape Decal + Foil",
-        "nameVi": "Decal Bế Theo Hình Dáng Bất Kỳ + Ép Kim",
-        "tagline": "Want custom contour-cut stickers with shimmering metallic foil logo accents?",
-        "taglineVi": "Bạn muốn tem decal bế theo hình dáng độc quyền kèm ép kim logo lấp lánh?",
-        "description": [
-          "Precision digital die-cutting following any intricate logo outline or shape",
-          "Combined with hot foil stamping in gold, silver, or holographic metallic sheen",
-          "Delivered on easy-peel kiss-cut sheets or individual promotional sticker die-cuts"
-        ],
-        "descriptionVi": [
-          "Bế cắt kỹ thuật số viền chính xác theo mọi hình dáng logo hay hoa văn phức tạp",
-          "Kết hợp ép kim nhũ vàng, nhũ bạc hoặc nhũ holographic lấp lánh điểm nhấn",
-          "Bàn giao dạng tờ cấn màng xé (Kiss-cut sheet) hoặc cắt rời từng hình (Die-cut)"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Luxury wine bottles, perfume seals, and high-end cosmetic labels",
-          "Branded promotional stickers for skateboards, laptops, and water bottles",
-          "Limited-edition holiday gift seals and VIP packaging authentication"
-        ],
-        "bestForVi": [
-          "Nhãn chai rượu vang sang trọng, tem niêm phong nước hoa và mỹ phẩm VIP",
-          "Sticker nhận diện thương hiệu dán laptop, bình nước, mũ bảo hiểm quà tặng",
-          "Tem niêm phong quà Tết giới hạn và chứng nhận hàng chính hãng"
-        ],
-        "nameZh": "任意异形精准模切 + 局部电化铝烫金",
-        "nameJa": "自由形状ダイカット + 箔押し加工シール",
-        "nameKo": "자유형 도무송 다이컷 + 금박 후가공 스티커",
-        "taglineZh": "贴纸裁切成品牌独特形状，辅以闪耀烫金工艺？",
-        "taglineJa": "ブランド独自の形状にカットし、箔押しで高級感をプラスしたシールですか？",
-        "taglineKo": "로고 모양 그대로 맞춤 재단하고 금박을 입힌 프리미엄 스티커인가요?",
-        "descriptionZh": [
-          "精准数控模切刀线，可切割成任意不规则曲线或品牌专属图形",
-          "局部结合烫亮金、哑金、烫镭射或银箔工艺，闪烁金属光芒",
-          "排废干净整齐，剥离撕取顺畅不粘连"
-        ],
-        "descriptionJa": [
-          "高精度ダイカット技術で、ハートやキャラクターなど自由な形状にカット",
-          "金・銀・ホログラム箔押しを組み合わせて、眩いメタリックの輝きをプラス",
-          "カス取りが綺麗に処理され、指先でサッと剥がしやすい快適仕様"
-        ],
-        "descriptionKo": [
-          "초정밀 레이저 도무송 가공으로 캐릭터나 브랜드 로고 모양 그대로 재단",
-          "골드박, 실버박, 홀로그램박 등 메탈릭 광택 후가공을 결합한 화려함",
-          "여백이 깔끔하게 탈착되어 손쉽게 떼어내 부착할 수 있는 완성도"
-        ],
-        "bestForZh": [
-          "文创IP周边、卡通插画贴纸、潮牌潮流手账贴",
-          "高端礼盒封口贴、奢侈品VIP防拆封口贴",
-          "为产品增添趣味性、收藏价值与高辨识度的创意贴标"
-        ],
-        "bestForJa": [
-          "キャラクターグッズ、イラストレーターの限定ステッカー",
-          "ギフトラッピングの封印シール、プレミアム会員向け特典シール",
-          "高いデザイン性とコレクター価値を持つオリジナルシール"
-        ],
-        "bestForKo": [
-          "인기 캐릭터 굿즈, 다이어리 꾸미기(다꾸) 스티커, 패션 브랜드 씰",
-          "스페셜 기프트 박스 봉인 스티커, VIP 브랜드 리워드 굿즈",
-          "독창적인 조형미와 반짝이는 금빛으로 소장 가치를 높인 라벨"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/decal-foil1.webp",
-        "pureImages": [
-          "/images/product/decal-foil1.webp",
-          "/images/product/decal-foil2.webp",
-          "/images/product/decal-foil3.webp"
-        ]
-      },
-      {
-        "icon": "Layers",
-        "name": "Couche Paper Stamp (Laminated Seal)",
-        "nameVi": "Tem Nhãn Giấy Couche Cán Màng",
-        "tagline": "Need affordable, crisp paper seals for product boxes and envelope closures?",
-        "taglineVi": "Bạn cần tem nhãn giấy láng mịn, kinh tế để niêm phong hộp giấy và bao thư?",
-        "description": [
-          "C150 or C200 coated adhesive paper with protective matte or glossy lamination",
-          "High-definition CMYK printing for barcodes, QR codes, and logo emblems",
-          "Strong permanent adhesive securing box flaps and gift bags reliably"
-        ],
-        "descriptionVi": [
-          "Láng mịn có keo dán, cán màng mờ/bóng bảo vệ",
-          "In CMYK sắc nét, hiển thị chính xác mã vạch, mã QR và biểu tượng logo",
-          "Lớp keo bám dính chắc chắn, niêm phong nắp hộp và túi quà an toàn"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "glossy-coat",
-          "soft-light"
-        ],
-        "bestFor": [
-          "Gift box seal closures, shopping bag seals, and envelope flaps",
-          "Retail product barcode stickers and SKU identifier labels",
-          "Food box closures for bakeries, pastry shops, and cafes"
-        ],
-        "bestForVi": [
-          "Tem niêm phong nắp hộp quà, miệng túi giấy shopping và nắp bao thư",
-          "Tem mã vạch sản phẩm bán lẻ và nhãn thông số SKU hàng hóa",
-          "Tem niêm phong hộp bánh ngọt, thực phẩm mang đi của nhà hàng"
-        ],
-        "nameZh": "铜版纸覆膜封口标签",
-        "nameJa": "コート紙ラミネート封印シール",
-        "nameKo": "스노우지 코팅 봉인 스티커",
-        "taglineZh": "包装盒开盖处需要一张彩色封口贴，确认未拆封？",
-        "taglineJa": "化粧箱の開口部に貼り、未開封であることを証明する封印シールですか？",
-        "taglineKo": "상자 개봉부에 부착하여 미개봉 상태를 보증하는 컬러 봉인 씰인가요?",
-        "descriptionZh": [
-          "优质铜版纸面覆哑膜或亮膜，表面防水防刮花",
-          "高粘性胶水，贴合纸箱、塑料盒与玻璃瓶牢固不脱落",
-          "全彩鲜明四色印刷，产品合格与真品识别一目了然"
-        ],
-        "descriptionJa": [
-          "コート紙にPPフィルムを施し、擦れや汚れから表面をガード",
-          "強粘着タイプの糊を採用し、紙箱・プラスチック・ガラスに密着",
-          "鮮明なフルカラー印刷で、正規品の証明や出荷管理に最適"
-        ],
-        "descriptionKo": [
-          "스노우지에 라미네이팅을 입혀 표면 스크래치와 오염 완벽 방지",
-          "강력 접착제를 적용하여 종이 상자, 플라스틱, 유리에 단단히 고정",
-          "선명한 풀컬러 인쇄로 정품 인증 및 출하 검수 표시에 최적"
-        ],
-        "bestForZh": [
-          "包装盒防拆封口贴、瓶盖密封标签",
-          "生产出厂质检合格贴（QC PASS）、生产批号标识",
-          "各类日常消费品防撕防调换封口贴"
-        ],
-        "bestForJa": [
-          "化粧箱の開口部封印シール、ボトルキャップの封緘",
-          "製造工程の出荷検査合格証（QC PASS）、ロット識別",
-          "製品の未開封を保証する各種パッケージシール"
-        ],
-        "bestForKo": [
-          "단상자 개봉부 봉인 라벨, 병마개 밀봉 스티커",
-          "출고 검수 합격증(QC PASS), 생산 로트 관리 라벨",
-          "개봉 방지 및 제품의 미개봉 상태를 보증하는 패키지 씰"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/temcouche.webp",
-        "pureImages": [
-          "/images/product/temcouche.webp",
-          "/images/product/tem-couche5.webp",
-          "/images/product/tem-couche6.webp"
-        ]
-      },
-      {
-        "icon": "Feather",
-        "name": "Ford Paper Writable Date Stamp",
-        "nameVi": "Tem Giấy Ford (Dễ Viết Ngày & Ký Tên)",
-        "tagline": "Want a natural uncoated stamp where inspectors can write signatures and dates?",
-        "taglineVi": "Bạn muốn tem giấy mộc tự nhiên để nhân viên kiểm tra ký tên và ghi ngày tháng?",
-        "description": [
-          "Uncoated natural Ford adhesive surface without slippery lamination",
-          "Absorbs pens, markers, and quality inspection QC stamps without smudging",
-          "Essential for manual quality control workflows and handmade date markings"
-        ],
-        "descriptionVi": [
-          "Bề mặt mộc tự nhiên có keo dán, không cán màng trơn trượt",
-          "Bám mực bút bi, bút lông và con dấu kiểm định QC không bị nhòe mực",
-          "Quy chuẩn thiết yếu cho quy trình kiểm tra chất lượng QC và ghi tay hạn dùng"
-        ],
-        "descriptionTraits": [
-          "natural-grain",
-          "soft-light",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "QC passed inspection seals and production shift sign-off stamps",
-          "Handwritten roast date seals for specialty coffee bean bags",
-          "Artisan workshop batch number stickers and pharmacy instruction seals"
-        ],
-        "bestForVi": [
-          "Tem kiểm định chất lượng QC passed và xác nhận xuất xưởng của nhà máy",
-          "Tem ghi tay ngày rang của bao bì cà phê đặc sản cao cấp",
-          "Sticker ghi số lô sản xuất thủ công và tem hướng dẫn sử dụng nhà thuốc"
-        ],
-        "nameZh": "道林纸日历质检标签（手写签名专用）",
-        "nameJa": "日付・署名用上質紙管理シール",
-        "nameKo": "날짜 및 서명 기입용 모조지 라벨",
-        "taglineZh": "出厂检测人员盖QC章、签署检验日期的专用质检贴？",
-        "taglineJa": "検査官のサインや日付を書き込む品質管理ステッカーですか？",
-        "taglineKo": "품질 검사원 사인과 검사 일자를 직접 수기하는 관리용 스탬프 라벨인가요?",
-        "descriptionZh": [
-          "无涂层道林书写纸，吸墨快，不易晕染模糊",
-          "方便使用圆珠笔、签字笔手写检验日期与检验员签名",
-          "可清晰盖印印油印章，印迹持久清晰"
-        ],
-        "descriptionJa": [
-          "インクがすばやく浸透する上質紙、手書き文字が滲まない",
-          "ボールペンや万年筆での日付記入、サインがスムーズ",
-          "検印スタンプのインクもしっかり定着し、鮮明さが持続"
-        ],
-        "descriptionKo": [
-          "잉크 흡수가 빠른 비코팅 모조지로 펜 글씨가 번지지 않음",
-          "검사 일자, 담당자 서명을 볼펜으로 손쉽게 수기 기입 가능",
-          "검사 스탬프 도장이 번짐 없이 선명하게 날인되어 장기 보존"
-        ],
-        "bestForZh": [
-          "需要标注开封日期、保质期限的日化品与试剂瓶",
-          "出厂检验员盖章标签、设备定期检修保养标签",
-          "库房入库登记贴与资产定期核验单"
-        ],
-        "bestForJa": [
-          "開封日や使用期限を記入する試薬瓶・コスメ容器",
-          "検査員の承認印を押す品質保証ラベル、保守点検票",
-          "倉庫の入庫管理ラベル、固定資産管理シール"
-        ],
-        "bestForKo": [
-          "개봉일 및 유통기한을 직접 수기하는 화장품, 실험 용기 라벨",
-          "품질 검사원 확인 도장 날인 라벨, 설비 정기 점검 필증",
-          "물류창고 입고 등록 스티커 및 사내 비품 자산 관리 라벨"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/temford.webp",
-        "pureImages": [
-          "/images/product/temford.webp",
-          "/images/product/tem-ford5.webp",
-          "/images/product/tem-ford6.webp"
-        ]
-      },
-      {
-        "icon": "ShieldCheck",
-        "name": "Tamper-Evident Destructible Warranty Stamp",
-        "nameVi": "Tem Bảo Hành Vỡ (Tem Niêm Phong)",
-        "tagline": "Need brittle security stamps that shatter upon attempted removal to prevent tampering?",
-        "taglineVi": "Bạn cần tem bảo hành vỡ tự hủy khi có hành vi bóc gỡ để bảo vệ linh kiện?",
-        "description": [
-          "Special brittle vinyl stock that shatters into fragments if peeled after sticking",
-          "Provides absolute proof of tampering for warranty and electronic seals",
-          "Sharp micro-text and serial number printing for verification tracking"
-        ],
-        "descriptionVi": [
-          "Giòn đặc biệt, tự động vỡ vụn thành từng mảnh nếu có tác động bóc gỡ",
-          "Bằng chứng tuyệt đối chống mở ốc, tháo máy và niêm phong bảo hành",
-          "In viền chữ siêu nhỏ và số nhảy serial theo dõi thời hạn bảo hành chính xác"
-        ],
-        "descriptionTraits": [
-          "waterproof-durability",
-          "smooth-base",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Electronic smartphone, computer, and appliance screw-hole warranty seals",
-          "High-value component authentication and repair shop warranty tracking",
-          "Cosmetic container lid security seals preventing in-store sampling"
-        ],
-        "bestForVi": [
-          "Tem niêm phong ốc vít bảo hành điện thoại, máy tính và thiết bị điện tử",
-          "Xác thực linh kiện chính hãng và theo dõi thời hạn bảo hành của trung tâm",
-          "Tem niêm phong nắp hộp mỹ phẩm chống mở dùng thử trước tại cửa hàng"
-        ],
-        "nameZh": "易碎纸防伪保修封口贴（一撕即碎）",
-        "nameJa": "改ざん防止脆化セキュリティシール（封印破断）",
-        "nameKo": "파손형 품질보증 봉인 스티커 (재사용 불가)",
-        "taglineZh": "电子产品或仪器保修，一旦有人试图撕开便粉碎破坏无法复原？",
-        "taglineJa": "剥がそうとすると破断し、再利用や改ざんを確実に防ぐ保証シールですか？",
-        "taglineKo": "떼어내려고 하면 산산조각 부서져 무단 개봉 및 재사용을 차단하는 보안 스티커인가요?",
-        "descriptionZh": [
-          "超薄专用易碎纸基材，抗拉强度极低，一旦粘贴无法完整揭下",
-          "试图揭除即破碎成微小碎片，具有不可逆的破坏痕迹",
-          "耐高温防油污，强力背胶粘附力极高"
-        ],
-        "descriptionJa": [
-          "極めて脆い特殊素材を採用、一度貼ると綺麗に剥がせない",
-          "剥がそうとするとバラバラに破断し、開封・改ざんの証拠を残す",
-          "強力な粘着力で剥がれにくく、電子機器の不正開封を抑止"
-        ],
-        "descriptionKo": [
-          "인장 강도가 극히 낮은 특수 파손형 용지로 떼어낼 때 온전한 분리 불가",
-          "떼어내려 하면 미세한 조각으로 바스러져 무단 개봉 흔적 영구 보존",
-          "강력 접착 성분으로 밀착되어 전자기기 무단 분해 및 위조 방지"
-        ],
-        "bestForZh": [
-          "手机、电脑、数码配件及精密仪器螺丝孔防拆封口",
-          "高价值商品保修封条，撕毁即失去保修资格",
-          "重要涉密文件袋、票据保险箱防拆封条"
-        ],
-        "bestForJa": [
-          "スマートフォン・PC・精密機器の分解防止ネジ封印",
-          "高額製品の保証期間シール（破断時は保証無効）",
-          "重要機密文書の封筒、セキュリティボックスの封印"
-        ],
-        "bestForKo": [
-          "스마트폰, PC, 카메라 등 전자기기 나사 홀 개봉 방지 씰",
-          "무상 AS 보증 라벨 (라벨 훼손 시 보증 혜택 소멸 공지용)",
-          "기밀 서류 봉투, 금고 및 보안 캐비닛 무단 열람 방지 봉인"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/temniemphong.webp",
-        "pureImages": [
-          "/images/product/temniemphong.webp",
-          "/images/product/tem-tamper2.webp",
-          "/images/product/tem-tamper3.webp"
-        ]
-      },
-      {
-        "icon": "Award",
-        "name": "Rainbow Holographic Security Seal",
-        "nameVi": "Tem Hologram 7 Màu (Chống Giả Cao Cấp)",
-        "tagline": "Want multi-spectrum holographic security stamps to authenticate your genuine products?",
-        "taglineVi": "Bạn muốn tem hologram lấp lánh 7 màu chống làm giả cho hàng chính hãng?",
-        "description": [
-          "Laser-etched rainbow holographic foil reflecting dynamic spectrum colors",
-          "Extremely difficult to counterfeit, building high consumer trust and prestige",
-          "Customized with 2D/3D optical motion logos and hidden security marks"
-        ],
-        "descriptionVi": [
-          "Màng hologram quang học khắc laser phản chiếu ánh sáng 7 màu",
-          "Cực kỳ khó làm giả, gia tăng sự an tâm tuyệt đối cho người tiêu dùng",
-          "Cá nhân hóa với logo quang học 2D/3D và các ký tự chống giả ẩn dưới đèn"
-        ],
-        "descriptionTraits": [
-          "metallic-shine",
-          "smooth-base",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Official brand authentication stamps for cosmetics and pharmaceuticals",
-          "Luxury garment authenticity hangtag seals and designer footwear",
-          "Software licenses, textbook security stamps, and VIP certificates"
-        ],
-        "bestForVi": [
-          "Tem xác thực hàng chính hãng cho mỹ phẩm, dược phẩm và thực phẩm chức năng",
-          "Tem niêm phong mác quần áo hàng hiệu và giày dép thời trang cao cấp",
-          "Tem bản quyền phần mềm, tem an ninh sách giáo khoa và chứng nhận VIP"
-        ],
-        "nameZh": "七彩动态激光全息防伪标签",
-        "nameJa": "ホログラム偽造防止セキュリティシール",
-        "nameKo": "레인보우 홀로그램 정품인증 보안 라벨",
-        "taglineZh": "在光线下折射绚丽动态全息彩虹光芒，高难度防伪防山寨？",
-        "taglineJa": "見る角度で虹色に変化し、模倣品をシャットアウトするホログラムですか？",
-        "taglineKo": "빛의 각도에 따라 무지갯빛 입체 홀로그램이 빛나 위조를 원천 차단하는 정품 라벨인가요?",
-        "descriptionZh": [
-          "多维激光光刻技术，光线照射下折射七彩动态立体全息光芒",
-          "可植入微缩文字、隐藏图案及防伪密码等多重防伪技术",
-          "极难仿制抄袭，瞬间提升产品档次与防伪公信力"
-        ],
-        "descriptionJa": [
-          "光の角度で虹色に煌めく高度なマルチカラーホログラム技術",
-          "マイクロ文字や隠しパターンなど、多層防御の偽造防止機能を搭載",
-          "偽造やコピーを徹底排除し、製品の真贋性を強力に証明"
-        ],
-        "descriptionKo": [
-          "빛의 각도에 따라 입체 무지갯빛으로 반짝이는 초정밀 레이저 홀로그램",
-          "미세 문자, 숨은 패턴 등 다단계 보안 기술 탑재로 위조 원천 차단",
-          "복제가 불가능하여 브랜드 정품 인증과 신뢰도를 극대화"
-        ],
-        "bestForZh": [
-          "高档烟酒、名贵保健滋补品及品牌专卖品防伪防串货",
-          "正版软件、游戏周边、限量潮玩及版权授权商品防伪",
-          "各类正品认证标签、荣誉证书与防伪会员凭证"
-        ],
-        "bestForJa": [
-          "高級酒・健康食品・ブランドコスメの正規品認証",
-          "公式ライセンスグッズ、限定フィギュア、ゲームソフト",
-          "各種鑑定証書、会員ステータス証明シール"
-        ],
-        "bestForKo": [
-          "고급 주류, 건강기능식품, 프리미엄 코스메틱 정품 인증",
-          "공식 라이선스 굿즈, 한정판 피규어, 소프트웨어 정품 라벨",
-          "명품 보증서, 자격 인증서 및 VIP 멤버십 보안 홀로그램"
-        ],
-        "pureImage": "/images/product/hologram.webp",
-        "pureImages": [
-          "/images/product/hologram.webp",
-          "/images/product/tem-anti2.webp",
-          "/images/product/tem-anti3.webp"
-        ]
-      },
-      {
-        "icon": "Sparkles",
-        "name": "Metallic Foil Stamped Stamp",
-        "nameVi": "Tem Ép Kim Nhũ Vàng / Nhũ Bạc Sang Trọng",
-        "tagline": "Want a shimmering metallic foil emblem sticker to elevate gift wrapping and cards?",
-        "taglineVi": "Bạn muốn tem dán điểm nhấn ép kim nhũ vàng sang trọng niêm phong hộp quà?",
-        "description": [
-          "Metallic gold, silver, or copper foil stamped onto paper or vinyl base",
-          "Creates a jewelry-like, embossed luxury finish that catches every light",
-          "Elevates standard packaging into an upscale boutique gifting experience"
-        ],
-        "descriptionVi": [
-          "Ép kim nhũ vàng, nhũ bạc hoặc nhũ đồng lên nền tem giấy hoặc tem nhựa",
-          "Tạo hiệu ứng sang trọng như món trang sức bắt sáng rực rỡ ở mọi góc nhìn",
-          "Nâng tầm gói quà thông thường thành trải nghiệm quà tặng thượng lưu"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Wedding invitation envelope seals and luxury stationery closures",
-          "Special holiday gift box badges (Tet, Mid-Autumn, Christmas)",
-          "Artisan chocolate, fine wine, and perfume box decorative stamps"
-        ],
-        "bestForVi": [
-          "Tem niêm phong thiệp cưới cao cấp và thiệp mời sự kiện quan trọng",
-          "Tem trang trí hộp quà lễ Tết (Tết Nguyên Đán, Trung Thu, Giáng Sinh)",
-          "Tem nhãn trang trí hộp sô-cô-la thủ công, rượu vang và nước hoa xa xỉ"
-        ],
-        "nameZh": "金属质感烫金/烫银奢华封口贴",
-        "nameJa": "金箔・銀箔押し高級ブランドシール",
-        "nameKo": "금박/은박 메탈릭 고급 씰 스티커",
-        "taglineZh": "用于信封火漆替代封口或高端礼盒包装，金碧辉煌？",
-        "taglineJa": "ギフトボックスや封筒を華やかに彩る、メタリックな輝きのブランドシールですか？",
-        "taglineKo": "봉투 마감이나 명품 선물 상자에 금빛 품격을 더해주는 메탈릭 씰인가요?",
-        "descriptionZh": [
-          "高贵金属电化铝烫印，金属反光璀璨耀眼，极具奢华感",
-          "字迹边缘锐利清晰，耐刮蹭不易氧化变暗",
-          "与圆形或异形花边模切相结合，典雅气派"
-        ],
-        "descriptionJa": [
-          "金箔・銀箔を熱転写し、本物の金属のような気品ある輝きを実現",
-          "細部までシャープに表現され、指で触れても剥がれにくい高品位仕上げ",
-          "円形やクラシカルな飾り罫デザインと相性抜群"
-        ],
-        "descriptionKo": [
-          "열전사 방식으로 리얼 메탈릭 골드/실버의 영롱한 광채 구현",
-          "미세한 라인까지 또렷하게 각인되며 긁힘이나 변색에 강함",
-          "원형이나 클래식 장식 테두리와 어우러져 화려하고 럭셔리한 인상"
-        ],
-        "bestForZh": [
-          "高端手工甜品盒、节日尊享礼盒信封封口",
-          "奢华珠宝首饰包装盒密封、高定香水瓶身贴",
-          "重要典礼邀请函、签约仪式文件密封名帖"
-        ],
-        "bestForJa": [
-          "高級スイーツのパッケージ、ギフトラッピングの封印",
-          "ジュエリーケース、香水ボトルのプレミアムラベル",
-          "招待状の封緘、公式セレモニーの書類装飾"
-        ],
-        "bestForKo": [
-          "수제 디저트 박스, 명절 스페셜 선물 세트 봉인 씰",
-          "주얼리 케이스, 니치 향수 보틀의 브랜드 포인트 라벨",
-          "VIP 초청장 봉투 마감 및 정식 협약서 봉인용 골드 씰"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/tem-foil4.webp",
-        "pureImages": [
-          "/images/product/tem-foil4.webp",
-          "/images/product/tem-foil5.webp",
-          "/images/product/tem-foil6.webp"
-        ]
-      },
-      {
-        "icon": "Layers",
-        "name": "Couche 80 - 100gsm Laminated Label",
-        "nameVi": "Nhãn Giấy Couche Cán Màng (Chuẩn Chai Lọ)",
-        "tagline": "Need standard, cost-effective product labels for bottles, jars, and cartons?",
-        "taglineVi": "Bạn cần nhãn dán chai lọ láng mịn, chuẩn màu và kinh tế cho bao bì?",
-        "description": [
-          "C80 or C100 coated adhesive paper with matte or glossy lamination",
-          "High-resolution CMYK graphics for ingredients, instructions, and branding",
-          "Adheres smoothly to curved glass, plastic bottles, and cardboard boxes"
-        ],
-        "descriptionVi": [
-          "Láng mịn có keo dán, cán màng mờ hoặc bóng bảo vệ",
-          "In đồ họa CMYK sắc nét cho thành phần, hướng dẫn sử dụng và logo",
-          "Bám dính mượt mà lên bề mặt cong của chai lọ thủy tinh, nhựa và hộp giấy"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "glossy-coat",
-          "soft-light"
-        ],
-        "bestFor": [
-          "Food jars, condiment bottles, and confectionery retail packs",
-          "Shampoo, lotion, and household cleaning spray bottle labels",
-          "Secondary nutritional and importer labels on retail packaging"
-        ],
-        "bestForVi": [
-          "Hũ thực phẩm, chai gia vị và hộp bánh kẹo trưng bày bán lẻ",
-          "Nhãn chai dầu gội, sữa dưỡng thể và bình xịt tẩy rửa gia dụng",
-          "Nhãn phụ thông tin nhập khẩu, hướng dẫn sử dụng trên hàng tiêu dùng"
-        ],
-        "nameZh": "铜版纸覆膜瓶贴（饮料调料标准）",
-        "nameJa": "ボトル用コート紙ラミネートラベル",
-        "nameKo": "병·용기용 스노우지 코팅 라벨",
-        "taglineZh": "瓶装饮料、罐头与调味品外包装的标准全彩商品标签？",
-        "taglineJa": "ペットボトルや調味料の容器に貼る、標準的な商品ラベルですか？",
-        "taglineKo": "음료수, 소스병, 유리 용기 외부에 부착하는 표준 상품 라벨인가요?",
-        "descriptionZh": [
-          "80-100gsm平滑铜版面纸，四色艳丽全彩印刷",
-          "表面覆光油或防水亮膜，有效隔绝常温水汽与污渍",
-          "适合平整塑料瓶、玻璃罐及纸盒表面，贴合平顺"
-        ],
-        "descriptionJa": [
-          "80〜100gsmのコート紙に鮮やかなフルカラーオフセット印刷",
-          "ニス引きまたはPP加工により、日常的な水滴や汚れから保護",
-          "ペットボトル・ガラス瓶・プラスチック容器にスムーズに密着"
-        ],
-        "descriptionKo": [
-          "80-100gsm 매끄러운 스노우지에 선명한 풀컬러 인쇄",
-          "코팅 마감으로 일상적인 수분과 유분으로부터 인쇄면 보호",
-          "플라스틱 보틀, 유리병, 캔 패키지에 기포 없이 매끄럽게 부착"
-        ],
-        "bestForZh": [
-          "常温保存的瓶装果汁、酱料调味品及休闲零食罐贴",
-          "电商发货纸盒正面商品主图说明贴",
-          "中大批量印刷、经济实用的常规商品标签"
-        ],
-        "bestForJa": [
-          "常温飲料、調味料、ドレッシング、ジャム瓶のラベル",
-          "通販商品の外箱に貼る商品詳細ステッカー",
-          "コストを抑えて大量に導入したい標準的な商品ラベル"
-        ],
-        "bestForKo": [
-          "상온 보관 주스, 드레싱 소스병, 수제 잼 유리병 라벨",
-          "택배 배송용 제품 상자 메인 상품 설명 라벨",
-          "합리적인 단가로 대량 생산하는 표준 상품 라벨"
-        ],
-        "pureImage": "/images/product/temcouche.webp",
-        "pureImages": [
-          "/images/product/temcouche.webp",
-          "/images/product/lable-couche2.webp",
-          "/images/product/lable-couche3.webp"
-        ]
-      },
-      {
-        "icon": "Feather",
-        "name": "Uncoated Ford Writable Product Label",
-        "nameVi": "Nhãn Giấy Ford (Dễ Viết Ngày & Lô Sản Xuất)",
-        "tagline": "Want an uncoated natural label where you can stamp batch codes or roast dates?",
-        "taglineVi": "Bạn muốn nhãn giấy mộc tự nhiên có thể viết tay hạn dùng hay số lô sản xuất?",
-        "description": [
-          "Uncoated Ford paper adhesive surface without shiny lamination",
-          "Absorbs pens, markers, and date-stamping inks immediately without smearing",
-          "Conveys an authentic, small-batch artisanal feel for handmade goods"
-        ],
-        "descriptionVi": [
-          "Bề mặt mộc tự nhiên có keo dán, không cán màng bóng",
-          "Bám mực bút viết tay và mực dấu đóng ngày tháng ngay lập tức không bị nhòe",
-          "Mang lại cảm giác thủ công, tinh tế cho sản phẩm số lượng nhỏ (small-batch)"
-        ],
-        "descriptionTraits": [
-          "natural-grain",
-          "soft-light",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Specialty coffee bag roast date labels and bakery freshness tags",
-          "Small-batch organic honey, jam jars, and artisanal sauce bottles",
-          "Pharmacy prescription bottles and laboratory reagent jar labels"
-        ],
-        "bestForVi": [
-          "Nhãn ghi ngày rang cà phê đặc sản và tem ngày hết hạn tiệm bánh",
-          "Hũ mật ong hữu cơ thủ công, mứt và gia vị truyền thống",
-          "Nhãn chai thuốc nhà thuốc và lọ hóa chất phòng xét nghiệm y khoa"
-        ],
-        "nameZh": "书写纸批次标签（生产日期填写专用）",
-        "nameJa": "ロット番号・製造日記入用上質ラベル",
-        "nameKo": "제조일자 및 로트번호 기입용 무광 라벨",
-        "taglineZh": "需要根据每日出产批次现场用打码机或签字笔填写生产日期？",
-        "taglineJa": "製造日や賞味期限を現場で印字・記入する管理ラベルですか？",
-        "taglineKo": "제조일자나 유통기한을 현장에서 직접 날인하고 기입할 라벨인가요?",
-        "descriptionZh": [
-          "无涂层进口道林纸，纸面微糙质朴，极易吸收油墨",
-          "可用打码机打印批次，也可用中性笔现场填写有效日期",
-          "胶水环保无毒，符合食品与接触级外包装标准"
-        ],
-        "descriptionJa": [
-          "無塗工の上質紙で、ペン先が滑らずインクが瞬時に定着",
-          "賞味期限印字機やスタンプ、手書きでの追記に完璧に対応",
-          "環境に優しく安全な接着剤を使用し、食品包装にも安心"
-        ],
-        "descriptionKo": [
-          "잉크 흡수가 빠른 모조지로 수기 작성 시 번짐 전혀 없음",
-          "날인기 프린팅은 물론 유성펜으로 제조일자 기입에 최적",
-          "식품 안전 기준에 적합한 무독성 친환경 접착제 사용"
-        ],
-        "bestForZh": [
-          "手工现烤烘焙、短保鲜食品的每日日期批次贴",
-          "有机农产、自酿蜂蜜果酱的生产信息标签",
-          "实验室试剂调配记录贴与药品分装说明"
-        ],
-        "bestForJa": [
-          "焼きたてパン、手作りスイーツ、賞味期限の短い食品",
-          "農産物直売所、自家製ジャム、ハチミツの生産者ラベル",
-          "調剤薬局の分包指示、試薬調合の管理ラベル"
-        ],
-        "bestForKo": [
-          "당일 생산 베이커리, 즉석 조리 식품의 제조시간 표기 라벨",
-          "유기농 농산물, 수제 과일청, 로컬 푸드 정보 라벨",
-          "조제약 분포 안내 및 실험실 샘플 관리용 스티커"
-        ],
-        "pureImage": "/images/product/temford.webp",
-        "pureImages": [
-          "/images/product/temford.webp",
-          "/images/product/lable-ford2.webp",
-          "/images/product/lable-ford3.webp"
-        ]
-      },
-      {
-        "icon": "Palette",
-        "name": "Wine Luxury Art Paper Label",
-        "nameVi": "Nhãn Giấy Mỹ Thuật Rượu Vang Cao Cấp",
-        "tagline": "Want a textured European wine-label paper that exudes cellar heritage and prestige?",
-        "taglineVi": "Bạn muốn nhãn chai mang vân giấy mỹ thuật châu Âu đẳng cấp như chai rượu vang?",
-        "description": [
-          "Premium European wine-label art paper with distinctive tactile texture",
-          "Treated for wet-strength resistance in wine ice buckets and refrigerators",
-          "Warm, classic ink absorption that looks exceptional with metallic foil"
-        ],
-        "descriptionVi": [
-          "Có vân nhám đặc trưng, xúc giác xa xỉ",
-          "Xử lý đặc biệt chống bong tróc khi ngâm trong xô đá rượu vang hoặc ướp lạnh",
-          "Màu in trầm tĩnh, hoàn hảo khi kết hợp cùng ép kim nhũ vàng hoặc nhũ đồng"
-        ],
-        "descriptionTraits": [
-          "textured-art",
-          "natural-grain",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Fine red wine, champagne, and craft botanical gin bottles",
-          "Luxury perfume bottles, scented candles, and artisan room sprays",
-          "High-end gourmet olive oil and imported balsamic vinegar bottles"
-        ],
-        "bestForVi": [
-          "Chai rượu vang cao cấp, rượu sâm-panh và rượu thủ công",
-          "Chai nước hoa xa xỉ, cốc nến thơm tinh dầu và chai xịt phòng cao cấp",
-          "Chai dầu ô-liu thượng hạng và dấm lên men nhập khẩu"
-        ],
-        "nameZh": "高端特种棉纸红酒标签（耐湿抗冷凝）",
-        "nameJa": "高級ワイン用特殊アート紙ラベル",
-        "nameKo": "고급 와인용 수입 질감지 방습 라벨",
-        "taglineZh": "冰桶浸泡与冷藏结露时，标签纸张依然紧贴不脱落变黄？",
-        "taglineJa": "ワインセラーや氷水に入れてもふやけない、気品あるワイン専用ラベルですか？",
-        "taglineKo": "와인 아이스버킷에 담가도 젖어 떨어지지 않는 프리미엄 와인 전용 라벨인가요?",
-        "descriptionZh": [
-          "精选高克重特种棉浆艺术纸，自带厚实纸纹与温润触感",
-          "特制抗冷凝水粘胶，冰桶浸泡数小时纸张不烂不掉胶",
-          "完美搭配烫金、凹凸工艺，彰显名庄佳酿非凡品质"
-        ],
-        "descriptionJa": [
-          "コットンを配合した厚手の特殊アート紙、深い風合いと高級感",
-          "耐水・耐結露グルーを採用し、ワインクーラーの氷水でも剥がれない",
-          "箔押しやエンボス加工が際立つ、名門ワイナリーに選ばれる仕様"
-        ],
-        "descriptionKo": [
-          "도톰한 면 펄프 수입 예술지로 손에 닿는 깊이감 있는 텍스처",
-          "방습 특수 글루를 적용하여 와인 쿨러 얼음물 속에서도 안 떨어짐",
-          "섬세한 금박과 엠보싱이 조화를 이루어 최고급 와인의 품격 완성"
-        ],
-        "bestForZh": [
-          "高端红酒、白葡萄酒、起泡酒及威士忌酒瓶标签",
-          "高级冷榨初榨橄榄油、精品陈年果醋玻璃瓶标",
-          "注重产区文化与匠心酿造工艺的高端饮品包装"
-        ],
-        "bestForJa": [
-          "赤ワイン・白ワイン・シャンパン・プレミアムウイスキー",
-          "高級エキストラバージンオリーブオイル、熟成バルサミコ酢",
-          "産地の伝統と職人のこだわりを伝えるプレミアムボトル"
-        ],
-        "bestForKo": [
-          "프리미엄 와인, 샴페인, 싱글몰트 위스키 바틀 라벨",
-          "최고급 엑스트라 버진 올리브오일, 발사믹 식초 유리병 라벨",
-          "전통과 장인정신을 담아내는 부티크 주류 및 식음료 패키지"
-        ],
-        "pureImage": "/images/product/lable-art3.webp",
-        "pureImages": [
-          "/images/product/lable-art3.webp",
-          "/images/product/lable-art2.webp",
-          "/images/product/lable-art1.webp"
-        ]
-      },
-      {
-        "icon": "ShieldCheck",
-        "name": "Waterproof White Synthetic PVC Label",
-        "nameVi": "Nhãn Nhựa PVC Chống Nước (Ướt & Lạnh)",
-        "tagline": "Need an indestructible waterproof label for chilled beverages or bath cosmetics?",
-        "taglineVi": "Bạn cần nhãn nhựa chống nước 100%, chịu lạnh cho chai đồ uống hay mỹ phẩm phòng tắm?",
-        "description": [
-          "100% waterproof synthetic PVC/PET film with permanent waterproof adhesive",
-          "Survives ice immersion, condensation, refrigeration, and hot humid showers",
-          "Crisp, vibrant colors that won't scratch, peel, or fade in harsh environments"
-        ],
-        "descriptionVi": [
-          "Màng nhựa PVC/PET chống thấm nước 100% với lớp keo dán chịu lạnh đặc biệt",
-          "Bền bỉ khi ngâm nước đá, nhiệt độ tủ lạnh, nước đọng và môi trường phòng tắm",
-          "Màu in sắc nét, không trầy xước, không bong tróc kể cả khi tiếp xúc nước hằng ngày"
-        ],
-        "descriptionTraits": [
-          "waterproof-durability",
-          "smooth-base",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Cold-pressed juice bottles, craft beer cans, and refrigerated dairy milk",
-          "Shampoo, shower gel, and bathroom cosmetic bottles",
-          "Outdoor agricultural chemical bottles and marine supply containers"
-        ],
-        "bestForVi": [
-          "Chai nước ép lạnh, lon bia thủ công và các sản phẩm sữa ướp lạnh",
-          "Chai dầu gội, sữa tắm và mỹ phẩm chăm sóc sử dụng trong phòng tắm",
-          "Chai thuốc nông nghiệp ngoài trời và bao bì thiết bị hằng hải"
-        ],
-        "nameZh": "防水防冷冻PVC塑料瓶贴",
-        "nameJa": "耐水・冷蔵対応合成PVCボトルラベル",
-        "nameKo": "방수 및 냉장 보관용 합성 PVC 라벨",
-        "taglineZh": "沐浴露、洗发水在潮湿浴室长期使用，标签依然崭新如初？",
-        "taglineJa": "バスルームや水回りで使用しても文字が消えない完全耐水ラベルですか？",
-        "taglineKo": "욕실의 샴푸나 바디워시처럼 습기가 가득한 환경에서도 온전한 라벨인가요?",
-        "descriptionZh": [
-          "高分子合成PVC塑料基材，耐撕裂抗磨损抗低温冷冻",
-          "遇水完全不吸水起泡，长久耐潮湿、耐冷藏冷冻结霜",
-          "强力防水胶水，即使瓶身结露依然牢固抓附不移位"
-        ],
-        "descriptionJa": [
-          "高分子合成PVCフィルムを採用、破れや水濡れに極めて強い",
-          "完全防水仕様で、冷蔵庫や冷凍庫での長期保管でも剥がれ知らず",
-          "結露したボトルの表面にも強力に密着する特殊耐水粘着剤"
-        ],
-        "descriptionKo": [
-          "고분자 합성 PVC 소재로 물에 젖거나 찢어지지 않는 영구 방수",
-          "냉장 및 냉동 보관 시 발생하는 결로에도 들뜸 없이 완벽 밀착",
-          "습기 찬 욕실이나 얼음물 속에서도 떨어지지 않는 강력 내구성"
-        ],
-        "bestForZh": [
-          "浴室沐浴露、洗发水、洗面奶等潮湿环境日化用品",
-          "冷冻牛排海鲜、冷藏酸奶鲜奶等生鲜冷链食品",
-          "户外使用的防晒喷雾、汽车洗车养护清洁剂瓶标"
-        ],
-        "bestForJa": [
-          "バスルームで使うシャンプー・ボディソープ・洗顔料",
-          "冷凍肉・海鮮・要冷蔵のヨーグルト・牛乳パック",
-          "洗車用品・アウトドア用スプレー・工業用ケミカルボトル"
-        ],
-        "bestForKo": [
-          "욕실의 샴푸, 바디워시, 클렌징 폼 등 수분 접촉이 많은 용기",
-          "냉동 육류, 신선 수산물, 냉장 요거트 등 콜드체인 유통 라벨",
-          "세차 케미컬 용기, 야외용 아웃도어 스프레이 라벨"
-        ],
-        "pureImage": "/images/product/decaltrongsuot.webp",
-        "pureImages": [
-          "/images/product/decaltrongsuot.webp",
-          "/images/product/lable-PVC1.webp",
-          "/images/product/lable-PVC3.webp"
-        ]
-      },
-      {
-        "icon": "Sparkles",
-        "name": "Foil Stamped & Spot UV Luxury Label",
-        "nameVi": "Nhãn Ép Kim & Phủ UV Định Hình Sang Trọng",
-        "tagline": "Want your brand logo on the bottle to shimmer with metallic foil and raised 3D UV?",
-        "taglineVi": "Bạn muốn logo thương hiệu trên chai lọ lấp lánh ép kim và nổi bật với UV 3D?",
-        "description": [
-          "Metallic gold, silver, or bronze hot foil stamping applied to focal logos",
-          "Raised Spot UV coating adds sculptural 3D gloss over a velvety matte background",
-          "Maximum shelf presence that elevates perceived product value instantly"
-        ],
-        "descriptionVi": [
-          "Gia công ép kim nhũ vàng, nhũ bạc hoặc nhũ đồng cho logo và biểu tượng chính",
-          "Phủ UV bóng định hình tạo độ tương phản nổi 3D trên nền màng mờ mịn màng",
-          "Tạo sức hút mãnh liệt trên quầy kệ, nâng tầm giá trị cảm nhận của sản phẩm"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Luxury facial serums, anti-aging creams, and VIP beauty collections",
-          "Premium spirits, limited-edition whisky, and celebration champagne",
-          "High-end nutritional supplements and VIP corporate gifts"
-        ],
-        "bestForVi": [
-          "Chai mỹ phẩm serum, kem dưỡng cao cấp và bộ sưu tập làm đẹp VIP",
-          "Chai rượu ngoại sang trọng, rượu whisky giới hạn và rượu mừng sự kiện",
-          "Hộp thực phẩm chức năng cao cấp và giỏ quà tặng doanh nghiệp VIP"
-        ],
-        "nameZh": "烫金 + 局部凸起UV光油高档标签",
-        "nameJa": "箔押し + スポットUV立体加工ラベル",
-        "nameKo": "금박 + 부분 에폭시 UV 고급 라벨",
-        "taglineZh": "指尖抚过有明显的浮雕凸起感，高端化妆品与香水专用？",
-        "taglineJa": "立体感のある手触りと輝きで、香水やコスメの価値を高めるラベルですか？",
-        "taglineKo": "손끝에 입체감이 느껴지는 양각 UV와 금박으로 향수나 화장품 가치를 높일 라벨인가요?",
-        "descriptionZh": [
-          "高贵金属电化铝烫金搭配局部3D立体水晶凸起UV光油",
-          "光影流转间层次分明，指尖触摸有圆润立体的浮雕感",
-          "极致工艺大幅提升商品货架身价，激发消费者购买欲"
-        ],
-        "descriptionJa": [
-          "上品な箔押しと、透明度の高いぷっくりとした立体スポットUV",
-          "光を捉えて華やかに輝き、指先に伝わる立体感がプレミアム感を演出",
-          "店頭で圧倒的な高級感を放ち、購買意欲を高める最高峰ラベル"
-        ],
-        "descriptionKo": [
-          "빛나는 메탈릭 금박에 투명하게 도톰한 3D 입체 에폭시 UV 코팅",
-          "빛의 각도에 따라 반짝이며 만졌을 때 볼록한 양각 촉감 선사",
-          "진열대에서 시선을 압도하여 상품의 가치와 신뢰도를 수직 상승"
-        ],
-        "bestForZh": [
-          "高端奢华护肤品、面霜眼霜精油瓶身标签",
-          "高档香氛香水瓶贴、顶级手工蜡烛玻璃罐标",
-          "品牌旗舰主推款商品、限量发售礼盒产品标签"
-        ],
-        "bestForJa": [
-          "高級アンチエイジングコスメ、美容液、アロマオイル",
-          "香水ボトル、フレグランスキャンドルの正面ラベル",
-          "ブランドのフラッグシップ商品、限定プレミアムライン"
-        ],
-        "bestForKo": [
-          "안티에이징 에센스, 프리미엄 크림 등 럭셔리 코스메틱 라벨",
-          "니치 향수 보틀, 최고급 소이 캔들 유리 용기 라벨",
-          "브랜드 플래그십 신제품 및 한정판 시그니처 에디션"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/lable-luxury1.webp",
-        "pureImages": [
-          "/images/product/lable-luxury1.webp",
-          "/images/product/lable-luxury2.webp",
-          "/images/product/lable-luxury3.webp"
-        ]
-      },
-      {
-          "icon": "Tag",
-          "name": "Paper Decal Gloss / Matte Laminated",
-          "nameVi": "Decal Giấy Cán Màng Bóng / Mờ",
-          "tagline": "Economical paper decal with gloss or matte finish for festive confectionery and gift hampers",
-          "taglineVi": "Decal giấy bám dính tốt, cán màng chống trầy dán hộp bánh mứt, giỏ quà Tết tiết kiệm",
-          "description": [
-              "Strong permanent acrylic adhesive adheres firmly to cardboard and plastic lids",
-              "Protective gloss or matte lamination resists light moisture and scratches",
-              "Computer die-cut kiss-cut sheets for effortless quick peeling"
-          ],
-          "descriptionVi": [
-              "Lớp keo dán acrylic bám dính chắc chắn trên bề mặt hộp bánh mứt, hộp trà và nắp hũ nhựa",
-              "Cán màng mờ sang trọng hoặc màng bóng tươi sáng chống bám bụi và trầy xước",
-              "Bế đứt demi chính xác theo viền tròn, vuông, elip dễ dàng bóc dán nhanh chóng"
-          ],
-          "descriptionTraits": [
-              "smooth-base",
-              "digital-precision"
-          ],
-          "bestFor": [
-              "Tet confectionery boxes, pastry tubs, gift ham packaging"
-          ],
-          "bestForVi": [
-              "Hộp bánh mứt Tết, hũ hạt điều, niêm phong nắp hộp quà, phong bao lì xì"
-          ],
-          "pureImage": "/images/product/lable-couche1.webp",
-          "pureImages": [
-              "/images/product/lable-couche1.webp",
-              "/images/product/vd-item-decal.jpeg",
-              "/images/category/nhanstickerdangto.webp"
-          ],
-          "nameZh": "铜版纸覆膜贴纸 (光膜/哑膜可选)",
-          "nameJa": "アート紙ラベル PPラミネート加工（光沢・マット選択可）",
-          "nameKo": "코팅 아트지 라벨 스티커 (유광/무광 코팅 선택)",
-          "taglineZh": "全彩印刷色彩饱满艳丽、表面覆膜防划痕水渍，春节大批量贴装的高性价比之选？",
-          "taglineJa": "鮮やかなフルカラー印刷と保護ラミネート加工。お正月の大量ラベリングに最適な王道シールですか？",
-          "taglineKo": "선명한 풀컬러 발색과 표면 라미네이팅으로 스크래치를 방지하는 설날 대량 부착용 최고 가성비 라벨인가요?",
-          "descriptionZh": [
-              "高平滑度铜版不干胶面纸，全彩印刷网点细腻，年节红色与金色图案格外喜庆亮丽",
-              "可选覆亮光膜（增加反光光泽度）或覆哑光膜（柔和优雅微光），防止油墨刮擦脱落",
-              "采用强粘性水性/热熔压敏胶，快速牢固粘贴于纸盒、塑料盒及玻璃瓶身"
-          ],
-          "descriptionJa": [
-              "高平滑なコート紙シールで、フルカラーのグラフィックやお正月の赤・金が艶やかに発色",
-              "華やかな光沢グロスPPまたは落ち着いたマットPPを選択可能で、インクの擦れや傷を防止",
-              "強粘着エマルジョン糊により、紙箱、プラスチック容器、ガラス瓶にピタッと強力密着"
-          ],
-          "descriptionKo": [
-              "매끄러운 표면의 코팅 아트지로 풀컬러 그래픽과 신년 레드/골드 디자인이 화사하게 발색",
-              "빛나는 유광 코팅 또는 차분하고 고급스러운 무광 코팅 중 선택 가능하여 스크래치 완벽 방지",
-              "강력 점착제를 사용하여 종이 상자, 플라스틱 용기, 유리병 표면에 들뜸 없이 빠르고 강력하게 부착"
-          ],
-          "bestForZh": [
-              "年货糕点盒封口贴、春节特产包装袋标签、新年快递贺卡信封封口"
-          ],
-          "bestForJa": [
-              "お菓子箱の封印シール、お正月特産品のパッケージラベル、年賀状・ギフト袋の留めシール"
-          ],
-          "bestForKo": [
-              "설날 한과 및 제과 박스 봉인 스티커, 명절 특산물 포장 라벨, 선물 세트 봉투 밀봉 스티커"
-          ]
-      },
-      {
-          "icon": "Shield",
-          "name": "Waterproof Plastic PVC Decal",
-          "nameVi": "Decal Nhựa PVC / Sữa Chống Nước",
-          "tagline": "100% waterproof synthetic vinyl labels for wine bottles and chilled festive foods",
-          "taglineVi": "Decal nhựa PVC chống thấm nước 100%, dán chai rượu Tết, hũ thực phẩm ngâm lạnh không bong tróc",
-          "description": [
-              "100% waterproof synthetic tear-proof vinyl substrate",
-              "Withstands refrigeration, ice buckets, and condensation without bubbling",
-              "Rich, high-density UV ink printing with deep vibrant contrast"
-          ],
-          "descriptionVi": [
-              "Chất liệu nhựa PVC dẻo dai chống thấm nước 100%, không bị rách hay xé rách",
-              "Chịu được môi trường tủ mát, ngâm xô đá lạnh không bị bong tróc hay bay màu",
-              "Mực in UV sắc nét, màu sắc tươi tắn tôn vinh vẻ đẹp chai rượu và hũ thực phẩm"
-          ],
-          "descriptionTraits": [
-              "waterproof-durability",
-              "digital-precision"
-          ],
-          "bestFor": [
-              "Tet wine bottles, chilled pickles, festive cold beverages"
-          ],
-          "bestForVi": [
-              "Chai rượu vang, hũ kiệu ngâm, hộp bánh lạnh, nước giải khát mùa Tết"
-          ],
-          "pureImage": "/images/product/lable-PVC1.webp",
-          "pureImages": [
-              "/images/product/lable-PVC1.webp",
-              "/images/product/vd-item-decal.jpeg",
-              "/images/category/nhanstickerdangto.webp"
-          ],
-          "nameZh": "防水抗撕PVC合成塑料贴纸 (白底乳白/冷藏专用)",
-          "nameJa": "完全耐水PVC合成ステッカー（耐水・耐油・冷凍対応）",
-          "nameKo": "완전 방수 PVC 유포지 스티커 (냉장/냉동 보관 전용)",
-          "taglineZh": "100%防水防油防冷凝水、撕扯不破，冷藏冷冻柜储存绝不脱落的耐用塑料贴纸？",
-          "taglineJa": "100%完全防水で破れず、結露や油分にも強い。冷蔵・冷凍商品のラベリングに必須のシールですか？",
-          "taglineKo": "100% 완전 방수, 방유에 찢어지지 않으며 냉장 냉동 결로에도 떨어지지 않는 내구성 라벨인가요?",
-          "descriptionZh": [
-              "采用优质聚氯乙烯(PVC)塑料基材，彻底隔绝水分侵蚀，浸水完全不软榻褪色",
-              "强韧抗拉伸撕扯，贴在冷藏饮料瓶或含油食物包装上依然平整不起皱",
-              "耐低温特种压敏胶水，冰箱冷藏冷冻环境下依然保持持久强效抓附力"
-          ],
-          "descriptionJa": [
-              "高品質PVC合成樹脂基材により水分を完全に遮断。水に濡れてもふやけず破れないタフな仕様",
-              "引裂に極めて強く、冷蔵飲料ボトルや油分を含む食品パッケージでも剥がれずフラットを維持",
-              "耐低温アクリル系強粘着剤を使用し、結露が発生するチルド・冷凍環境でも強力な接着力を発揮"
-          ],
-          "descriptionKo": [
-              "고품질 합성 PVC 원단으로 수분과 습기를 100% 차단하며 물에 젖어도 번지거나 찢어지지 않음",
-              "질기고 질긴 인장 강도로 냉장 음료수 병이나 기름기 있는 식품 용기 표면에서도 주름 없이 밀착",
-              "내한성 특수 점착제를 적용하여 냉장고 결로 현상이나 냉동 환경에서도 장기간 안정적인 접착력 유지"
-          ],
-          "bestForZh": [
-              "年夜饭预制菜冷藏盒、节日红酒与冷萃饮品瓶贴、冷藏生鲜礼品包装"
-          ],
-          "bestForJa": [
-              "おせち料理・チルド惣菜の容器、ワイン・冷酒ボトル、冷凍シーフードギフト"
-          ],
-          "bestForKo": [
-              "명절 와인 및 전통주 라벨, 냉장 보관 밀키트 패키지, 신선 육류 및 수산물 선물 세트"
-          ]
-      },
-      {
-          "icon": "ShieldCheck",
-          "name": "Vintage Kraft Paper Decal",
-          "nameVi": "Decal Giấy Kraft Nâu Vintage",
-          "tagline": "Rustic unbleached brown kraft sticker bringing nostalgic traditional Tet warmth",
-          "taglineVi": "Decal kraft xi măng nâu mộc mạc, mang phong vị Tết xưa truyền thống và thân thiện môi trường",
-          "description": [
-              "Natural unbleached recycled kraft paper with warm organic texture",
-              "Pairs charmingly with artisanal calligraphic designs and handmade gifts",
-              "Strong permanent adhesive sticks securely to paper bags and glass jars"
-          ],
-          "descriptionVi": [
-              "Chất giấy kraft nâu tự nhiên mộc mạc, đậm chất văn hóa ngày xuân truyền thống",
-              "Hợp với thiết kế tranh dân gian Đông Hồ, chữ thư pháp và hình ảnh hoa mai đào",
-              "Độ bám dính cao trên hũ thủy tinh, hộp giấy kraft và túi giấy đựng quà"
-          ],
-          "descriptionTraits": [
-              "natural-grain",
-              "eco-friendly"
-          ],
-          "bestFor": [
-              "Artisanal Tet jams, herbal teas, dried fruit jars, organic snacks"
-          ],
-          "bestForVi": [
-              "Hũ mứt gừng, hộp trà sen, hạt dinh dưỡng organic, đặc sản Tết quê"
-          ],
-          "pureImage": "/images/product/bag-kraft1.webp",
-          "pureImages": [
-              "/images/product/bag-kraft1.webp",
-              "/images/product/bag-kraft3.webp",
-              "/images/product/vd-item-decal.jpeg"
-          ],
-          "nameZh": "复古棕色牛皮纸不干胶 (传统年味贴纸)",
-          "nameJa": "ヴィンテージクラフト紙ラベル（素朴な和風レトロシール）",
-          "nameKo": "빈티지 브라운 크라프트지 스티커 (전통 감성 에코 라벨)",
-          "taglineZh": "未漂白天然牛皮质感，洋溢老字号与传统年味，散发手工温度的质朴环保贴纸？",
-          "taglineJa": "無漂白の天然クラフト紙が醸し出すどこか懐かしい温もり。手作り年越しギフトにぴったりですか？",
-          "taglineKo": "무표백 천연 크라프트 질감으로 전통 명절의 정겨운 온기와 수제 손맛을 전하는 에코 라벨인가요?",
-          "descriptionZh": [
-              "天然未漂白回收木浆纸面，保留原始木纤维微粒，手感温润朴实",
-              "与东方传统书法字体、民间年画吉祥插画及手作工艺品完美契合",
-              "背附永久性高粘胶层，紧紧贴附于牛皮纸袋、瓦楞纸箱及玻璃蜜饯罐上"
-          ],
-          "descriptionJa": [
-              "無漂白パルプの素朴な風合いを生かした紙肌で、木の繊維感が温かい手触り",
-              "伝統的な毛筆書体や東洋の縁起物イラストと美しく調和し、職人のこだわりを強調",
-              "永久強粘着仕様で、クラフト紙袋、段ボール箱、ガラスジャム瓶にしっかりと吸着"
-          ],
-          "descriptionKo": [
-              "천연 펄프의 거친 결을 그대로 살린 자연 갈색 크라프트지로 핸드메이드 감성 자극",
-              "전통 붓글씨 서체, 설날 길상 일러스트 및 핸드메이드 제품과 완벽한 조화",
-              "강력 점착 성분으로 크라프트 종이백, 골판지 박스, 유리 수제청 병에 단단히 밀착"
-          ],
-          "bestForZh": [
-              "年节手工果酱蜜饯罐、传统花草茶盒、原生态坚果礼袋、乡土年味土特产"
-          ],
-          "bestForJa": [
-              "手作りジャム瓶、新春ハーブティー箱、無添加ナッツ袋、地方の特産品ギフト"
-          ],
-          "bestForKo": [
-              "수제 전통 청 및 잼 용기, 유기농 티백 상자, 견과류 선물 파우치, 시골 특산물 패키지"
-          ]
-      },
-      {
-          "icon": "Sparkles",
-          "name": "Silver Foil & Gold Stamped Decal",
-          "nameVi": "Decal Xi Bạc & Ép Kim Nhũ Vàng",
-          "tagline": "Metallic silver polyester with sparkling gold foil accents for luxury VIP gift packaging",
-          "taglineVi": "Decal ánh kim loại sang trọng, ép kim logo sáng bóng khẳng định đẳng cấp quà tặng Tết doanh nghiệp",
-          "description": [
-              "Reflective metallic silver base with mirror or brushed chrome finish",
-              "Precision hot foil stamping in brilliant festive gold or red",
-              "High-end security and prestige appearance for luxury hampers"
-          ],
-          "descriptionVi": [
-              "Lớp đế xi bạc phản chiếu ánh kim loại sang trọng, bắt sáng rực rỡ dưới ánh đèn",
-              "Ép kim nhũ vàng câu chúc Tân Niên Vạn Phúc và biểu trưng thương hiệu tinh xảo",
-              "Tem niêm phong bảo chứng chất lượng thượng hạng cho các giỏ quà Tết VIP"
-          ],
-          "descriptionTraits": [
-              "metallic-shine",
-              "foil-accent"
-          ],
-          "bestFor": [
-              "Premium gift boxes, imported spirits, bird's nest and high-end hampers"
-          ],
-          "bestForVi": [
-              "Hộp quà Tết VIP, chai rượu ngoại nhập khẩu, yến sào thượng hạng, đông trùng hạ thảo"
-          ],
-          "pureImage": "/images/product/art-foil.webp",
-          "pureImages": [
-              "/images/product/art-foil.webp",
-              "/images/product/vd-item-decal.jpeg",
-              "/images/category/nhandecaluvnoi.webp"
-          ],
-          "nameZh": "消银龙/银铝箔底 + 亮金烫印 (尊享防伪封口标)",
-          "nameJa": "シルバーホイルシール + ゴールド箔押し（最高級ブランド封緘シール）",
-          "nameKo": "은무데드롱 / 실버 메탈 + 입체 금박 (최고급 VIP 봉인 라벨)",
-          "taglineZh": "金属拉丝银底搭配闪耀烫金字样，折射高端光泽，彰显奢礼防伪尊贵身份的封口贴？",
-          "taglineJa": "メタリックな銀ホイル地に眩いゴールドの箔押し。高級ギフトの品格を証明する封印シールですか？",
-          "taglineKo": "메탈릭 실버 바탕에 눈부신 골드박을 입혀 선물의 품격과 정품 인증을 동시에 보증하는 VIP 봉인 스티커인가요?",
-          "descriptionZh": [
-              "金属质感银色聚酯基材，镜面或微哑银光泽，极具高科技与现代轻奢感",
-              "高精度电化铝热烫工艺，金光熠熠，烫印新年吉祥祝语与品牌防伪印鉴",
-              "高端礼品盒防拆封口与正品防伪的顶级视觉标志，倍增礼篮尊贵身价"
-          ],
-          "descriptionJa": [
-              "金属光沢を放つシルバーポリエステルフィルムが、洗練された高級感と信頼性を演出",
-              "高精度の熱転写ゴールド箔押しにより、新春の慶祝文様やブランドロゴが美しく輝く",
-              "高級ギフトボックスの開封防止シールや正規品証明シールとして、商品の価値を何倍にも引き上げる"
-          ],
-          "descriptionKo": [
-              "메탈릭 은색 폴리에스터 원단으로 은은한 헤어라인 광택이 돋보이는 모던 럭셔리 질감",
-              "초정밀 핫스탬핑 골드박 후가공으로 신년 축하 문구와 로고가 화려하게 반사",
-              "VIP 프리미엄 선물 박스의 개봉 방지 씰 및 정품 인증 라벨로 선물 세트의 가치 극대화"
-          ],
-          "bestForZh": [
-              "奢华年货大礼包封口、高端名庄进口红酒封签、天然燕窝及名贵冬虫夏草礼盒"
-          ],
-          "bestForJa": [
-              "高級百貨店の新春ギフトセット、輸入ワイン封印ラベル、高級ツバメの巣・漢方サプリ箱"
-          ],
-          "bestForKo": [
-              "대기업 VIP 명절 선물세트 밀봉, 최고급 양주 및 와인 봉인 라벨, 프리미엄 홍삼 및 영양제 상자"
-          ]
-      }
-    ]
+    "materials": LABEL_MATERIALS
   },
   {
     "id": "to-roi",
@@ -12047,7 +7746,214 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
         "nameKo": "연말 표창장 / 상장",
         "descriptionVi": "Giấy khen, chứng nhận vinh danh nhân viên và đối tác xuất sắc tại tiệc tổng kết cuối năm Year End Party.",
         "descriptionEn": "Prestige certificates and awards honoring employees and partners at Year-End Gala parties.",
-        "image": "/images/product/art-foil.webp"
+        "image": "/images/category/bangkhen.webp",
+        "materials": [
+          {
+            "icon": "Layers",
+            "name": "Type C Paper 250-300gsm",
+            "nameVi": "Giấy loại C 250-300gsm",
+            "tagline": "Need vibrant full-color official certificates with a smooth professional finish?",
+            "taglineVi": "Bạn cần bằng khen in màu sắc nét, bề mặt láng mịn chuyên nghiệp chuẩn công ty?",
+            "description": [
+              "Smooth coated Couche 250-300gsm paper with matte or glossy lamination",
+              "Vivid CMYK reproduction for corporate logos, emblems, and ornamental borders",
+              "Lamination protects against moisture and fingerprints for long-term framing"
+            ],
+            "descriptionVi": [
+              "Giấy Couche 250-300gsm láng mịn, cán màng mờ hoặc bóng trang trọng",
+              "In màu CMYK rực rỡ logo doanh nghiệp, hoa văn viền và con dấu đỏ sắc nét",
+              "Cán màng bảo vệ chống ẩm và vân tay, giữ bằng khen đẹp khi đóng khung treo"
+            ],
+            "descriptionTraits": [
+              "smooth-base",
+              "glossy-coat",
+              "thick-weight"
+            ],
+            "bestFor": [
+              "Corporate Year-End merit certificates and employee appreciation awards",
+              "Training completion diplomas and partner recognition plaques",
+              "Large-quantity official certificates for company-wide ceremonies"
+            ],
+            "bestForVi": [
+              "Bằng khen vinh danh nhân viên xuất sắc tại tiệc tất niên Year End Party",
+              "Giấy chứng nhận hoàn thành khóa đào tạo và bằng tri ân đối tác",
+              "In số lượng lớn bằng khen chính thức cho lễ tổng kết toàn công ty"
+            ],
+            "pureImage": "/images/product/bangkhen-giayloaic.webp",
+            "pureImages": [
+              "/images/product/bangkhen-giayloaic.webp",
+              "/images/product/bangkhen-giayloaic2.webp",
+              "/images/product/bangkhen-giayloaic3.webp"
+            ],
+            "nameZh": "铜版纸 250-300gsm 哑膜覆膜（标准企业荣誉证书）",
+            "nameJa": "コート紙 250-300gsm マットラミネート（公式表彰状）",
+            "nameKo": "스노우지 250-300gsm 무광 코팅 (공식 표창장)",
+            "taglineZh": "企业年终表彰大会颁发的标准全彩荣誉证书与奖状？",
+            "taglineJa": "年末表彰式に欠かせない、鮮やかなフルカラー印刷の公式表彰状ですか？",
+            "taglineKo": "연말 시상식에서 수여할 선명한 풀컬러 공식 표창장인가요?",
+            "descriptionZh": [
+              "250-300gsm铜版纸双面覆哑膜或光膜，手感厚重庄严",
+              "全彩四色精准还原企业标识、花纹边框与公章印文",
+              "覆膜层有效防潮防指纹，装裱入框长期陈列不褪色"
+            ],
+            "descriptionJa": [
+              "250〜300gsmの厚手コート紙に両面マットまたは光沢ラミネート加工",
+              "フルカラー4色で社章・飾り枠・社印を精密に再現",
+              "ラミネートが湿気や指紋を防ぎ、額装しても長年美しさを保つ"
+            ],
+            "descriptionKo": [
+              "250-300gsm 스노우지에 양면 무광 또는 유광 코팅으로 묵직하고 격식 있는 질감",
+              "풀컬러 4도 인쇄로 기업 로고, 문양 테두리, 직인을 정밀하게 구현",
+              "코팅층이 습기와 지문을 차단하여 액자에 담아 오래 전시해도 변색 없음"
+            ],
+            "bestForZh": [
+              "企业年终杰出员工荣誉证书、部门标兵奖状、全彩颁奖典礼"
+            ],
+            "bestForJa": [
+              "年度末の優秀社員表彰状、部門MVP認定証、全社表彰式"
+            ],
+            "bestForKo": [
+              "연말 우수 사원 표창장, 부서 MVP 인증서, 전사 시상식 공식 상장"
+            ]
+          },
+          {
+            "icon": "Feather",
+            "name": "Type F Paper 200-250gsm",
+            "nameVi": "Giấy loại F 200-250gsm",
+            "tagline": "Want a classic uncoated certificate with an elegant matte finish for calligraphy and handwritten signatures?",
+            "taglineVi": "Bạn muốn bằng khen giấy mộc tự nhiên, viết tay chữ ký đẹp và không chói lóa khi treo tường?",
+            "description": [
+              "Natural uncoated Ford 200-250gsm paper with warm ivory-white tone",
+              "Ink absorbs smoothly for clean ballpoint signatures and rubber stamps",
+              "Zero glare under office lighting, perfect for framed wall display"
+            ],
+            "descriptionVi": [
+              "Giấy Ford 200-250gsm không tráng phủ, tông trắng ngà ấm áp trang nhã",
+              "Mực bút bi và mực dấu đỏ thấm đều đẹp, chữ ký tay sắc nét trang trọng",
+              "Hoàn toàn không bị chói lóa dưới đèn văn phòng, lý tưởng đóng khung treo tường"
+            ],
+            "descriptionTraits": [
+              "natural-grain",
+              "soft-light",
+              "thick-weight"
+            ],
+            "bestFor": [
+              "Traditional calligraphy-style merit certificates and appreciation letters",
+              "Academic diplomas and professional training completion certificates",
+              "Handwritten signature awards where pen ink must absorb cleanly"
+            ],
+            "bestForVi": [
+              "Bằng khen phong cách cổ điển trang trọng với font chữ thư pháp truyền thống",
+              "Giấy chứng nhận tốt nghiệp khóa học và bằng hoàn thành chương trình đào tạo",
+              "Bằng khen cần chữ ký tay và đóng dấu đỏ bảo đảm mực thấm đều sắc nét"
+            ],
+            "pureImage": "/images/product/bangkhen-giayloaif.webp",
+            "pureImages": [
+              "/images/product/bangkhen-giayloaif.webp",
+              "/images/product/bangkhen-giayloaif2.webp",
+              "/images/product/bangkhen-giayloaif3.webp"
+            ],
+            "hideFoilCheckbox": true,
+            "nameZh": "道林纸 200-250gsm 无涂层（经典手签奖状）",
+            "nameJa": "上質紙 200-250gsm 非コート（手書きサイン入り表彰状）",
+            "nameKo": "모조지 200-250gsm 무코팅 (수기 서명용 고전 상장)",
+            "taglineZh": "偏好素雅温润无反光、方便领导亲笔签名盖章的传统风格奖状？",
+            "taglineJa": "温かみのある無塗工紙で、手書きサインや朱印が美しく映える伝統的な賞状ですか？",
+            "taglineKo": "은은하고 따뜻한 무코팅지로 대표 친필 서명과 직인이 아름답게 스며드는 전통 상장인가요?",
+            "descriptionZh": [
+              "200-250gsm无涂层道林纸，色调温暖象牙白，手感柔和细腻",
+              "签字笔墨水与印泥快速均匀渗透，手签与盖章清晰不晕染",
+              "无反光纸面在任何灯光与玻璃框中均不刺眼，典雅庄重"
+            ],
+            "descriptionJa": [
+              "200〜250gsmの非コート上質紙、温かみのあるアイボリーホワイトの色調",
+              "ボールペンや万年筆のインクがスムーズに吸収され、署名と社印が美しく定着",
+              "照明や額縁のガラス越しでもギラつかない落ち着いた紙面で格式を演出"
+            ],
+            "descriptionKo": [
+              "200-250gsm 무코팅 모조지로 따뜻한 아이보리 화이트 톤의 클래식한 질감",
+              "볼펜과 주인 잉크가 빠르게 고르게 스며들어 수기 서명과 날인이 깔끔하게 정착",
+              "어떤 조명 아래에서도 빛 반사 없이 차분하여 유리 액자 속에서도 품격을 유지"
+            ],
+            "bestForZh": [
+              "领导亲签传统手写风格奖状、学术结业证书、培训合格认定证"
+            ],
+            "bestForJa": [
+              "経営陣の直筆サイン入り伝統的な表彰状、修了証書、研修認定証"
+            ],
+            "bestForKo": [
+              "임원 친필 서명 전통 표창장, 학술 수료증, 사내 연수 인증서"
+            ]
+          },
+          {
+            "icon": "Palette",
+            "name": "Premium Art Paper with Foil",
+            "nameVi": "Giấy Mỹ Thuật Cao Cấp Ép Kim",
+            "tagline": "Want a luxurious textured art certificate with radiant gold foil for VIP award ceremonies?",
+            "taglineVi": "Bạn muốn bằng khen giấy mỹ thuật vân nhám sang trọng, ép kim nhũ vàng trao tặng tại Gala VIP?",
+            "description": [
+              "Heavy imported European art paper with elegant tactile grain texture",
+              "Radiant 3D gold or silver metallic foil stamping for borders and emblems",
+              "Archival-grade longevity for commemorative certificates worthy of framing"
+            ],
+            "descriptionVi": [
+              "Giấy mỹ thuật nhập khẩu châu Âu dày dặn, bề mặt vân nhám đẳng cấp khi chạm tay",
+              "Ép kim nhũ vàng 3D viền hoa văn cổ điển và chữ vinh danh lấp lánh trang trọng",
+              "Chất lượng lưu trữ bền vĩnh cửu, xứng đáng đóng khung kính trao tại lễ Gala tất niên"
+            ],
+            "descriptionTraits": [
+              "textured-art",
+              "foil-accent",
+              "thick-weight"
+            ],
+            "bestFor": [
+              "VIP Year-End Gala merit certificates and lifetime achievement awards",
+              "Gold Partner recognition plaques and executive appreciation honors",
+              "Limited-edition commemorative certificates for milestone anniversaries"
+            ],
+            "bestForVi": [
+              "Bằng khen VIP tại Gala tất niên, giải thưởng cống hiến trọn đời cho doanh nghiệp",
+              "Giấy chứng nhận Đối tác Vàng và tri ân ban lãnh đạo xuất sắc",
+              "Bằng khen giới hạn kỷ niệm dấu mốc quan trọng của công ty"
+            ],
+            "pureImage": "/images/product/bangkhen-giaymythuat.webp",
+            "pureImages": [
+              "/images/product/bangkhen-giaymythuat.webp",
+              "/images/product/bangkhen-giaymythuat2.webp",
+              "/images/product/bangkhen-giaymythuat3.webp"
+            ],
+            "nameZh": "高端进口特种艺术纸 + 3D烫金（顶级年终荣誉证书）",
+            "nameJa": "最高級アート紙 + 3D金箔押し（プレミアム表彰状）",
+            "nameKo": "최고급 수입 예술지 + 3D 금박 (프리미엄 VIP 표창장)",
+            "taglineZh": "年终Gala盛典上颁发的最高荣誉、触感奢华且金箔璀璨的顶级证书？",
+            "taglineJa": "年末ガラパーティーの最高栄誉にふさわしい、触感と金箔の輝きが際立つ最上位の表彰状ですか？",
+            "taglineKo": "연말 갈라 시상식에서 수여하는 최고 영예, 촉감과 금박의 빛이 압도적인 최상급 표창장인가요?",
+            "descriptionZh": [
+              "欧洲进口高克重纯棉特种艺术纸，表面质感独特细腻，触感温润高贵",
+              "3D立体烫金工艺精准凸显古典花纹边框与荣誉文字，金属光泽夺目辉煌",
+              "无酸抗氧化纸质配方，裱入实木玻璃画框数十年不变黄不脆化"
+            ],
+            "descriptionJa": [
+              "ヨーロッパ伝統の厚手コットン系ファインアート紙、独特の紙肌が最高級の風格を演出",
+              "3D立体ゴールド箔で唐草飾り枠や表彰タイトルを美しく浮かび上がらせ、眩い輝きで栄誉を称える",
+              "中性紙アーカイブ仕様で、額装保存しても長年にわたり変色や劣化がない永続性"
+            ],
+            "descriptionKo": [
+              "유럽 전통의 두터운 코튼 파인아트 수입지로 독특한 엠보 질감과 묵직한 프리미엄 중량감",
+              "3D 입체 골드박으로 클래식 문양 테두리와 표창 문구를 정밀하게 각인, 압도적인 위엄",
+              "중성 보존 용지로 유리 액자에 담아 수십 년 전시해도 변색·노화 없이 품격 유지"
+            ],
+            "bestForZh": [
+              "企业年终Gala杰出人物最高荣誉证书、金牌战略合作伙伴奖状、里程碑纪念证书"
+            ],
+            "bestForJa": [
+              "年末ガラ表彰式の最優秀賞状、ゴールドパートナー認定証、創業記念アニバーサリー証書"
+            ],
+            "bestForKo": [
+              "연말 갈라 최우수 공로 표창장, 골드 파트너 인증서, 기업 마일스톤 기념 상장"
+            ]
+          }
+        ]
       },
       {
         "id": "vong-tay-su-kien",
