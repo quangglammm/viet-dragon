@@ -1,0 +1,10 @@
+- Nút tương tác với Zalo: hiển thị theo style https://dribbble.com/shots/25459490-Instant-Payout-Info-Bottom-Sheet
++ Title: là tên sp (ví dụ: "Danh Thiếp Gấp Đôi")
++ Desc: "Tư vấn chi tiết hơn về sản phẩm này"
++ inut text: hint text "nhập số điện thoại để công ty chủ động liên lạc", user nhập sdt, validate regex
++ Submit button
+- Dữ liệu sdt đi qua Email: contact@vietdragon.vn
++ Title: "[Gấp] 098xxxx quan tâm sản phẩm Danh Thiếp Gấp Đôi"
++ Desc: "098xxxx Nhắn tin qua Zalo", hiển thị theo kiểu hyperlink, click vào đá qua App Zalo (cho cả Mobile/PC)
+Hyperlink hoàn toàn có thể truyền được dữ liệu, chủ yếu thông qua Query Parameters (tham số truy vấn) trên nền tảng web:
+"Cảm ơn anh/chị đã quan tâm đến sản phẩm "tên sản phẩm + tên chất liệu giấy"(ví dụ: "Danh thiếp/Thẻ giấy loại C", khi khách hàng đang ở trang danh thiếp/thẻ và nhấn tư vấn ở card Giấy loại C). Vietdragon rất mong muốn được liên hệ để tư vấn chi tiết hơn về mong đợi, chất liệu, giá thành và kích thước phù hợp nhất cho nhu cầu của mình ạ!"
