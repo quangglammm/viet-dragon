@@ -55,7 +55,7 @@ export const MAIN_CATEGORIES: ProductCategoryDef[] = [
     descriptionEn: "Print materials to showcase your brand, engage customers, and drive sales.",
     description: "Print materials to showcase your brand, engage customers, and drive sales.",
     icon: "Briefcase",
-    coverImage: "/images/category/vd-cat-marketing.jpg",
+    coverImage: "/images/category/vd-mkt-cover.jpg",
   },
   {
     id: "office",
@@ -65,7 +65,7 @@ export const MAIN_CATEGORIES: ProductCategoryDef[] = [
     descriptionEn: "Essential prints for daily operations and a cohesive corporate brand identity.",
     description: "Essential prints for daily operations and a cohesive corporate brand identity.",
     icon: "Layers",
-    coverImage: "/images/category/vd-cat-office.jpg",
+    coverImage: "/images/category/vd-sta-cover.jpg",
   },
   {
     id: "packaging",
@@ -75,7 +75,7 @@ export const MAIN_CATEGORIES: ProductCategoryDef[] = [
     descriptionEn: "Quality boxes, bags, and packaging that elevate your product's unboxing experience.",
     description: "Quality boxes, bags, and packaging that elevate your product's unboxing experience.",
     icon: "Package",
-    coverImage: "/images/category/vd-cat-packaging.jpg",
+    coverImage: "/images/category/vd-pkg-cover.jpg",
   },
   {
     id: "tet",
@@ -85,7 +85,7 @@ export const MAIN_CATEGORIES: ProductCategoryDef[] = [
     descriptionEn: "Calendars, red envelopes, and festive gift boxes celebrating the Lunar New Year.",
     description: "Calendars, red envelopes, and festive gift boxes celebrating the Lunar New Year.",
     icon: "Gift",
-    coverImage: "/images/category/vd-cat-tet.jpg",
+    coverImage: "/images/category/vd-tet-cover.jpg",
   },
 ];
 
