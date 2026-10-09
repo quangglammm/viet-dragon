@@ -77,21 +77,21 @@ export default async function BlogPage({
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               preload
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/30 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10">
-              <div className="flex items-center gap-3 mb-4">
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/45 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
+              <div className="flex items-center gap-3 mb-4 text-shadow-dark">
                 <span className={`px-3 py-1 rounded-full text-xs font-semibold ${categoryColors[featured.category].bg} ${categoryColors[featured.category].text}`}>
                   {category(featured)}
                 </span>
-                <span className="text-white/50 text-xs flex items-center gap-1">
+                <span className="text-white/80 text-xs flex items-center gap-1">
                   <Clock size={11} /> {featured.readTime} {t("minute")}
                 </span>
-                <span className="text-white/40 text-xs">{formatDate(featured.date, locale)}</span>
+                <span className="text-white/70 text-xs">{formatDate(featured.date, locale)}</span>
               </div>
-              <h2 className="text-2xl lg:text-3xl font-black text-white leading-tight mb-2 group-hover:text-brand-primary transition-colors">
+              <h2 className="text-2xl lg:text-3xl font-black text-white leading-tight mb-2 group-hover:text-brand-primary transition-colors text-shadow-dark-lg">
                 {title(featured)}
               </h2>
-              <p className="text-white/60 text-sm leading-relaxed max-w-2xl line-clamp-2">
+              <p className="text-white/80 text-sm leading-relaxed max-w-2xl line-clamp-2 text-shadow-dark">
                 {excerpt(featured)}
               </p>
               <p className="mt-4 text-brand-primary text-sm font-semibold flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">

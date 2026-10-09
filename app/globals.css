@@ -307,6 +307,15 @@
   gap: 0.5rem;
 }
 
+/* Dark text shadow utilities to ensure white text remains distinct and legible over light/white image backgrounds */
+.text-shadow-dark {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 2px 8px rgba(0, 0, 0, 0.85);
+}
+
+.text-shadow-dark-lg {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95), 0 4px 14px rgba(0, 0, 0, 0.9), 0 8px 28px rgba(0, 0, 0, 0.8);
+}
+
 /* Offset for sticky navbar on hash navigation so section headings aren't hidden */
 section[id] {
   scroll-margin-top: 4rem; /* 64px for mobile navbar */
