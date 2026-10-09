@@ -15,6 +15,7 @@ import { MaterialFlashcard } from "@/components/ui/material-flashcard";
 import { MaterialGlossaryFab } from "@/components/ui/material-glossary-fab";
 import { CATEGORY_NAMES } from "@/data/translations";
 import { checkPublicImageExists, sanitizeOptionImages } from "@/lib/image-check";
+import { SHAPE_ALIASES } from "@/components/sections/SubgroupShapesView";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 
@@ -37,7 +38,8 @@ export async function generateMetadata({
   const subgroup = getSubgroupById(productId, categoryId);
   if (!subgroup) return {};
 
-  const shape = subgroup.shapes.find((s) => s.id === shapeId);
+  const resolvedShapeId = SHAPE_ALIASES[shapeId] ?? shapeId;
+  const shape = subgroup.shapes.find((s) => s.id === shapeId || s.id === resolvedShapeId);
   if (!shape) return {};
 
   const shapeName = pickLocale(locale, shape.nameVi, shape.nameEn, shape.nameZh, shape.nameJa, shape.nameKo);
@@ -60,7 +62,8 @@ export default async function ShapeMaterialDetailPage({
   const subgroup = getSubgroupById(productId, categoryId);
   if (!subgroup) notFound();
 
-  const shape = subgroup.shapes.find((s) => s.id === shapeId);
+  const resolvedShapeId = SHAPE_ALIASES[shapeId] ?? shapeId;
+  const shape = subgroup.shapes.find((s) => s.id === shapeId || s.id === resolvedShapeId);
   if (!shape) notFound();
 
   const cat = MAIN_CATEGORIES.find((c) => c.id === categoryId);
@@ -178,6 +181,9 @@ export default async function ShapeMaterialDetailPage({
                           doubleSidedCheckboxLabel={t("optionDoubleSidedCheckboxLabel")}
                           hideFoilCheckbox={opt.hideFoilCheckbox}
                           hideDoubleSidedCheckbox={opt.hideDoubleSidedCheckbox}
+                          productId={productId}
+                          shapeId={shapeId}
+                          categoryId={categoryId}
                         />
                       </div>
                     ))}
