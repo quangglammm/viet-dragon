@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowRight, Layers, Sparkles, Check } from "lucide-react";
+import { ArrowRight, Layers, Sparkles } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { pickLocale } from "@/lib/locale";
@@ -370,20 +370,7 @@ export function SubgroupShapesView({
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
 
-                  {/* Shape Feature Badge (e.g. Đục lỗ xỏ dây, Thiệp chúc Tết) */}
-                  {(shape.badgeVi || shape.badgeEn) && (
-                    <div className="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full bg-zinc-950/75 backdrop-blur-md text-white text-[11px] font-bold shadow-md tracking-wide">
-                      {pickLocale(locale, shape.badgeVi, shape.badgeEn)}
-                    </div>
-                  )}
 
-                  {/* Selected Badge */}
-                  {isHighlighted && (
-                    <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-full bg-brand-primary text-white text-[11px] font-bold shadow-md flex items-center gap-1">
-                      <Check size={12} strokeWidth={3} />
-                      <span>{isVi ? "Đã chọn" : "Selected"}</span>
-                    </div>
-                  )}
                 </div>
 
                 {/* Body */}
