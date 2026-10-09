@@ -17,6 +17,7 @@ import { MaterialFlashcard } from "@/components/ui/material-flashcard";
 import { MaterialGlossaryFab } from "@/components/ui/material-glossary-fab";
 import { CATEGORY_NAMES, CATEGORY_DESCS, ITEM_NAMES, ITEM_DESCS } from "@/data/translations";
 import { checkPublicImageExists, sanitizeOptionImages } from "@/lib/image-check";
+import { resolveShapeAlias } from "@/lib/shape-aliases";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 
@@ -196,7 +197,7 @@ export default async function ProductDetailPage({
                     className="flex flex-col gap-6"
                   >
                     {group.options.map((opt) => (
-                      <div key={opt.name}>
+                      <div key={opt.name} id={resolveShapeAlias(opt.nameVi)} className="scroll-mt-28">
                         <p className="font-black text-zinc-900 text-[15px] leading-snug mb-2.5">
                           {pickLocale(locale, opt.taglineVi, opt.tagline, opt.taglineZh, opt.taglineJa, opt.taglineKo)}
                         </p>

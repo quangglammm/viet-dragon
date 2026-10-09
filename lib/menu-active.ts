@@ -1,4 +1,5 @@
 // Helper to detect if a submenu item is currently active/selected based on current pathname & hash
+import { resolveShapeAlias } from "@/lib/shape-aliases";
 
 function normalizePath(p: string): string {
   if (!p) return "";
@@ -23,32 +24,58 @@ export function isSubmenuItemActive(
   const normalizedCurrentPath = normalizePath(currentPathname);
   const cleanHash = (currentHash || "").replace(/^#/, "").trim();
 
-  // 1. Hash-based link (e.g. "/products/tet/bao-li-xi#bao-li-xi-ep-kim")
+  // 1. Hash-based link (e.g. "/products/tet/bao-li-xi#bao-li-xi-ep-kim" or "/products/tet/nhan-dan#nhan-decal-giay")
   if (itemHash) {
+    const resolvedItemHash = resolveShapeAlias(itemHash);
+    const resolvedCurrentHash = resolveShapeAlias(cleanHash);
+
     // Exact match on same page when hash is present
-    if (normalizedCurrentPath === normalizedItemPath && cleanHash === itemHash) {
+    if (
+      normalizedCurrentPath === normalizedItemPath &&
+      cleanHash !== "" &&
+      (cleanHash === itemHash || resolvedCurrentHash === resolvedItemHash)
+    ) {
       return true;
     }
+
     // Match when user is on the deep shape page (e.g. "/products/tet/bao-li-xi/bao-li-xi-ep-kim")
-    if (normalizedCurrentPath === `${normalizedItemPath}/${itemHash}`) {
+    if (
+      normalizedCurrentPath === `${normalizedItemPath}/${itemHash}` ||
+      normalizedCurrentPath === `${normalizedItemPath}/${resolvedItemHash}`
+    ) {
       return true;
     }
+
+    return false;
   }
 
   // 2. Subpath-based link (e.g. "/products/office/danh-thiep/danh-thiep-chuan")
-  if (!itemHash) {
+  // Must be a distinct detail/shape route (>= 4 segments: ["products", cat, subgroup, shapeId])
+  const segments = normalizedItemPath.split("/").filter(Boolean);
+  if (segments.length >= 4) {
+    // Direct match on deep shape route (e.g. /products/office/danh-thiep/danh-thiep-chuan)
     if (normalizedCurrentPath === normalizedItemPath) {
       return true;
     }
+
     // If user is on the parent subgroup page and the hash matches the shape ID
-    const segments = normalizedItemPath.split("/").filter(Boolean);
     const shapeId = segments[segments.length - 1];
     const parentPath = "/" + segments.slice(0, -1).join("/");
-    if (shapeId && normalizedCurrentPath === parentPath && cleanHash === shapeId) {
+    const resolvedShapeId = resolveShapeAlias(shapeId);
+    const resolvedCurrentHash = resolveShapeAlias(cleanHash);
+
+    if (
+      cleanHash !== "" &&
+      normalizedCurrentPath === parentPath &&
+      (cleanHash === shapeId || resolvedCurrentHash === resolvedShapeId)
+    ) {
       return true;
     }
   }
 
+  // 3. Fallback: If itemHref is only a category/subgroup path without hash
+  // (e.g. "/products/tet/nhan-dan"), it is a group link, NOT an individual item,
+  // so do not highlight it as an active submenu item to avoid multi-item highlighting.
   return false;
 }
 

@@ -15,7 +15,7 @@ import { MaterialFlashcard } from "@/components/ui/material-flashcard";
 import { MaterialGlossaryFab } from "@/components/ui/material-glossary-fab";
 import { CATEGORY_NAMES } from "@/data/translations";
 import { checkPublicImageExists, sanitizeOptionImages } from "@/lib/image-check";
-import { SHAPE_ALIASES } from "@/components/sections/SubgroupShapesView";
+import { SHAPE_ALIASES } from "@/lib/shape-aliases";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 
