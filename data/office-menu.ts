@@ -52,7 +52,7 @@ export const OFFICE_SUBMENU_COLUMNS: {
             nameJa: "高級アート紙名刺",
             nameKo: "고급 수입지 명함",
             kind: "material",
-            href: "/products/office/danh-thiep/danh-thiep-chuan",
+            href: "/products/office/danh-thiep#giay-my-thuat",
             image: "/images/product/art.webp",
             isFast: true,
           },
@@ -109,7 +109,7 @@ export const OFFICE_SUBMENU_COLUMNS: {
             nameJa: "耐水合成紙名刺",
             nameKo: "방수 찢어지지 않는 플라스틱 명함",
             kind: "material",
-            href: "/products/office/danh-thiep/danh-thiep-chuan",
+            href: "/products/office/danh-thiep#the-nhua-pvc",
             image: "/images/product/thenhuapvc.webp",
           },
           {
@@ -239,7 +239,7 @@ export const OFFICE_SUBMENU_COLUMNS: {
             nameJa: "クラフト紙封筒",
             nameKo: "크라프트지 봉투",
             kind: "material",
-            href: "/products/office/bao-thu/bao-thu-lay-ngay",
+            href: "/products/office/bao-thu#bao-thu-kraft",
             image: "/images/product/bag-kraft1.webp",
           },
           {
@@ -372,7 +372,7 @@ export const OFFICE_SUBMENU_COLUMNS: {
             nameJa: "1ポケットホルダー",
             nameKo: "1단 접이식 서류 홀더",
             kind: "shape",
-            href: "/products/office/bia-dung-ho-so",
+            href: "/products/office/bia-dung-ho-so#bia-ho-so-1-tay-gap",
             image: "/images/category/biadunghoso1taygap.webp",
           },
           {
@@ -383,7 +383,7 @@ export const OFFICE_SUBMENU_COLUMNS: {
             nameJa: "2ポケットホルダー",
             nameKo: "2단 접이식 서류 홀더",
             kind: "shape",
-            href: "/products/office/bia-dung-ho-so",
+            href: "/products/office/bia-dung-ho-so#bia-ho-so-2-tay-gap",
             image: "/images/category/biadunghoso2taygap.webp",
           },
           {
@@ -394,7 +394,7 @@ export const OFFICE_SUBMENU_COLUMNS: {
             nameJa: "高級特アート紙フォルダ",
             nameKo: "최고급 특수가공 홀더",
             kind: "shape",
-            href: "/products/office/bia-dung-ho-so",
+            href: "/products/office/bia-dung-ho-so#bia-ho-so-cao-cap",
             image: "/images/category/biadunghosocaocap.webp",
           },
         ],

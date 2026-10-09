@@ -52,7 +52,7 @@ export const MARKETING_SUBMENU_COLUMNS: {
             nameJa: "PP合成紙ポスター",
             nameKo: "PP 합성지 포스터",
             kind: "material",
-            href: "/products/marketing/poster-bangron-standee/decal-kho-lon",
+            href: "/products/marketing/poster-bangron-standee#poster-chat-lieu-pp",
             image: "/images/category/poster-bangron-standee.webp",
           },
           {
@@ -63,7 +63,7 @@ export const MARKETING_SUBMENU_COLUMNS: {
             nameJa: "ターポリン・ハイフレックス幕",
             nameKo: "하이플렉스 대형 현수막",
             kind: "material",
-            href: "/products/marketing/poster-bangron-standee/decal-kho-lon",
+            href: "/products/marketing/poster-bangron-standee#bang-ron-hiflex",
             image: "/images/category/poster-bangron-standee.webp",
           },
           {
@@ -107,7 +107,7 @@ export const MARKETING_SUBMENU_COLUMNS: {
             nameJa: "シースルーメッシュシート",
             nameKo: "원웨이 타공 메쉬 시트지",
             kind: "material",
-            href: "/products/marketing/poster-bangron-standee/decal-kho-lon",
+            href: "/products/marketing/poster-bangron-standee#decal-luoi",
             image: "/images/category/decalkholon.webp",
           },
           {
@@ -129,7 +129,7 @@ export const MARKETING_SUBMENU_COLUMNS: {
             nameJa: "電飾用バックライトフィルム",
             nameKo: "조명용 백릿 필름 (와이드컬러)",
             kind: "material",
-            href: "/products/marketing/poster-bangron-standee/decal-kho-lon",
+            href: "/products/marketing/poster-bangron-standee#backlit-film",
             image: "/images/category/poster-bangron-standee.webp",
           },
           {
