@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import { TET_SUBMENU_COLUMNS } from "@/data/tet-menu";
+import { isSubmenuItemActive, isSubmenuGroupActive } from "@/lib/menu-active";
+import { useCurrentHash } from "@/hooks/use-current-hash";
 
 const FAST_PRINT_TAGS: Record<Locale, string> = {
   vi: "in nhanh",
@@ -27,8 +29,20 @@ export function TetDesktopSubmenu({
   isOpen: boolean;
   onItemClick?: () => void;
 }>) {
+  const pathname = usePathname();
+  const currentHash = useCurrentHash();
   const [bgImage, setBgImage] = useState<string>(DEFAULT_IMAGE);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+
+  const handleItemClick = () => {
+    onItemClick?.();
+    if (typeof window !== "undefined") {
+      setTimeout(() => {
+        window.dispatchEvent(new Event("hashchange"));
+        window.dispatchEvent(new Event("shape-select"));
+      }, 50);
+    }
+  };
 
   return (
     <div
@@ -56,79 +70,94 @@ export function TetDesktopSubmenu({
       <div className="grid grid-cols-3 gap-8 relative z-10">
         {TET_SUBMENU_COLUMNS.map((col) => (
           <div key={col.id} className="flex flex-col gap-6">
-            {col.groups.map((group) => (
-              <div key={group.id} className="flex flex-col">
-                <Link
-                  href={group.href}
-                  onClick={onItemClick}
-                  onMouseEnter={() => {
-                    setBgImage(group.image);
-                    setHoveredId(group.id);
-                  }}
-                  onMouseLeave={() => setHoveredId(null)}
-                  className={cn(
-                    "group flex items-center justify-between pb-1.5 mb-2 border-b border-zinc-200/80 hover:border-brand-primary/40 transition-colors",
-                    hoveredId === group.id ? "border-brand-primary/40" : ""
-                  )}
-                >
-                  <span
+            {col.groups.map((group) => {
+              const isGroupActive = isSubmenuGroupActive(group.href, pathname);
+              return (
+                <div key={group.id} className="flex flex-col">
+                  <Link
+                    href={group.href}
+                    onClick={handleItemClick}
+                    onMouseEnter={() => {
+                      setBgImage(group.image);
+                      setHoveredId(group.id);
+                    }}
+                    onMouseLeave={() => setHoveredId(null)}
                     className={cn(
-                      "text-[14.5px] font-bold tracking-tight transition-colors",
-                      hoveredId === group.id
-                        ? "text-brand-primary"
-                        : "text-zinc-900 group-hover:text-brand-primary"
+                      "group flex items-center justify-between pb-1.5 mb-2 border-b transition-colors",
+                      isGroupActive || hoveredId === group.id
+                        ? "border-brand-primary/50 text-brand-primary"
+                        : "border-zinc-200/80 hover:border-brand-primary/40 text-zinc-900 hover:text-brand-primary"
                     )}
                   >
-                    {pickLocale(
-                      locale,
-                      group.titleVi,
-                      group.titleEn,
-                      group.titleZh,
-                      group.titleJa,
-                      group.titleKo
-                    )}
-                  </span>
-                </Link>
+                    <span
+                      className={cn(
+                        "text-[14.5px] font-bold tracking-tight transition-colors",
+                        isGroupActive || hoveredId === group.id
+                          ? "text-brand-primary"
+                          : "text-zinc-900 group-hover:text-brand-primary"
+                      )}
+                    >
+                      {pickLocale(
+                        locale,
+                        group.titleVi,
+                        group.titleEn,
+                        group.titleZh,
+                        group.titleJa,
+                        group.titleKo
+                      )}
+                    </span>
+                  </Link>
 
-                <ul className="flex flex-col space-y-0.5">
-                  {group.items.map((item) => (
-                    <li key={item.id}>
-                      <Link
-                        href={item.href}
-                        onClick={onItemClick}
-                        onMouseEnter={() => {
-                          setBgImage(item.image);
-                          setHoveredId(item.id);
-                        }}
-                        onMouseLeave={() => setHoveredId(null)}
-                        className={cn(
-                          "group flex items-center justify-between px-3 py-1.5 rounded-xl text-[13.5px] transition-all duration-150",
-                          hoveredId === item.id
-                            ? "bg-brand-primary/15 text-brand-primary font-bold shadow-2xs"
-                            : "text-zinc-800 hover:text-brand-primary hover:bg-brand-primary/10 font-medium"
-                        )}
-                      >
-                        <span className="leading-snug">
-                          {pickLocale(
-                            locale,
-                            item.nameVi,
-                            item.nameEn,
-                            item.nameZh,
-                            item.nameJa,
-                            item.nameKo
-                          )}
-                        </span>
-                        {item.isFast && (
-                          <span className="px-1.5 py-0.5 text-[10px] font-bold text-white bg-amber-500 rounded leading-none shadow-xs shrink-0 ml-1.5">
-                            {FAST_PRINT_TAGS[locale] || "in nhanh"}
-                          </span>
-                        )}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+                  <ul className="flex flex-col space-y-0.5">
+                    {group.items.map((item) => {
+                      const isActive = isSubmenuItemActive(item.href, pathname, currentHash);
+                      return (
+                        <li key={item.id}>
+                          <Link
+                            href={item.href}
+                            onClick={handleItemClick}
+                            onMouseEnter={() => {
+                              setBgImage(item.image);
+                              setHoveredId(item.id);
+                            }}
+                            onMouseLeave={() => setHoveredId(null)}
+                            className={cn(
+                              "group flex items-center justify-between px-3 py-1.5 rounded-xl text-[13.5px] transition-all duration-150",
+                              isActive
+                                ? "bg-brand-primary/15 text-brand-primary font-bold ring-1 ring-brand-primary/30 shadow-2xs"
+                                : hoveredId === item.id
+                                  ? "bg-brand-primary/10 text-brand-primary font-bold shadow-2xs"
+                                  : "text-zinc-800 hover:text-brand-primary hover:bg-brand-primary/10 font-medium"
+                            )}
+                          >
+                            <span className="leading-snug">
+                              {pickLocale(
+                                locale,
+                                item.nameVi,
+                                item.nameEn,
+                                item.nameZh,
+                                item.nameJa,
+                                item.nameKo
+                              )}
+                            </span>
+                            {item.isFast && (
+                              <span
+                                className={cn(
+                                  "px-1.5 py-0.5 text-[10px] font-bold rounded leading-none shadow-xs shrink-0 ml-1.5",
+                                  isActive ? "bg-brand-primary text-white" : "bg-amber-500 text-white"
+                                )}
+                              >
+                                {FAST_PRINT_TAGS[locale] || "in nhanh"}
+                              </span>
+                            )}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>
