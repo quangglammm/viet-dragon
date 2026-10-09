@@ -68,30 +68,30 @@ export default async function BlogPostPage({
           className="object-cover"
           preload
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/40 to-zinc-950/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/95 via-zinc-950/65 to-zinc-950/20" />
         <div className="absolute inset-0 flex items-end">
-          <div className="max-w-4xl mx-auto px-6 pb-12 w-full">
-            <nav aria-label="breadcrumb" className="flex items-center gap-2 text-sm text-white/50 mb-6">
+          <div className="max-w-4xl mx-auto px-6 pb-12 w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
+            <nav aria-label="breadcrumb" className="flex items-center gap-2 text-sm text-white/90 mb-6 font-medium text-shadow-dark">
               <Link href="/" className="hover:text-white transition-colors">{t("breadcrumbHome")}</Link>
-              <span>/</span>
+              <span className="text-white/70">/</span>
               <Link href="/blog" className="hover:text-white transition-colors">{t("breadcrumbBlog")}</Link>
-              <span>/</span>
-              <span className="text-white/80 line-clamp-1">{title}</span>
+              <span className="text-white/70">/</span>
+              <span className="text-white font-bold line-clamp-1">{title}</span>
             </nav>
 
-            <div className="flex flex-wrap items-center gap-3 mb-4">
+            <div className="flex flex-wrap items-center gap-3 mb-4 text-shadow-dark">
               <span className={`px-3 py-1 rounded-full text-xs font-semibold ${categoryColors[post.category].bg} ${categoryColors[post.category].text}`}>
                 {category}
               </span>
-              <span className="text-white/50 text-xs flex items-center gap-1.5">
+              <span className="text-white/80 text-xs flex items-center gap-1.5">
                 <Clock size={12} /> {post.readTime} {t("minuteRead")}
               </span>
-              <span className="text-white/50 text-xs flex items-center gap-1.5">
+              <span className="text-white/80 text-xs flex items-center gap-1.5">
                 <Calendar size={12} /> {formatDate(post.date, locale)}
               </span>
             </div>
 
-            <h1 className="text-3xl lg:text-4xl font-black text-white leading-tight">
+            <h1 className="text-3xl lg:text-4xl font-black text-white leading-tight text-shadow-dark-lg">
               {title}
             </h1>
           </div>

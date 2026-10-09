@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowRight, Layers, Sparkles } from "lucide-react";
+import { ArrowRight, Layers, Sparkles, Check } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import type { SubgroupCategory } from "@/data/subgroups-catalog";
 
-const SHAPE_ALIASES: Record<string, string> = {
+export const SHAPE_ALIASES: Record<string, string> = {
   // poster-bangron-standee
   "hanging-board": "bang-treo",
   "bang-treo": "bang-treo",
@@ -103,14 +103,22 @@ const SHAPE_ALIASES: Record<string, string> = {
   "nhan-decal-giay": "nhan-decal-giay",
   "label-plastic": "nhan-decal-nhua",
   "nhan-decal-nhua": "nhan-decal-nhua",
+  "label-kraft": "nhan-decal-giay-kraft",
+  "nhan-decal-giay-kraft": "nhan-decal-giay-kraft",
+  "label-art-paper": "nhan-decal-giay-my-thuat",
+  "nhan-decal-giay-my-thuat": "nhan-decal-giay-my-thuat",
+  "label-metallic": "nhan-decal-xi-bac",
+  "label-metallic-foil": "nhan-decal-xi-bac",
+  "nhan-decal-xi-bac": "nhan-decal-xi-bac",
   "hashtag-paper": "hashtag-giay",
   "hashtag-giay": "hashtag-giay",
   "certificate-award": "bang-khen",
   "bang-khen": "bang-khen",
-  "banner-hiflex": "bang-ron-hiflex",
-  "bang-ron-hiflex": "bang-ron-hiflex",
-  "poster-pp": "bang-ron-hiflex",
-  "poster-chat-lieu-pp": "bang-ron-hiflex",
+  "banner-hiflex": "hashtag-cam-tay",
+  "bang-ron-hiflex": "hashtag-cam-tay",
+  "poster-pp": "hashtag-cam-tay",
+  "poster-chat-lieu-pp": "hashtag-cam-tay",
+  "wristband": "vong-tay-su-kien",
   "lixi-standard": "bao-li-xi-chuan",
   "bao-li-xi-chuan": "bao-li-xi-chuan",
   "lixi-2026": "bao-li-xi-2026",
@@ -195,17 +203,24 @@ export function SubgroupShapesView({
           if (el) {
             el.scrollIntoView({ behavior: "smooth", block: "center" });
           }
-        }, 250);
+        }, 150);
         return () => clearTimeout(timer);
       }
     }
 
     detectAndHighlight();
+    const t1 = setTimeout(detectAndHighlight, 120);
+    const t2 = setTimeout(detectAndHighlight, 400);
+
     window.addEventListener("hashchange", detectAndHighlight);
     window.addEventListener("popstate", detectAndHighlight);
+    window.addEventListener("shape-select", detectAndHighlight);
     return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
       window.removeEventListener("hashchange", detectAndHighlight);
       window.removeEventListener("popstate", detectAndHighlight);
+      window.removeEventListener("shape-select", detectAndHighlight);
     };
   }, [subgroup.shapes]);
 
@@ -222,45 +237,45 @@ export function SubgroupShapesView({
           preload
         />
         {/* Dark overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/40 to-zinc-950/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/95 via-zinc-950/70 to-zinc-950/30" />
         <div className="absolute inset-0 flex items-end">
-          <div className="max-w-7xl mx-auto px-6 pb-12 w-full">
+          <div className="max-w-7xl mx-auto px-6 pb-12 w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
             {/* Breadcrumb */}
             <nav
               aria-label="breadcrumb"
-              className="flex items-center gap-2 text-sm text-white/60 mb-5 flex-wrap"
+              className="flex items-center gap-2 text-sm text-white/90 mb-5 flex-wrap font-medium text-shadow-dark"
             >
               <Link href="/" className="hover:text-white transition-colors">
                 {isVi ? "Trang Chủ" : "Home"}
               </Link>
-              <span>/</span>
+              <span className="text-white/70">/</span>
               <Link
                 href="/products"
                 className="hover:text-white transition-colors"
               >
                 {isVi ? "Sản Phẩm" : "Products"}
               </Link>
-              <span>/</span>
+              <span className="text-white/70">/</span>
               <Link
                 href={`/products/${subgroup.categoryId}`}
                 className="hover:text-white transition-colors"
               >
                 {categoryName}
               </Link>
-              <span>/</span>
-              <span className="text-white font-medium">{title}</span>
+              <span className="text-white/70">/</span>
+              <span className="text-white font-bold">{title}</span>
             </nav>
 
             <div className="flex items-end gap-5">
-              <span className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white shrink-0 shadow-lg">
-                <Layers size={28} strokeWidth={1.5} />
+              <span className="p-4 rounded-2xl bg-black/35 backdrop-blur-md border border-white/25 text-white shrink-0 shadow-xl">
+                <Layers size={28} strokeWidth={1.5} className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
               </span>
               <div>
-                <p className="text-white/70 text-xs font-bold tracking-widest uppercase mb-1.5 flex items-center gap-1.5">
-                  <Sparkles size={14} className="text-amber-400" />
+                <p className="text-white text-xs font-bold tracking-widest uppercase mb-1.5 flex items-center gap-1.5 text-shadow-dark">
+                  <Sparkles size={14} className="text-amber-400 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]" />
                   {isVi ? "Hình Thức Sản Phẩm" : "Product Formats & Shapes"}
                 </p>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight text-shadow-dark-lg">
                   {title}
                 </h1>
               </div>
@@ -333,13 +348,15 @@ export function SubgroupShapesView({
                     setHighlightedShapeId(shape.id);
                     if (typeof window !== "undefined") {
                       window.history.replaceState(null, "", `#${shape.id}`);
+                      window.dispatchEvent(new Event("hashchange"));
+                      window.dispatchEvent(new Event("shape-select"));
                     }
                   }
                 }}
                 className={cn(
                   "group flex flex-col rounded-2xl bg-white overflow-hidden transition-all duration-300 relative scroll-mt-28 lg:scroll-mt-32 cursor-pointer",
                   isHighlighted
-                    ? "border-2 border-brand-primary ring-4 ring-brand-primary/25 shadow-2xl shadow-brand-primary/15 -translate-y-1.5"
+                    ? "border-2 border-brand-primary ring-4 ring-brand-primary/20 shadow-2xl shadow-brand-primary/20 -translate-y-1.5"
                     : "border border-zinc-200/80 hover:border-brand-primary/40 hover:shadow-xl hover:-translate-y-0.5"
                 )}
               >
@@ -352,6 +369,21 @@ export function SubgroupShapesView({
                     sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
+
+                  {/* Shape Feature Badge (e.g. Đục lỗ xỏ dây, Thiệp chúc Tết) */}
+                  {(shape.badgeVi || shape.badgeEn) && (
+                    <div className="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full bg-zinc-950/75 backdrop-blur-md text-white text-[11px] font-bold shadow-md tracking-wide">
+                      {pickLocale(locale, shape.badgeVi, shape.badgeEn)}
+                    </div>
+                  )}
+
+                  {/* Selected Badge */}
+                  {isHighlighted && (
+                    <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-full bg-brand-primary text-white text-[11px] font-bold shadow-md flex items-center gap-1">
+                      <Check size={12} strokeWidth={3} />
+                      <span>{isVi ? "Đã chọn" : "Selected"}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Body */}

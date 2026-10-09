@@ -161,47 +161,47 @@ export function LanguageDetectorToast() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.95 }}
           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed bottom-20 sm:bottom-6 left-4 sm:left-6 z-50 max-w-md bg-zinc-900/95 text-white backdrop-blur-md rounded-2xl shadow-2xl border border-white/15 p-3.5 sm:p-4"
+          className="fixed bottom-20 sm:bottom-6 left-3 sm:left-6 z-50 max-w-[calc(100vw-80px)] sm:max-w-md bg-zinc-900/95 text-white backdrop-blur-md rounded-2xl shadow-2xl border border-white/15 p-2.5 sm:p-4"
           role="alert"
           aria-live="polite"
         >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* Globe Icon */}
-          <div className="shrink-0 p-2 rounded-xl bg-brand-primary/20 text-brand-primary border border-brand-primary/30">
-            <Globe size={18} />
+          <div className="shrink-0 p-1.5 sm:p-2 rounded-xl bg-brand-primary/20 text-brand-primary border border-brand-primary/30">
+            <Globe className="size-4 sm:size-[18px]" />
           </div>
 
           {/* Text & Flag structure: "Chọn ngôn ngữ theo hệ thống? - [cờ] - >>" */}
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-white/70 font-medium">
+            <p className="text-[11px] sm:text-xs text-white/70 font-medium leading-tight truncate sm:whitespace-normal">
               {currentConfig.question}
             </p>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="text-lg leading-none select-none">{targetConfig.flag}</span>
-              <span className="text-sm font-bold text-white tracking-wide">
+              <span className="text-base sm:text-lg leading-none select-none">{targetConfig.flag}</span>
+              <span className="text-xs sm:text-sm font-bold text-white tracking-wide truncate">
                 {targetConfig.langName}
               </span>
             </div>
           </div>
 
           {/* Action button ">>" & Close button */}
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
             <button
               type="button"
               onClick={handleSwitch}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-brand-primary hover:bg-brand-primary/90 text-white text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl bg-brand-primary hover:bg-brand-primary/90 text-white text-[11px] sm:text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer whitespace-nowrap"
               title={`${currentConfig.switchBtn} (${targetConfig.langName})`}
             >
               <span>{currentConfig.switchBtn}</span>
-              <ChevronsRight size={15} strokeWidth={2.5} />
+              <ChevronsRight size={14} strokeWidth={2.5} className="shrink-0" />
             </button>
             <button
               type="button"
               onClick={handleDismiss}
               aria-label="Close"
-              className="p-1.5 text-white/40 hover:text-white transition-colors rounded-lg hover:bg-white/10"
+              className="p-1 sm:p-1.5 text-white/40 hover:text-white transition-colors rounded-lg hover:bg-white/10 shrink-0"
             >
-              <X size={15} />
+              <X size={14} className="sm:size-[15px]" />
             </button>
           </div>
         </div>

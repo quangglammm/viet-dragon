@@ -7466,7 +7466,9 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
         "nameKo": "설 선물 상품 태그",
         "descriptionVi": "Mác treo hộp quà Tết, đục lỗ xỏ dây dù hoặc nơ đỏ may mắn, cấn xé giá tiện lợi.",
         "descriptionEn": "Branded hangtags for New Year gift hampers with pre-punched string hole and festive accents.",
-        "image": "/images/category/tagsanpham.webp"
+        "image": "/images/category/tagsanpham.webp",
+        "badgeVi": "Đục lỗ xỏ dây",
+        "badgeEn": "String Hole"
       },
       {
         "id": "tag-cam-on",
@@ -7477,7 +7479,9 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
         "nameKo": "새해 감사 카드 택",
         "descriptionVi": "Thiết kế thiệp mini gửi lời tri ân ngọt ngào và lời chúc tân xuân an khang đến khách hàng.",
         "descriptionEn": "Charming mini thank-you cards conveying warm holiday wishes in every Tet parcel.",
-        "image": "/images/category/tagcamontet.webp"
+        "image": "/images/category/tagcamontet.webp",
+        "badgeVi": "Thiệp chúc Tết",
+        "badgeEn": "Thank You Note"
       }
     ],
     "materials": [
@@ -7611,7 +7615,7 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
       {
           "icon": "Sparkles",
           "name": "Premium Art Red Foil Stamped",
-          "nameVi": "Giấy Mỹ Thuật Đỏ Ánh Kim Ép Kim",
+          "nameVi": "Giấy Mỹ Thuật Đỏ Ánh Kim + Ép Kim",
           "tagline": "Luxurious red pearl cardstock with radiant metallic gold foil stamping",
           "taglineVi": "Giấy mỹ thuật đỏ ánh xà cừ cao cấp, ép kim vàng nổi bật logo và lời chúc năm mới",
           "description": [
@@ -7695,7 +7699,9 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
         "nameKo": "일반 명절 상품권 바우처",
         "descriptionVi": "Kích thước tiêu chuẩn 7x15cm hoặc 10x20cm, in giấy C300 cán màng mờ, phát tặng dịp lễ Tết.",
         "descriptionEn": "Standard 7x15cm or 10x20cm festive gift vouchers on 300gsm Couche with matte finish.",
-        "image": "/images/category/phieuquatangphothong.webp"
+        "image": "/images/category/phieuquatangphothong.webp",
+        "badgeVi": "Chuẩn 7x15cm / 10x20cm",
+        "badgeEn": "Standard Size"
       }
     ],
     "materials": VOUCHER_MATERIALS
@@ -7735,7 +7741,9 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
         "nameKo": "소량 디지털 전단지",
         "descriptionVi": "In kỹ thuật số lấy nhanh trong ngày từ 50 - 200 tờ thông báo lịch nghỉ Tết, khuyến mãi hội chợ xuân.",
         "descriptionEn": "Same-day fast digital printing from 50-200 sheets for holiday schedule notices and seasonal promos.",
-        "image": "/images/category/toroisoluongit.webp"
+        "image": "/images/category/toroisoluongit.webp",
+        "badgeVi": "Lấy nhanh trong ngày",
+        "badgeEn": "Fast Print"
       },
       {
         "id": "bang-khen",
@@ -7747,6 +7755,8 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
         "descriptionVi": "Giấy khen, chứng nhận vinh danh nhân viên và đối tác xuất sắc tại tiệc tổng kết cuối năm Year End Party.",
         "descriptionEn": "Prestige certificates and awards honoring employees and partners at Year-End Gala parties.",
         "image": "/images/category/bangkhen.webp",
+        "badgeVi": "Vinh danh cuối năm",
+        "badgeEn": "Merit Award",
         "materials": [
           {
             "icon": "Layers",
@@ -7965,6 +7975,8 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
         "descriptionVi": "Vòng tay giấy Tyvek hoặc nhựa không thấm nước có số nhảy kiểm soát ra vào tiệc tất niên, Countdown đón năm mới.",
         "descriptionEn": "Waterproof numbered event wristbands for Year-End parties and New Year Countdown galas.",
         "image": "/images/category/vongtaysukien.webp",
+        "badgeVi": "Chống nước & số serial",
+        "badgeEn": "Waterproof",
         "materials": WRISTBAND_MATERIALS
       }
     ],
@@ -8549,17 +8561,6 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
     "coverImage": "/images/category/poster-bangron-standee.webp",
     "shapes": [
       {
-        "id": "bang-ron-hiflex",
-        "nameVi": "Băng rôn Hiflex",
-        "nameEn": "Hiflex Spring Festival Banners",
-        "nameZh": "新春大红Hiflex横幅",
-        "nameJa": "新春ターポリン横断幕",
-        "nameKo": "새해 맞이 하이플렉스 현수막",
-        "descriptionVi": "Bạt Hiflex khổ lớn chúc mừng năm mới treo ngang đường phố, cổng chào rực rỡ đón xuân tài lộc.",
-        "descriptionEn": "Heavy-duty outdoor PVC banners welcoming the Lunar New Year across streets and gates.",
-        "image": "/images/category/poster-bangron-standee.webp"
-      },
-      {
         "id": "hashtag-cam-tay",
         "nameVi": "Hashtag cầm tay",
         "nameEn": "Handheld Photo Hashtags",
@@ -8568,7 +8569,9 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
         "nameKo": "신년 촬영 해시태그 피켓",
         "descriptionVi": "Biển chụp hình check-in tiệc tất niên Year End Party, Gala mừng xuân bế theo hình linh vật, câu chúc Tết.",
         "descriptionEn": "Custom-cut handheld photo props for corporate Year-End Galas and festive photo booths.",
-        "image": "/images/category/hashtagcamtay.webp"
+        "image": "/images/category/hashtagcamtay.webp",
+        "badgeVi": "Check-in sự kiện",
+        "badgeEn": "Photo Prop"
       },
       {
         "id": "hashtag-tay-cam-roi",
@@ -8579,7 +8582,9 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
         "nameKo": "분리형 손잡이 해시태그 피켓",
         "descriptionVi": "Quy cách cán rời gắn khớp tiện xếp gọn mang đi sự kiện xa, đóng thùng vận chuyển không lo gãy hỏng.",
         "descriptionEn": "Flat-pack detachable handle photo props easy to transport to distant event venues.",
-        "image": "/images/category/hashtagtaycamroi.webp"
+        "image": "/images/category/hashtagtaycamroi.webp",
+        "badgeVi": "Cán rời tiện lợi",
+        "badgeEn": "Detachable"
       }
     ],
     "materials": [

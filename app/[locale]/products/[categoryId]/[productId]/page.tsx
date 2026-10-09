@@ -213,6 +213,8 @@ export default async function ProductDetailPage({
                           doubleSidedCheckboxLabel={t("optionDoubleSidedCheckboxLabel")}
                           hideFoilCheckbox={opt.hideFoilCheckbox ?? item.hideFoilCheckbox}
                           hideDoubleSidedCheckbox={opt.hideDoubleSidedCheckbox ?? item.hideDoubleSidedCheckbox}
+                          productId={productId}
+                          categoryId={categoryId}
                         />
                       </div>
                     ))}

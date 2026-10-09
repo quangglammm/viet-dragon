@@ -10802,7 +10802,7 @@
         "nameEn": "Product Tags & Hangtags",
         "descriptionVi": "Thẻ treo quà Tết, tag cảm ơn đính kèm hộp quà, giỏ quà xuân sang trọng và khẳng định dấu ấn thương hiệu.",
         "description": "Festive Tet product hangtags and thank-you cards for holiday gift hampers and luxury packaging.",
-        "image": "/images/category/macsanpham.webp",
+        "image": "/images/category/tagsanphamtet.webp",
         "shapes": [
           {
             "id": "tag-san-pham",
@@ -10813,7 +10813,9 @@
             "nameKo": "설 선물 상품 태그",
             "descriptionVi": "Mác treo hộp quà Tết, đục lỗ xỏ dây dù hoặc nơ đỏ may mắn, cấn xé giá tiện lợi.",
             "descriptionEn": "Branded hangtags for New Year gift hampers with pre-punched string hole and festive accents.",
-            "image": "/images/product/vd-item-tag.jpeg"
+            "image": "/images/category/tagsanpham.webp",
+            "badgeVi": "Đục lỗ xỏ dây",
+            "badgeEn": "String Hole"
           },
           {
             "id": "tag-cam-on",
@@ -10824,7 +10826,9 @@
             "nameKo": "새해 감사 카드 택",
             "descriptionVi": "Thiết kế thiệp mini gửi lời tri ân ngọt ngào và lời chúc tân xuân an khang đến khách hàng.",
             "descriptionEn": "Charming mini thank-you cards conveying warm holiday wishes in every Tet parcel.",
-            "image": "/images/category/tagcamon.webp"
+            "image": "/images/category/tagcamontet.webp",
+            "badgeVi": "Thiệp chúc Tết",
+            "badgeEn": "Thank You Note"
           }
         ],
         "optionGroups": [
@@ -12168,7 +12172,7 @@
             "nameKo": "연말 표창장 / 상장",
             "descriptionVi": "Giấy khen, chứng nhận vinh danh nhân viên và đối tác xuất sắc tại tiệc tổng kết cuối năm Year End Party.",
             "descriptionEn": "Prestige certificates and awards honoring employees and partners at Year-End Gala parties.",
-            "image": "/images/product/art-foil.webp"
+            "image": "/images/category/bangkhen.webp"
           },
           {
             "id": "vong-tay-su-kien",
@@ -12908,17 +12912,6 @@
         "description": "Large Lunar New Year street banners, Year-End Party standees, and festive photo prop hashtags.",
         "image": "/images/category/poster-bangron-standee.webp",
         "shapes": [
-          {
-            "id": "bang-ron-hiflex",
-            "nameVi": "Băng rôn Hiflex",
-            "nameEn": "Hiflex Spring Festival Banners",
-            "nameZh": "新春大红Hiflex横幅",
-            "nameJa": "新春ターポリン横断幕",
-            "nameKo": "새해 맞이 하이플렉스 현수막",
-            "descriptionVi": "Bạt Hiflex khổ lớn chúc mừng năm mới treo ngang đường phố, cổng chào rực rỡ đón xuân tài lộc.",
-            "descriptionEn": "Heavy-duty outdoor PVC banners welcoming the Lunar New Year across streets and gates.",
-            "image": "/images/category/poster-bangron-standee.webp"
-          },
           {
             "id": "hashtag-cam-tay",
             "nameVi": "Hashtag cầm tay",

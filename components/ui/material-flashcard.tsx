@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import {
   Layers, Sparkles, Palette, Award, Gem, Feather, PenLine, Minimize2, StickyNote,
-  Stamp, ShieldCheck, Briefcase, Gift, ArrowLeftRight, ImagePlus,
+  Stamp, ShieldCheck, Briefcase, Gift, ArrowLeftRight, ImagePlus, ChevronLeft, ChevronRight,
   type LucideIcon,
 } from "lucide-react";
 import type { ProductOption } from "@/data/categories";
@@ -15,6 +15,7 @@ import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { ZaloIcon } from "@/components/ui/zalo-icon";
 import { ConsultBottomSheet } from "@/components/ui/consult-bottom-sheet";
+import { getProductSizes } from "@/lib/product-sizes";
 
 const optionIconMap: Record<string, LucideIcon> = {
   Layers, Sparkles, Palette, Award, Gem, Feather, PenLine, Minimize2, StickyNote,
@@ -36,9 +37,18 @@ interface ImageSlotProps {
   sizes: string;
   isMain?: boolean;
   locale?: string;
+  fitMode?: "cover" | "contain";
 }
 
-function ImageSlot({ src, alt, aspectClass, sizes, isMain, locale = "vi" }: Readonly<ImageSlotProps>) {
+function ImageSlot({
+  src,
+  alt,
+  aspectClass,
+  sizes,
+  isMain,
+  locale = "vi",
+  fitMode = "cover",
+}: Readonly<ImageSlotProps>) {
   const [hasError, setHasError] = useState(false);
   const labels = SLOT_LABEL[locale] ?? SLOT_LABEL.vi;
 
@@ -57,12 +67,39 @@ function ImageSlot({ src, alt, aspectClass, sizes, isMain, locale = "vi" }: Read
             </span>
           </div>
         </div>
+      ) : fitMode === "contain" ? (
+        <div className="relative w-full h-full flex items-center justify-center bg-zinc-900/10 overflow-hidden">
+          {/* Ambient blurred backdrop using the same image */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <Image
+              src={src}
+              alt=""
+              fill
+              sizes="25vw"
+              quality={30}
+              className="object-cover blur-2xl scale-125 opacity-40 brightness-95"
+            />
+          </div>
+          {/* Sharp, uncropped image fitting cleanly inside the frame */}
+          <div className="relative w-full h-full p-2 flex items-center justify-center">
+            <Image
+              src={src}
+              alt={alt}
+              fill
+              sizes={sizes}
+              quality={85}
+              className="object-contain scale-[0.92] drop-shadow-md"
+              onError={() => setHasError(true)}
+            />
+          </div>
+        </div>
       ) : (
         <Image
           src={src}
           alt={alt}
           fill
           sizes={sizes}
+          quality={85}
           className="object-cover"
           onError={() => setHasError(true)}
         />
@@ -79,85 +116,7 @@ const ZALO_BUTTON_LABEL: Record<string, string> = {
   ko: "Zalo 상담",
 };
 
-interface SizeItem {
-  id: "large" | "medium" | "small";
-  label: string;
-  dims: string;
-}
 
-function getProductSizes(productName: string, locale: Locale): SizeItem[] {
-  const p = productName.toLowerCase();
-
-  const isCard = p.includes("thẻ") || p.includes("card") || p.includes("danh thiếp");
-  const isEnvelope = p.includes("bao thư") || p.includes("phong bì") || p.includes("envelope");
-  const isBox = p.includes("hộp quà") || p.includes("box") || p.includes("lì xì") || p.includes("lixi");
-  const isFlyer = p.includes("tờ rơi") || p.includes("tờ gấp") || p.includes("flyer") || p.includes("brochure") || p.includes("voucher");
-  const isCatalogue = p.includes("catalogue") || p.includes("cuốn") || p.includes("sách") || p.includes("menu") || p.includes("cẩm nang");
-  const isNotepad = p.includes("note") || p.includes("sổ");
-  const isStamp = p.includes("tem") || p.includes("decal") || p.includes("nhãn") || p.includes("label");
-  const isCalendar = p.includes("lịch") || p.includes("calendar");
-
-  const lLabel = locale === "vi" ? "Lớn" : locale === "zh" ? "大号" : locale === "ja" ? "大" : locale === "ko" ? "대" : "Large";
-  const mLabel = locale === "vi" ? "Vừa" : locale === "zh" ? "中号" : locale === "ja" ? "中" : locale === "ko" ? "중" : "Medium";
-  const sLabel = locale === "vi" ? "Nhỏ" : locale === "zh" ? "小号" : locale === "ja" ? "小" : locale === "ko" ? "소" : "Small";
-
-  if (isCard) {
-    return [
-      { id: "large", label: lLabel, dims: "10.8 x 9 cm" },
-      { id: "medium", label: mLabel, dims: "9 x 5.4 cm" },
-      { id: "small", label: sLabel, dims: "9 x 5 cm" },
-    ];
-  }
-  if (isEnvelope) {
-    return [
-      { id: "large", label: `${lLabel} (A4)`, dims: "25 x 34 cm" },
-      { id: "medium", label: `${mLabel} (A5)`, dims: "16 x 23 cm" },
-      { id: "small", label: `${sLabel} (A6)`, dims: "12 x 22 cm" },
-    ];
-  }
-  if (isBox) {
-    return [
-      { id: "large", label: lLabel, dims: "36 x 26 x 10 cm" },
-      { id: "medium", label: mLabel, dims: "28 x 20 x 8 cm" },
-      { id: "small", label: sLabel, dims: "20 x 15 x 6 cm" },
-    ];
-  }
-  if (isFlyer) {
-    return [
-      { id: "large", label: `${lLabel} (A4)`, dims: "21 x 29.7 cm" },
-      { id: "medium", label: `${mLabel} (A5)`, dims: "14.8 x 21 cm" },
-      { id: "small", label: `${sLabel} (A6)`, dims: "10.5 x 14.8 cm" },
-    ];
-  }
-  if (isCatalogue || isNotepad) {
-    return [
-      { id: "large", label: `${lLabel} (A4)`, dims: "20.5 x 29.5 cm" },
-      { id: "medium", label: `${mLabel} (A5)`, dims: "14.5 x 20.5 cm" },
-      { id: "small", label: `${sLabel} (B5)`, dims: "17 x 25 cm" },
-    ];
-  }
-  if (isStamp) {
-    return [
-      { id: "large", label: lLabel, dims: "8 x 8 cm" },
-      { id: "medium", label: mLabel, dims: "5 x 5 cm" },
-      { id: "small", label: sLabel, dims: "3 x 3 cm" },
-    ];
-  }
-  if (isCalendar) {
-    return [
-      { id: "large", label: lLabel, dims: "24 x 18 cm" },
-      { id: "medium", label: mLabel, dims: "20 x 15 cm" },
-      { id: "small", label: sLabel, dims: "16 x 12 cm" },
-    ];
-  }
-
-  // Mặc định (Túi giấy theo thegioiinan.com trong mau.txt)
-  return [
-    { id: "large", label: lLabel, dims: "41 x 29 x 10 cm" },
-    { id: "medium", label: mLabel, dims: "35 x 25 x 10 cm" },
-    { id: "small", label: sLabel, dims: "30 x 20 x 5 cm" },
-  ];
-}
 
 const PRINT_TECHNIQUES: Record<string, string[]> = {
   vi: ["In nhanh", "Offset", "Ép kim", "Dập nổi dập chìm"],
@@ -293,6 +252,9 @@ interface MaterialFlashcardProps {
   doubleSidedCheckboxLabel?: string;
   hideFoilCheckbox?: boolean;
   hideDoubleSidedCheckbox?: boolean;
+  productId?: string;
+  shapeId?: string;
+  categoryId?: string;
 }
 
 export function MaterialFlashcard({
@@ -303,10 +265,19 @@ export function MaterialFlashcard({
   bestForLabel,
   viewImageHint,
   backToDetailsHint,
+  productId,
+  shapeId,
+  categoryId,
 }: Readonly<MaterialFlashcardProps>) {
   const [flipped, setFlipped] = useState(false);
   const [selectedSize, setSelectedSize] = useState<"large" | "medium" | "small" | null>(null);
   const [consultOpen, setConsultOpen] = useState(false);
+  const [mobileImageIdx, setMobileImageIdx] = useState(0);
+
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+  const isSwiping = useRef<boolean>(false);
+  const ignoreClickUntil = useRef<number>(0);
 
   const OptIcon = optionIconMap[option.icon ?? ""] ?? Layers;
   const rawName = pickLocale(locale, option.nameVi, option.name, option.nameZh, option.nameJa, option.nameKo);
@@ -314,7 +285,7 @@ export function MaterialFlashcard({
   const description = pickLocale(locale, option.descriptionVi, option.description, option.descriptionZh, option.descriptionJa, option.descriptionKo);
   const bestFor = pickLocale(locale, option.bestForVi, option.bestFor, option.bestForZh, option.bestForJa, option.bestForKo);
 
-  const sizes = getProductSizes(productName, locale);
+  const sizes = getProductSizes(productName, locale, productId, shapeId, categoryId);
   const selectedSizeItem = sizes.find((s) => s.id === selectedSize);
   const printTechList = PRINT_TECHNIQUES[locale] ?? PRINT_TECHNIQUES.vi;
   const finishingList = FINISHING_OPTIONS[locale] ?? FINISHING_OPTIONS.vi;
@@ -341,14 +312,77 @@ export function MaterialFlashcard({
     cardImages = [rawImages[0], rawImages[1], rawImages[2]];
   }
 
+  // Mobile unique images for carousel
+  const uniqueImages = Array.from(new Set(rawImages.filter((img): img is string => Boolean(img))));
+  const displayImages = uniqueImages.length > 0
+    ? uniqueImages
+    : (cardImages.filter(Boolean).length > 0 ? Array.from(new Set(cardImages.filter(Boolean))) : [""]);
+
+  const currentMobileIdx = ((mobileImageIdx % displayImages.length) + displayImages.length) % displayImages.length;
+  const currentMobileImg = displayImages[currentMobileIdx];
+
+  const handleCardFlip = () => {
+    if (Date.now() < ignoreClickUntil.current) return;
+    setFlipped((f) => !f);
+  };
+
+  const handlePrevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    ignoreClickUntil.current = Date.now() + 350;
+    setMobileImageIdx((prev) => (prev === 0 ? displayImages.length - 1 : prev - 1));
+  };
+
+  const handleNextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    ignoreClickUntil.current = Date.now() + 350;
+    setMobileImageIdx((prev) => (prev === displayImages.length - 1 ? 0 : prev + 1));
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartY.current = e.touches[0].clientY;
+      isSwiping.current = false;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      const deltaX = e.touches[0].clientX - touchStartX.current;
+      const deltaY = e.touches[0].clientY - touchStartY.current;
+      if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
+        isSwiping.current = true;
+      }
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.changedTouches.length === 1) {
+      const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+      const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+
+      if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX < 0) {
+          setMobileImageIdx((prev) => (prev === displayImages.length - 1 ? 0 : prev + 1));
+        } else {
+          setMobileImageIdx((prev) => (prev === 0 ? displayImages.length - 1 : prev - 1));
+        }
+        ignoreClickUntil.current = Date.now() + 400;
+      } else if (isSwiping.current) {
+        ignoreClickUntil.current = Date.now() + 400;
+      }
+    }
+  };
+
   return (
     <div className="w-full rounded-2xl border border-zinc-100 overflow-hidden">
       {/* Flip control — material photo view (default) <-> description/best-for view. */}
-      <button
-        type="button"
-        onClick={() => setFlipped((f) => !f)}
+      <div
+        role="region"
         aria-label={flipped ? viewImageHint : backToDetailsHint}
-        className="block w-full text-left bg-transparent p-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/50"
+        className="block w-full text-left bg-transparent p-0 select-none"
         style={{ perspective: "1600px" }}
       >
         <motion.div
@@ -359,10 +393,14 @@ export function MaterialFlashcard({
         >
           {/* Front face — image layer */}
           <div
-            className="relative w-full aspect-[2/1] bg-zinc-100 flex flex-col overflow-hidden"
+            className="relative w-full aspect-square md:aspect-[2/1] bg-zinc-100 flex flex-col overflow-hidden"
             style={{ backfaceVisibility: "hidden" }}
           >
-            <div className="grid grid-cols-2 w-full h-full gap-0.5 bg-white">
+            {/* Desktop 3-image collage */}
+            <div
+              onClick={handleCardFlip}
+              className="hidden md:grid grid-cols-2 w-full h-full gap-0.5 bg-white cursor-pointer"
+            >
               <ImageSlot
                 src={cardImages[0]}
                 alt={`${productName} — ${name} - 0`}
@@ -389,58 +427,141 @@ export function MaterialFlashcard({
                 />
               </div>
             </div>
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-brand-dark/90 via-brand-dark/30 to-transparent pointer-events-none" />
-            <div className="absolute inset-x-0 bottom-0 px-5 py-4 flex items-center gap-2.5">
-              <OptIcon size={16} className="text-white shrink-0" />
-              <span className="text-white font-black text-base line-clamp-2 flex-1">{name}</span>
-              <ArrowLeftRight size={14} strokeWidth={2} className="text-white/60 shrink-0" />
+
+            {/* Mobile 1-image carousel with swipe & navigation arrows */}
+            <div
+              className="relative block md:hidden w-full h-full overflow-hidden touch-pan-y"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onClick={handleCardFlip}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={currentMobileIdx}
+                  initial={{ opacity: 0.7 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0.7 }}
+                  transition={{ duration: 0.2 }}
+                  className="w-full h-full"
+                >
+                  <ImageSlot
+                    src={currentMobileImg}
+                    alt={`${productName} — ${name} - ${currentMobileIdx + 1}`}
+                    aspectClass="w-full h-full"
+                    sizes="100vw"
+                    isMain={currentMobileIdx === 0}
+                    fitMode={currentMobileIdx === 0 ? "cover" : "contain"}
+                    locale={locale}
+                  />
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Mobile navigation arrows */}
+              {displayImages.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Ảnh trước"
+                    onClick={handlePrevImage}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onTouchEnd={(e) => e.stopPropagation()}
+                    className="absolute left-2.5 top-[44%] -translate-y-1/2 z-20 size-8 rounded-full bg-white/90 hover:bg-white text-zinc-800 shadow-md border border-zinc-200/60 flex items-center justify-center active:scale-90 transition-transform cursor-pointer"
+                  >
+                    <ChevronLeft size={16} strokeWidth={2.5} />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Ảnh tiếp theo"
+                    onClick={handleNextImage}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onTouchEnd={(e) => e.stopPropagation()}
+                    className="absolute right-2.5 top-[44%] -translate-y-1/2 z-20 size-8 rounded-full bg-white/90 hover:bg-white text-zinc-800 shadow-md border border-zinc-200/60 flex items-center justify-center active:scale-90 transition-transform cursor-pointer"
+                  >
+                    <ChevronRight size={16} strokeWidth={2.5} />
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Gradient shadow for text readability */}
+            <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-brand-dark/95 via-brand-dark/40 to-transparent pointer-events-none" />
+            
+            {/* Front bottom bar: Option title, flip hint, and pagination dots */}
+            <div
+              onClick={handleCardFlip}
+              className="absolute inset-x-0 bottom-0 px-5 pt-4 pb-3 md:pb-4 flex flex-col gap-2 z-10 cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5">
+                <OptIcon size={16} className="text-white shrink-0" />
+                <span className="text-white font-black text-base line-clamp-2 flex-1">{name}</span>
+                <ArrowLeftRight size={14} strokeWidth={2} className="text-white/60 shrink-0" />
+              </div>
+
+              {/* Mobile pagination dots centered at bottom of card */}
+              {displayImages.length > 1 && (
+                <div className="flex md:hidden items-center justify-center gap-1.5 pointer-events-none">
+                  {displayImages.map((_, idx) => (
+                    <span
+                      key={idx}
+                      className={cn(
+                        "rounded-full transition-all duration-300",
+                        idx === currentMobileIdx
+                          ? "w-4 h-1.5 bg-white shadow-xs"
+                          : "size-1.5 bg-white/50"
+                      )}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
-            {/* Back face — description + best-for bullets */}
-            <div
-              className="absolute inset-0 bg-white flex flex-col justify-between overflow-y-auto"
-              style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-            >
-              <div className="flex items-center gap-2.5 px-5 py-4 bg-zinc-50 border-b border-zinc-100">
-                <OptIcon size={16} className="text-brand-primary shrink-0" />
-                <h3 className="font-black text-zinc-900 text-base line-clamp-2 flex-1">{name}</h3>
-                <ArrowLeftRight size={14} strokeWidth={2} className="text-zinc-300 shrink-0" />
-              </div>
-              <div className="px-5 py-4 flex flex-col gap-4 flex-1 justify-between">
-                <div>
-                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
-                    {descriptionLabel}
-                  </span>
-                  <ul className="mt-2 flex flex-col gap-2">
-                    {description.map((line, i) => {
-                      const TraitIcon = materialTraits[option.descriptionTraits?.[i]]?.icon ?? Layers;
-                      return (
-                        <li key={line} className="flex items-start gap-2.5 text-sm text-zinc-700 leading-relaxed">
-                          <TraitIcon size={14} strokeWidth={1.75} className="mt-0.5 text-brand-primary shrink-0" />
-                          <span>{line}</span>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-                <div>
-                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
-                    {bestForLabel}
-                  </span>
-                  <ul className="mt-2 flex flex-col gap-1.5">
-                    {bestFor.map((line) => (
-                      <li key={line} className="flex items-start gap-2 text-sm text-zinc-700 leading-relaxed">
-                        <span className="mt-2 size-1 rounded-full bg-brand-primary shrink-0" />
+          {/* Back face — description + best-for bullets */}
+          <div
+            onClick={handleCardFlip}
+            className="absolute inset-0 bg-white flex flex-col justify-between overflow-y-auto cursor-pointer"
+            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+          >
+            <div className="flex items-center gap-2.5 px-5 py-4 bg-zinc-50 border-b border-zinc-100">
+              <OptIcon size={16} className="text-brand-primary shrink-0" />
+              <h3 className="font-black text-zinc-900 text-base line-clamp-2 flex-1">{name}</h3>
+              <ArrowLeftRight size={14} strokeWidth={2} className="text-zinc-300 shrink-0" />
+            </div>
+            <div className="px-5 py-4 flex flex-col gap-4 flex-1 justify-between">
+              <div>
+                <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
+                  {descriptionLabel}
+                </span>
+                <ul className="mt-2 flex flex-col gap-2">
+                  {description.map((line, i) => {
+                    const TraitIcon = materialTraits[option.descriptionTraits?.[i]]?.icon ?? Layers;
+                    return (
+                      <li key={line} className="flex items-start gap-2.5 text-sm text-zinc-700 leading-relaxed">
+                        <TraitIcon size={14} strokeWidth={1.75} className="mt-0.5 text-brand-primary shrink-0" />
                         <span>{line}</span>
                       </li>
-                    ))}
-                  </ul>
-                </div>
+                    );
+                  })}
+                </ul>
+              </div>
+              <div>
+                <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
+                  {bestForLabel}
+                </span>
+                <ul className="mt-2 flex flex-col gap-1.5">
+                  {bestFor.map((line) => (
+                    <li key={line} className="flex items-start gap-2 text-sm text-zinc-700 leading-relaxed">
+                      <span className="mt-2 size-1 rounded-full bg-brand-primary shrink-0" />
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
-          </motion.div>
-        </button>
+          </div>
+        </motion.div>
+      </div>
 
       {/* Form quy cách sản phẩm (Kích thước phổ biến, Kỹ thuật in, Thành phẩm, Cán màng) */}
       <div className="flex flex-col gap-4 p-5 bg-white border-t border-zinc-100">

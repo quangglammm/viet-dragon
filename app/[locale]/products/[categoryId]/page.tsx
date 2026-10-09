@@ -126,27 +126,27 @@ export default async function CategoryPage({
           preload
         />
         {/* Dark overlay + content */}
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-zinc-950/30 to-zinc-950/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/95 via-zinc-950/65 to-zinc-950/25" />
         <div className="absolute inset-0 flex items-end">
-          <div className="max-w-7xl mx-auto px-6 pb-12 w-full">
+          <div className="max-w-7xl mx-auto px-6 pb-12 w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
             {/* Breadcrumb over image */}
-            <nav aria-label="breadcrumb" className="flex items-center gap-2 text-sm text-white/50 mb-6">
+            <nav aria-label="breadcrumb" className="flex items-center gap-2 text-sm text-white/90 mb-6 font-medium text-shadow-dark">
               <Link href="/" className="hover:text-white transition-colors">{t("breadcrumbHome")}</Link>
-              <span>/</span>
+              <span className="text-white/70">/</span>
               <Link href="/products" className="hover:text-white transition-colors">{t("breadcrumbProducts")}</Link>
-              <span>/</span>
-              <span className="text-white/80">{name}</span>
+              <span className="text-white/70">/</span>
+              <span className="text-white font-bold">{name}</span>
             </nav>
 
             <div className="flex items-end gap-5">
-              <span className="p-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 text-white shrink-0">
-                <Icon size={28} strokeWidth={1.5} />
+              <span className="p-4 rounded-2xl bg-black/35 backdrop-blur-md border border-white/25 text-white shrink-0 shadow-xl">
+                <Icon size={28} strokeWidth={1.5} className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
               </span>
               <div>
-                <p className="text-white/60 text-sm font-semibold tracking-widest uppercase mb-1">
+                <p className="text-white text-sm font-semibold tracking-widest uppercase mb-1 text-shadow-dark">
                   {t("eyebrow")}
                 </p>
-                <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight">
+                <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight text-shadow-dark-lg">
                   {name}
                 </h1>
               </div>
