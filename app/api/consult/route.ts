@@ -119,7 +119,7 @@ export async function POST(req: Request) {
           ${sizeLabel ? `
           <tr>
             <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600;">Quy cách / Kích thước:</td>
-            <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #334155;">${sizeLabel} (${sizeDims})</td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #334155;">${sizeLabel}${sizeDims && !sizeLabel.includes(sizeDims) ? ` (${sizeDims})` : ""}</td>
           </tr>` : ""}
           ${productUrl ? `
           <tr>

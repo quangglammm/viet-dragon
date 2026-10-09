@@ -85,16 +85,16 @@ export default function Shop() {
         </div>
 
         {/* Product grid */}
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
           <motion.div
             key={cat.id}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2 }}
           >
-            {items.map((item) => {
+            {items.map((item, idx) => {
               const itemName = pickLocale(
                 locale,
                 item.nameVi,
@@ -112,7 +112,8 @@ export default function Shop() {
                         src={item.image}
                         alt={itemName}
                         fill
-                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                        sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        priority={idx < 4}
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </Link>
