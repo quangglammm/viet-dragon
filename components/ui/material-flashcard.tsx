@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import {
   Layers, Sparkles, Palette, Award, Gem, Feather, PenLine, Minimize2, StickyNote,
   Stamp, ShieldCheck, Briefcase, Gift, ArrowLeftRight, ImagePlus, ChevronLeft, ChevronRight,
+  ChevronDown,
   type LucideIcon,
 } from "lucide-react";
 import type { ProductOption } from "@/data/categories";
@@ -285,6 +286,74 @@ export function MaterialFlashcard({
   const description = pickLocale(locale, option.descriptionVi, option.description, option.descriptionZh, option.descriptionJa, option.descriptionKo);
   const bestFor = pickLocale(locale, option.bestForVi, option.bestFor, option.bestForZh, option.bestForJa, option.bestForKo);
 
+  const scrollContentRef = useRef<HTMLDivElement>(null);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+  const isDraggingContentRef = useRef(false);
+  const mouseStartRef = useRef<{ x: number; y: number } | null>(null);
+  const touchStartPosRef = useRef<{ x: number; y: number } | null>(null);
+
+  const checkScroll = useCallback(() => {
+    const el = scrollContentRef.current;
+    if (el) {
+      const hasMore = el.scrollHeight - el.scrollTop - el.clientHeight > 12;
+      setCanScrollDown(hasMore);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (flipped) {
+      const timer = setTimeout(checkScroll, 120);
+      return () => clearTimeout(timer);
+    }
+  }, [flipped, checkScroll, description, bestFor]);
+
+  const handleContentMouseDown = (e: React.MouseEvent) => {
+    mouseStartRef.current = { x: e.clientX, y: e.clientY };
+    isDraggingContentRef.current = false;
+  };
+
+  const handleContentMouseMove = (e: React.MouseEvent) => {
+    if (mouseStartRef.current) {
+      const dist = Math.hypot(e.clientX - mouseStartRef.current.x, e.clientY - mouseStartRef.current.y);
+      if (dist > 6) {
+        isDraggingContentRef.current = true;
+      }
+    }
+  };
+
+  const handleContentClick = (e: React.MouseEvent) => {
+    if (isDraggingContentRef.current) return;
+    if (window.getSelection()?.toString()) return;
+
+    // Do not flip if clicked on scrollbar area (within 16px of right edge)
+    const rect = e.currentTarget.getBoundingClientRect();
+    if (e.clientX >= rect.right - 16) return;
+
+    const target = e.target as HTMLElement;
+    if (target.closest("button") || target.closest("a") || target.closest("input")) return;
+
+    handleCardFlip();
+  };
+
+  const handleContentTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      touchStartPosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      isDraggingContentRef.current = false;
+    }
+  };
+
+  const handleContentTouchMove = (e: React.TouchEvent) => {
+    if (touchStartPosRef.current && e.touches.length === 1) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - touchStartPosRef.current.x,
+        e.touches[0].clientY - touchStartPosRef.current.y
+      );
+      if (dist > 8) {
+        isDraggingContentRef.current = true;
+      }
+    }
+  };
+
   const sizes = getProductSizes(productName, locale, productId, shapeId, categoryId);
   const selectedSizeItem = sizes.find((s) => s.id === selectedSize);
   const printTechList = PRINT_TECHNIQUES[locale] ?? PRINT_TECHNIQUES.vi;
@@ -517,18 +586,32 @@ export function MaterialFlashcard({
             </div>
           </div>
 
-          {/* Back face — description + best-for bullets */}
+          {/* Back face — description + best-for bullets with smooth scroll */}
           <div
-            onClick={handleCardFlip}
-            className="absolute inset-0 bg-white flex flex-col justify-between overflow-y-auto cursor-pointer"
+            className="absolute inset-0 bg-white flex flex-col overflow-hidden"
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           >
-            <div className="flex items-center gap-2.5 px-5 py-4 bg-zinc-50 border-b border-zinc-100">
+            {/* Header: sticky top bar */}
+            <div
+              onClick={handleCardFlip}
+              className="flex items-center gap-2.5 px-5 py-4 bg-zinc-50 border-b border-zinc-100 shrink-0 cursor-pointer select-none hover:bg-zinc-100/70 transition-colors"
+            >
               <OptIcon size={16} className="text-brand-primary shrink-0" />
-              <h3 className="font-black text-zinc-900 text-base line-clamp-2 flex-1">{name}</h3>
-              <ArrowLeftRight size={14} strokeWidth={2} className="text-zinc-300 shrink-0" />
+              <h3 className="font-black text-zinc-900 text-base truncate flex-1">{name}</h3>
             </div>
-            <div className="px-5 py-4 flex flex-col gap-4 flex-1 justify-between">
+
+            {/* Scrollable description & best-for content */}
+            <div
+              ref={scrollContentRef}
+              data-lenis-prevent="true"
+              onScroll={checkScroll}
+              onMouseDown={handleContentMouseDown}
+              onMouseMove={handleContentMouseMove}
+              onClick={handleContentClick}
+              onTouchStart={handleContentTouchStart}
+              onTouchMove={handleContentTouchMove}
+              className="relative flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-4 custom-scrollbar overscroll-contain select-text cursor-pointer"
+            >
               <div>
                 <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
                   {descriptionLabel}
@@ -545,11 +628,12 @@ export function MaterialFlashcard({
                   })}
                 </ul>
               </div>
+
               <div>
                 <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
                   {bestForLabel}
                 </span>
-                <ul className="mt-2 flex flex-col gap-1.5">
+                <ul className="mt-2 flex flex-col gap-1.5 pb-4">
                   {bestFor.map((line) => (
                     <li key={line} className="flex items-start gap-2 text-sm text-zinc-700 leading-relaxed">
                       <span className="mt-2 size-1 rounded-full bg-brand-primary shrink-0" />
@@ -559,6 +643,26 @@ export function MaterialFlashcard({
                 </ul>
               </div>
             </div>
+
+            {/* Scroll indicator overlay at bottom */}
+            {canScrollDown && (
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (scrollContentRef.current) {
+                    scrollContentRef.current.scrollBy({ top: 90, behavior: "smooth" });
+                  }
+                }}
+                className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white via-white/85 to-transparent flex items-end justify-center pb-1.5 cursor-pointer z-10 select-none"
+              >
+                <span className="text-[11px] font-semibold text-brand-primary bg-white/95 backdrop-blur-xs px-2.5 py-0.5 rounded-full shadow-2xs border border-brand-primary/20 flex items-center gap-1 hover:bg-brand-soft transition-colors">
+                  {locale === "vi" ? "Cuộn xem tiếp" : "Scroll for more"}
+                  <ChevronDown size={12} className="animate-bounce" />
+                </span>
+              </div>
+            )}
+
+
           </div>
         </motion.div>
       </div>
