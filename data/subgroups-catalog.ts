@@ -5899,11 +5899,11 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "스마트 기기, 소형 가전, 생활 가전 컬러 골판지 박스",
           "택배 상자 자체가 하나의 세련된 선물 포장이 되는 브랜드 박스"
         ],
-        "pureImage": "/images/product/carbon.webp",
+        "pureImage": "/images/product/hopgiaycarton.webp",
         "pureImages": [
-          "/images/product/carbon.webp",
-          "/images/product/box-board2.webp",
-          "/images/product/box-board3.webp"
+          "/images/product/hopgiaycarton.webp",
+          "/images/product/hopgiaycarton2.webp",
+          "/images/product/hopgiaycarton3.webp"
         ],
       },
       {
