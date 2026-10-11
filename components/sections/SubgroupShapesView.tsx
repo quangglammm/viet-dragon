@@ -9,7 +9,7 @@ import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import type { SubgroupCategory } from "@/data/subgroups-catalog";
 
-import { SHAPE_ALIASES } from "@/lib/shape-aliases";
+import { SHAPE_ALIASES, toSlug } from "@/lib/shape-aliases";
 export { SHAPE_ALIASES };
 
 export function SubgroupShapesView({
@@ -63,6 +63,33 @@ export function SubgroupShapesView({
         }, 150);
         return () => clearTimeout(timer);
       }
+
+      // Check if target matches any material and auto-forward to material page
+      const allMaterials = [
+        ...(subgroup.materials || []),
+        ...subgroup.shapes.flatMap((s) => s.materials || []),
+      ];
+      const matchedMat = allMaterials.find((m) => {
+        const slug = toSlug(m.nameVi);
+        const nameSlug = toSlug(m.name);
+        const alias = SHAPE_ALIASES[target] || target;
+        return (
+          slug === target ||
+          slug === alias ||
+          nameSlug === target ||
+          nameSlug === alias ||
+          SHAPE_ALIASES[slug] === target ||
+          SHAPE_ALIASES[slug] === alias
+        );
+      });
+
+      if (matchedMat) {
+        const matSlug = toSlug(matchedMat.nameVi) || target;
+        router.replace(
+          `/products/${subgroup.categoryId}/${subgroup.id}/${matSlug}`
+        );
+        return;
+      }
     }
 
     detectAndHighlight();
@@ -79,7 +106,7 @@ export function SubgroupShapesView({
       window.removeEventListener("popstate", detectAndHighlight);
       window.removeEventListener("shape-select", detectAndHighlight);
     };
-  }, [subgroup.shapes]);
+  }, [subgroup.shapes, router, subgroup.categoryId, subgroup.id, subgroup.materials]);
 
   return (
     <div className="bg-white">

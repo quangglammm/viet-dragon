@@ -13,20 +13,49 @@ import { pickLocale } from "@/lib/locale";
 import { MAIN_CATEGORIES, SUBGROUPS_CATALOG, getSubgroupById } from "@/data/subgroups-catalog";
 import { MaterialFlashcard } from "@/components/ui/material-flashcard";
 import { MaterialGlossaryFab } from "@/components/ui/material-glossary-fab";
+import { AutoScrollToTarget } from "@/components/ui/auto-scroll-to-target";
 import { CATEGORY_NAMES } from "@/data/translations";
 import { checkPublicImageExists, sanitizeOptionImages } from "@/lib/image-check";
-import { SHAPE_ALIASES } from "@/lib/shape-aliases";
+import { SHAPE_ALIASES, toSlug } from "@/lib/shape-aliases";
+import { cn } from "@/lib/utils";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
 
 export function generateStaticParams() {
-  return SUBGROUPS_CATALOG.flatMap((sub) =>
-    sub.shapes.map((shape) => ({
+  return SUBGROUPS_CATALOG.flatMap((sub) => {
+    const shapeParams = sub.shapes.map((shape) => ({
       categoryId: sub.categoryId,
       productId: sub.id,
       shapeId: shape.id,
-    }))
-  );
+    }));
+
+    const matSlugs = new Set<string>();
+    const allMaterials = [
+      ...(sub.materials || []),
+      ...sub.shapes.flatMap((s) => s.materials || []),
+    ];
+    for (const m of allMaterials) {
+      if (m.nameVi) matSlugs.add(toSlug(m.nameVi));
+      if (m.name) matSlugs.add(toSlug(m.name));
+    }
+
+    // Include aliases mapping to materials
+    for (const [alias, target] of Object.entries(SHAPE_ALIASES)) {
+      if (Array.from(matSlugs).some((s) => s === target || s === alias)) {
+        matSlugs.add(alias);
+      }
+    }
+
+    const materialParams = Array.from(matSlugs)
+      .filter((slug) => !sub.shapes.some((s) => s.id === slug))
+      .map((slug) => ({
+        categoryId: sub.categoryId,
+        productId: sub.id,
+        shapeId: slug,
+      }));
+
+    return [...shapeParams, ...materialParams];
+  });
 }
 
 export async function generateMetadata({
@@ -38,17 +67,38 @@ export async function generateMetadata({
   const subgroup = getSubgroupById(productId, categoryId);
   if (!subgroup) return {};
 
-  const resolvedShapeId = SHAPE_ALIASES[shapeId] ?? shapeId;
-  const shape = subgroup.shapes.find((s) => s.id === shapeId || s.id === resolvedShapeId);
-  if (!shape) return {};
-
-  const shapeName = pickLocale(locale, shape.nameVi, shape.nameEn, shape.nameZh, shape.nameJa, shape.nameKo);
+  const resolvedId = SHAPE_ALIASES[shapeId] ?? shapeId;
+  const shape = subgroup.shapes.find((s) => s.id === shapeId || s.id === resolvedId);
   const subgroupTitle = pickLocale(locale, subgroup.titleVi, subgroup.titleEn, subgroup.titleZh, subgroup.titleJa, subgroup.titleKo);
 
-  return {
-    title: `${shapeName} - ${subgroupTitle} | Viet Dragon`,
-    description: pickLocale(locale, shape.descriptionVi, shape.descriptionEn),
-  };
+  if (shape) {
+    const shapeName = pickLocale(locale, shape.nameVi, shape.nameEn, shape.nameZh, shape.nameJa, shape.nameKo);
+    return {
+      title: `${shapeName} - ${subgroupTitle} | Viet Dragon`,
+      description: pickLocale(locale, shape.descriptionVi, shape.descriptionEn),
+    };
+  }
+
+  // Material mode
+  const allMaterials = [
+    ...(subgroup.materials || []),
+    ...subgroup.shapes.flatMap((s) => s.materials || []),
+  ];
+  const matchedMat = allMaterials.find((m) => {
+    const sVi = toSlug(m.nameVi);
+    const sEn = toSlug(m.name);
+    return sVi === shapeId || sVi === resolvedId || sEn === shapeId || sEn === resolvedId;
+  });
+
+  if (matchedMat) {
+    const matName = pickLocale(locale, matchedMat.nameVi, matchedMat.name, matchedMat.nameZh, matchedMat.nameJa, matchedMat.nameKo);
+    return {
+      title: `${subgroupTitle} - ${matName} | Viet Dragon`,
+      description: pickLocale(locale, subgroup.descriptionVi, subgroup.descriptionEn),
+    };
+  }
+
+  return {};
 }
 
 export default async function ShapeMaterialDetailPage({
@@ -62,9 +112,25 @@ export default async function ShapeMaterialDetailPage({
   const subgroup = getSubgroupById(productId, categoryId);
   if (!subgroup) notFound();
 
-  const resolvedShapeId = SHAPE_ALIASES[shapeId] ?? shapeId;
-  const shape = subgroup.shapes.find((s) => s.id === shapeId || s.id === resolvedShapeId);
-  if (!shape) notFound();
+  const resolvedId = SHAPE_ALIASES[shapeId] ?? shapeId;
+  const shape = subgroup.shapes.find((s) => s.id === shapeId || s.id === resolvedId);
+
+  // Material fallback resolution
+  const allMaterials = [
+    ...(subgroup.materials || []),
+    ...subgroup.shapes.flatMap((s) => s.materials || []),
+  ];
+  const matchedMat = !shape
+    ? allMaterials.find((m) => {
+        const sVi = toSlug(m.nameVi);
+        const sEn = toSlug(m.name);
+        return sVi === shapeId || sVi === resolvedId || sEn === shapeId || sEn === resolvedId;
+      })
+    : null;
+
+  if (!shape && !matchedMat) {
+    notFound();
+  }
 
   const cat = MAIN_CATEGORIES.find((c) => c.id === categoryId);
   const catName = cat
@@ -73,16 +139,40 @@ export default async function ShapeMaterialDetailPage({
   const Icon = cat ? (iconMap[cat.icon] ?? Briefcase) : Layers;
 
   const subgroupTitle = pickLocale(locale, subgroup.titleVi, subgroup.titleEn, subgroup.titleZh, subgroup.titleJa, subgroup.titleKo);
-  const shapeName = pickLocale(locale, shape.nameVi, shape.nameEn, shape.nameZh, shape.nameJa, shape.nameKo);
-  const shapeDesc = pickLocale(locale, shape.descriptionVi, shape.descriptionEn);
 
-  // Pagination across shapes within this subgroup
-  const shapeIdx = subgroup.shapes.findIndex((s) => s.id === shapeId);
+  // Content configuration according to Shape mode vs Material mode
+  const isMaterialMode = Boolean(matchedMat);
+  const shapeName = shape
+    ? pickLocale(locale, shape.nameVi, shape.nameEn, shape.nameZh, shape.nameJa, shape.nameKo)
+    : "";
+  const pageTitle = isMaterialMode ? subgroupTitle : shapeName;
+  const displayImage = isMaterialMode ? subgroup.coverImage : (shape?.image || subgroup.coverImage);
+  const displayImageAlt = isMaterialMode ? subgroupTitle : shapeName;
+  const pageDesc = isMaterialMode
+    ? pickLocale(locale, subgroup.descriptionVi, subgroup.descriptionEn)
+    : pickLocale(locale, shape?.descriptionVi || "", shape?.descriptionEn || "");
+
+  const breadcrumbLast = isMaterialMode && matchedMat
+    ? pickLocale(locale, matchedMat.nameVi, matchedMat.name, matchedMat.nameZh, matchedMat.nameJa, matchedMat.nameKo)
+    : shapeName;
+
+  // Materials list to display
+  const displayMaterials = isMaterialMode
+    ? (subgroup.materials && subgroup.materials.length > 0 ? subgroup.materials : allMaterials)
+    : (shape?.materials && shape.materials.length > 0 ? shape.materials : subgroup.materials);
+
+  const targetMaterialSlug = matchedMat ? toSlug(matchedMat.nameVi) : null;
+
+  // Pagination across shapes within this subgroup (applicable when in shape mode)
+  const shapeIdx = shape ? subgroup.shapes.findIndex((s) => s.id === shape.id) : -1;
   const prevShape = shapeIdx > 0 ? subgroup.shapes[shapeIdx - 1] : null;
-  const nextShape = shapeIdx < subgroup.shapes.length - 1 ? subgroup.shapes[shapeIdx + 1] : null;
+  const nextShape = shapeIdx >= 0 && shapeIdx < subgroup.shapes.length - 1 ? subgroup.shapes[shapeIdx + 1] : null;
 
   return (
     <div className="bg-white">
+      {/* Auto-scroll controller for material deep-link or hash navigation */}
+      <AutoScrollToTarget targetId={targetMaterialSlug || undefined} altTargetId={shapeId} />
+
       {/* ── Breadcrumb ── */}
       <div className="max-w-7xl mx-auto px-6 pt-10 pb-6">
         <nav aria-label="breadcrumb" className="flex items-center gap-2 text-sm text-zinc-400 flex-wrap">
@@ -102,20 +192,20 @@ export default async function ShapeMaterialDetailPage({
             {subgroupTitle}
           </Link>
           <span>/</span>
-          <span className="text-zinc-700 font-medium">{shapeName}</span>
+          <span className="text-zinc-700 font-medium">{breadcrumbLast}</span>
         </nav>
       </div>
 
-      {/* ── Product panel (Exact 2-column layout as /products/marketing/card) ── */}
+      {/* ── Product panel (Exact 2-column layout with preserved aspect-square frame) ── */}
       <div className="max-w-7xl mx-auto px-6 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
           {/* Left sticky square image */}
           <div className="aspect-square rounded-2xl border border-zinc-100 overflow-hidden bg-zinc-100 lg:sticky lg:top-28">
             <div className="relative w-full h-full">
-              {checkPublicImageExists(shape.image) ? (
+              {checkPublicImageExists(displayImage) ? (
                 <Image
-                  src={shape.image}
-                  alt={shapeName}
+                  src={displayImage}
+                  alt={displayImageAlt}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   className="object-cover"
@@ -127,14 +217,14 @@ export default async function ShapeMaterialDetailPage({
                     <ImagePlus size={36} strokeWidth={1.5} className="text-zinc-400" />
                   </div>
                   <span className="text-xs font-semibold text-zinc-400 tracking-wide text-center">
-                    {shapeName}
+                    {displayImageAlt}
                   </span>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Right column: Info, Shape Switcher, & Material Flashcards */}
+          {/* Right column: Info, Subgroup Switcher, & Material Flashcards */}
           <div className="flex flex-col gap-6">
             <Link
               href={`/products/${subgroup.categoryId}/${subgroup.id}`}
@@ -144,49 +234,69 @@ export default async function ShapeMaterialDetailPage({
             </Link>
 
             <h1 className="text-3xl lg:text-4xl font-black text-zinc-900 leading-tight">
-              {shapeName}
+              {pageTitle}
             </h1>
 
             <p className="text-zinc-500 leading-relaxed">
-              {shapeDesc}
+              {pageDesc}
             </p>
-
 
             {/* Material Flashcards stack */}
             {(() => {
-              const displayMaterials = (shape.materials && shape.materials.length > 0)
-                ? shape.materials
-                : subgroup.materials;
-
               if (!displayMaterials || displayMaterials.length === 0) return null;
 
               return (
                 <div className="flex flex-col gap-8 mt-2">
                   <div className="flex flex-col gap-6">
-                    {displayMaterials.map((opt) => (
-                      <div key={opt.name}>
-                        <p className="font-black text-zinc-900 text-[15px] leading-snug mb-2.5">
-                          {pickLocale(locale, opt.taglineVi, opt.tagline, opt.taglineZh, opt.taglineJa, opt.taglineKo)}
-                        </p>
-                        <MaterialFlashcard
-                          option={sanitizeOptionImages(opt)}
-                          locale={locale}
-                          productName={`${shapeName} - ${pickLocale(locale, opt.nameVi, opt.name, opt.nameZh, opt.nameJa, opt.nameKo)}`}
-                          fallbackImage={shape.image}
-                          descriptionLabel={t("optionDescriptionLabel")}
-                          bestForLabel={t("optionBestForLabel")}
-                          viewImageHint={t("optionViewImageHint")}
-                          backToDetailsHint={t("optionBackToDetailsHint")}
-                          foilCheckboxLabel={t("optionFoilCheckboxLabel")}
-                          doubleSidedCheckboxLabel={t("optionDoubleSidedCheckboxLabel")}
-                          hideFoilCheckbox={opt.hideFoilCheckbox}
-                          hideDoubleSidedCheckbox={opt.hideDoubleSidedCheckbox}
-                          productId={productId}
-                          shapeId={shapeId}
-                          categoryId={categoryId}
-                        />
-                      </div>
-                    ))}
+                    {displayMaterials.map((opt) => {
+                      const slug = toSlug(opt.nameVi);
+                      const matchingAliases = Object.entries(SHAPE_ALIASES)
+                        .filter(([key, val]) => (val === slug || val === toSlug(opt.name)) && key !== slug)
+                        .map(([key]) => key);
+
+                      const isTargetMaterial = Boolean(
+                        isMaterialMode &&
+                          (slug === targetMaterialSlug ||
+                            slug === shapeId ||
+                            matchingAliases.includes(shapeId) ||
+                            matchingAliases.includes(resolvedId))
+                      );
+
+                      return (
+                        <div
+                          key={opt.name}
+                          id={slug}
+                          className={cn(
+                            "scroll-mt-28 lg:scroll-mt-32 relative transition-all duration-300",
+                            isTargetMaterial && "ring-2 ring-brand-primary ring-offset-4 rounded-2xl p-1"
+                          )}
+                        >
+                          {matchingAliases.map((alias) => (
+                            <span key={alias} id={alias} className="sr-only scroll-mt-28 lg:scroll-mt-32" />
+                          ))}
+                          <p className="font-black text-zinc-900 text-[15px] leading-snug mb-2.5">
+                            {pickLocale(locale, opt.taglineVi, opt.tagline, opt.taglineZh, opt.taglineJa, opt.taglineKo)}
+                          </p>
+                          <MaterialFlashcard
+                            option={sanitizeOptionImages(opt)}
+                            locale={locale}
+                            productName={`${pageTitle} - ${pickLocale(locale, opt.nameVi, opt.name, opt.nameZh, opt.nameJa, opt.nameKo)}`}
+                            fallbackImage={displayImage}
+                            descriptionLabel={t("optionDescriptionLabel")}
+                            bestForLabel={t("optionBestForLabel")}
+                            viewImageHint={t("optionViewImageHint")}
+                            backToDetailsHint={t("optionBackToDetailsHint")}
+                            foilCheckboxLabel={t("optionFoilCheckboxLabel")}
+                            doubleSidedCheckboxLabel={t("optionDoubleSidedCheckboxLabel")}
+                            hideFoilCheckbox={opt.hideFoilCheckbox}
+                            hideDoubleSidedCheckbox={opt.hideDoubleSidedCheckbox}
+                            productId={productId}
+                            shapeId={shape?.id || shapeId}
+                            categoryId={categoryId}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -195,7 +305,7 @@ export default async function ShapeMaterialDetailPage({
         </div>
       </div>
 
-      {((shape.materials && shape.materials.length > 0) || (subgroup.materials && subgroup.materials.length > 0)) && (
+      {((shape?.materials && shape.materials.length > 0) || (subgroup.materials && subgroup.materials.length > 0)) && (
         <MaterialGlossaryFab />
       )}
 
@@ -214,7 +324,7 @@ export default async function ShapeMaterialDetailPage({
             <div>
               <h3 className="font-black text-white text-2xl">
                 {t("ctaTitleLine1")}{" "}
-                <span className="text-brand-primary">{shapeName}</span>?
+                <span className="text-brand-primary">{pageTitle}</span>?
               </h3>
               <p className="text-white/50 text-sm mt-1">
                 {t("ctaSubtitle")}
