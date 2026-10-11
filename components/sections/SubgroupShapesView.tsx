@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { ArrowRight, Layers, Sparkles } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -10,6 +10,7 @@ import type { Locale } from "@/i18n/routing";
 import type { SubgroupCategory } from "@/data/subgroups-catalog";
 
 import { SHAPE_ALIASES, toSlug } from "@/lib/shape-aliases";
+import { smoothScrollToElement } from "@/lib/hash-navigation";
 export { SHAPE_ALIASES };
 
 export function SubgroupShapesView({
@@ -24,6 +25,7 @@ export function SubgroupShapesView({
   const router = useRouter();
   const isVi = locale === "vi";
   const [highlightedShapeId, setHighlightedShapeId] = useState<string | null>(null);
+  const scrollTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const title = pickLocale(
     locale,
@@ -40,7 +42,7 @@ export function SubgroupShapesView({
   );
 
   useEffect(() => {
-    function detectAndHighlight() {
+    function detectAndHighlight(shouldScroll = false) {
       if (typeof window === "undefined") return;
       const rawHash = window.location.hash;
       if ((rawHash.match(/#/g) || []).length > 1) {
@@ -62,13 +64,18 @@ export function SubgroupShapesView({
 
       if (matched) {
         setHighlightedShapeId(matched.id);
-        const timer = setTimeout(() => {
-          const el = document.getElementById(matched.id);
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (shouldScroll) {
+          if (scrollTimerRef.current) {
+            clearTimeout(scrollTimerRef.current);
           }
-        }, 150);
-        return () => clearTimeout(timer);
+          scrollTimerRef.current = setTimeout(() => {
+            const el = document.getElementById(matched.id);
+            if (el) {
+              smoothScrollToElement(el);
+            }
+          }, 80);
+        }
+        return;
       }
 
       // Check if target matches any material and auto-forward to material page
@@ -99,19 +106,25 @@ export function SubgroupShapesView({
       }
     }
 
-    detectAndHighlight();
-    const t1 = setTimeout(detectAndHighlight, 120);
-    const t2 = setTimeout(detectAndHighlight, 400);
+    // Initial mount: highlight matching shape (SmoothScroll handles initial landing scroll for route changes)
+    detectAndHighlight(false);
 
-    window.addEventListener("hashchange", detectAndHighlight);
-    window.addEventListener("popstate", detectAndHighlight);
-    window.addEventListener("shape-select", detectAndHighlight);
+    // If navigated directly with hash, ensure smooth scroll after layout settles
+    const initialTimer = setTimeout(() => {
+      detectAndHighlight(true);
+    }, 150);
+
+    const handleHashChange = () => detectAndHighlight(true);
+    window.addEventListener("hashchange", handleHashChange);
+    window.addEventListener("popstate", handleHashChange);
+
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      window.removeEventListener("hashchange", detectAndHighlight);
-      window.removeEventListener("popstate", detectAndHighlight);
-      window.removeEventListener("shape-select", detectAndHighlight);
+      clearTimeout(initialTimer);
+      if (scrollTimerRef.current) {
+        clearTimeout(scrollTimerRef.current);
+      }
+      window.removeEventListener("hashchange", handleHashChange);
+      window.removeEventListener("popstate", handleHashChange);
     };
   }, [subgroup.shapes, router, subgroup.categoryId, subgroup.id, subgroup.materials]);
 
@@ -125,7 +138,7 @@ export function SubgroupShapesView({
           fill
           sizes="100vw"
           className="object-cover"
-          preload
+          priority
         />
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/95 via-zinc-950/70 to-zinc-950/30" />
@@ -240,8 +253,10 @@ export function SubgroupShapesView({
                     if (typeof window !== "undefined") {
                       const cleanBase = window.location.pathname + window.location.search;
                       window.history.replaceState(null, "", `${cleanBase}#${shape.id}`);
-                      window.dispatchEvent(new Event("hashchange"));
-                      window.dispatchEvent(new Event("shape-select"));
+                      const el = document.getElementById(shape.id);
+                      if (el) {
+                        smoothScrollToElement(el);
+                      }
                     }
                   }
                 }}
@@ -249,7 +264,7 @@ export function SubgroupShapesView({
                   "group flex flex-col rounded-2xl bg-white overflow-hidden transition-all duration-300 relative scroll-mt-28 lg:scroll-mt-32 cursor-pointer",
                   isHighlighted
                     ? "border-2 border-brand-primary ring-4 ring-brand-primary/20 shadow-2xl shadow-brand-primary/20 -translate-y-1.5"
-                    : "border border-zinc-200/80 hover:border-brand-primary/40 hover:shadow-xl hover:-translate-y-0.5"
+                    : "border-2 border-zinc-200/80 hover:border-brand-primary/40 hover:shadow-xl hover:-translate-y-0.5"
                 )}
               >
                 {/* Image */}

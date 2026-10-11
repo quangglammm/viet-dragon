@@ -14,11 +14,31 @@ function normalizePathname(path: string): string {
 }
 
 /**
+ * Smoothly scrolls an element into view, coordinating with Lenis if active on desktop,
+ * or using native smooth scroll on mobile.
+ */
+export function smoothScrollToElement(el: HTMLElement | null) {
+  if (!el || typeof window === "undefined") return;
+
+  const lenis = window.__lenis;
+  if (lenis) {
+    const isDesktop = window.innerWidth >= 1024;
+    const headerOffset = isDesktop ? -120 : -80;
+    lenis.scrollTo(el, {
+      offset: headerOffset,
+      duration: 0.8,
+    });
+  } else {
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+/**
  * Safely navigates to a hash on the current page without reloading or creating chained hashes.
  * If target is on the same page:
  * - Prevents default Next.js Link behavior
  * - Replaces/pushes the clean single hash URL
- * - Fires events and smoothly scrolls to the element
+ * - Fires hashchange event and smoothly scrolls to the element
  * Returns true if handled in-page, false if navigation is cross-page.
  */
 export function navigateToShapeHash(targetHref: string, e?: React.MouseEvent): boolean {
@@ -39,19 +59,22 @@ export function navigateToShapeHash(targetHref: string, e?: React.MouseEvent): b
       const cleanUrl = `${cleanBase}#${targetHash}`;
       window.history.pushState(null, "", cleanUrl);
       window.dispatchEvent(new Event("hashchange"));
-      window.dispatchEvent(new Event("shape-select"));
 
       const elementId = SHAPE_ALIASES[targetHash] || targetHash;
       const el = document.getElementById(elementId) || document.getElementById(targetHash);
       if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        smoothScrollToElement(el);
       }
     } else {
       // User clicked a category/group header without hash on the same page
       window.history.pushState(null, "", cleanBase);
       window.dispatchEvent(new Event("hashchange"));
-      window.dispatchEvent(new Event("shape-select"));
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const lenis = window.__lenis;
+      if (lenis) {
+        lenis.scrollTo(0, { duration: 0.8 });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
 
     return true;
