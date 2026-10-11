@@ -42,7 +42,14 @@ export function SubgroupShapesView({
   useEffect(() => {
     function detectAndHighlight() {
       if (typeof window === "undefined") return;
-      const hash = window.location.hash.replace(/^#/, "").trim();
+      const rawHash = window.location.hash;
+      if ((rawHash.match(/#/g) || []).length > 1) {
+        const parts = rawHash.split("#").filter(Boolean);
+        const primaryHash = parts[0]?.trim() || "";
+        const cleanUrl = `${window.location.pathname}${window.location.search}${primaryHash ? `#${primaryHash}` : ""}`;
+        window.history.replaceState(null, "", cleanUrl);
+      }
+      const hash = window.location.hash.replace(/^#+/, "").split("#")[0]?.trim() || "";
       const params = new URLSearchParams(window.location.search);
       const queryTarget = params.get("shape") || params.get("highlight") || params.get("item");
       const target = hash || queryTarget;
@@ -231,7 +238,8 @@ export function SubgroupShapesView({
                   } else {
                     setHighlightedShapeId(shape.id);
                     if (typeof window !== "undefined") {
-                      window.history.replaceState(null, "", `#${shape.id}`);
+                      const cleanBase = window.location.pathname + window.location.search;
+                      window.history.replaceState(null, "", `${cleanBase}#${shape.id}`);
                       window.dispatchEvent(new Event("hashchange"));
                       window.dispatchEvent(new Event("shape-select"));
                     }

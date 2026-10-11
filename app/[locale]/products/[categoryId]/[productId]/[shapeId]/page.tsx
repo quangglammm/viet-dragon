@@ -87,7 +87,14 @@ export async function generateMetadata({
   const matchedMat = allMaterials.find((m) => {
     const sVi = toSlug(m.nameVi);
     const sEn = toSlug(m.name);
-    return sVi === shapeId || sVi === resolvedId || sEn === shapeId || sEn === resolvedId;
+    return (
+      sVi === shapeId ||
+      sVi === resolvedId ||
+      sEn === shapeId ||
+      sEn === resolvedId ||
+      SHAPE_ALIASES[sVi] === shapeId ||
+      SHAPE_ALIASES[sVi] === resolvedId
+    );
   });
 
   if (matchedMat) {
@@ -124,7 +131,14 @@ export default async function ShapeMaterialDetailPage({
     ? allMaterials.find((m) => {
         const sVi = toSlug(m.nameVi);
         const sEn = toSlug(m.name);
-        return sVi === shapeId || sVi === resolvedId || sEn === shapeId || sEn === resolvedId;
+        return (
+          sVi === shapeId ||
+          sVi === resolvedId ||
+          sEn === shapeId ||
+          sEn === resolvedId ||
+          SHAPE_ALIASES[sVi] === shapeId ||
+          SHAPE_ALIASES[sVi] === resolvedId
+        );
       })
     : null;
 

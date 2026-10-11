@@ -12,7 +12,9 @@ export function useCurrentHash(): string {
   useEffect(() => {
     function update() {
       if (typeof window !== "undefined") {
-        setHash(window.location.hash.replace(/^#/, ""));
+        const raw = window.location.hash.replace(/^#+/, "");
+        const clean = raw.split("#")[0]?.trim() || "";
+        setHash(clean);
       }
     }
 
