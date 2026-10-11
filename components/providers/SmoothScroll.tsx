@@ -43,27 +43,32 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   // intermittently. Real DOM measurements are used for the target (not
   // Lenis's own animatedScroll bookkeeping, which lags mid-transition).
   useEffect(() => {
-    const hash = window.location.hash;
-    const targetEl = hash ? document.getElementById(hash.slice(1)) : null;
-    const targetY = targetEl
-      ? targetEl.getBoundingClientRect().top +
-        window.scrollY -
-        (parseFloat(getComputedStyle(targetEl).scrollMarginTop) || 0)
-      : 0;
-
     function apply() {
+      const hash = window.location.hash;
+      const targetEl = hash ? document.getElementById(hash.slice(1)) : null;
+      const targetY = targetEl
+        ? targetEl.getBoundingClientRect().top +
+          window.scrollY -
+          (parseFloat(getComputedStyle(targetEl).scrollMarginTop) || 0)
+        : 0;
+
       const lenis = lenisRef.current;
       if (lenis) {
         lenis.resize();
         lenis.scrollTo(targetY, { immediate: true });
       } else {
-        window.scrollTo(0, targetY);
+        window.scrollTo({ top: targetY, behavior: "smooth" });
       }
     }
 
     apply();
     const timeoutIds = [50, 150, 300].map((delay) => setTimeout(apply, delay));
-    return () => timeoutIds.forEach(clearTimeout);
+
+    window.addEventListener("hashchange", apply);
+    return () => {
+      timeoutIds.forEach(clearTimeout);
+      window.removeEventListener("hashchange", apply);
+    };
   }, [pathname]);
 
   return <>{children}</>;

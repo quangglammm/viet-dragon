@@ -40,8 +40,9 @@ export function isSubmenuItemActive(
 
     // Match when user is on the deep shape page (e.g. "/products/tet/bao-li-xi/bao-li-xi-ep-kim")
     if (
-      normalizedCurrentPath === `${normalizedItemPath}/${itemHash}` ||
-      normalizedCurrentPath === `${normalizedItemPath}/${resolvedItemHash}`
+      (cleanHash === "" || cleanHash === itemHash || resolvedCurrentHash === resolvedItemHash) &&
+      (normalizedCurrentPath === `${normalizedItemPath}/${itemHash}` ||
+       normalizedCurrentPath === `${normalizedItemPath}/${resolvedItemHash}`)
     ) {
       return true;
     }
@@ -49,13 +50,29 @@ export function isSubmenuItemActive(
     return false;
   }
 
-  // 2. Subpath-based link (e.g. "/products/office/danh-thiep/danh-thiep-chuan")
-  // Must be a distinct detail/shape route (>= 4 segments: ["products", cat, subgroup, shapeId])
+  // 2. Subpath-based link (e.g. "/products/office/danh-thiep/danh-thiep-chuan" or "/products/marketing/poster-bangron-standee/decal-luoi")
+  // Must be a distinct detail/shape/material route (>= 4 segments: ["products", cat, subgroup, id])
   const segments = normalizedItemPath.split("/").filter(Boolean);
   if (segments.length >= 4) {
-    // Direct match on deep shape route (e.g. /products/office/danh-thiep/danh-thiep-chuan)
+    // Direct match on deep route
     if (normalizedCurrentPath === normalizedItemPath) {
       return true;
+    }
+
+    const currentSegments = normalizedCurrentPath.split("/").filter(Boolean);
+    if (currentSegments.length >= 4) {
+      const itemParent = segments.slice(0, 3).join("/");
+      const currentParent = currentSegments.slice(0, 3).join("/");
+      if (itemParent === currentParent) {
+        const itemLast = segments[segments.length - 1];
+        const currentLast = currentSegments[currentSegments.length - 1];
+        if (
+          itemLast === currentLast ||
+          resolveShapeAlias(itemLast) === resolveShapeAlias(currentLast)
+        ) {
+          return true;
+        }
+      }
     }
 
     // If user is on the parent subgroup page and the hash matches the shape ID

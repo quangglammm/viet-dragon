@@ -52,7 +52,7 @@ export const OFFICE_SUBMENU_COLUMNS: {
             nameJa: "高級アート紙名刺",
             nameKo: "고급 수입지 명함",
             kind: "material",
-            href: "/products/office/danh-thiep#giay-my-thuat",
+            href: "/products/office/danh-thiep/card-art-paper",
             image: "/images/product/art.webp",
             isFast: true,
           },
@@ -109,7 +109,7 @@ export const OFFICE_SUBMENU_COLUMNS: {
             nameJa: "耐水合成紙名刺",
             nameKo: "방수 찢어지지 않는 플라스틱 명함",
             kind: "material",
-            href: "/products/office/danh-thiep#the-nhua-pvc",
+            href: "/products/office/danh-thiep/the-nhua-pvc",
             image: "/images/product/thenhuapvc.webp",
           },
           {
@@ -239,7 +239,7 @@ export const OFFICE_SUBMENU_COLUMNS: {
             nameJa: "クラフト紙封筒",
             nameKo: "크라프트지 봉투",
             kind: "material",
-            href: "/products/office/bao-thu#bao-thu-kraft",
+            href: "/products/office/bao-thu/bao-thu-kraft",
             image: "/images/product/bag-kraft1.webp",
           },
           {

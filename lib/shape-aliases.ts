@@ -208,6 +208,21 @@ export const SHAPE_ALIASES: Record<string, string> = {
   "decal-tem-be": "decal-tem-be",
   "nhan-decal-tem-be": "decal-tem-be",
   "nhan-decal-xi-bac-vang": "nhan-decal-xi-bac",
+
+  // material aliases
+  "decal-mesh": "decal-luoi",
+  "decal-luoi": "decal-luoi",
+  "backlit-film": "backlit-film",
+  "the-nhua-pvc": "giay-nhua-sieu-ben",
+  "card-plastic": "giay-nhua-sieu-ben",
+  "card-art-paper": "giay-my-thuat",
+  "giay-my-thuat": "giay-my-thuat",
+  "giay-nhua-sieu-ben": "giay-nhua-sieu-ben",
+  "envelope-kraft": "giay-kraft-tu-nhien-eco-rustic",
+  "bao-thu-kraft": "giay-kraft-tu-nhien-eco-rustic",
+  "giay-kraft-tu-nhien-eco-rustic": "giay-kraft-tu-nhien-eco-rustic",
+  "tag-kraft": "mac-giay-kraft",
+  "mac-giay-kraft": "mac-giay-my-thuat-nham-cao-cap",
 };
 
 export function toSlug(text: string): string {

@@ -491,3 +491,28 @@ section[id] {
   color: #60a5fa !important;
 }
 
+/* Custom smooth scrollbar for card details and nested scroll containers */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(112, 0, 254, 0.3) transparent;
+  overscroll-behavior: contain;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(112, 0, 254, 0.25);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(112, 0, 254, 0.5);
+}
+
+
