@@ -9,6 +9,7 @@ import type { Locale } from "@/i18n/routing";
 import { PACKAGING_SUBMENU_COLUMNS } from "@/data/packaging-menu";
 import { isSubmenuItemActive, isSubmenuGroupActive } from "@/lib/menu-active";
 import { useCurrentHash } from "@/hooks/use-current-hash";
+import { navigateToShapeHash } from "@/lib/hash-navigation";
 
 const FAST_PRINT_TAGS: Record<Locale, string> = {
   vi: "in nhanh",
@@ -34,14 +35,9 @@ export function PackagingDesktopSubmenu({
   const [bgImage, setBgImage] = useState<string>(DEFAULT_IMAGE);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  const handleItemClick = () => {
+  const handleLinkClick = (href: string, e: React.MouseEvent) => {
+    navigateToShapeHash(href, e);
     onItemClick?.();
-    if (typeof window !== "undefined") {
-      setTimeout(() => {
-        window.dispatchEvent(new Event("hashchange"));
-        window.dispatchEvent(new Event("shape-select"));
-      }, 50);
-    }
   };
 
   return (
@@ -76,7 +72,7 @@ export function PackagingDesktopSubmenu({
                 <div key={group.id} className="flex flex-col">
                   <Link
                     href={group.href}
-                    onClick={handleItemClick}
+                    onClick={(e) => handleLinkClick(group.href, e)}
                     onMouseEnter={() => {
                       setBgImage(group.image);
                       setHoveredId(group.id);
@@ -115,7 +111,7 @@ export function PackagingDesktopSubmenu({
                         <li key={item.id}>
                           <Link
                             href={item.href}
-                            onClick={handleItemClick}
+                            onClick={(e) => handleLinkClick(item.href, e)}
                             onMouseEnter={() => {
                               setBgImage(item.image);
                               setHoveredId(item.id);

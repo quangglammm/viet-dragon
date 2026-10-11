@@ -4,7 +4,13 @@ import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 import { usePathname } from "@/i18n/navigation";
 
-export default function SmoothScroll({ children }: { children: React.ReactNode }) {
+declare global {
+  interface Window {
+    __lenis?: Lenis | null;
+  }
+}
+
+export default function SmoothScroll({ children }: Readonly<{ children: React.ReactNode }>) {
   const lenisRef = useRef<Lenis | null>(null);
   const pathname = usePathname();
 
@@ -15,6 +21,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
     const lenis = new Lenis();
     lenisRef.current = lenis;
+    window.__lenis = lenis;
 
     let rafId: number;
     function raf(time: number) {
@@ -27,6 +34,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       cancelAnimationFrame(rafId);
       lenis.destroy();
       lenisRef.current = null;
+      window.__lenis = null;
     };
   }, []);
 
@@ -43,7 +51,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   // intermittently. Real DOM measurements are used for the target (not
   // Lenis's own animatedScroll bookkeeping, which lags mid-transition).
   useEffect(() => {
-    function apply() {
+    function apply(immediate = false) {
       const hash = window.location.hash;
       const targetEl = hash ? document.getElementById(hash.slice(1)) : null;
       const targetY = targetEl
@@ -55,19 +63,27 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       const lenis = lenisRef.current;
       if (lenis) {
         lenis.resize();
-        lenis.scrollTo(targetY, { immediate: true });
+        if (immediate) {
+          lenis.scrollTo(targetY, { immediate: true });
+        } else {
+          lenis.scrollTo(targetY, { duration: 0.8 });
+        }
       } else {
-        window.scrollTo({ top: targetY, behavior: "smooth" });
+        window.scrollTo({ top: targetY, behavior: immediate ? "instant" : "smooth" });
       }
     }
 
-    apply();
-    const timeoutIds = [50, 150, 300].map((delay) => setTimeout(apply, delay));
+    apply(true);
+    const timeoutIds = [50, 150, 300].map((delay) => setTimeout(() => apply(true), delay));
 
-    window.addEventListener("hashchange", apply);
+    function handleHashChange() {
+      apply(false);
+    }
+
+    window.addEventListener("hashchange", handleHashChange);
     return () => {
       timeoutIds.forEach(clearTimeout);
-      window.removeEventListener("hashchange", apply);
+      window.removeEventListener("hashchange", handleHashChange);
     };
   }, [pathname]);
 

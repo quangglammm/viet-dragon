@@ -60,8 +60,8 @@ export const SHAPE_ALIASES: Record<string, string> = {
   "catalogue-gia-re": "catalogue-gia-re",
   "catalogue-premium": "catalogue-cao-cap",
   "catalogue-cao-cap": "catalogue-cao-cap",
-  "profile-company": "ho-so-nang-luc",
-  "ho-so-nang-luc": "ho-so-nang-luc",
+  "profile-company": "profile-company",
+  "ho-so-nang-luc": "profile-company",
   "handbook-pocket": "cam-nang-cam-tay",
   "cam-nang-cam-tay": "cam-nang-cam-tay",
 
@@ -108,9 +108,10 @@ export const SHAPE_ALIASES: Record<string, string> = {
   "nhan-decal-giay-kraft": "nhan-decal-giay-kraft",
   "label-art-paper": "nhan-decal-giay-my-thuat",
   "nhan-decal-giay-my-thuat": "nhan-decal-giay-my-thuat",
-  "label-metallic": "nhan-decal-xi-bac",
-  "label-metallic-foil": "nhan-decal-xi-bac",
-  "nhan-decal-xi-bac": "nhan-decal-xi-bac",
+  "label-metallic": "nhan-decal-xi-bac-vang",
+  "label-metallic-foil": "nhan-decal-xi-bac-vang",
+  "label-silver-gold": "nhan-decal-xi-bac-vang",
+  "nhan-decal-xi-bac": "nhan-decal-xi-bac-vang",
   "hashtag-paper": "hashtag-giay",
   "hashtag-giay": "hashtag-giay",
   "certificate-award": "bang-khen",
@@ -167,8 +168,10 @@ export const SHAPE_ALIASES: Record<string, string> = {
 
   // bia-dung-ho-so
   "folder-single-pocket": "bia-ho-so-1-tay-gap",
+  "folder-1-pocket": "bia-ho-so-1-tay-gap",
   "bia-ho-so-1-tay-gap": "bia-ho-so-1-tay-gap",
   "folder-double-pocket": "bia-ho-so-2-tay-gap",
+  "folder-2-pocket": "bia-ho-so-2-tay-gap",
   "bia-ho-so-2-tay-gap": "bia-ho-so-2-tay-gap",
   "folder-premium": "bia-ho-so-cao-cap",
   "bia-ho-so-cao-cap": "bia-ho-so-cao-cap",
@@ -183,14 +186,17 @@ export const SHAPE_ALIASES: Record<string, string> = {
   "bag-foil": "tui-giay-ep-kim",
   "tui-giay-ep-kim": "tui-giay-ep-kim",
   "bag-punch-handle": "tui-giay-quai-hot-xoai",
+  "bag-diecut-handle": "tui-giay-quai-hot-xoai",
   "tui-giay-quai-hot-xoai": "tui-giay-quai-hot-xoai",
   "bag-ready-made": "tui-giay-co-san",
+  "bag-in-stock": "tui-giay-co-san",
   "tui-giay-co-san": "tui-giay-co-san",
   "bag-bread": "tui-giay-banh-mi",
   "tui-giay-banh-mi": "tui-giay-banh-mi",
 
   // packaging hop-giay
   "box-standard": "hop-giay-thong-dung",
+  "box-common": "hop-giay-thong-dung",
   "hop-giay-thong-dung": "hop-giay-thong-dung",
   "box-kraft": "hop-giay-kraft",
   "hop-giay-kraft": "hop-giay-kraft",
@@ -207,7 +213,7 @@ export const SHAPE_ALIASES: Record<string, string> = {
   "label-warranty-tamper": "decal-tem-be",
   "decal-tem-be": "decal-tem-be",
   "nhan-decal-tem-be": "decal-tem-be",
-  "nhan-decal-xi-bac-vang": "nhan-decal-xi-bac",
+  "nhan-decal-xi-bac-vang": "nhan-decal-xi-bac-vang",
 
   // material aliases
   "decal-mesh": "decal-luoi",
@@ -221,7 +227,7 @@ export const SHAPE_ALIASES: Record<string, string> = {
   "envelope-kraft": "giay-kraft-tu-nhien-eco-rustic",
   "bao-thu-kraft": "giay-kraft-tu-nhien-eco-rustic",
   "giay-kraft-tu-nhien-eco-rustic": "giay-kraft-tu-nhien-eco-rustic",
-  "tag-kraft": "mac-giay-kraft",
+  "tag-kraft": "mac-giay-my-thuat-nham-cao-cap",
   "mac-giay-kraft": "mac-giay-my-thuat-nham-cao-cap",
 };
 

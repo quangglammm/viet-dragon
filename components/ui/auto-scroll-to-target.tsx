@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { smoothScrollToElement } from "@/lib/hash-navigation";
 
 interface AutoScrollToTargetProps {
   readonly targetId?: string;
@@ -11,6 +12,8 @@ export function AutoScrollToTarget({
   targetId,
   altTargetId,
 }: AutoScrollToTargetProps) {
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     const currentHash = window.location.hash.replace(/^#/, "").trim();
     const rawId = currentHash || targetId || altTargetId;
@@ -24,17 +27,17 @@ export function AutoScrollToTarget({
         (targetId ? document.getElementById(targetId) : null);
 
       if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        smoothScrollToElement(el);
       }
     }
 
-    // Initial tick & follow-up after images/fonts settle
-    const timer1 = setTimeout(executeScroll, 120);
-    const timer2 = setTimeout(executeScroll, 350);
+    // Settled execution after layout and fonts stabilize
+    timerRef.current = setTimeout(executeScroll, 150);
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     };
   }, [targetId, altTargetId]);
 

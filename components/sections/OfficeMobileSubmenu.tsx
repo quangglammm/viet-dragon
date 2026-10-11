@@ -6,6 +6,7 @@ import type { Locale } from "@/i18n/routing";
 import { OFFICE_SUBMENU_COLUMNS } from "@/data/office-menu";
 import { isSubmenuItemActive } from "@/lib/menu-active";
 import { useCurrentHash } from "@/hooks/use-current-hash";
+import { navigateToShapeHash } from "@/lib/hash-navigation";
 import { cn } from "@/lib/utils";
 
 const FAST_PRINT_TAGS: Record<Locale, string> = {
@@ -27,14 +28,9 @@ export function OfficeMobileSubmenu({
   const currentHash = useCurrentHash();
   const allGroups = OFFICE_SUBMENU_COLUMNS.flatMap((col) => col.groups);
 
-  const handleItemClick = () => {
+  const handleLinkClick = (href: string, e: React.MouseEvent) => {
+    navigateToShapeHash(href, e);
     onItemClick?.();
-    if (typeof window !== "undefined") {
-      setTimeout(() => {
-        window.dispatchEvent(new Event("hashchange"));
-        window.dispatchEvent(new Event("shape-select"));
-      }, 50);
-    }
   };
 
   return (
@@ -43,7 +39,7 @@ export function OfficeMobileSubmenu({
         <div key={group.id} className="flex flex-col">
           <Link
             href={group.href}
-            onClick={handleItemClick}
+            onClick={(e) => handleLinkClick(group.href, e)}
             className="text-[14px] font-bold text-brand-primary mb-1.5 pb-0.5 border-b border-brand-primary/20 inline-block"
           >
             {pickLocale(
@@ -62,7 +58,7 @@ export function OfficeMobileSubmenu({
                 <li key={item.id}>
                   <Link
                     href={item.href}
-                    onClick={handleItemClick}
+                    onClick={(e) => handleLinkClick(item.href, e)}
                     className={cn(
                       "flex items-center justify-between py-1.5 px-2 -mx-2 rounded-lg text-sm transition-all",
                       isActive

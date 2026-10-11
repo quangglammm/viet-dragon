@@ -5832,80 +5832,80 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
           "/images/product/hopgiay-giayloaii3.webp"
         ],
       },
-      // {
-      //   "icon": "Award",
-      //   "name": "Couche Mounted on E/B-Flute Corrugated Board",
-      //   "nameVi": "Couche Bồi Carton Sóng E / Sóng B",
-      //   "tagline": "Need extra shock-proof protection for heavier items or e-commerce shipping?",
-      //   "taglineVi": "Bạn cần hộp bồi sóng cứng cáp chịu lực va đập khi gửi hàng chuyển phát nhanh?",
-      //   "description": [
-      //     "Laminated C250/C300 printed sheet mounted onto strong E-flute corrugated cardboard",
-      //     "Provides superior cushioning and compression resistance during transit",
-      //     "Combines high-definition retail print quality with shipping box ruggedness"
-      //   ],
-      //   "descriptionVi": [
-      //     "In màu sắc nét được bồi lên lớp carton sóng E hoặc sóng B cứng cáp",
-      //     "Khả năng chống va đập, chịu lực đè nén vượt trội trong quá trình vận chuyển",
-      //     "Kết hợp hoàn hảo giữa thẩm mỹ in ấn bán lẻ và độ bền của hộp bảo vệ"
-      //   ],
-      //   "descriptionTraits": [
-      //     "smooth-base",
-      //     "waterproof-durability",
-      //     "glossy-coat"
-      //   ],
-      //   "bestFor": [
-      //     "E-commerce subscription boxes and courier shipping mailers",
-      //     "Heavy glass bottles, wine, ceramics, and electronic appliances",
-      //     "Fruit gift boxes, agricultural exports, and bulk retail packs"
-      //   ],
-      //   "bestForVi": [
-      //     "Hộp ship COD thương mại điện tử, hộp quà gửi chuyển phát nhanh",
-      //     "Hộp đựng chai lọ thủy tinh nặng, rượu vang, gốm sứ và thiết bị điện",
-      //     "Hộp quà trái cây, nông sản xuất khẩu và giỏ quà thực phẩm"
-      //   ],
-      //   "nameZh": "彩色铜版纸裱E坑/B坑加强瓦楞纸盒",
-      //   "nameJa": "コート紙合紙 E段/B段 段ボール箱",
-      //   "nameKo": "컬러 스노우지 합지 E골/B골 골판지 박스",
-      //   "taglineZh": "需要抵抗快递暴力分拣、兼顾高清彩色印刷与坚硬防撞缓冲？",
-      //   "taglineJa": "配送時の衝撃から製品を守り、鮮やかな外装印刷も両立させたいですか？",
-      //   "taglineKo": "택배 배송 충격으로부터 제품을 안전하게 보호하면서 컬러풀한 외관을 유지할 박스인가요?",
-      //   "descriptionZh": [
-      //     "面纸彩印高精铜版纸，手工裱贴加强型E坑或B坑瓦楞芯纸",
-      //     "抗压耐摔防撞缓冲，有效吸收快递长途颠簸冲击",
-      //     "折叠卡扣设计，免胶水即插即锁，打包发货极速高效"
-      //   ],
-      //   "descriptionJa": [
-      //     "コート紙に鮮やかに印刷し、E段またはB段の段ボール芯に合紙",
-      //     "輸送時の落下や衝撃から中の商品をしっかりガードする高強度",
-      //     "ワンタッチで組み立て可能な効率的なロック構造"
-      //   ],
-      //   "descriptionKo": [
-      //     "선명하게 인쇄된 스노우지를 탄탄한 E골/B골 강화 골판지에 합지 가공",
-      //     "택배 배송 중 던짐과 적재 하중을 거뜬히 견뎌내는 강력한 완충력",
-      //     "테이프 없이 원터치 조립이 가능한 편리한 스마트 락 구조"
-      //   ],
-      //   "bestForZh": [
-      //     "电商快递发货飞机盒、易碎玻璃瓶罐外发箱",
-      //     "电子数码产品外箱、家用小电器及五金工具箱",
-      //     "兼顾外表全彩精美与内在强力保护的电商首选"
-      //   ],
-      //   "bestForJa": [
-      //     "EC通販の配送用メール便ボックス、割れ物・ボトルの発送箱",
-      //     "家電製品・ガジェット・工具・シューズボックス",
-      //     "見た目の美しさと配送時の保護性能を両立した発送用化粧箱"
-      //   ],
-      //   "bestForKo": [
-      //     "이커머스 배송용 프리미엄 컬러 날개 박스, 유리병 완충 배송 상자",
-      //     "스마트 기기, 소형 가전, 생활 가전 컬러 골판지 박스",
-      //     "택배 상자 자체가 하나의 세련된 선물 포장이 되는 브랜드 박스"
-      //   ],
-      //   "pureImage": "/images/product/carbon.webp",
-      //   "pureImages": [
-      //     "/images/product/carbon.webp",
-      //     "/images/product/box-board2.webp",
-      //     "/images/product/box-board3.webp"
-      //   ],
-      // },
+      {
+        "icon": "Award",
+        "name": "Corrugated Carton Box",
+        "nameVi": "Hộp Giấy Carton",
+        "tagline": "Need extra shock-proof protection for heavier items or e-commerce shipping?",
+        "taglineVi": "Bạn cần hộp bồi sóng cứng cáp chịu lực va đập khi gửi hàng chuyển phát nhanh?",
+        "description": [
+          "Laminated C250/C300 printed sheet mounted onto strong E-flute corrugated cardboard",
+          "Provides superior cushioning and compression resistance during transit",
+          "Combines high-definition retail print quality with shipping box ruggedness"
+        ],
+        "descriptionVi": [
+          "In màu sắc nét được bồi lên lớp carton sóng E hoặc sóng B cứng cáp",
+          "Khả năng chống va đập, chịu lực đè nén vượt trội trong quá trình vận chuyển",
+          "Kết hợp hoàn hảo giữa thẩm mỹ in ấn bán lẻ và độ bền của hộp bảo vệ"
+        ],
+        "descriptionTraits": [
+          "smooth-base",
+          "waterproof-durability",
+          "glossy-coat"
+        ],
+        "bestFor": [
+          "E-commerce subscription boxes and courier shipping mailers",
+          "Heavy glass bottles, wine, ceramics, and electronic appliances",
+          "Fruit gift boxes, agricultural exports, and bulk retail packs"
+        ],
+        "bestForVi": [
+          "Hộp ship COD thương mại điện tử, hộp quà gửi chuyển phát nhanh",
+          "Hộp đựng chai lọ thủy tinh nặng, rượu vang, gốm sứ và thiết bị điện",
+          "Hộp quà trái cây, nông sản xuất khẩu và giỏ quà thực phẩm"
+        ],
+        "nameZh": "彩色铜版纸裱E坑/B坑加强瓦楞纸盒",
+        "nameJa": "コート紙合紙 E段/B段 段ボール箱",
+        "nameKo": "컬러 스노우지 합지 E골/B골 골판지 박스",
+        "taglineZh": "需要抵抗快递暴力分拣、兼顾高清彩色印刷与坚硬防撞缓冲？",
+        "taglineJa": "配送時の衝撃から製品を守り、鮮やかな外装印刷も両立させたいですか？",
+        "taglineKo": "택배 배송 충격으로부터 제품을 안전하게 보호하면서 컬러풀한 외관을 유지할 박스인가요?",
+        "descriptionZh": [
+          "面纸彩印高精铜版纸，手工裱贴加强型E坑或B坑瓦楞芯纸",
+          "抗压耐摔防撞缓冲，有效吸收快递长途颠簸冲击",
+          "折叠卡扣设计，免胶水即插即锁，打包发货极速高效"
+        ],
+        "descriptionJa": [
+          "コート紙に鮮やかに印刷し、E段またはB段の段ボール芯に合紙",
+          "輸送時の落下や衝撃から中の商品をしっかりガードする高強度",
+          "ワンタッチで組み立て可能な効率的なロック構造"
+        ],
+        "descriptionKo": [
+          "선명하게 인쇄된 스노우지를 탄탄한 E골/B골 강화 골판지에 합지 가공",
+          "택배 배송 중 던짐과 적재 하중을 거뜬히 견뎌내는 강력한 완충력",
+          "테이프 없이 원터치 조립이 가능한 편리한 스마트 락 구조"
+        ],
+        "bestForZh": [
+          "电商快递发货飞机盒、易碎玻璃瓶罐外发箱",
+          "电子数码产品外箱、家用小电器及五金工具箱",
+          "兼顾外表全彩精美与内在强力保护的电商首选"
+        ],
+        "bestForJa": [
+          "EC通販の配送用メール便ボックス、割れ物・ボトルの発送箱",
+          "家電製品・ガジェット・工具・シューズボックス",
+          "見た目の美しさと配送時の保護性能を両立した発送用化粧箱"
+        ],
+        "bestForKo": [
+          "이커머스 배송용 프리미엄 컬러 날개 박스, 유리병 완충 배송 상자",
+          "스마트 기기, 소형 가전, 생활 가전 컬러 골판지 박스",
+          "택배 상자 자체가 하나의 세련된 선물 포장이 되는 브랜드 박스"
+        ],
+        "pureImage": "/images/product/hopgiaycarton.webp",
+        "pureImages": [
+          "/images/product/hopgiaycarton.webp",
+          "/images/product/hopgiaycarton2.webp",
+          "/images/product/hopgiaycarton3.webp"
+        ],
+      },
       {
         "icon": "Feather",
         "name": "Natural Kraft 250 - 350gsm (Eco-Box)",
