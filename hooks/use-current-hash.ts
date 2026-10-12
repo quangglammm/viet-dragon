@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 /**
  * Hook to reactively track window.location.hash across client interactions,
- * popstate, hashchange, and custom shape selection events.
+ * popstate and hashchange events.
  */
 export function useCurrentHash(): string {
   const [hash, setHash] = useState("");
@@ -21,12 +21,10 @@ export function useCurrentHash(): string {
     update();
     window.addEventListener("hashchange", update);
     window.addEventListener("popstate", update);
-    window.addEventListener("shape-select", update);
 
     return () => {
       window.removeEventListener("hashchange", update);
       window.removeEventListener("popstate", update);
-      window.removeEventListener("shape-select", update);
     };
   }, []);
 

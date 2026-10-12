@@ -13,24 +13,56 @@ function normalizePathname(path: string): string {
   return cleaned === "" ? "/" : cleaned.replace(/\/+$/, "");
 }
 
-/**
- * Smoothly scrolls an element into view, coordinating with Lenis if active on desktop,
- * or using native smooth scroll on mobile.
- */
-export function smoothScrollToElement(el: HTMLElement | null) {
-  if (!el || typeof window === "undefined") return;
+const SCROLL_DURATION_S = 0.8;
 
+/**
+ * After a route change without a hash, SmoothScroll re-applies "scroll to top"
+ * at these delays to outlast leftover wheel momentum. Anything that scrolls on
+ * arrival without a URL hash (deep links like /…/backlit-film) must start after
+ * this window, or the retries yank the page back to the top mid-glide.
+ */
+export const TOP_RESET_RETRY_MS = [50, 150, 300];
+export const DEEP_LINK_SCROLL_DELAY_MS = Math.max(...TOP_RESET_RETRY_MS) + 50;
+
+/**
+ * Resolves a URL hash (with or without "#") to its target element, falling back
+ * to the canonical shape id when the hash is an alias (e.g. "flyer-budget").
+ */
+export function findHashTarget(hash: string): HTMLElement | null {
+  const id = hash.replace(/^#+/, "").split("#")[0]?.trim();
+  if (!id) return null;
+  return document.getElementById(id) ?? document.getElementById(SHAPE_ALIASES[id] ?? "");
+}
+
+/**
+ * Document Y that places `el` just below the fixed header. The header offset
+ * comes solely from the target's CSS `scroll-margin-top` — never add a second
+ * offset on top, Lenis and the browser would otherwise stack both.
+ */
+export function getElementScrollTop(el: HTMLElement): number {
+  const scrollMargin = Number.parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+  return Math.max(0, el.getBoundingClientRect().top + window.scrollY - scrollMargin);
+}
+
+/**
+ * Scrolls to an absolute Y through Lenis when active (desktop), or the native
+ * scroller otherwise (mobile/tablet). Real DOM measurements are used for the
+ * target, not Lenis's lagging internal bookkeeping.
+ */
+export function scrollToY(top: number, immediate = false) {
+  if (typeof window === "undefined") return;
   const lenis = window.__lenis;
   if (lenis) {
-    const isDesktop = window.innerWidth >= 1024;
-    const headerOffset = isDesktop ? -120 : -80;
-    lenis.scrollTo(el, {
-      offset: headerOffset,
-      duration: 0.8,
-    });
+    lenis.resize();
+    lenis.scrollTo(top, immediate ? { immediate: true } : { duration: SCROLL_DURATION_S });
   } else {
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.scrollTo({ top, behavior: immediate ? "instant" : "smooth" });
   }
+}
+
+export function smoothScrollToElement(el: HTMLElement | null) {
+  if (!el) return;
+  scrollToY(getElementScrollTop(el));
 }
 
 /**
@@ -38,7 +70,7 @@ export function smoothScrollToElement(el: HTMLElement | null) {
  * If target is on the same page:
  * - Prevents default Next.js Link behavior
  * - Replaces/pushes the clean single hash URL
- * - Fires hashchange event and smoothly scrolls to the element
+ * - Fires a hashchange event — SmoothScroll is the single listener that scrolls
  * Returns true if handled in-page, false if navigation is cross-page.
  */
 export function navigateToShapeHash(targetHref: string, e?: React.MouseEvent): boolean {
@@ -55,27 +87,9 @@ export function navigateToShapeHash(targetHref: string, e?: React.MouseEvent): b
 
     const cleanBase = window.location.pathname + window.location.search;
 
-    if (targetHash) {
-      const cleanUrl = `${cleanBase}#${targetHash}`;
-      window.history.pushState(null, "", cleanUrl);
-      window.dispatchEvent(new Event("hashchange"));
-
-      const elementId = SHAPE_ALIASES[targetHash] || targetHash;
-      const el = document.getElementById(elementId) || document.getElementById(targetHash);
-      if (el) {
-        smoothScrollToElement(el);
-      }
-    } else {
-      // User clicked a category/group header without hash on the same page
-      window.history.pushState(null, "", cleanBase);
-      window.dispatchEvent(new Event("hashchange"));
-      const lenis = window.__lenis;
-      if (lenis) {
-        lenis.scrollTo(0, { duration: 0.8 });
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    }
+    // A missing hash (category/group header link) resolves to scroll-to-top
+    window.history.pushState(null, "", targetHash ? `${cleanBase}#${targetHash}` : cleanBase);
+    window.dispatchEvent(new Event("hashchange"));
 
     return true;
   }

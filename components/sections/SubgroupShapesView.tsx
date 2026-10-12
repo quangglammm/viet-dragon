@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ArrowRight, Layers, Sparkles } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -11,7 +11,6 @@ import type { SubgroupCategory } from "@/data/subgroups-catalog";
 
 import { SHAPE_ALIASES, toSlug } from "@/lib/shape-aliases";
 import { smoothScrollToElement } from "@/lib/hash-navigation";
-export { SHAPE_ALIASES };
 
 export function SubgroupShapesView({
   locale,
@@ -25,7 +24,6 @@ export function SubgroupShapesView({
   const router = useRouter();
   const isVi = locale === "vi";
   const [highlightedShapeId, setHighlightedShapeId] = useState<string | null>(null);
-  const scrollTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const title = pickLocale(
     locale,
@@ -42,7 +40,7 @@ export function SubgroupShapesView({
   );
 
   useEffect(() => {
-    function detectAndHighlight(shouldScroll = false) {
+    function detectAndHighlight() {
       if (typeof window === "undefined") return;
       const rawHash = window.location.hash;
       if ((rawHash.match(/#/g) || []).length > 1) {
@@ -64,17 +62,6 @@ export function SubgroupShapesView({
 
       if (matched) {
         setHighlightedShapeId(matched.id);
-        if (shouldScroll) {
-          if (scrollTimerRef.current) {
-            clearTimeout(scrollTimerRef.current);
-          }
-          scrollTimerRef.current = setTimeout(() => {
-            const el = document.getElementById(matched.id);
-            if (el) {
-              smoothScrollToElement(el);
-            }
-          }, 80);
-        }
         return;
       }
 
@@ -106,25 +93,16 @@ export function SubgroupShapesView({
       }
     }
 
-    // Initial mount: highlight matching shape (SmoothScroll handles initial landing scroll for route changes)
-    detectAndHighlight(false);
+    // Highlight only — SmoothScroll owns every hash-driven scroll, so a click
+    // or a landing on a #shape produces exactly one animation.
+    detectAndHighlight();
 
-    // If navigated directly with hash, ensure smooth scroll after layout settles
-    const initialTimer = setTimeout(() => {
-      detectAndHighlight(true);
-    }, 150);
-
-    const handleHashChange = () => detectAndHighlight(true);
-    window.addEventListener("hashchange", handleHashChange);
-    window.addEventListener("popstate", handleHashChange);
+    window.addEventListener("hashchange", detectAndHighlight);
+    window.addEventListener("popstate", detectAndHighlight);
 
     return () => {
-      clearTimeout(initialTimer);
-      if (scrollTimerRef.current) {
-        clearTimeout(scrollTimerRef.current);
-      }
-      window.removeEventListener("hashchange", handleHashChange);
-      window.removeEventListener("popstate", handleHashChange);
+      window.removeEventListener("hashchange", detectAndHighlight);
+      window.removeEventListener("popstate", detectAndHighlight);
     };
   }, [subgroup.shapes, router, subgroup.categoryId, subgroup.id, subgroup.materials]);
 
@@ -300,9 +278,11 @@ export function SubgroupShapesView({
                       href={detailHref}
                       onClick={(e) => e.stopPropagation()}
                       className={cn(
-                        "inline-flex items-center gap-1.5 text-xs font-bold transition-all",
+                        // py-1.5 in both states: highlighting must not change the card height,
+                        // or the cards below shift while a hash scroll is measuring its target.
+                        "inline-flex items-center gap-1.5 py-1.5 text-xs font-bold transition-all",
                         isHighlighted
-                          ? "px-3.5 py-1.5 bg-brand-primary text-white rounded-xl shadow-sm hover:bg-brand-primary/90"
+                          ? "px-3.5 bg-brand-primary text-white rounded-xl shadow-sm hover:bg-brand-primary/90"
                           : "text-brand-primary group-hover:text-brand-primary/80"
                       )}
                     >
