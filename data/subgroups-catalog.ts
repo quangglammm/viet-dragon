@@ -1482,236 +1482,237 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
               "badgeVi": "POSM",
               "badgeEn": "Point of Sale"
           },
-          {
-              "id": "tranh-canvas",
-              "nameVi": "Tranh Canvas chất lượng cao",
-              "nameEn": "High-Quality Canvas Prints",
-              "nameZh": "高端油画微喷Canvas",
-              "nameJa": "高精細キャンバスプリント",
-              "nameKo": "최고급 캔버스 아트 액자",
-              "descriptionVi": "In tranh canvas vải bố dệt nghệ thuật bồi căng khung gỗ hoặc khung composite sang trọng cho không gian sống và showroom.",
-              "descriptionEn": "High-resolution fine art canvas prints stretched on wooden stretcher bars or floating frames for home and office gallery displays.",
-              "image": "/images/product/canvascotton.webp",
-              "badgeVi": "Nghệ thuật",
-              "badgeEn": "Fine Art",
-              "materials": [
-                  {
-                      "icon": "Palette",
-                      "name": "Korean Art Canvas (Wooden Frame)",
-                      "nameVi": "Canvas Hàn Quốc (Khung Gỗ)",
-                      "tagline": "Gallery-quality wall canvas to elevate living spaces",
-                      "taglineVi": "Tranh canvas chất lượng phòng tranh làm đẹp không gian sống",
-                      "description": [
-                          "Imported Korean cotton canvas with natural woven texture",
-                          "UV eco-solvent inks offer vibrant color and 10+ year fade resistance",
-                          "Stretched over solid kiln-dried pine wood frame ready to hang"
-                      ],
-                      "descriptionVi": [
-                          "Vải canvas cotton Hàn Quốc có vân dệt vải tự nhiên",
-                          "Mực in UV sắc nét, kháng nước, bền màu trên 10 năm",
-                          "Căng khung gỗ thông tự nhiên đã qua sấy chống mối mọt"
-                      ],
-                      "descriptionTraits": [
-                          "textured-art",
-                          "waterproof-durability",
-                          "soft-light"
-                      ],
-                      "bestFor": [
-                          "Family portraits and wedding wall photos",
-                          "Living room, bedroom and home office decoration",
-                          "Housewarming and anniversary gifts"
-                      ],
-                      "bestForVi": [
-                          "Ảnh gia đình, ảnh cưới phóng lớn trang trí phòng khách",
-                          "Tranh trang trí phòng ngủ, góc làm việc cá nhân",
-                          "Quà tặng tân gia, sinh nhật, kỷ niệm đầy ý nghĩa"
-                      ],
-                      "nameZh": "韩国精编油画布（实木内框）",
-                      "nameJa": "韓国製アートキャンバス（天然木枠）",
-                      "nameKo": "한국산 고급 캔버스 (원목 프레임)",
-                      "taglineZh": "需要一幅微喷色彩准确、画布紧绷且长年不褪色的艺术挂画？",
-                      "taglineJa": "発色が美しく、耐久性に優れた本格的なキャンバスアートをお探しですか？",
-                      "taglineKo": "오랜 시간 변색 없이 갤러리 수준의 감동을 전할 캔버스 액자인가요?",
-                      "descriptionZh": [
-                          "高密度特制艺术油画布，搭配烘干防虫防蛀实木内框",
-                          "高精度12色艺术微喷，耐紫外线室内长年不褪色",
-                          "四周包边立体装裱，免外框直接悬挂，现代极简立体感"
-                      ],
-                      "descriptionJa": [
-                          "高密度な韓国製アートキャンバスと、防湿・防虫処理済みの天然木枠",
-                          "12色高精細ジークレープリントで、紫外線に強く色褪せない耐久性",
-                          "側面まで印刷を巻き込むギャラリーラップ仕様で、額縁なしでそのまま飾れる"
-                      ],
-                      "descriptionKo": [
-                          "한국산 프리미엄 고밀도 캔버스 원단과 건조 원목 내장 프레임",
-                          "12색 초정밀 지클리 피그먼트 출력으로 실내 영구 보존 및 자외선 변색 방지",
-                          "옆면까지 입체감 있게 감싸는 갤러리 랩 마감으로 프레임 없이 바로 거치"
-                      ],
-                      "bestForZh": [
-                          "现代家居客厅、卧室背景墙艺术装饰挂画",
-                          "精品酒店客房、高级餐厅与咖啡馆空间氛围营造",
-                          "婚纱照、家庭写真大片与个人艺术肖像陈列"
-                      ],
-                      "bestForJa": [
-                          "モダンリビング、ベッドルーム、オフィスのインテリアアート",
-                          "ホテル客室、カフェ、高級サロンの空間演出",
-                          "ウェディング写真、家族写真、アート写真のディスプレイ"
-                      ],
-                      "bestForKo": [
-                          "모던 거실, 침실 침대 헤드 벽면 인테리어 액자",
-                          "호텔 객실, 카페, 프라이빗 뷰티 살롱 벽면 데코",
-                          "대형 웨딩 본식 사진, 가족 기념사진 및 아티스틱 프로필 캔버스"
-                      ],
-                      "hideFoilCheckbox": true,
-                      "hideDoubleSidedCheckbox": true,
-                      "pureImage": "/images/product/canvascotton.webp",
-                      "pureImages": [
-                          "/images/product/canvascotton.webp",
-                          "/images/product/canvascotton2.webp",
-                          "/images/product/canvascotton3.webp"
-                      ]
-                  },
-                  {
-                      "icon": "Sparkles",
-                      "name": "Glitter Shimmer Canvas",
-                      "nameVi": "Canvas Ánh Kim Tuyến",
-                      "tagline": "Subtle shimmering canvas for dazzling art pieces",
-                      "taglineVi": "Vải canvas phủ kim tuyến lấp lánh nhẹ nhàng dưới ánh đèn",
-                      "description": [
-                          "Fine glitter particles woven into canvas surface catch ambient light",
-                          "High-definition 1200 DPI printing for crisp facial and landscape details",
-                          "Complete with composite floating frame in gold, black, or natural wood"
-                      ],
-                      "descriptionVi": [
-                          "Bề mặt phủ lớp kim tuyến mịn bắt sáng lấp lánh khi có ánh đèn",
-                          "Độ phân giải in 1200 DPI tái tạo chân thực từng chi tiết ảnh",
-                          "Kèm khung viền composite cao cấp (màu vàng đồng, đen hoặc vân gỗ)"
-                      ],
-                      "descriptionTraits": [
-                          "metallic-shine",
-                          "textured-art",
-                          "waterproof-durability"
-                      ],
-                      "bestFor": [
-                          "Glamour wedding and personal portrait prints",
-                          "Modern interior statement art pieces",
-                          "Luxury commemorative gifts"
-                      ],
-                      "bestForVi": [
-                          "Ảnh cưới nghệ thuật và ảnh chân dung cá nhân phong cách sang trọng",
-                          "Tranh nghệ thuật trang trí căn hộ cao cấp",
-                          "Quà tặng lưu niệm đẳng cấp cho bạn bè và người thân"
-                      ],
-                      "nameZh": "璀璨金葱闪粉艺术油画布",
-                      "nameJa": "ラメ入りキラキラキャンバス",
-                      "nameKo": "글리터 펄 캔버스 아트",
-                      "taglineZh": "画面在灯光照射下散发若隐若现的微光星尘效果？",
-                      "taglineJa": "光を受けるとキラキラと上品に輝く特別なキャンバスですか？",
-                      "taglineKo": "빛을 받으면 캔버스 표면에서 은은한 반짝임이 살아나는 액자극인가요?",
-                      "descriptionZh": [
-                          "画布织物表层嵌入细腻闪粉微粒，灯光照射下波光粼粼",
-                          "赋予夜景、星空、婚纱与珠宝画面神秘梦幻的立体微光",
-                          "防水抗污涂层保护，即使潮湿天气依然亮丽生辉"
-                      ],
-                      "descriptionJa": [
-                          "キャンバス生地に繊細なラメ粒子を織り込み、光を受けると上品に輝く",
-                          "夜景、星空、ウェディングドレス、宝石の煌めきをドラマチックに演出",
-                          "防汚・防湿コーティングで、美しい輝きを長期間キープ"
-                      ],
-                      "descriptionKo": [
-                          "캔버스 직물 표면에 미세한 글리터 펄 입자가 분사되어 빛에 따라 반짝임",
-                          "야경, 은하수, 순백의 웨딩드레스 사진에 신비롭고 몽환적인 감성 극대화",
-                          "방수 방습 코팅 처리로 습한 날씨에도 펄과 색감이 영구 보존"
-                      ],
-                      "bestForZh": [
-                          "璀璨夜景摄影、银河星空与唯美婚纱摄影作品",
-                          "高端美妆SPA、珠宝展厅及奢华会所空间艺术陈设",
-                          "追求与众不同梦幻光影效果的艺术爱好者"
-                      ],
-                      "bestForJa": [
-                          "夜景写真、天体写真、華やかなウェディングフォト",
-                          "ジュエリーサロン、エステサロン、ラグジュアリーラウンジ",
-                          "個性的な輝きと幻想的な空間を演出したいインテリア"
-                      ],
-                      "bestForKo": [
-                          "도시 야경 사진, 환상적인 별자리 및 은하수 풍경 사진",
-                          "웨딩 화보의 반짝이는 베일과 드레스 디테일 강조 액자",
-                          "주얼리 쇼룸, 프리미엄 뷰티 샵의 감각적인 오브제"
-                      ],
-                      "hideFoilCheckbox": true,
-                      "hideDoubleSidedCheckbox": true,
-                      "pureImage": "/images/product/vaikimtuyen.webp",
-                      "pureImages": [
-                          "/images/product/vaikimtuyen.webp",
-                          "/images/product/canvaskimtuyen2.webp",
-                          "/images/product/canvaskimtuyen3.webp"
-                      ]
-                  },
-                  {
-                      "icon": "Palette",
-                      "name": "Artistic Canvas Fabric",
-                      "nameVi": "Vải Canvas Cotton nghệ thuật",
-                      "tagline": "Woven cotton-poly canvas for fine art wall décor and premium displays",
-                      "taglineVi": "Vải bố dệt nghệ thuật sần nổi cao cấp chuyên in tranh trang trí không gian",
-                      "description": [
-                          "Authentic canvas weave creates an elegant artistic oil-painting texture",
-                          "Vibrant UV-cured pigment inks resist fading for over 5 years indoors",
-                          "Mounted seamlessly on composite floating frames or solid wood stretcher bars"
-                      ],
-                      "descriptionVi": [
-                          "Vân vải dệt mộc sần tạo chiều sâu nghệ thuật như tranh sơn dầu",
-                          "Mực in UV sắc nét bền màu hơn 5 năm trong không gian nội thất",
-                          "Căng khung composite hoặc khung gỗ thông tự nhiên sang trọng"
-                      ],
-                      "descriptionTraits": [
-                          "textured-art",
-                          "soft-light",
-                          "eco-friendly"
-                      ],
-                      "bestFor": [
-                          "Living room art, hotel suites, wedding portrait canvases, cafe décor"
-                      ],
-                      "bestForVi": [
-                          "Tranh treo phòng khách, khách sạn, tranh cưới canvas, quán cafe"
-                      ],
-                      "pureImage": "/images/product/anhtreotuong.webp",
-                      "pureImages": [
-                          "/images/product/canvascotton.webp",
-                          "/images/product/canvascotton2.webp",
-                          "/images/product/canvascotton3.webp"
-                      ],
-                      "nameZh": "高档艺术油画布 (Cotton)",
-                      "nameJa": "高品質アートキャンバス布",
-                      "nameKo": "고급 아티스틱 캔버스 패브릭",
-                      "taglineZh": "寻找富有天然织物凹凸肌理感、微喷质感如同古典油画的高端艺术画布吗？",
-                      "taglineJa": "本物の油絵のような織り目と凹凸感を持ち、インテリアを格上げする本格キャンバス生地ですか？",
-                      "taglineKo": "실제 유화 캔버스처럼 입체적인 직물 질감으로 공간의 품격을 높여주는 아트 패브릭인가요?",
-                      "descriptionZh": [
-                          "纯正原织棉麻混纺肌理，粗粝自然的凹凸织纹营造油画般深邃艺术层次",
-                          "采用环保UV颜料微喷，色彩沉稳饱满，室内抗紫外线褪色持久长达5年以上",
-                          "可紧密绷装于实木内框或无缝嵌入金属/PS复合悬浮外框中，立体典雅"
-                      ],
-                      "descriptionJa": [
-                          "自然なコットン織り目の凹凸感が、まるで本物の油絵画のような深みと陰影を生み出す",
-                          "高精細UVピグメントインクを使用し、退色に強く屋内で5年以上の鮮やかな発色を維持",
-                          "乾燥天然木枠へのタイトなキャンバス張りや、フロートフレーム額装に美しく対応"
-                      ],
-                      "descriptionKo": [
-                          "천연 코튼 혼방 고유의 도톰한 직조 결이 살아있어 유화 작품처럼 깊이 있는 예술적 질감",
-                          "친환경 프리미엄 UV 피그먼트 출력으로 실내 5년 이상 변색 없는 뛰어난 보존성",
-                          "원목 스트레쳐 바에 단단하게 당겨 씌우거나 모던 알루미늄 플로팅 프레임과 완벽 결합"
-                      ],
-                      "bestForZh": [
-                          "客厅卧室背景墙装饰画、高端星级酒店客房挂画、艺术婚纱写真及咖啡馆陈列"
-                      ],
-                      "bestForJa": [
-                          "リビング・寝室のアートパネル、ホテル客室の壁掛け写真、ブライダル記念額装、カフェの壁面装飾"
-                      ],
-                      "bestForKo": [
-                          "거실 및 침실 인테리어 아트 액자, 고급 호텔 객실 갤러리 랩, 웨딩 본식 액자, 카페 감성 벽면"
-                      ]
-                  }
-              ]
+        {
+          "id": "tranh-canvas",
+          "nameVi": "Tranh Canvas chất lượng cao",
+          "nameEn": "High-Quality Canvas Prints",
+          "nameZh": "高端油画微喷Canvas",
+          "nameJa": "高精細キャンバスプリント",
+          "nameKo": "최고급 캔버스 아트 액자",
+          "descriptionVi": "In tranh canvas vải bố dệt nghệ thuật bồi căng khung gỗ hoặc khung composite sang trọng cho không gian sống và showroom.",
+          "descriptionEn": "High-resolution fine art canvas prints stretched on wooden stretcher bars or floating frames for home and office gallery displays.",
+          "image": "/images/category/tranhcanva.webp",
+          "badgeVi": "Nghệ thuật",
+          "badgeEn": "Fine Art",
+
+              // "materials": [
+              //     {
+              //         "icon": "Palette",
+              //         "name": "Korean Art Canvas (Wooden Frame)",
+              //         "nameVi": "Canvas Hàn Quốc (Khung Gỗ)",
+              //         "tagline": "Gallery-quality wall canvas to elevate living spaces",
+              //         "taglineVi": "Tranh canvas chất lượng phòng tranh làm đẹp không gian sống",
+              //         "description": [
+              //             "Imported Korean cotton canvas with natural woven texture",
+              //             "UV eco-solvent inks offer vibrant color and 10+ year fade resistance",
+              //             "Stretched over solid kiln-dried pine wood frame ready to hang"
+              //         ],
+              //         "descriptionVi": [
+              //             "Vải canvas cotton Hàn Quốc có vân dệt vải tự nhiên",
+              //             "Mực in UV sắc nét, kháng nước, bền màu trên 10 năm",
+              //             "Căng khung gỗ thông tự nhiên đã qua sấy chống mối mọt"
+              //         ],
+              //         "descriptionTraits": [
+              //             "textured-art",
+              //             "waterproof-durability",
+              //             "soft-light"
+              //         ],
+              //         "bestFor": [
+              //             "Family portraits and wedding wall photos",
+              //             "Living room, bedroom and home office decoration",
+              //             "Housewarming and anniversary gifts"
+              //         ],
+              //         "bestForVi": [
+              //             "Ảnh gia đình, ảnh cưới phóng lớn trang trí phòng khách",
+              //             "Tranh trang trí phòng ngủ, góc làm việc cá nhân",
+              //             "Quà tặng tân gia, sinh nhật, kỷ niệm đầy ý nghĩa"
+              //         ],
+              //         "nameZh": "韩国精编油画布（实木内框）",
+              //         "nameJa": "韓国製アートキャンバス（天然木枠）",
+              //         "nameKo": "한국산 고급 캔버스 (원목 프레임)",
+              //         "taglineZh": "需要一幅微喷色彩准确、画布紧绷且长年不褪色的艺术挂画？",
+              //         "taglineJa": "発色が美しく、耐久性に優れた本格的なキャンバスアートをお探しですか？",
+              //         "taglineKo": "오랜 시간 변색 없이 갤러리 수준의 감동을 전할 캔버스 액자인가요?",
+              //         "descriptionZh": [
+              //             "高密度特制艺术油画布，搭配烘干防虫防蛀实木内框",
+              //             "高精度12色艺术微喷，耐紫外线室内长年不褪色",
+              //             "四周包边立体装裱，免外框直接悬挂，现代极简立体感"
+              //         ],
+              //         "descriptionJa": [
+              //             "高密度な韓国製アートキャンバスと、防湿・防虫処理済みの天然木枠",
+              //             "12色高精細ジークレープリントで、紫外線に強く色褪せない耐久性",
+              //             "側面まで印刷を巻き込むギャラリーラップ仕様で、額縁なしでそのまま飾れる"
+              //         ],
+              //         "descriptionKo": [
+              //             "한국산 프리미엄 고밀도 캔버스 원단과 건조 원목 내장 프레임",
+              //             "12색 초정밀 지클리 피그먼트 출력으로 실내 영구 보존 및 자외선 변색 방지",
+              //             "옆면까지 입체감 있게 감싸는 갤러리 랩 마감으로 프레임 없이 바로 거치"
+              //         ],
+              //         "bestForZh": [
+              //             "现代家居客厅、卧室背景墙艺术装饰挂画",
+              //             "精品酒店客房、高级餐厅与咖啡馆空间氛围营造",
+              //             "婚纱照、家庭写真大片与个人艺术肖像陈列"
+              //         ],
+              //         "bestForJa": [
+              //             "モダンリビング、ベッドルーム、オフィスのインテリアアート",
+              //             "ホテル客室、カフェ、高級サロンの空間演出",
+              //             "ウェディング写真、家族写真、アート写真のディスプレイ"
+              //         ],
+              //         "bestForKo": [
+              //             "모던 거실, 침실 침대 헤드 벽면 인테리어 액자",
+              //             "호텔 객실, 카페, 프라이빗 뷰티 살롱 벽면 데코",
+              //             "대형 웨딩 본식 사진, 가족 기념사진 및 아티스틱 프로필 캔버스"
+              //         ],
+              //         "hideFoilCheckbox": true,
+              //         "hideDoubleSidedCheckbox": true,
+              //         "pureImage": "/images/product/canvascotton.webp",
+              //         "pureImages": [
+              //             "/images/product/canvascotton.webp",
+              //             "/images/product/canvascotton2.webp",
+              //             "/images/product/canvascotton3.webp"
+              //         ]
+              //     },
+              //     {
+              //         "icon": "Sparkles",
+              //         "name": "Glitter Shimmer Canvas",
+              //         "nameVi": "Canvas Ánh Kim Tuyến",
+              //         "tagline": "Subtle shimmering canvas for dazzling art pieces",
+              //         "taglineVi": "Vải canvas phủ kim tuyến lấp lánh nhẹ nhàng dưới ánh đèn",
+              //         "description": [
+              //             "Fine glitter particles woven into canvas surface catch ambient light",
+              //             "High-definition 1200 DPI printing for crisp facial and landscape details",
+              //             "Complete with composite floating frame in gold, black, or natural wood"
+              //         ],
+              //         "descriptionVi": [
+              //             "Bề mặt phủ lớp kim tuyến mịn bắt sáng lấp lánh khi có ánh đèn",
+              //             "Độ phân giải in 1200 DPI tái tạo chân thực từng chi tiết ảnh",
+              //             "Kèm khung viền composite cao cấp (màu vàng đồng, đen hoặc vân gỗ)"
+              //         ],
+              //         "descriptionTraits": [
+              //             "metallic-shine",
+              //             "textured-art",
+              //             "waterproof-durability"
+              //         ],
+              //         "bestFor": [
+              //             "Glamour wedding and personal portrait prints",
+              //             "Modern interior statement art pieces",
+              //             "Luxury commemorative gifts"
+              //         ],
+              //         "bestForVi": [
+              //             "Ảnh cưới nghệ thuật và ảnh chân dung cá nhân phong cách sang trọng",
+              //             "Tranh nghệ thuật trang trí căn hộ cao cấp",
+              //             "Quà tặng lưu niệm đẳng cấp cho bạn bè và người thân"
+              //         ],
+              //         "nameZh": "璀璨金葱闪粉艺术油画布",
+              //         "nameJa": "ラメ入りキラキラキャンバス",
+              //         "nameKo": "글리터 펄 캔버스 아트",
+              //         "taglineZh": "画面在灯光照射下散发若隐若现的微光星尘效果？",
+              //         "taglineJa": "光を受けるとキラキラと上品に輝く特別なキャンバスですか？",
+              //         "taglineKo": "빛을 받으면 캔버스 표면에서 은은한 반짝임이 살아나는 액자극인가요?",
+              //         "descriptionZh": [
+              //             "画布织物表层嵌入细腻闪粉微粒，灯光照射下波光粼粼",
+              //             "赋予夜景、星空、婚纱与珠宝画面神秘梦幻的立体微光",
+              //             "防水抗污涂层保护，即使潮湿天气依然亮丽生辉"
+              //         ],
+              //         "descriptionJa": [
+              //             "キャンバス生地に繊細なラメ粒子を織り込み、光を受けると上品に輝く",
+              //             "夜景、星空、ウェディングドレス、宝石の煌めきをドラマチックに演出",
+              //             "防汚・防湿コーティングで、美しい輝きを長期間キープ"
+              //         ],
+              //         "descriptionKo": [
+              //             "캔버스 직물 표면에 미세한 글리터 펄 입자가 분사되어 빛에 따라 반짝임",
+              //             "야경, 은하수, 순백의 웨딩드레스 사진에 신비롭고 몽환적인 감성 극대화",
+              //             "방수 방습 코팅 처리로 습한 날씨에도 펄과 색감이 영구 보존"
+              //         ],
+              //         "bestForZh": [
+              //             "璀璨夜景摄影、银河星空与唯美婚纱摄影作品",
+              //             "高端美妆SPA、珠宝展厅及奢华会所空间艺术陈设",
+              //             "追求与众不同梦幻光影效果的艺术爱好者"
+              //         ],
+              //         "bestForJa": [
+              //             "夜景写真、天体写真、華やかなウェディングフォト",
+              //             "ジュエリーサロン、エステサロン、ラグジュアリーラウンジ",
+              //             "個性的な輝きと幻想的な空間を演出したいインテリア"
+              //         ],
+              //         "bestForKo": [
+              //             "도시 야경 사진, 환상적인 별자리 및 은하수 풍경 사진",
+              //             "웨딩 화보의 반짝이는 베일과 드레스 디테일 강조 액자",
+              //             "주얼리 쇼룸, 프리미엄 뷰티 샵의 감각적인 오브제"
+              //         ],
+              //         "hideFoilCheckbox": true,
+              //         "hideDoubleSidedCheckbox": true,
+              //         "pureImage": "/images/product/vaikimtuyen.webp",
+              //         "pureImages": [
+              //             "/images/product/vaikimtuyen.webp",
+              //             "/images/product/canvaskimtuyen2.webp",
+              //             "/images/product/canvaskimtuyen3.webp"
+              //         ]
+              //     },
+              //     {
+              //         "icon": "Palette",
+              //         "name": "Artistic Canvas Fabric",
+              //         "nameVi": "Vải Canvas Cotton nghệ thuật",
+              //         "tagline": "Woven cotton-poly canvas for fine art wall décor and premium displays",
+              //         "taglineVi": "Vải bố dệt nghệ thuật sần nổi cao cấp chuyên in tranh trang trí không gian",
+              //         "description": [
+              //             "Authentic canvas weave creates an elegant artistic oil-painting texture",
+              //             "Vibrant UV-cured pigment inks resist fading for over 5 years indoors",
+              //             "Mounted seamlessly on composite floating frames or solid wood stretcher bars"
+              //         ],
+              //         "descriptionVi": [
+              //             "Vân vải dệt mộc sần tạo chiều sâu nghệ thuật như tranh sơn dầu",
+              //             "Mực in UV sắc nét bền màu hơn 5 năm trong không gian nội thất",
+              //             "Căng khung composite hoặc khung gỗ thông tự nhiên sang trọng"
+              //         ],
+              //         "descriptionTraits": [
+              //             "textured-art",
+              //             "soft-light",
+              //             "eco-friendly"
+              //         ],
+              //         "bestFor": [
+              //             "Living room art, hotel suites, wedding portrait canvases, cafe décor"
+              //         ],
+              //         "bestForVi": [
+              //             "Tranh treo phòng khách, khách sạn, tranh cưới canvas, quán cafe"
+              //         ],
+              //         "pureImage": "/images/product/anhtreotuong.webp",
+              //         "pureImages": [
+              //             "/images/product/canvascotton.webp",
+              //             "/images/product/canvascotton2.webp",
+              //             "/images/product/canvascotton3.webp"
+              //         ],
+              //         "nameZh": "高档艺术油画布 (Cotton)",
+              //         "nameJa": "高品質アートキャンバス布",
+              //         "nameKo": "고급 아티스틱 캔버스 패브릭",
+              //         "taglineZh": "寻找富有天然织物凹凸肌理感、微喷质感如同古典油画的高端艺术画布吗？",
+              //         "taglineJa": "本物の油絵のような織り目と凹凸感を持ち、インテリアを格上げする本格キャンバス生地ですか？",
+              //         "taglineKo": "실제 유화 캔버스처럼 입체적인 직물 질감으로 공간의 품격을 높여주는 아트 패브릭인가요?",
+              //         "descriptionZh": [
+              //             "纯正原织棉麻混纺肌理，粗粝自然的凹凸织纹营造油画般深邃艺术层次",
+              //             "采用环保UV颜料微喷，色彩沉稳饱满，室内抗紫外线褪色持久长达5年以上",
+              //             "可紧密绷装于实木内框或无缝嵌入金属/PS复合悬浮外框中，立体典雅"
+              //         ],
+              //         "descriptionJa": [
+              //             "自然なコットン織り目の凹凸感が、まるで本物の油絵画のような深みと陰影を生み出す",
+              //             "高精細UVピグメントインクを使用し、退色に強く屋内で5年以上の鮮やかな発色を維持",
+              //             "乾燥天然木枠へのタイトなキャンバス張りや、フロートフレーム額装に美しく対応"
+              //         ],
+              //         "descriptionKo": [
+              //             "천연 코튼 혼방 고유의 도톰한 직조 결이 살아있어 유화 작품처럼 깊이 있는 예술적 질감",
+              //             "친환경 프리미엄 UV 피그먼트 출력으로 실내 5년 이상 변색 없는 뛰어난 보존성",
+              //             "원목 스트레쳐 바에 단단하게 당겨 씌우거나 모던 알루미늄 플로팅 프레임과 완벽 결합"
+              //         ],
+              //         "bestForZh": [
+              //             "客厅卧室背景墙装饰画、高端星级酒店客房挂画、艺术婚纱写真及咖啡馆陈列"
+              //         ],
+              //         "bestForJa": [
+              //             "リビング・寝室のアートパネル、ホテル客室の壁掛け写真、ブライダル記念額装、カフェの壁面装飾"
+              //         ],
+              //         "bestForKo": [
+              //             "거실 및 침실 인테리어 아트 액자, 고급 호텔 객실 갤러리 랩, 웨딩 본식 액자, 카페 감성 벽면"
+              //         ]
+              //     }
+              // ]
           }
       ],
       "materials": [
