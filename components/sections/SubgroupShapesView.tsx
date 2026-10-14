@@ -3,13 +3,14 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ArrowRight, Layers, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
 import type { SubgroupCategory } from "@/data/subgroups-catalog";
-
-import { SHAPE_ALIASES, toSlug } from "@/lib/shape-aliases";
+import { SHAPE_DESCS, ITEM_DESCS } from "@/data/translations";
+import { SHAPE_ALIASES } from "@/lib/shape-aliases";
 import { smoothScrollToElement } from "@/lib/hash-navigation";
 
 export function SubgroupShapesView({
@@ -22,7 +23,7 @@ export function SubgroupShapesView({
   categoryName: string;
 }>) {
   const router = useRouter();
-  const isVi = locale === "vi";
+  const t = useTranslations("subgroupShapes");
   const [highlightedShapeId, setHighlightedShapeId] = useState<string | null>(null);
 
   const title = pickLocale(
@@ -36,7 +37,19 @@ export function SubgroupShapesView({
   const description = pickLocale(
     locale,
     subgroup.descriptionVi,
-    subgroup.descriptionEn
+    subgroup.descriptionEn,
+    subgroup.descriptionZh ?? ITEM_DESCS[subgroup.id]?.zh,
+    subgroup.descriptionJa ?? ITEM_DESCS[subgroup.id]?.ja,
+    subgroup.descriptionKo ?? ITEM_DESCS[subgroup.id]?.ko
+  );
+
+  const bannerSubtitle = pickLocale(
+    locale,
+    "Đội ngũ kỹ thuật viên Viet Dragon hỗ trợ tính giá tối ưu, tư vấn kích thước và chất liệu trong 30 phút.",
+    "Viet Dragon specialists assist with size, material choice, and prompt quotation within 30 minutes.",
+    "Viet Dragon 专业团队协助提供最佳报价方案、材质与尺寸咨询，30分钟内极速响应。",
+    "Viet Dragon の専門スタッフが、サイズや素材の選定から最適なお見積もりまで30分以内にご案内します。",
+    "Viet Dragon 전문 기술팀이 사이즈, 소재 선택 및 최적의 견적 산출을 30분 내 신속히 안내해 드립니다."
   );
 
   useEffect(() => {
@@ -59,57 +72,26 @@ export function SubgroupShapesView({
       const matched = subgroup.shapes.find(
         (s) => s.id === targetId || s.id === target
       );
-
       if (matched) {
         setHighlightedShapeId(matched.id);
-        return;
-      }
-
-      // Check if target matches any material and auto-forward to material page
-      const allMaterials = [
-        ...(subgroup.materials || []),
-        ...subgroup.shapes.flatMap((s) => s.materials || []),
-      ];
-      const matchedMat = allMaterials.find((m) => {
-        const slug = toSlug(m.nameVi);
-        const nameSlug = toSlug(m.name);
-        const alias = SHAPE_ALIASES[target] || target;
-        return (
-          slug === target ||
-          slug === alias ||
-          nameSlug === target ||
-          nameSlug === alias ||
-          SHAPE_ALIASES[slug] === target ||
-          SHAPE_ALIASES[slug] === alias
-        );
-      });
-
-      if (matchedMat) {
-        const matSlug = toSlug(matchedMat.nameVi) || target;
-        router.replace(
-          `/products/${subgroup.categoryId}/${subgroup.id}/${matSlug}`
-        );
-        return;
+        setTimeout(() => {
+          const el = document.getElementById(matched.id);
+          if (el) {
+            smoothScrollToElement(el);
+          }
+        }, 150);
       }
     }
 
-    // Highlight only — SmoothScroll owns every hash-driven scroll, so a click
-    // or a landing on a #shape produces exactly one animation.
     detectAndHighlight();
-
     window.addEventListener("hashchange", detectAndHighlight);
-    window.addEventListener("popstate", detectAndHighlight);
-
-    return () => {
-      window.removeEventListener("hashchange", detectAndHighlight);
-      window.removeEventListener("popstate", detectAndHighlight);
-    };
-  }, [subgroup.shapes, router, subgroup.categoryId, subgroup.id, subgroup.materials]);
+    return () => window.removeEventListener("hashchange", detectAndHighlight);
+  }, [subgroup.shapes]);
 
   return (
     <div className="bg-white">
-      {/* ── Hero image matching /products/marketing ── */}
-      <div className="relative h-[420px] lg:h-[500px] w-full overflow-hidden">
+      {/* ── Subgroup Hero banner ── */}
+      <div className="relative h-[320px] lg:h-[400px] w-full overflow-hidden">
         <Image
           src={subgroup.coverImage}
           alt={title}
@@ -118,24 +100,23 @@ export function SubgroupShapesView({
           className="object-cover"
           priority
         />
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/95 via-zinc-950/70 to-zinc-950/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/95 via-zinc-950/65 to-zinc-950/25" />
         <div className="absolute inset-0 flex items-end">
-          <div className="max-w-7xl mx-auto px-6 pb-12 w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
-            {/* Breadcrumb */}
+          <div className="max-w-7xl mx-auto px-6 pb-10 w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
+            {/* Breadcrumbs */}
             <nav
               aria-label="breadcrumb"
-              className="flex items-center gap-2 text-sm text-white/90 mb-5 flex-wrap font-medium text-shadow-dark"
+              className="flex items-center gap-2 text-sm text-white/90 mb-6 font-medium text-shadow-dark flex-wrap"
             >
               <Link href="/" className="hover:text-white transition-colors">
-                {isVi ? "Trang Chủ" : "Home"}
+                {t("breadcrumbHome")}
               </Link>
               <span className="text-white/70">/</span>
               <Link
                 href="/products"
                 className="hover:text-white transition-colors"
               >
-                {isVi ? "Sản Phẩm" : "Products"}
+                {t("breadcrumbProducts")}
               </Link>
               <span className="text-white/70">/</span>
               <Link
@@ -155,7 +136,7 @@ export function SubgroupShapesView({
               <div>
                 <p className="text-white text-xs font-bold tracking-widest uppercase mb-1.5 flex items-center gap-1.5 text-shadow-dark">
                   <Sparkles size={14} className="text-amber-400 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]" />
-                  {isVi ? "Hình Thức Sản Phẩm" : "Product Formats & Shapes"}
+                  {t("shapesEyebrow")}
                 </p>
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight text-shadow-dark-lg">
                   {title}
@@ -176,8 +157,7 @@ export function SubgroupShapesView({
             href="/#cta"
             className="shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-brand-primary text-white text-xs font-bold uppercase tracking-wider btn-wipe whitespace-nowrap rounded-xl shadow-md"
           >
-            {isVi ? "Nhận Báo Giá Nhanh" : "Get a Fast Quote"}{" "}
-            <ArrowRight size={14} />
+            {t("fastQuoteBtn")} <ArrowRight size={14} />
           </Link>
         </div>
       </div>
@@ -187,17 +167,14 @@ export function SubgroupShapesView({
         <div className="flex items-center justify-between mb-8 pb-3 border-b border-zinc-100">
           <div>
             <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-1">
-              {isVi ? "Danh Sách Quy Cách" : "Available Shapes"}
+              {t("shapesAvailable")}
             </p>
             <h2 className="text-xl lg:text-2xl font-black text-zinc-900">
-              {isVi
-                ? `Lựa Chọn Hình Thức Cho ${title}`
-                : `Select a Shape for ${title}`}
+              {t("shapesSelectFor", { title })}
             </h2>
           </div>
           <span className="px-3 py-1 bg-zinc-100 text-zinc-600 text-xs font-semibold rounded-full">
-            {subgroup.shapes.length}{" "}
-            {isVi ? "hình thức" : "shapes"}
+            {subgroup.shapes.length} {t("shapesCount")}
           </span>
         </div>
 
@@ -215,7 +192,10 @@ export function SubgroupShapesView({
             const shapeDesc = pickLocale(
               locale,
               shape.descriptionVi,
-              shape.descriptionEn
+              shape.descriptionEn,
+              shape.descriptionZh ?? SHAPE_DESCS[shape.id]?.zh,
+              shape.descriptionJa ?? SHAPE_DESCS[shape.id]?.ja,
+              shape.descriptionKo ?? SHAPE_DESCS[shape.id]?.ko
             );
             const detailHref = `/products/${subgroup.categoryId}/${subgroup.id}/${shape.id}`;
 
@@ -254,8 +234,6 @@ export function SubgroupShapesView({
                     sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-
-
                 </div>
 
                 {/* Body */}
@@ -278,15 +256,13 @@ export function SubgroupShapesView({
                       href={detailHref}
                       onClick={(e) => e.stopPropagation()}
                       className={cn(
-                        // py-1.5 in both states: highlighting must not change the card height,
-                        // or the cards below shift while a hash scroll is measuring its target.
                         "inline-flex items-center gap-1.5 py-1.5 text-xs font-bold transition-all",
                         isHighlighted
                           ? "px-3.5 bg-brand-primary text-white rounded-xl shadow-sm hover:bg-brand-primary/90"
                           : "text-brand-primary group-hover:text-brand-primary/80"
                       )}
                     >
-                      {isVi ? "Xem chất liệu & báo giá" : "View Materials & Price"}{" "}
+                      {t("viewMaterialsAndPrice")}{" "}
                       <ArrowRight
                         size={13}
                         className="group-hover:translate-x-1 transition-transform"
@@ -314,24 +290,20 @@ export function SubgroupShapesView({
           <div className="relative px-8 sm:px-12 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div>
               <p className="text-brand-primary font-bold text-xs uppercase tracking-widest mb-1">
-                {isVi ? "Tư Vấn Miễn Phí" : "Free Consultation"}
+                {t("freeConsultation")}
               </p>
               <h3 className="font-black text-white text-2xl lg:text-3xl leading-snug">
-                {isVi ? "Cần báo giá in ấn cho" : "Need a custom quote for"}{" "}
-                <span className="text-brand-primary">{title}</span>?
+                {t("needCustomQuoteFor", { title })}
               </h3>
               <p className="text-white/60 text-sm mt-1 max-w-xl">
-                {isVi
-                  ? "Đội ngũ kỹ thuật viên Viet Dragon hỗ trợ tính giá tối ưu, tư vấn kích thước và chất liệu trong 30 phút."
-                  : "Viet Dragon specialists assist with size, material choice, and prompt quotation within 30 minutes."}
+                {bannerSubtitle}
               </p>
             </div>
             <Link
               href="/#cta"
               className="shrink-0 inline-flex items-center gap-2 px-7 py-3.5 bg-brand-primary text-white font-bold uppercase tracking-wide btn-wipe whitespace-nowrap text-sm rounded-xl shadow-lg"
             >
-              {isVi ? "Nhận Báo Giá Ngay" : "Get a Quote Now"}{" "}
-              <ArrowRight size={16} />
+              {t("getQuoteNow")} <ArrowRight size={16} />
             </Link>
           </div>
         </div>

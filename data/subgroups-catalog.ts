@@ -14,9 +14,15 @@ export interface ShapeItem {
   nameKo?: string;
   descriptionVi: string;
   descriptionEn: string;
+  descriptionZh?: string;
+  descriptionJa?: string;
+  descriptionKo?: string;
   image: string;
   badgeVi?: string;
   badgeEn?: string;
+  badgeZh?: string;
+  badgeJa?: string;
+  badgeKo?: string;
   materials?: ProductOption[];
 }
 
@@ -30,6 +36,9 @@ export interface SubgroupCategory {
   titleKo?: string;
   descriptionVi: string;
   descriptionEn: string;
+  descriptionZh?: string;
+  descriptionJa?: string;
+  descriptionKo?: string;
   coverImage: string;
   shapes: ShapeItem[];
   materials: ProductOption[];
@@ -8561,751 +8570,560 @@ export const SUBGROUPS_CATALOG: SubgroupCategory[] = [
     "descriptionEn": "Large Lunar New Year street banners, Year-End Party standees, and festive photo prop hashtags.",
     "coverImage": "/images/category/poster-bangron-standee.webp",
     "shapes": [
-      {
-        "id": "hashtag-cam-tay",
-        "nameVi": "Hashtag cầm tay",
-        "nameEn": "Handheld Photo Hashtags",
-        "nameZh": "新年拍照手牌Hashtag",
-        "nameJa": "手持ちフォトプロップス",
-        "nameKo": "신년 촬영 해시태그 피켓",
-        "descriptionVi": "Biển chụp hình check-in tiệc tất niên Year End Party, Gala mừng xuân bế theo hình linh vật, câu chúc Tết.",
-        "descriptionEn": "Custom-cut handheld photo props for corporate Year-End Galas and festive photo booths.",
-        "image": "/images/category/hashtagcamtay.webp",
-        "badgeVi": "Check-in sự kiện",
-        "badgeEn": "Photo Prop"
-      },
-      {
-        "id": "hashtag-tay-cam-roi",
-        "nameVi": "Hashtag tay cầm rời",
-        "nameEn": "Detachable Handle Hashtags",
-        "nameZh": "可拆卸手柄新年手牌",
-        "nameJa": "持ち手分離型フォトプロップス",
-        "nameKo": "분리형 손잡이 해시태그 피켓",
-        "descriptionVi": "Quy cách cán rời gắn khớp tiện xếp gọn mang đi sự kiện xa, đóng thùng vận chuyển không lo gãy hỏng.",
-        "descriptionEn": "Flat-pack detachable handle photo props easy to transport to distant event venues.",
-        "image": "/images/category/hashtagtaycamroi.webp",
-        "badgeVi": "Cán rời tiện lợi",
-        "badgeEn": "Detachable"
-      }
-    ],
-    "materials": [
-      {
-          "icon": "Layers",
-          "name": "PP Film (Polypropylene)",
-          "nameVi": "Poster chất liệu PP",
-          "tagline": "High-resolution PP synthetic paper for indoor posters and roll-up banners",
-          "taglineVi": "Giấy nhựa PP tổng hợp láng mịn, in độ phân giải cao cho poster trong nhà và standee cuộn",
-          "description": [
-              "Super-smooth synthetic paper base with zero visible paper fibers",
-              "Rich, high-density color reproduction for photo-realistic graphics",
-              "Coated with protective matte or glossy lamination against scratches"
-          ],
-          "descriptionVi": [
-              "Bề mặt giấy nhựa tổng hợp siêu mịn, không lộ xơ giấy",
-              "Tái tạo màu sắc chân thực chuẩn sắc nét đến từng chi tiết ảnh",
-              "Cán màng mờ hoặc màng bóng bảo vệ bề mặt chống trầy xước nước nhẹ"
-          ],
-          "descriptionTraits": [
-              "smooth-base",
-              "digital-precision",
-              "glossy-coat"
-          ],
-          "bestFor": [
-              "Indoor event roll-up banners, cinema posters, showroom displays"
-          ],
-          "bestForVi": [
-              "Standee cuộn sự kiện, poster rạp chiếu phim, biển quảng cáo showroom"
-          ],
-          "pureImage": "/images/category/poster-bangron-standee.webp",
-          "pureImages": [
-              "/images/category/poster-bangron-standee.webp",
-              "/images/hero/mayinngoaitroi.webp",
-              "/images/hero/slide-1.jpg"
-          ],
-          "nameZh": "PP合成纸海报 (Polypropylene)",
-          "nameJa": "PP合成紙ポスター（ポリプロピレン）",
-          "nameKo": "PP 합성지 포스터 (롤업 배너용)",
-          "taglineZh": "需要平滑细腻、微喷色彩饱和且适用于室内易拉宝与海报的优质PP纸吗？",
-          "taglineJa": "紙の繊維がなく高精細、屋内のロールアップバナーやポスターに最適なPP合成紙をお探しですか？",
-          "taglineKo": "종이 결 없이 매끄럽고 발색이 선명하여 실내 롤업 배너 및 포스터에 최적인 PP 합성지인가요?",
-          "descriptionZh": [
-              "超平滑高分子聚丙烯基材，纸面细腻无任何可见纸张纤维",
-              "高密度12色微喷写真输出，真实还原照片级细腻画质与艳丽色彩",
-              "表面覆盖高透明哑膜或光膜，防刮擦防轻微泼水，卷曲不易变形"
-          ],
-          "descriptionJa": [
-              "超平滑なポリプロピレン基材で、紙の繊維感がなく極めて滑らかな表面",
-              "高密度・高精細カラー出力により、写真のような忠実な色彩再現性を実現",
-              "マットまたは光沢PPラミネート加工で表面を保護し、擦れや水滴を防ぐ"
-          ],
-          "descriptionKo": [
-              "초평활 합성 수지 원단으로 종이 섬유 결 없이 매끄러운 프리미엄 표면",
-              "고밀도 컬러 출력으로 사진 수준의 선명하고 깊이 있는 색감 완벽 구현",
-              "표면 무광/유광 코팅으로 스크래치와 생활 방수를 방지하며 컬링 현상 억제"
-          ],
-          "bestForZh": [
-              "室内活动易拉宝、商场促销海报、影院立牌及高端展厅背景陈列"
-          ],
-          "bestForJa": [
-              "屋内イベント用ロールアップバナー、映画館ポスター、ショールーム展示看板"
-          ],
-          "bestForKo": [
-              "실내 행사 롤업 배너, 영화관 포스터, 쇼룸 홍보 디스플레이 및 백드롭"
-          ]
-      },
-      {
-          "icon": "Shield",
-          "name": "Hiflex PVC Banner",
-          "nameVi": "Băng rôn Hiflex",
-          "tagline": "Durable waterproof PVC vinyl for large outdoor banners and hoardings",
-          "taglineVi": "Bạt PVC dẻo dai chống thấm nước 100%, chịu mưa nắng chuyên cho băng rôn ngoài trời",
-          "description": [
-              "Reinforced PVC fabric withstands heavy rain, direct sunlight, and wind",
-              "Most economical solution for large-scale outdoor visibility",
-              "Finished with reinforced hemmed edges and brass eyelets for easy hanging"
-          ],
-          "descriptionVi": [
-              "Chất liệu bạt PVC cốt sợi chịu lực tốt trước nắng gắt và mưa bão",
-              "Giải pháp tiết kiệm ngân sách nhất cho quảng cáo diện rộng ngoài trời",
-              "Hoàn thiện gấp mép dán gia cường và đóng khoen nhôm tiện xỏ dây treo"
-          ],
-          "descriptionTraits": [
-              "waterproof-durability",
-              "thick-weight"
-          ],
-          "bestFor": [
-              "Street banners, construction fences, grand opening announcements"
-          ],
-          "bestForVi": [
-              "Băng rôn ngang đường, hàng rào công trình, banner khai trương cửa hàng"
-          ],
-          "pureImage": "/images/category/poster-bangron-standee.webp",
-          "pureImages": [
-              "/images/hero/mayinngoaitroi.webp",
-              "/images/category/poster-bangron-standee.webp",
-              "/images/hero/mayinoffset.webp"
-          ],
-          "nameZh": "Hiflex户外防雨防晒喷绘布 (PVC Banner)",
-          "nameJa": "ターポリン・ハイフレックス屋外横断幕 (PVC)",
-          "nameKo": "하이플렉스 대형 옥외 현수막 (방수 PVC)",
-          "taglineZh": "需要坚韧耐撕裂、100%防水防风、适合大面积户外广告的高性价比喷绘布吗？",
-          "taglineJa": "強風や雨天にも耐え、100%完全防水で長期の屋外掲示に耐える高コスパ幕をお探しですか？",
-          "taglineKo": "비바람과 자외선에 강하고 100% 완전 방수로 장기간 옥외 홍보에 최적인 실속형 현수막인가요?",
-          "descriptionZh": [
-              "内夹高强聚酯纤维网层，抗拉力极强，抵御户外强风、暴雨与烈日暴晒",
-              "大面积户外品牌宣传最具成本效益的解决方案，视认距离远",
-              "四周热合加厚折边工艺，压铆高强度金属打孔扣眼，方便拉绳悬挂"
-          ],
-          "descriptionJa": [
-              "ポリエステル繊維補強のPVC素材で、強風・豪雨・直射日光に耐える高耐久仕様",
-              "広範囲の屋外広告において最もコストパフォーマンスに優れた実力派",
-              "周囲を折り返して補強溶着し、ハトメ（真鍮穴）加工済みで簡単にロープ結束可能"
-          ],
-          "descriptionKo": [
-              "폴리에스터 메쉬 보강 PVC 원단으로 거센 바람과 폭우, 자외선에도 끄떡없는 내구성",
-              "대형 옥외 광고 및 거리 홍보물 중 가장 경제적이고 확실한 시인성 제공",
-              "사방 미싱/열접착 보강 및 아일렛(금속 구멍) 펀칭으로 로프 결속 용이"
-          ],
-          "bestForZh": [
-              "过街横幅、建筑工地安全围挡广告、开业庆典及展会户外巨幅宣传"
-          ],
-          "bestForJa": [
-              "道路横断幕、工事現場の仮囲いシート、店舗オープニング垂れ幕、屋外イベント"
-          ],
-          "bestForKo": [
-              "거리 현수막, 공사 현장 펜스 배너, 매장 오픈 축하 대형 현수막, 옥외 홍보"
-          ]
-      },
-      {
-          "icon": "Sparkles",
-          "name": "PP Mounted on 5mm Foam Board",
-          "nameVi": "PP Bồi Formex 5mm (Hashtag & Standee)",
-          "tagline": "Rigid lightweight foam board with high-res laminated PP graphics for event photo props",
-          "taglineVi": "Tấm format dày 5mm cứng cáp bồi decal PP sắc nét, chuyên dụng cho hashtag check-in tiệc tất niên và mô hình chào xuân",
-          "description": [
-              "Rigid 5mm density PVC foam board holds its shape flat without bending",
-              "Laminated with anti-glare matte film perfect for smartphone flash photography",
-              "Precision CNC laser contour cutting to any cartoon mascot or slogan shape"
-          ],
-          "descriptionVi": [
-              "Tấm format dày 5mm siêu nhẹ nhưng cứng cáp, cầm chắc tay không lo gãy gập",
-              "Cán màng mờ chống lóa đèn flash máy ảnh, lên hình chụp check-in rực rỡ và rõ nét",
-              "Cắt CNC bế bo theo đúng viền hình linh vật xuân, biểu tượng Tết và chữ cách điệu"
-          ],
-          "descriptionTraits": [
-              "thick-weight",
-              "digital-precision",
-              "smooth-base"
-          ],
-          "bestFor": [
-              "Handheld photo hashtags, Year-End Party photo booths, mascot cutouts"
-          ],
-          "bestForVi": [
-              "Hashtag chụp ảnh check-in sự kiện, standee hình linh vật Tết, biển chào đón xuân"
-          ],
-          "pureImage": "/images/category/hashtagcamtay.webp",
-          "pureImages": [
-              "/images/category/hashtagcamtay.webp",
-              "/images/category/hashtagtaycamroi.webp",
-              "/images/category/ppboiformat.webp"
-          ],
-          "nameZh": "5mm高密度KT板/雪弗板裱PP (新春拍照道具/迎宾立牌)",
-          "nameJa": "5mmスチレンボード貼りPPシート（新春フォトプロップス＆等身大パネル）",
-          "nameKo": "5mm 고밀도 폼보드 합지 PP (신년 촬영 소품 해시태그 & 스탠디)",
-          "taglineZh": "5mm厚度硬挺轻便、覆防反光哑膜、数控激光异形裁切的年会合影手牌与生肖立体展架？",
-          "taglineJa": "厚み5mmで軽量かつ頑丈。反射しないマットPP加工で写真撮影に最適な新春フォトパネルですか？",
-          "taglineKo": "5mm의 탄탄한 두께감에 가볍고, 카메라 플래시 눈부심이 없는 연말연시 촬영용 해시태그 피켓인가요?",
-          "descriptionZh": [
-              "5mm高密度环保PVC发泡板，结构平整硬挺不弯曲，手持轻巧长时间不累",
-              "表面覆盖防眩光高透哑膜，闪光灯与手机补光拍摄均不反光，合影画面细腻出彩",
-              "高精度数控雕刻机异形铣切，可贴合生肖吉祥物卡通轮廓、春联文字精准成型"
-          ],
-          "descriptionJa": [
-              "厚さ5mmの高密度軽量ボードを採用し、たわみがなく手持ち撮影でも軽くて疲れない",
-              "スマホのフラッシュや照明が反射しないノングレアマットラミネートで、SNS映えする綺麗な撮影を実現",
-              "高精度CNCルーター加工により、干支キャラクターやメッセージの輪郭に沿って精密に異形カット"
-          ],
-          "descriptionKo": [
-              "5mm 고밀도 압축 폼보드로 휘어짐 없이 견고하면서도 매우 가벼워 장시간 촬영 시에도 피로감 없음",
-              "스마트폰 플래시나 조명 불빛이 반사되지 않는 무광 매트 코팅으로 SNS 인증샷 촬영에 최적화",
-              "초정밀 CNC 레이저 장비로 새해 동물 캐릭터 및 캘리그라피 모양 그대로 매끄러운 자유형 외곽 재단"
-          ],
-          "bestForZh": [
-              "企业尾牙年会合影拍照手牌、商场新年签到背景打卡道具、生肖立体卡通立牌"
-          ],
-          "bestForJa": [
-              "忘年会・新年会の記念撮影用手持ちパネル、イベント受付の案内ボード、干支の等身大POP"
-          ],
-          "bestForKo": [
-              "송년회 및 신년회 기념 촬영용 손피켓 해시태그, 행사 등록 데스크 웰컴 보드, 설맞이 마스코트 입간판"
-          ]
-      },
-      {
-        "icon": "Layers",
-        "name": "Paper Decal Laminated (Couche Sticker)",
-        "nameVi": "Decal Giấy Cán Màng (Chuẩn Nhãn Hàng)",
-        "tagline": "Need the most cost-effective, vibrant sticker decal for dry indoor products?",
-        "taglineVi": "Bạn cần tem decal giấy sắc nét, kinh tế nhất cho sản phẩm khô và bao bì?",
-        "description": [
-          "Smooth coated paper adhesive decal with protective matte or glossy lamination",
-          "Vibrant CMYK printing that adheres firmly to paper boxes, jars, and bags",
-          "Optimal choice for products stored in normal indoor temperature and humidity"
-        ],
-        "descriptionVi": [
-          "Bề mặt láng mịn được cán màng mờ hoặc bóng bảo vệ chống trầy",
-          "In màu CMYK sắc nét, bám dính chắc chắn lên hộp giấy, chai lọ và túi bao bì",
-          "Lựa chọn tối ưu chi phí cho sản phẩm lưu trữ trong điều kiện nhiệt độ phòng"
-        ],
-        "descriptionTraits": [
-          "smooth-base",
-          "glossy-coat",
-          "soft-light"
-        ],
-        "bestFor": [
-          "Food packaging boxes, confectionery jars, and bakery containers",
-          "Dry cosmetic jars, perfume cartons, and candle vessels",
-          "Shipping parcel address labels and promotional giveaway stickers"
-        ],
-        "bestForVi": [
-          "Hộp bao bì thực phẩm, hũ bánh kẹo và hộp đồ ăn khô",
-          "Hũ mỹ phẩm khô, vỏ hộp nước hoa và cốc nến thơm tinh dầu",
-          "Nhãn dán địa chỉ gói hàng bưu phẩm và sticker khuyến mãi tặng kèm"
-        ],
-        "nameZh": "铜版纸不干胶覆膜（标准商品贴纸）",
-        "nameJa": "アート紙シール PPラミネート加工（定番ラベル）",
-        "nameKo": "코팅 코팅지 유포지 라벨 스티커",
-        "taglineZh": "大批量张贴于纸箱、干燥包装袋的经济型全彩贴纸？",
-        "taglineJa": "段ボールや乾いたパッケージに貼る、高コスパなカラーシールですか？",
-        "taglineKo": "박스나 건조 포장재에 부착하는 대량 가성비 컬러 스티커인가요?",
-        "descriptionZh": [
-          "高白度不干胶面纸，全彩印刷后表面覆盖哑膜或光膜",
-          "背胶初粘力强，贴合平整牢固，不易翘边起角",
-          "支持任意尺寸切平张或成卷，适配手工贴标或半自动贴标"
-        ],
-        "descriptionJa": [
-          "白色度の高いシール紙に高精細カラー印刷、表面にラミネート加工",
-          "初期粘着力が高く、一度貼れば角浮きせずしっかり密着",
-          "シート仕上げまたはロール仕上げに対応、手作業・機械貼付の両方に適合"
-        ],
-        "descriptionKo": [
-          "백색도가 뛰어난 스티커 전용지에 인쇄 후 무광/유광 코팅 마감",
-          "초기 접착력이 우수하여 들뜸이나 떨어짐 없이 탄탄하게 부착",
-          "재단 낱장형 또는 롤형 공급 가능하여 수작업 및 기계 라벨링 완벽 지원"
-        ],
-        "bestForZh": [
-          "纸箱外箱标志、产品外包装封口及快递发货贴纸",
-          "商场超市商品全彩宣传贴纸及折扣促销标签",
-          "大批量使用、讲求性价比的干燥环境通用贴纸"
-        ],
-        "bestForJa": [
-          "段ボールの表示ラベル、製品パッケージの封印シール",
-          "店頭商品のプロモーションシール、セールス告知ステッカー",
-          "乾燥した屋内で大量に使用する高コスパシール"
-        ],
-        "bestForKo": [
-          "박스 외관 표기, 제품 상자 봉인용 라벨, 배송 스티커",
-          "매장 상품 포인트 스티커, 할인 프로모션 홍보 라벨",
-          "건조한 환경에서 대량으로 사용하는 다목적 가성비 스티커"
-        ],
-        "pureImage": "/images/product/couche.webp",
-        "pureImages": [
-          "/images/product/couche.webp",
-          "/images/product/decal-laminate2.webp",
-          "/images/product/decal-laminate1.webp"
-        ]
-      },
-      {
-        "icon": "Feather",
-        "name": "Uncoated Writable Paper Decal (Ford)",
-        "nameVi": "Decal Giấy Ford (Dễ Viết Tay & Đóng Dấu)",
-        "tagline": "Want a writable sticker decal where you can fill in expiry dates or batch numbers?",
-        "taglineVi": "Bạn muốn tem decal giấy mộc tự nhiên có thể viết tay ngày sản xuất hay hạn dùng?",
-        "description": [
-          "Natural uncoated Ford paper adhesive surface without lamination glare",
-          "Absorbs ballpoint ink, markers, and date stamps immediately without smearing",
-          "Authentic, artisanal aesthetic for handmade goods and organic products"
-        ],
-        "descriptionVi": [
-          "Bề mặt mộc nhám tự nhiên, không tráng phủ hay cán màng",
-          "Bám mực viết tay, bút bi, bút lông và dấu mộc ngày tháng không bị nhòe",
-          "Thẩm mỹ thủ công chân thực cho sản phẩm handmade và đồ hữu cơ"
-        ],
-        "descriptionTraits": [
-          "natural-grain",
-          "soft-light",
-          "foil-accent"
-        ],
-        "bestFor": [
-          "Handmade bakery expiration stickers and harvest date labels",
-          "Medical laboratory test tube labels and pharmacy prescriptions",
-          "Artisan craft workshops and organic farmers' market packaging"
-        ],
-        "bestForVi": [
-          "Sticker ghi ngày sản xuất, hạn sử dụng cho bánh ngọt thủ công",
-          "Nhãn dán ống nghiệm phòng xét nghiệm và nhãn toa thuốc nhà thuốc",
-          "Sản phẩm thủ công truyền thống và nông sản sạch tự nhiên"
-        ],
-        "nameZh": "书写纸不干胶（易于盖章与圆珠笔书写）",
-        "nameJa": "上質紙シール（スタンプ・筆記適性抜群）",
-        "nameKo": "모조지 스티커 (스탬프 날인 및 필기용)",
-        "taglineZh": "需要现场盖印检验章、手写有效期或装箱数量的标签？",
-        "taglineJa": "検印スタンプや手書きでメモを書き加えたい管理用シールですか？",
-        "taglineKo": "검사 도장을 찍거나 유통기한을 펜으로 직접 적을 스티커인가요?",
-        "descriptionZh": [
-          "无涂层书写纸面层，墨水渗透吸收快，干燥迅速不蹭脏",
-          "铅笔、圆珠笔、签字笔均可顺畅书写，盖印章印迹清晰",
-          "背胶牢固耐温，适用于各类办公档案及仓储管理"
-        ],
-        "descriptionJa": [
-          "表面が無塗工の上質紙で、インクの吸収が早く乾きやすい仕様",
-          "鉛筆やボールペンでの書き込み、各種スタンプの押印に最適",
-          "一度貼ればしっかり固定され、書類管理や在庫識別に便利"
-        ],
-        "descriptionKo": [
-          "무광 비코팅 모조지 표면으로 잉크 흡수가 빠르고 번짐이 전혀 없음",
-          "연필, 볼펜, 만년필 필기는 물론 스탬프 도장 날인에 최적화",
-          "접착력이 강해 서류철, 보관 박스, 자산 관리 표기 시 영구 부착"
-        ],
-        "bestForZh": [
-          "需要现场手写生产日期、保质期、批次号的货品标签",
-          "企业文件档案分类标签、库房货架位置标识条",
-          "检验员质检签名章、出厂合格证及设备保养贴"
-        ],
-        "bestForJa": [
-          "製造年月日、賞味期限、ロット番号を手書きする商品ラベル",
-          "オフィス書類のインデックス、倉庫ラックの棚番表示",
-          "検品合格証、検査スタンプ用ラベル、保守点検ステッカー"
-        ],
-        "bestForKo": [
-          "제조일자, 유통기한, 담당자 이름을 펜으로 직접 수기하는 라벨",
-          "사무용 바인더 라벨, 창고 랙 번호 및 물품 분류 스티커",
-          "품질 검사원 합격 도장 날인용 씰 및 설비 정기 점검표"
-        ],
-        "pureImage": "/images/product/ford.webp",
-        "pureImages": [
-          "/images/product/ford.webp",
-          "/images/product/decal-ford2.webp",
-          "/images/product/decal-ford3.webp"
-        ]
-      },
-      {
-        "icon": "ShieldCheck",
-        "name": "100% Waterproof Transparent PVC Decal",
-        "nameVi": "Decal Nhựa Trong Suốt (Chống Nước 100%)",
-        "tagline": "Need a clear, invisible waterproof decal that lets your product show through?",
-        "taglineVi": "Bạn cần tem decal trong suốt chống nước 100%, nhìn thấu màu sản phẩm bên trong?",
-        "description": [
-          "Transparent synthetic PVC/PET film with strong water-resistant adhesive",
-          "Creates a seamless 'no-label' printed directly on bottle look",
-          "100% waterproof and tear-resistant, ideal for wet bathroom or chilled use"
-        ],
-        "descriptionVi": [
-          "Trong suốt với lớp keo chống thấm nước vượt trội",
-          "Tạo hiệu ứng 'nhãn tàng hình' như được in trực tiếp lên bề mặt chai lọ",
-          "Chống nước 100% và không rách, hoàn hảo cho môi trường phòng tắm hoặc ướp lạnh"
-        ],
-        "descriptionTraits": [
-          "waterproof-durability",
-          "smooth-base",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Clear glass beverage bottles, cold-pressed juice jars, and milk tea cups",
-          "Shampoo, shower gel, and skincare cosmetics used in bathrooms",
-          "Window decal branding and transparent gift box seals"
-        ],
-        "bestForVi": [
-          "Chai thủy tinh nước giải khát, chai nước ép lạnh và ly trà sữa",
-          "Chai dầu gội, sữa tắm và mỹ phẩm sử dụng trong môi trường ẩm ướt",
-          "Sticker dán kính cửa hàng và tem niêm phong hộp quà trong suốt"
-        ],
-        "nameZh": "超透PVC透明不干胶（防水耐撕）",
-        "nameJa": "高透明PVC耐水ステッカー（完全防水仕様）",
-        "nameKo": "100% 완전 방수 투명 PVC 데칼 스티커",
-        "taglineZh": "想要若隐若现如同直接印刷在瓶身玻璃上的透明无边感？",
-        "taglineJa": "ボトルの下地が透けて見え、直接印刷したような透明シールですか？",
-        "taglineKo": "유리병이나 용기 표면에 직접 인쇄한 듯 투명하고 깔끔한 라벨인가요?",
-        "descriptionZh": [
-          "采用高透明光学级PVC塑料基材，透光率极佳",
-          "贴在玻璃或透明瓶身时如同无缝直接丝网印刷",
-          "100%防水防潮防油，撕扯不破，耐脏污耐擦洗"
-        ],
-        "descriptionJa": [
-          "高い透明度を誇るクリアPVCフィルムを使用し、下地がそのまま透ける",
-          "ガラス瓶やクリアボトルに貼ると、まるで直接印刷したような一体感",
-          "100%完全耐水・耐油性で、破れにくく水拭き清掃も安心"
-        ],
-        "descriptionKo": [
-          "투명도가 뛰어난 광학급 투명 PVC 재질로 배경이 그대로 투과",
-          "유리병이나 투명 용기에 부착 시 용기에 직접 인쇄한 듯 일체감 선사",
-          "100% 완전 방수, 방유, 찢김 방지 재질로 오염 시 물세척 가능"
-        ],
-        "bestForZh": [
-          "玻璃门窗展示贴、透明饮料瓶、冷萃咖啡瓶标签",
-          "护肤品透明乳液瓶、香薰精油瓶及手工香水瓶贴",
-          "追求轻盈、前卫、现代极简裸妆视觉的产品包装"
-        ],
-        "bestForJa": [
-          "ガラス窓の店舗サイン、透明ボトル、コールドブリューコーヒー",
-          "コスメボトル、アロマオイル瓶、ハンドメイド香水ラベル",
-          "透明感を活かしたミニマルで洗練された商品パッケージ"
-        ],
-        "bestForKo": [
-          "유리창 쇼윈도 매장 데칼, 투명 페트병, 콜드브루 커피 라벨",
-          "화장품 에센스 보틀, 디퓨저 유리병, 수제 향수 라벨",
-          "투명한 용기의 내용물 색상을 그대로 살리는 감각적인 디자인"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/decaltrongsuot.webp",
-        "pureImages": [
-          "/images/product/decaltrongsuot.webp",
-          "/images/product/decal-pvc2.webp",
-          "/images/product/decal-pvc3.webp"
-        ]
-      },
-      {
-        "icon": "Award",
-        "name": "White Synthetic PVC Plastic Decal",
-        "nameVi": "Decal Nhựa Trắng Sữa (Siêu Bền Chống Nước)",
-        "tagline": "Need an indestructible white plastic sticker for refrigerated or chemical products?",
-        "taglineVi": "Bạn cần tem nhựa trắng sữa chống rách, chịu lạnh và nước cho chai lọ thủy hải sản?",
-        "description": [
-          "Opaque white synthetic plastic film with exceptional durability and opacity",
-          "Resists ice, freezing temperatures, condensation, and chemical oils",
-          "Vibrant CMYK colors stay sharp even after months in cold storage"
-        ],
-        "descriptionVi": [
-          "Màng nhựa tổng hợp màu trắng sữa đục, độ bền kéo và độ che phủ tuyệt đối",
-          "Chịu nước đá, nhiệt độ cấp đông, nước đọng và hóa chất dầu mỡ cực tốt",
-          "Màu in CMYK sắc nét, không phai kể cả sau nhiều tháng bảo quản lạnh"
-        ],
-        "descriptionTraits": [
-          "waterproof-durability",
-          "smooth-base",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Frozen seafood packaging, ice cream containers, and chilled dairy goods",
-          "Automotive chemical lubricants, industrial oils, and cleaning spray bottles",
-          "Outdoor machinery warning labels and weatherproof equipment stickers"
-        ],
-        "bestForVi": [
-          "Bao bì hải sản đông lạnh, hộp kem và các sản phẩm sữa ướp lạnh",
-          "Chai nhớt xe cộ, hóa chất công nghiệp và chai xịt tẩy rửa gia dụng",
-          "Nhãn cảnh báo trên máy móc ngoài trời và tem thiết bị chịu thời tiết"
-        ],
-        "nameZh": "哑白/亮白合成纸PP塑料不干胶",
-        "nameJa": "白塩ビ合成紙ステッカー（耐候性・耐水性抜群）",
-        "nameKo": "유백색 방수 합성 유포지 스티커",
-        "taglineZh": "常年经受冷水浸泡、冷藏冷冻依然牢固不脱胶不掉色？",
-        "taglineJa": "水濡れや冷蔵・冷凍環境でも剥がれず破れない高耐久シールですか？",
-        "taglineKo": "물에 젖거나 냉동 보관해도 떨어지지 않는 100% 방수 유포지 스티커인가요?",
-        "descriptionZh": [
-          "特种合成塑料薄膜面层，具有超强韧性，手工用力拉扯不破",
-          "优异的防水、防潮、抗冷凝水性能，冰桶浸泡不掉胶不卷边",
-          "表面平滑洁白，印刷色彩对比度极高，户外耐候性极佳"
-        ],
-        "descriptionJa": [
-          "引き裂き強度の高い合成樹脂フィルムを採用、手で引っ張っても破れない",
-          "水や湿気、結露に極めて強く、氷水や冷蔵庫に入れても剥がれない",
-          "滑らかな純白のベース紙で、発色が鮮明で屋外での耐候性も抜群"
-        ],
-        "descriptionKo": [
-          "질기고 강력한 합성 유포지 소재로 손으로 힘껏 잡아당겨도 절대 안 찢어짐",
-          "탁월한 방수 및 결로 방지 성능으로 얼음물에 담가도 라벨이 분리되지 않음",
-          "새하얀 베이스에서 뿜어져 나오는 선명한 색감과 뛰어난 내구성"
-        ],
-        "bestForZh": [
-          "冷冻生鲜食品、冰镇啤酒饮料、冷藏奶制品标签",
-          "潮湿浴室使用的沐浴露、洗发水及家庭日化清洁剂瓶贴",
-          "户外仪器设备铭牌、电动车及工业管道警示标识贴"
-        ],
-        "bestForJa": [
-          "冷凍食品、クラフトビール、要冷蔵乳製品のラベル",
-          "シャンプーやボディソープなど浴室で使う水回りボトル",
-          "屋外機器の銘板シール、機械・配管の注意警告ステッカー"
-        ],
-        "bestForKo": [
-          "냉동 밀키트, 냉장 맥주 및 탄산음료, 유제품 방수 라벨",
-          "욕실에서 물을 상시 접하는 샴푸, 바디워시 용기 라벨",
-          "야외 노출 산업 장비 명판, 전자기기 및 배관 안전 경고 스티커"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/decaltrangsua.webp",
-        "pureImages": [
-          "/images/product/decaltrangsua.webp",
-          "/images/product/decal-white1.webp",
-          "/images/product/decal-white3.webp"
-        ]
-      },
-      {
-        "icon": "Sparkles",
-        "name": "Custom Die-Cut Shape Decal + Foil",
-        "nameVi": "Decal Bế Theo Hình Dáng Bất Kỳ + Ép Kim",
-        "tagline": "Want custom contour-cut stickers with shimmering metallic foil logo accents?",
-        "taglineVi": "Bạn muốn tem decal bế theo hình dáng độc quyền kèm ép kim logo lấp lánh?",
-        "description": [
-          "Precision digital die-cutting following any intricate logo outline or shape",
-          "Combined with hot foil stamping in gold, silver, or holographic metallic sheen",
-          "Delivered on easy-peel kiss-cut sheets or individual promotional sticker die-cuts"
-        ],
-        "descriptionVi": [
-          "Bế cắt kỹ thuật số viền chính xác theo mọi hình dáng logo hay hoa văn phức tạp",
-          "Kết hợp ép kim nhũ vàng, nhũ bạc hoặc nhũ holographic lấp lánh điểm nhấn",
-          "Bàn giao dạng tờ cấn màng xé (Kiss-cut sheet) hoặc cắt rời từng hình (Die-cut)"
-        ],
-        "descriptionTraits": [
-          "foil-accent",
-          "embossed-depth",
-          "glossy-coat"
-        ],
-        "bestFor": [
-          "Luxury wine bottles, perfume seals, and high-end cosmetic labels",
-          "Branded promotional stickers for skateboards, laptops, and water bottles",
-          "Limited-edition holiday gift seals and VIP packaging authentication"
-        ],
-        "bestForVi": [
-          "Nhãn chai rượu vang sang trọng, tem niêm phong nước hoa và mỹ phẩm VIP",
-          "Sticker nhận diện thương hiệu dán laptop, bình nước, mũ bảo hiểm quà tặng",
-          "Tem niêm phong quà Tết giới hạn và chứng nhận hàng chính hãng"
-        ],
-        "nameZh": "任意异形精准模切 + 局部电化铝烫金",
-        "nameJa": "自由形状ダイカット + 箔押し加工シール",
-        "nameKo": "자유형 도무송 다이컷 + 금박 후가공 스티커",
-        "taglineZh": "贴纸裁切成品牌独特形状，辅以闪耀烫金工艺？",
-        "taglineJa": "ブランド独自の形状にカットし、箔押しで高級感をプラスしたシールですか？",
-        "taglineKo": "로고 모양 그대로 맞춤 재단하고 금박을 입힌 프리미엄 스티커인가요?",
-        "descriptionZh": [
-          "精准数控模切刀线，可切割成任意不规则曲线或品牌专属图形",
-          "局部结合烫亮金、哑金、烫镭射或银箔工艺，闪烁金属光芒",
-          "排废干净整齐，剥离撕取顺畅不粘连"
-        ],
-        "descriptionJa": [
-          "高精度ダイカット技術で、ハートやキャラクターなど自由な形状にカット",
-          "金・銀・ホログラム箔押しを組み合わせて、眩いメタリックの輝きをプラス",
-          "カス取りが綺麗に処理され、指先でサッと剥がしやすい快適仕様"
-        ],
-        "descriptionKo": [
-          "초정밀 레이저 도무송 가공으로 캐릭터나 브랜드 로고 모양 그대로 재단",
-          "골드박, 실버박, 홀로그램박 등 메탈릭 광택 후가공을 결합한 화려함",
-          "여백이 깔끔하게 탈착되어 손쉽게 떼어내 부착할 수 있는 완성도"
-        ],
-        "bestForZh": [
-          "文创IP周边、卡通插画贴纸、潮牌潮流手账贴",
-          "高端礼盒封口贴、奢侈品VIP防拆封口贴",
-          "为产品增添趣味性、收藏价值与高辨识度的创意贴标"
-        ],
-        "bestForJa": [
-          "キャラクターグッズ、イラストレーターの限定ステッカー",
-          "ギフトラッピングの封印シール、プレミアム会員向け特典シール",
-          "高いデザイン性とコレクター価値を持つオリジナルシール"
-        ],
-        "bestForKo": [
-          "인기 캐릭터 굿즈, 다이어리 꾸미기(다꾸) 스티커, 패션 브랜드 씰",
-          "스페셜 기프트 박스 봉인 스티커, VIP 브랜드 리워드 굿즈",
-          "독창적인 조형미와 반짝이는 금빛으로 소장 가치를 높인 라벨"
-        ],
-        "hideFoilCheckbox": true,
-        "pureImage": "/images/product/decal-foil1.webp",
-        "pureImages": [
-          "/images/product/decal-foil1.webp",
-          "/images/product/decal-foil2.webp",
-          "/images/product/decal-foil3.webp"
-        ]
-      },
-      {
-        "icon": "Palette",
-        "name": "Korean Art Canvas (Wooden Frame)",
-        "nameVi": "Canvas Hàn Quốc (Khung Gỗ)",
-        "tagline": "Gallery-quality wall canvas to elevate living spaces",
-        "taglineVi": "Tranh canvas chất lượng phòng tranh làm đẹp không gian sống",
-        "description": [
-          "Imported Korean cotton canvas with natural woven texture",
-          "UV eco-solvent inks offer vibrant color and 10+ year fade resistance",
-          "Stretched over solid kiln-dried pine wood frame ready to hang"
-        ],
-        "descriptionVi": [
-          "Vải canvas cotton Hàn Quốc có vân dệt vải tự nhiên",
-          "Mực in UV sắc nét, kháng nước, bền màu trên 10 năm",
-          "Căng khung gỗ thông tự nhiên đã qua sấy chống mối mọt"
-        ],
-        "descriptionTraits": [
-          "textured-art",
-          "waterproof-durability",
-          "soft-light"
-        ],
-        "bestFor": [
-          "Family portraits and wedding wall photos",
-          "Living room, bedroom and home office decoration",
-          "Housewarming and anniversary gifts"
-        ],
-        "bestForVi": [
-          "Ảnh gia đình, ảnh cưới phóng lớn trang trí phòng khách",
-          "Tranh trang trí phòng ngủ, góc làm việc cá nhân",
-          "Quà tặng tân gia, sinh nhật, kỷ niệm đầy ý nghĩa"
-        ],
-        "nameZh": "韩国精编油画布（实木内框）",
-        "nameJa": "韓国製アートキャンバス（天然木枠）",
-        "nameKo": "한국산 고급 캔버스 (원목 프레임)",
-        "taglineZh": "需要一幅微喷色彩准确、画布紧绷且长年不褪色的艺术挂画？",
-        "taglineJa": "発色が美しく、耐久性に優れた本格的なキャンバスアートをお探しですか？",
-        "taglineKo": "오랜 시간 변색 없이 갤러리 수준의 감동을 전할 캔버스 액자인가요?",
-        "descriptionZh": [
-          "高密度特制艺术油画布，搭配烘干防虫防蛀实木内框",
-          "高精度12色艺术微喷，耐紫外线室内长年不褪色",
-          "四周包边立体装裱，免外框直接悬挂，现代极简立体感"
-        ],
-        "descriptionJa": [
-          "高密度な韓国製アートキャンバスと、防湿・防虫処理済みの天然木枠",
-          "12色高精細ジークレープリントで、紫外線に強く色褪せない耐久性",
-          "側面まで印刷を巻き込むギャラリーラップ仕様で、額縁なしでそのまま飾れる"
-        ],
-        "descriptionKo": [
-          "한국산 프리미엄 고밀도 캔버스 원단과 건조 원목 내장 프레임",
-          "12색 초정밀 지클리 피그먼트 출력으로 실내 영구 보존 및 자외선 변색 방지",
-          "옆면까지 입체감 있게 감싸는 갤러리 랩 마감으로 프레임 없이 바로 거치"
-        ],
-        "bestForZh": [
-          "现代家居客厅、卧室背景墙艺术装饰挂画",
-          "精品酒店客房、高级餐厅与咖啡馆空间氛围营造",
-          "婚纱照、家庭写真大片与个人艺术肖像陈列"
-        ],
-        "bestForJa": [
-          "モダンリビング、ベッドルーム、オフィスのインテリアアート",
-          "ホテル客室、カフェ、高級サロンの空間演出",
-          "ウェディング写真、家族写真、アート写真のディスプレイ"
-        ],
-        "bestForKo": [
-          "모던 거실, 침실 침대 헤드 벽면 인테리어 액자",
-          "호텔 객실, 카페, 프라이빗 뷰티 살롱 벽면 데코",
-          "대형 웨딩 본식 사진, 가족 기념사진 및 아티스틱 프로필 캔버스"
-        ],
-        "hideFoilCheckbox": true,
-        "hideDoubleSidedCheckbox": true,
-        "pureImage": "/images/product/canvascotton.webp",
-        "pureImages": [
-          "/images/product/canvascotton.webp",
-          "/images/product/canvascotton2.webp",
-          "/images/product/canvascotton3.webp"
-        ]
-      },
-      {
-        "icon": "Sparkles",
-        "name": "Glitter Shimmer Canvas",
-        "nameVi": "Canvas Ánh Kim Tuyến",
-        "tagline": "Subtle shimmering canvas for dazzling art pieces",
-        "taglineVi": "Vải canvas phủ kim tuyến lấp lánh nhẹ nhàng dưới ánh đèn",
-        "description": [
-          "Fine glitter particles woven into canvas surface catch ambient light",
-          "High-definition 1200 DPI printing for crisp facial and landscape details",
-          "Complete with composite floating frame in gold, black, or natural wood"
-        ],
-        "descriptionVi": [
-          "Bề mặt phủ lớp kim tuyến mịn bắt sáng lấp lánh khi có ánh đèn",
-          "Độ phân giải in 1200 DPI tái tạo chân thực từng chi tiết ảnh",
-          "Kèm khung viền composite cao cấp (màu vàng đồng, đen hoặc vân gỗ)"
-        ],
-        "descriptionTraits": [
-          "metallic-shine",
-          "textured-art",
-          "waterproof-durability"
-        ],
-        "bestFor": [
-          "Glamour wedding and personal portrait prints",
-          "Modern interior statement art pieces",
-          "Luxury commemorative gifts"
-        ],
-        "bestForVi": [
-          "Ảnh cưới nghệ thuật và ảnh chân dung cá nhân phong cách sang trọng",
-          "Tranh nghệ thuật trang trí căn hộ cao cấp",
-          "Quà tặng lưu niệm đẳng cấp cho bạn bè và người thân"
-        ],
-        "nameZh": "璀璨金葱闪粉艺术油画布",
-        "nameJa": "ラメ入りキラキラキャンバス",
-        "nameKo": "글리터 펄 캔버스 아트",
-        "taglineZh": "画面在灯光照射下散发若隐若现的微光星尘效果？",
-        "taglineJa": "光を受けるとキラキラと上品に輝く特別なキャンバスですか？",
-        "taglineKo": "빛을 받으면 캔버스 표면에서 은은한 반짝임이 살아나는 액자극인가요?",
-        "descriptionZh": [
-          "画布织物表层嵌入细腻闪粉微粒，灯光照射下波光粼粼",
-          "赋予夜景、星空、婚纱与珠宝画面神秘梦幻的立体微光",
-          "防水抗污涂层保护，即使潮湿天气依然亮丽生辉"
-        ],
-        "descriptionJa": [
-          "キャンバス生地に繊細なラメ粒子を織り込み、光を受けると上品に輝く",
-          "夜景、星空、ウェディングドレス、宝石の煌めきをドラマチックに演出",
-          "防汚・防湿コーティングで、美しい輝きを長期間キープ"
-        ],
-        "descriptionKo": [
-          "캔버스 직물 표면에 미세한 글리터 펄 입자가 분사되어 빛에 따라 반짝임",
-          "야경, 은하수, 순백의 웨딩드레스 사진에 신비롭고 몽환적인 감성 극대화",
-          "방수 방습 코팅 처리로 습한 날씨에도 펄과 색감이 영구 보존"
-        ],
-        "bestForZh": [
-          "璀璨夜景摄影、银河星空与唯美婚纱摄影作品",
-          "高端美妆SPA、珠宝展厅及奢华会所空间艺术陈设",
-          "追求与众不同梦幻光影效果的艺术爱好者"
-        ],
-        "bestForJa": [
-          "夜景写真、天体写真、華やかなウェディングフォト",
-          "ジュエリーサロン、エステサロン、ラグジュアリーラウンジ",
-          "個性的な輝きと幻想的な空間を演出したいインテリア"
-        ],
-        "bestForKo": [
-          "도시 야경 사진, 환상적인 별자리 및 은하수 풍경 사진",
-          "웨딩 화보의 반짝이는 베일과 드레스 디테일 강조 액자",
-          "주얼리 쇼룸, 프리미엄 뷰티 샵의 감각적인 오브제"
-        ],
-        "hideFoilCheckbox": true,
-        "hideDoubleSidedCheckbox": true,
-        "pureImage": "/images/product/vaikimtuyen.webp",
-        "pureImages": [
-          "/images/product/vaikimtuyen.webp",
-          "/images/product/canvaskimtuyen2.webp",
-          "/images/product/canvaskimtuyen3.webp"
-        ]
-      }
-    ]
+          // {
+          //     "id": "decal-kho-lon",
+          //     "nameVi": "Decal Khổ Lớn",
+          //     "nameEn": "Large Format Vinyl Decals",
+          //     "nameZh": "大幅面车贴/背胶",
+          //     "nameJa": "大判インクジェットステッカー",
+          //     "nameKo": "대형 실사출력 데칼 시트지",
+          //     "descriptionVi": "In decal khổ lớn dán kính mặt tiền, tường showroom, xe tải và vách ngăn sự kiện.",
+          //     "descriptionEn": "Large-format adhesive vinyl graphics for glass storefronts, vehicle wraps, and event backdrops.",
+          //     "image": "/images/category/decalkholon.webp",
+          //     "badgeVi": "Khổ lớn",
+          //     "badgeEn": "Large Format"
+          // },
+          // {
+          //     "id": "pp-boi-format",
+          //     "nameVi": "PP bồi Format",
+          //     "nameEn": "PP Mounted on Foam Board",
+          //     "nameZh": "PP背胶裱雪弗板",
+          //     "nameJa": "PPスチレンボード貼り",
+          //     "nameKo": "폼보드 합지 PP 실사출력",
+          //     "descriptionVi": "In PP sắc nét cán bồi tấm formex cứng cáp 3mm - 5mm làm Standee đứng, bảng thông báo, bảng trao giải.",
+          //     "descriptionEn": "High-res PP print laminated onto rigid 3mm-5mm foam board for standees, promo signs, and presentation checks.",
+          //     "image": "/images/category/ppboiformat.webp",
+          //     "badgeVi": "Standee cứng",
+          //     "badgeEn": "Rigid Standee"
+          // },
+          {
+              "id": "hashtag-cam-tay",
+              "nameVi": "Hashtag cầm tay",
+              "nameEn": "Handheld Event Hashtags",
+              "nameZh": "手持拍照手牌",
+              "nameJa": "手持ちフォトプロップス",
+              "nameKo": "핸드헬드 촬영 해시태그 피켓",
+              "descriptionVi": "Biển chụp hình check-in sự kiện, tiệc cưới, sinh nhật, hội thảo bế theo hình dáng thiết kế.",
+              "descriptionEn": "Custom-shaped photo props for corporate galas, weddings, product launches, and birthdays.",
+              "image": "/images/category/hashtagcamtay.webp",
+              "badgeVi": "Check-in",
+              "badgeEn": "Photo Prop"
+          },
+          {
+              "id": "hashtag-tay-cam-roi",
+              "nameVi": "Hashtag tay cầm rời",
+              "nameEn": "Detachable Handle Hashtags",
+              "nameZh": "可拆卸手柄手牌",
+              "nameJa": "持ち手分離型フォトプロップス",
+              "nameKo": "분리형 손잡이 해시태그 피켓",
+              "descriptionVi": "Quy cách cán rời gắn khớp tiện tháo lắp, đóng gói gọn gàng vận chuyển đường dài không lo gãy.",
+              "descriptionEn": "Hashtag signs with snap-on detachable handles, easy to pack flat and ship nationwide without breakage.",
+              "image": "/images/category/hashtagtaycamroi.webp",
+              "badgeVi": "Tiện đóng gói",
+              "badgeEn": "Flat-Pack"
+          },
+          // {
+          //     "id": "bang-treo",
+          //     "nameVi": "Bảng treo",
+          //     "nameEn": "Hanging Boards & Wobblers",
+          //     "nameZh": "超市促销吊牌/吊旗",
+          //     "nameJa": "POP吊り下げボード",
+          //     "nameKo": "매장 천장 행잉 배너 / 보드",
+          //     "descriptionVi": "Bảng treo trần siêu thị, hanger quảng cáo tại quầy kệ thu hút ánh nhìn khách hàng từ xa.",
+          //     "descriptionEn": "Eye-catching overhead hanging signs and point-of-sale wobblers for retail aisles and supermarket displays.",
+          //     "image": "/images/category/bangtreo.webp",
+          //     "badgeVi": "POSM",
+          //     "badgeEn": "Point of Sale"
+          // },
+        // {
+        //   "id": "tranh-canvas",
+        //   "nameVi": "Tranh Canvas chất lượng cao",
+        //   "nameEn": "High-Quality Canvas Prints",
+        //   "nameZh": "高端油画微喷Canvas",
+        //   "nameJa": "高精細キャンバスプリント",
+        //   "nameKo": "최고급 캔버스 아트 액자",
+        //   "descriptionVi": "In tranh canvas vải bố dệt nghệ thuật bồi căng khung gỗ hoặc khung composite sang trọng cho không gian sống và showroom.",
+        //   "descriptionEn": "High-resolution fine art canvas prints stretched on wooden stretcher bars or floating frames for home and office gallery displays.",
+        //   "image": "/images/category/tranhcanva.webp",
+        //   "badgeVi": "Nghệ thuật",
+        //   "badgeEn": "Fine Art",
+
+              // "materials": [
+              //     {
+              //         "icon": "Palette",
+              //         "name": "Korean Art Canvas (Wooden Frame)",
+              //         "nameVi": "Canvas Hàn Quốc (Khung Gỗ)",
+              //         "tagline": "Gallery-quality wall canvas to elevate living spaces",
+              //         "taglineVi": "Tranh canvas chất lượng phòng tranh làm đẹp không gian sống",
+              //         "description": [
+              //             "Imported Korean cotton canvas with natural woven texture",
+              //             "UV eco-solvent inks offer vibrant color and 10+ year fade resistance",
+              //             "Stretched over solid kiln-dried pine wood frame ready to hang"
+              //         ],
+              //         "descriptionVi": [
+              //             "Vải canvas cotton Hàn Quốc có vân dệt vải tự nhiên",
+              //             "Mực in UV sắc nét, kháng nước, bền màu trên 10 năm",
+              //             "Căng khung gỗ thông tự nhiên đã qua sấy chống mối mọt"
+              //         ],
+              //         "descriptionTraits": [
+              //             "textured-art",
+              //             "waterproof-durability",
+              //             "soft-light"
+              //         ],
+              //         "bestFor": [
+              //             "Family portraits and wedding wall photos",
+              //             "Living room, bedroom and home office decoration",
+              //             "Housewarming and anniversary gifts"
+              //         ],
+              //         "bestForVi": [
+              //             "Ảnh gia đình, ảnh cưới phóng lớn trang trí phòng khách",
+              //             "Tranh trang trí phòng ngủ, góc làm việc cá nhân",
+              //             "Quà tặng tân gia, sinh nhật, kỷ niệm đầy ý nghĩa"
+              //         ],
+              //         "nameZh": "韩国精编油画布（实木内框）",
+              //         "nameJa": "韓国製アートキャンバス（天然木枠）",
+              //         "nameKo": "한국산 고급 캔버스 (원목 프레임)",
+              //         "taglineZh": "需要一幅微喷色彩准确、画布紧绷且长年不褪色的艺术挂画？",
+              //         "taglineJa": "発色が美しく、耐久性に優れた本格的なキャンバスアートをお探しですか？",
+              //         "taglineKo": "오랜 시간 변색 없이 갤러리 수준의 감동을 전할 캔버스 액자인가요?",
+              //         "descriptionZh": [
+              //             "高密度特制艺术油画布，搭配烘干防虫防蛀实木内框",
+              //             "高精度12色艺术微喷，耐紫外线室内长年不褪色",
+              //             "四周包边立体装裱，免外框直接悬挂，现代极简立体感"
+              //         ],
+              //         "descriptionJa": [
+              //             "高密度な韓国製アートキャンバスと、防湿・防虫処理済みの天然木枠",
+              //             "12色高精細ジークレープリントで、紫外線に強く色褪せない耐久性",
+              //             "側面まで印刷を巻き込むギャラリーラップ仕様で、額縁なしでそのまま飾れる"
+              //         ],
+              //         "descriptionKo": [
+              //             "한국산 프리미엄 고밀도 캔버스 원단과 건조 원목 내장 프레임",
+              //             "12색 초정밀 지클리 피그먼트 출력으로 실내 영구 보존 및 자외선 변색 방지",
+              //             "옆면까지 입체감 있게 감싸는 갤러리 랩 마감으로 프레임 없이 바로 거치"
+              //         ],
+              //         "bestForZh": [
+              //             "现代家居客厅、卧室背景墙艺术装饰挂画",
+              //             "精品酒店客房、高级餐厅与咖啡馆空间氛围营造",
+              //             "婚纱照、家庭写真大片与个人艺术肖像陈列"
+              //         ],
+              //         "bestForJa": [
+              //             "モダンリビング、ベッドルーム、オフィスのインテリアアート",
+              //             "ホテル客室、カフェ、高級サロンの空間演出",
+              //             "ウェディング写真、家族写真、アート写真のディスプレイ"
+              //         ],
+              //         "bestForKo": [
+              //             "모던 거실, 침실 침대 헤드 벽면 인테리어 액자",
+              //             "호텔 객실, 카페, 프라이빗 뷰티 살롱 벽면 데코",
+              //             "대형 웨딩 본식 사진, 가족 기념사진 및 아티스틱 프로필 캔버스"
+              //         ],
+              //         "hideFoilCheckbox": true,
+              //         "hideDoubleSidedCheckbox": true,
+              //         "pureImage": "/images/product/canvascotton.webp",
+              //         "pureImages": [
+              //             "/images/product/canvascotton.webp",
+              //             "/images/product/canvascotton2.webp",
+              //             "/images/product/canvascotton3.webp"
+              //         ]
+              //     },
+              //     {
+              //         "icon": "Sparkles",
+              //         "name": "Glitter Shimmer Canvas",
+              //         "nameVi": "Canvas Ánh Kim Tuyến",
+              //         "tagline": "Subtle shimmering canvas for dazzling art pieces",
+              //         "taglineVi": "Vải canvas phủ kim tuyến lấp lánh nhẹ nhàng dưới ánh đèn",
+              //         "description": [
+              //             "Fine glitter particles woven into canvas surface catch ambient light",
+              //             "High-definition 1200 DPI printing for crisp facial and landscape details",
+              //             "Complete with composite floating frame in gold, black, or natural wood"
+              //         ],
+              //         "descriptionVi": [
+              //             "Bề mặt phủ lớp kim tuyến mịn bắt sáng lấp lánh khi có ánh đèn",
+              //             "Độ phân giải in 1200 DPI tái tạo chân thực từng chi tiết ảnh",
+              //             "Kèm khung viền composite cao cấp (màu vàng đồng, đen hoặc vân gỗ)"
+              //         ],
+              //         "descriptionTraits": [
+              //             "metallic-shine",
+              //             "textured-art",
+              //             "waterproof-durability"
+              //         ],
+              //         "bestFor": [
+              //             "Glamour wedding and personal portrait prints",
+              //             "Modern interior statement art pieces",
+              //             "Luxury commemorative gifts"
+              //         ],
+              //         "bestForVi": [
+              //             "Ảnh cưới nghệ thuật và ảnh chân dung cá nhân phong cách sang trọng",
+              //             "Tranh nghệ thuật trang trí căn hộ cao cấp",
+              //             "Quà tặng lưu niệm đẳng cấp cho bạn bè và người thân"
+              //         ],
+              //         "nameZh": "璀璨金葱闪粉艺术油画布",
+              //         "nameJa": "ラメ入りキラキラキャンバス",
+              //         "nameKo": "글리터 펄 캔버스 아트",
+              //         "taglineZh": "画面在灯光照射下散发若隐若现的微光星尘效果？",
+              //         "taglineJa": "光を受けるとキラキラと上品に輝く特別なキャンバスですか？",
+              //         "taglineKo": "빛을 받으면 캔버스 표면에서 은은한 반짝임이 살아나는 액자극인가요?",
+              //         "descriptionZh": [
+              //             "画布织物表层嵌入细腻闪粉微粒，灯光照射下波光粼粼",
+              //             "赋予夜景、星空、婚纱与珠宝画面神秘梦幻的立体微光",
+              //             "防水抗污涂层保护，即使潮湿天气依然亮丽生辉"
+              //         ],
+              //         "descriptionJa": [
+              //             "キャンバス生地に繊細なラメ粒子を織り込み、光を受けると上品に輝く",
+              //             "夜景、星空、ウェディングドレス、宝石の煌めきをドラマチックに演出",
+              //             "防汚・防湿コーティングで、美しい輝きを長期間キープ"
+              //         ],
+              //         "descriptionKo": [
+              //             "캔버스 직물 표면에 미세한 글리터 펄 입자가 분사되어 빛에 따라 반짝임",
+              //             "야경, 은하수, 순백의 웨딩드레스 사진에 신비롭고 몽환적인 감성 극대화",
+              //             "방수 방습 코팅 처리로 습한 날씨에도 펄과 색감이 영구 보존"
+              //         ],
+              //         "bestForZh": [
+              //             "璀璨夜景摄影、银河星空与唯美婚纱摄影作品",
+              //             "高端美妆SPA、珠宝展厅及奢华会所空间艺术陈设",
+              //             "追求与众不同梦幻光影效果的艺术爱好者"
+              //         ],
+              //         "bestForJa": [
+              //             "夜景写真、天体写真、華やかなウェディングフォト",
+              //             "ジュエリーサロン、エステサロン、ラグジュアリーラウンジ",
+              //             "個性的な輝きと幻想的な空間を演出したいインテリア"
+              //         ],
+              //         "bestForKo": [
+              //             "도시 야경 사진, 환상적인 별자리 및 은하수 풍경 사진",
+              //             "웨딩 화보의 반짝이는 베일과 드레스 디테일 강조 액자",
+              //             "주얼리 쇼룸, 프리미엄 뷰티 샵의 감각적인 오브제"
+              //         ],
+              //         "hideFoilCheckbox": true,
+              //         "hideDoubleSidedCheckbox": true,
+              //         "pureImage": "/images/product/vaikimtuyen.webp",
+              //         "pureImages": [
+              //             "/images/product/vaikimtuyen.webp",
+              //             "/images/product/canvaskimtuyen2.webp",
+              //             "/images/product/canvaskimtuyen3.webp"
+              //         ]
+              //     },
+              //     {
+              //         "icon": "Palette",
+              //         "name": "Artistic Canvas Fabric",
+              //         "nameVi": "Vải Canvas Cotton nghệ thuật",
+              //         "tagline": "Woven cotton-poly canvas for fine art wall décor and premium displays",
+              //         "taglineVi": "Vải bố dệt nghệ thuật sần nổi cao cấp chuyên in tranh trang trí không gian",
+              //         "description": [
+              //             "Authentic canvas weave creates an elegant artistic oil-painting texture",
+              //             "Vibrant UV-cured pigment inks resist fading for over 5 years indoors",
+              //             "Mounted seamlessly on composite floating frames or solid wood stretcher bars"
+              //         ],
+              //         "descriptionVi": [
+              //             "Vân vải dệt mộc sần tạo chiều sâu nghệ thuật như tranh sơn dầu",
+              //             "Mực in UV sắc nét bền màu hơn 5 năm trong không gian nội thất",
+              //             "Căng khung composite hoặc khung gỗ thông tự nhiên sang trọng"
+              //         ],
+              //         "descriptionTraits": [
+              //             "textured-art",
+              //             "soft-light",
+              //             "eco-friendly"
+              //         ],
+              //         "bestFor": [
+              //             "Living room art, hotel suites, wedding portrait canvases, cafe décor"
+              //         ],
+              //         "bestForVi": [
+              //             "Tranh treo phòng khách, khách sạn, tranh cưới canvas, quán cafe"
+              //         ],
+              //         "pureImage": "/images/product/anhtreotuong.webp",
+              //         "pureImages": [
+              //             "/images/product/canvascotton.webp",
+              //             "/images/product/canvascotton2.webp",
+              //             "/images/product/canvascotton3.webp"
+              //         ],
+              //         "nameZh": "高档艺术油画布 (Cotton)",
+              //         "nameJa": "高品質アートキャンバス布",
+              //         "nameKo": "고급 아티스틱 캔버스 패브릭",
+              //         "taglineZh": "寻找富有天然织物凹凸肌理感、微喷质感如同古典油画的高端艺术画布吗？",
+              //         "taglineJa": "本物の油絵のような織り目と凹凸感を持ち、インテリアを格上げする本格キャンバス生地ですか？",
+              //         "taglineKo": "실제 유화 캔버스처럼 입체적인 직물 질감으로 공간의 품격을 높여주는 아트 패브릭인가요?",
+              //         "descriptionZh": [
+              //             "纯正原织棉麻混纺肌理，粗粝自然的凹凸织纹营造油画般深邃艺术层次",
+              //             "采用环保UV颜料微喷，色彩沉稳饱满，室内抗紫外线褪色持久长达5年以上",
+              //             "可紧密绷装于实木内框或无缝嵌入金属/PS复合悬浮外框中，立体典雅"
+              //         ],
+              //         "descriptionJa": [
+              //             "自然なコットン織り目の凹凸感が、まるで本物の油絵画のような深みと陰影を生み出す",
+              //             "高精細UVピグメントインクを使用し、退色に強く屋内で5年以上の鮮やかな発色を維持",
+              //             "乾燥天然木枠へのタイトなキャンバス張りや、フロートフレーム額装に美しく対応"
+              //         ],
+              //         "descriptionKo": [
+              //             "천연 코튼 혼방 고유의 도톰한 직조 결이 살아있어 유화 작품처럼 깊이 있는 예술적 질감",
+              //             "친환경 프리미엄 UV 피그먼트 출력으로 실내 5년 이상 변색 없는 뛰어난 보존성",
+              //             "원목 스트레쳐 바에 단단하게 당겨 씌우거나 모던 알루미늄 플로팅 프레임과 완벽 결합"
+              //         ],
+              //         "bestForZh": [
+              //             "客厅卧室背景墙装饰画、高端星级酒店客房挂画、艺术婚纱写真及咖啡馆陈列"
+              //         ],
+              //         "bestForJa": [
+              //             "リビング・寝室のアートパネル、ホテル客室の壁掛け写真、ブライダル記念額装、カフェの壁面装飾"
+              //         ],
+              //         "bestForKo": [
+              //             "거실 및 침실 인테리어 아트 액자, 고급 호텔 객실 갤러리 랩, 웨딩 본식 액자, 카페 감성 벽면"
+              //         ]
+              //     }
+              // ]
+          // }
+      ],
+      "materials": [
+          {
+              "icon": "Layers",
+              "name": "PP Film (Polypropylene)",
+              "nameVi": "Poster chất liệu PP",
+              "tagline": "High-resolution PP synthetic paper for indoor posters and roll-up banners",
+              "taglineVi": "Giấy nhựa PP tổng hợp láng mịn, in độ phân giải cao cho poster trong nhà và standee cuộn",
+              "description": [
+                  "Super-smooth synthetic paper base with zero visible paper fibers",
+                  "Rich, high-density color reproduction for photo-realistic graphics",
+                  "Coated with protective matte or glossy lamination against scratches"
+              ],
+              "descriptionVi": [
+                  "Bề mặt giấy nhựa tổng hợp siêu mịn, không lộ xơ giấy",
+                  "Tái tạo màu sắc chân thực chuẩn sắc nét đến từng chi tiết ảnh",
+                  "Cán màng mờ hoặc màng bóng bảo vệ bề mặt chống trầy xước nước nhẹ"
+              ],
+              "descriptionTraits": [
+                  "smooth-base",
+                  "digital-precision",
+                  "glossy-coat"
+              ],
+              "bestFor": [
+                  "Indoor event roll-up banners, cinema posters, showroom displays"
+              ],
+              "bestForVi": [
+                  "Standee cuộn sự kiện, poster rạp chiếu phim, biển quảng cáo showroom"
+              ],
+              "pureImage": "/images/product/posterchatlieupp.webp",
+              "pureImages": [
+                  "/images/product/posterchatlieupp.webp",
+                  "/images/product/posterchatlieupp2.webp",
+                  "/images/product/posterchatlieupp3.webp"
+              ],
+              "nameZh": "PP合成纸海报 (Polypropylene)",
+              "nameJa": "PP合成紙ポスター（ポリプロピレン）",
+              "nameKo": "PP 합성지 포스터 (롤업 배너용)",
+              "taglineZh": "需要平滑细腻、微喷色彩饱和且适用于室内易拉宝与海报的优质PP纸吗？",
+              "taglineJa": "紙の繊維がなく高精細、屋内のロールアップバナーやポスターに最適なPP合成紙をお探しですか？",
+              "taglineKo": "종이 결 없이 매끄럽고 발색이 선명하여 실내 롤업 배너 및 포스터에 최적인 PP 합성지인가요?",
+              "descriptionZh": [
+                  "超平滑高分子聚丙烯基材，纸面细腻无任何可见纸张纤维",
+                  "高密度12色微喷写真输出，真实还原照片级细腻画质与艳丽色彩",
+                  "表面覆盖高透明哑膜或光膜，防刮擦防轻微泼水，卷曲不易变形"
+              ],
+              "descriptionJa": [
+                  "超平滑なポリプロピレン基材で、紙の繊維感がなく極めて滑らかな表面",
+                  "高密度・高精細カラー出力により、写真のような忠実な色彩再現性を実現",
+                  "マットまたは光沢PPラミネート加工で表面を保護し、擦れや水滴を防ぐ"
+              ],
+              "descriptionKo": [
+                  "초평활 합성 수지 원단으로 종이 섬유 결 없이 매끄러운 프리미엄 표면",
+                  "고밀도 컬러 출력으로 사진 수준의 선명하고 깊이 있는 색감 완벽 구현",
+                  "표면 무광/유광 코팅으로 스크래치와 생활 방수를 방지하며 컬링 현상 억제"
+              ],
+              "bestForZh": [
+                  "室内活动易拉宝、商场促销海报、影院立牌及高端展厅背景陈列"
+              ],
+              "bestForJa": [
+                  "屋内イベント用ロールアップバナー、映画館ポスター、ショールーム展示看板"
+              ],
+              "bestForKo": [
+                  "실내 행사 롤업 배너, 영화관 포스터, 쇼룸 홍보 디스플레이 및 백드롭"
+              ]
+          },
+          {
+              "icon": "Shield",
+              "name": "Hiflex PVC Banner",
+              "nameVi": "Băng rôn Hiflex",
+              "tagline": "Durable waterproof PVC vinyl for large outdoor banners and hoardings",
+              "taglineVi": "Bạt PVC dẻo dai chống thấm nước 100%, chịu mưa nắng chuyên cho băng rôn ngoài trời",
+              "description": [
+                  "Reinforced PVC fabric withstands heavy rain, direct sunlight, and wind",
+                  "Most economical solution for large-scale outdoor visibility",
+                  "Finished with reinforced hemmed edges and brass eyelets for easy hanging"
+              ],
+              "descriptionVi": [
+                  "Chất liệu bạt PVC cốt sợi chịu lực tốt trước nắng gắt và mưa bão",
+                  "Giải pháp tiết kiệm ngân sách nhất cho quảng cáo diện rộng ngoài trời",
+                  "Hoàn thiện gấp mép dán gia cường và đóng khoen nhôm tiện xỏ dây treo"
+              ],
+              "descriptionTraits": [
+                  "waterproof-durability",
+                  "thick-weight"
+              ],
+              "bestFor": [
+                  "Street banners, construction fences, grand opening announcements"
+              ],
+              "bestForVi": [
+                  "Băng rôn ngang đường, hàng rào công trình, banner khai trương cửa hàng"
+              ],
+              "pureImage": "/images/product/bangronhiflex.webp",
+              "pureImages": [
+                  "/images/product/bangronhiflex.webp",
+                  "/images/product/bangronhiflex2.webp",
+                  "/images/product/bangronhiflex3.webp"
+              ],
+              "nameZh": "Hiflex户外防雨防晒喷绘布 (PVC Banner)",
+              "nameJa": "ターポリン・ハイフレックス屋外横断幕 (PVC)",
+              "nameKo": "하이플렉스 대형 옥외 현수막 (방수 PVC)",
+              "taglineZh": "需要坚韧耐撕裂、100%防水防风、适合大面积户外广告的高性价比喷绘布吗？",
+              "taglineJa": "強風や雨天にも耐え、100%完全防水で長期の屋外掲示に耐える高コスパ幕をお探しですか？",
+              "taglineKo": "비바람과 자외선에 강하고 100% 완전 방수로 장기간 옥외 홍보에 최적인 실속형 현수막인가요?",
+              "descriptionZh": [
+                  "内夹高强聚酯纤维网层，抗拉力极强，抵御户外强风、暴雨与烈日暴晒",
+                  "大面积户外品牌宣传最具成本效益的解决方案，视认距离远",
+                  "四周热合加厚折边工艺，压铆高强度金属打孔扣眼，方便拉绳悬挂"
+              ],
+              "descriptionJa": [
+                  "ポリエステル繊維補強のPVC素材で、強風・豪雨・直射日光に耐える高耐久仕様",
+                  "広範囲の屋外広告において最もコストパフォーマンスに優れた実力派",
+                  "周囲を折り返して補強溶着し、ハトメ（真鍮穴）加工済みで簡単にロープ結束可能"
+              ],
+              "descriptionKo": [
+                  "폴리에스터 메쉬 보강 PVC 원단으로 거센 바람과 폭우, 자외선에도 끄떡없는 내구성",
+                  "대형 옥외 광고 및 거리 홍보물 중 가장 경제적이고 확실한 시인성 제공",
+                  "사방 미싱/열접착 보강 및 아일렛(금속 구멍) 펀칭으로 로프 결속 용이"
+              ],
+              "bestForZh": [
+                  "过街横幅、建筑工地安全围挡广告、开业庆典及展会户外巨幅宣传"
+              ],
+              "bestForJa": [
+                  "道路横断幕、工事現場の仮囲いシート、店舗オープニング垂れ幕、屋外イベント"
+              ],
+              "bestForKo": [
+                  "거리 현수막, 공사 현장 펜스 배너, 매장 오픈 축하 대형 현수막, 옥외 홍보"
+              ]
+          },
+          {
+              "icon": "Eye",
+              "name": "One-Way Perforated Vinyl",
+              "nameVi": "Decal Lưới",
+              "tagline": "Micro-perforated one-way window film for exterior advertising with internal see-through",
+              "taglineVi": "Decal đục lỗ li ti nhìn 1 chiều dán kính showroom (bên trong nhìn ra thấy, bên ngoài thấy tranh)",
+              "description": [
+                  "Micro-holes allow 40% light transmittance without blocking outdoor view from inside",
+                  "Displays full-color vibrant branding to passersby outside the window",
+                  "Blocks harsh sunlight and reduces interior heat"
+              ],
+              "descriptionVi": [
+                  "Các lỗ li ti cho phép ánh sáng tự nhiên lọt qua, người bên trong nhìn ra rõ ràng",
+                  "Người bên ngoài nhìn vào chỉ thấy hình ảnh quảng cáo sắc nét toàn phần",
+                  "Hỗ trợ giảm bớt chói nắng và nhiệt độ cho không gian bên trong showroom"
+              ],
+              "descriptionTraits": [
+                  "waterproof-durability",
+                  "digital-precision"
+              ],
+              "bestFor": [
+                  "Automotive rear glass, glass showroom facades, street-facing office windows"
+              ],
+              "bestForVi": [
+                  "Dán kính ô tô xe buýt, kính mặt tiền showroom, cửa kính văn phòng"
+              ],
+              "pureImage": "/images/product/decalluoi.webp",
+              "pureImages": [
+                  "/images/product/decalluoi.webp",
+                  "/images/product/decalluoi2.webp",
+                  "/images/product/decalluoi3.webp"
+              ],
+              "nameZh": "单向透视网格车贴 (One-Way Vision)",
+              "nameJa": "ワンウェイビジョン・メッシュシート（片面透視）",
+              "nameKo": "원웨이 타공 메쉬 시트지 (단방향 투과 데칼)",
+              "taglineZh": "既要玻璃橱窗展现大幅全彩广告，又不遮挡室内向外观看视线与自然光线？",
+              "taglineJa": "外からは鮮やかなグラフィックが見え、室内からは外がクリアに見える特殊ガラスフィルムですか？",
+              "taglineKo": "외부에서는 선명한 광고 그래픽이 보이고, 실내에서는 바깥이 시원하게 투과되는 기능성 시트지인가요?",
+              "descriptionZh": [
+                  "微孔均匀分布（穿孔率约40%），在室内向外看通透自如，完全不阻碍视线",
+                  "面向室外的一面全彩高清印刷，呈现完整艳丽的品牌大幅形象视觉",
+                  "有效隔绝外部强光刺眼，降低室内直射热量，兼具防晒遮阳与隐私保护"
+              ],
+              "descriptionJa": [
+                  "微細なドット穴が約40%の光を透過させ、室内側からの視界を遮らずクリアに確保",
+                  "屋外側にはフルカラー広告が高精細に浮かび上がり、通行人に強くアピール",
+                  "強い直射日光を和らげて室内の温度上昇を抑え、遮熱とプライバシー保護を両立"
+              ],
+              "descriptionKo": [
+                  "균일한 미세 타공(약 40% 개구율)으로 실내에서는 밖이 답답함 없이 선명하게 투과",
+                  "외부 시선에서는 빈틈없는 고해상도 풀컬러 실사출력으로 완벽한 브랜드 비주얼 노출",
+                  "강한 직사광선을 부드럽게 분산시켜 실내 눈부심 완화 및 자외선 차단 효과"
+              ],
+              "bestForZh": [
+                  "公交车身车窗玻璃广告、品牌展厅临街全景玻璃幕墙、商铺落地窗"
+              ],
+              "bestForJa": [
+                  "バス・営業車のリアウィンドウ、ショールームのガラスファサード、路面店舗の窓ガラス広告"
+              ],
+              "bestForKo": [
+                  "버스 및 업무용 차량 윈도우 랩핑, 쇼룸 통유리 파사드, 로드샵 매장 유리창 광고"
+              ]
+          },
+          {
+              "icon": "SunMedium",
+              "name": "Backlit Lightbox Film",
+              "nameVi": "Backlit Film",
+              "tagline": "Ultra-clear polyester translucent film engineered for backlit LED lightboxes",
+              "taglineVi": "Phim nhựa polyester xuyên sáng cao cấp chuyên dụng cho hộp đèn LED siêu mỏng",
+              "description": [
+                  "Even light dispersion creates brilliant luminous glow under LED illumination",
+                  "Ultra-high resolution output with deep, rich contrast that never looks washed out",
+                  "Available in adhesive or non-adhesive film for snap-frame lightboxes"
+              ],
+              "descriptionVi": [
+                  "Khả năng tán xạ ánh sáng đều giúp hình ảnh bừng sáng rực rỡ khi bật đèn LED",
+                  "Độ tương phản và độ đen cực sâu, hình ảnh sắc sảo không bị nhợt nhạt",
+                  "Tùy chọn phim có keo hoặc không keo lắp đặt dễ dàng trong hộp đèn nắp bật"
+              ],
+              "descriptionTraits": [
+                  "smooth-base",
+                  "digital-precision",
+                  "glossy-coat"
+              ],
+              "bestFor": [
+                  "Airport advertising lightboxes, fast-food menu boards, luxury mall displays"
+              ],
+              "bestForVi": [
+                  "Hộp đèn menu quầy trà sữa, biển hộp đèn trung tâm thương mại, sân bay"
+              ],
+              "pureImage": "/images/product/backlitfilm.webp",
+              "pureImages": [
+                  "/images/product/backlitfilm.webp",
+                  "/images/product/backlitfilm2.webp",
+                  "/images/product/backlitfilm3.webp"
+              ],
+              "nameZh": "超清灯箱背喷片 (Backlit Film)",
+              "nameJa": "電飾用バックライトフィルム（バックリット）",
+              "nameKo": "백릿 와이드컬러 필름 (조명용 백라이트)",
+              "taglineZh": "专为超薄LED导光板灯箱设计，通电后画面色彩如霓虹般通透鲜艳且黑度深邃吗？",
+              "taglineJa": "LED照明を通すと色彩が劇的に鮮やかに発光する、超高精細な電飾看板用フィルムですか？",
+              "taglineKo": "LED 조명을 투과시켰을 때 색감이 드라마틱하게 살아나는 초고해상도 라이트박스 필름인가요?",
+              "descriptionZh": [
+                  "光学级半透明聚酯PET材质，导光扩散均匀，开灯时光线柔和通透无暗区",
+                  "超高解析度双向微喷技术，色彩饱和度与黑度极深，关灯清晰开灯惊艳",
+                  "支持无胶夹片式（适用于铝合金卡布/磁吸灯箱）与背胶粘贴式规格"
+              ],
+              "descriptionJa": [
+                  "半透明の光学PETフィルムが光を均一に拡散し、LED点灯時にムラなく発光",
+                  "超高解像度出力による高いコントラストと深みのある黒で、褪せない視覚効果",
+                  "開閉式フレーム用のノングルー仕様と、ガラス直貼り用接着剤付き仕様に対応"
+              ],
+              "descriptionKo": [
+                  "광학급 반투명 PET 원단으로 빛을 균일하게 확산시켜 조명 켜짐 시 핫스팟 없이 화사한 발광",
+                  "초고해상도 피그먼트 인쇄로 블랙 깊이와 컬러 채도가 탁월하여 어두운 조명에서도 압도적 시인성",
+                  "스냅 프레임용 비점착 타입과 아크릴 라이트박스용 점착 타입 완벽 지원"
+              ],
+              "bestForZh": [
+                  "机场高铁超清灯箱、奶茶快餐连锁发光点餐单、大型购物中心奢品橱窗"
+              ],
+              "bestForJa": [
+                  "空港・駅の大型電飾サイン、飲食チェーンの光るメニューボード、商業施設のブランド看板"
+              ],
+              "bestForKo": [
+                  "공항 및 지하철 와이드컬러 조명 광고, 프랜차이즈 카페 조명 메뉴판, 백화점 럭셔리 라이트박스"
+              ]
+          },
+      ]
   }
 ];
 

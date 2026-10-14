@@ -656,7 +656,7 @@ export function MaterialFlashcard({
                 className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white via-white/85 to-transparent flex items-end justify-center pb-1.5 cursor-pointer z-10 select-none"
               >
                 <span className="text-[11px] font-semibold text-brand-primary bg-white/95 backdrop-blur-xs px-2.5 py-0.5 rounded-full shadow-2xs border border-brand-primary/20 flex items-center gap-1 hover:bg-brand-soft transition-colors">
-                  {locale === "vi" ? "Cuộn xem tiếp" : "Scroll for more"}
+                  {pickLocale(locale, "Cuộn xem tiếp", "Scroll for more", "向下滚动查看更多", "スクロールして続きを見る", "아래로 스크롤하여 더보기")}
                   <ChevronDown size={12} className="animate-bounce" />
                 </span>
               </div>
@@ -798,6 +798,7 @@ export function MaterialFlashcard({
         materialName={name}
         sizeLabel={selectedSizeItem?.label}
         sizeDims={selectedSizeItem?.dims}
+        locale={locale}
       />
     </div>
   );

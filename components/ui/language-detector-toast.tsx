@@ -106,19 +106,15 @@ export function LanguageDetectorToast() {
     // Check if user has already made a decision or dismissed
     const hasDecision = document.cookie.includes(`${COOKIE_NAME}=`) || localStorage.getItem(COOKIE_NAME);
     if (hasDecision) {
-      console.log(`[LanguageDetectorToast] Đã có lựa chọn ghi nhớ trước đó. Đã bỏ qua toast.`);
       return;
     }
 
     // Delay slightly so hero loads smoothly first
     const timer = setTimeout(() => {
       const detected = detectUserTargetLocale();
-      console.log(`[LanguageDetectorToast] Ngôn ngữ hệ thống phát hiện: "${detected}", Ngôn ngữ trang hiện tại: "${currentLocale}"`);
       if (detected && detected !== currentLocale) {
         setTargetLocale(detected);
         setVisible(true);
-      } else {
-        console.log(`[LanguageDetectorToast] Ngôn ngữ hệ thống trùng với ngôn ngữ trang ("${currentLocale}") -> Không cần hiện đề xuất.`);
       }
     }, 1000);
 

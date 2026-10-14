@@ -279,7 +279,7 @@
       "testimonials": "고객 후기",
       "faq": "자주 묻는 질문"
     },
-    "copyright": "© {year} Viet Dragon. All rights reserved.",
+    "copyright": "© {year} Viet Dragon. 모든 권리 보유.",
     "premium": "프리미엄 인쇄 서비스"
   },
   "productsPage": {
@@ -370,5 +370,60 @@
     "allPosts": "전체 글",
     "viewAll": "모두 보기",
     "getQuote": "견적 요청"
+  },
+  "subgroupShapes": {
+    "breadcrumbHome": "홈",
+    "breadcrumbProducts": "제품 목록",
+    "shapesEyebrow": "제품 형태 및 규격",
+    "shapesAvailable": "제작 규격 목록",
+    "shapesSelectFor": "{title} 제작 형태 선택",
+    "shapesCount": "가지 형태",
+    "viewMaterialsAndPrice": "소재 및 견적 보기",
+    "fastQuoteBtn": "빠른 견적 문의",
+    "freeConsultation": "무료 상담",
+    "needCustomQuoteFor": "{title} 맞춤 인쇄 견적이 필요하신가요?",
+    "getQuoteNow": "지금 견적 받기",
+    "allShapesOf": "{title}의 모든 형태 보기"
+  },
+  "consultModal": {
+    "title": "이 제품에 대해 상세 상담 받기",
+    "phoneLabel": "연락처 (전화번호)",
+    "phonePlaceholder": "예: 0912 345 678",
+    "submitBtn": "Zalo로 상담 받기",
+    "submittingBtn": "정보 전송 중...",
+    "privacyNote": "입력하신 정보는 안전하게 보호되며, Viet Dragon 전문 상담원의 견적 안내 및 기술 지원 목적으로만 사용됩니다.",
+    "successTitle": "요청이 성공적으로 접수되었습니다!",
+    "successDesc": "정보가 성공적으로 접수되었으며, 1:1 상담을 위해 Zalo로 이동 중입니다...",
+    "errorRequired": "전화번호를 입력해 주세요.",
+    "errorInvalid": "전화번호 형식이 올바르지 않습니다 (예: 0901234567).",
+    "errorGeneric": "전송에 실패했습니다. 다시 시도해 주세요.",
+    "scrollForMore": "아래로 스크롤하여 더보기"
+  },
+  "quoteModal": {
+    "eyebrow": "빠른 상담 및 견적 안내",
+    "title": "무료 맞춤 견적 요청하기",
+    "subtitle": "지금 문의하시면 30분 이내에 맞춤 견적 및 상세 상담을 받아보실 수 있습니다.",
+    "hotlineTitle": "24시간 핫라인 상담",
+    "hotline2": "핫라인 2:",
+    "hotlineAction": "클릭하여 바로 통화",
+    "hotlineSub": "즉시 견적 및 맞춤 상담",
+    "zaloTitle": "Zalo 실시간 상담",
+    "zaloAction": "메시지 상담",
+    "zaloSub": "5분 이내 신속 응답",
+    "orDivider": "또는 전화번호를 남겨주세요",
+    "phoneLabel": "연락처 (전화번호)",
+    "phonePlaceholder": "예: 0901 448 377",
+    "noteLabel": "제작 상품 / 인쇄 사양 (선택)",
+    "notePlaceholder": "예: 명함 500장, 크라프트 쇼핑백, 선물 상자...",
+    "submit": "견적 요청 제출하기",
+    "submitting": "요청 전송 중...",
+    "trust1": "30분 이내 빠른 견적",
+    "trust2": "무료 디자인 및 샘플 인쇄",
+    "trust3": "안전한 직배송 서비스",
+    "successTitle": "견적 요청이 접수되었습니다!",
+    "successDesc": "Viet Dragon 전문 상담원이 30분 이내에 남겨주신 연락처로 안내해 드리겠습니다.",
+    "openZaloNow": "Zalo로 바로 문의하기",
+    "close": "닫기",
+    "phoneError": "올바른 전화번호를 입력해 주세요."
   }
 }

@@ -55,8 +55,14 @@
   },
   "shopBanner": {
     "banners": [
-      { "eyebrow": "Best seller", "title": "Product Catalogues & Brochures" },
-      { "eyebrow": "Best seller", "title": "Premium Paper Bags" }
+      {
+        "eyebrow": "Best seller",
+        "title": "Product Catalogues & Brochures"
+      },
+      {
+        "eyebrow": "Best seller",
+        "title": "Premium Paper Bags"
+      }
     ],
     "cta": "View now"
   },
@@ -82,10 +88,22 @@
     "title": "Four bundled services, completely free.",
     "subtitle": "Four services bundled with every order, at no extra cost.",
     "items": [
-      { "title": "Consultation", "desc": "A dedicated team of consultants, guiding you from concept to the right materials for the job." },
-      { "title": "Design", "desc": "Professional design on request, with unlimited revisions until you're happy with the result." },
-      { "title": "Sample Print", "desc": "Free sample printing before you commit to a large order — see the real product before deciding." },
-      { "title": "Delivery", "desc": "Fast, free local delivery across Ho Chi Minh City, Dong Nai, Vung Tau and Binh Duong." }
+      {
+        "title": "Consultation",
+        "desc": "A dedicated team of consultants, guiding you from concept to the right materials for the job."
+      },
+      {
+        "title": "Design",
+        "desc": "Professional design on request, with unlimited revisions until you're happy with the result."
+      },
+      {
+        "title": "Sample Print",
+        "desc": "Free sample printing before you commit to a large order — see the real product before deciding."
+      },
+      {
+        "title": "Delivery",
+        "desc": "Fast, free local delivery across Ho Chi Minh City, Dong Nai, Vung Tau and Binh Duong."
+      }
     ],
     "cta": "Get a quote"
   },
@@ -108,12 +126,30 @@
     "titleHighlight": "every detail.",
     "viewAll": "All products",
     "items": [
-      { "label": "Business Cards", "cat": "Marketing" },
-      { "label": "Packaging", "cat": "Packaging" },
-      { "label": "Lucky Money Envelope", "cat": "Tet Publications" },
-      { "label": "Catalogue", "cat": "Marketing" },
-      { "label": "Restaurant Menu", "cat": "Office" },
-      { "label": "Invitation Cards", "cat": "Marketing" }
+      {
+        "label": "Business Cards",
+        "cat": "Marketing"
+      },
+      {
+        "label": "Packaging",
+        "cat": "Packaging"
+      },
+      {
+        "label": "Lucky Money Envelope",
+        "cat": "Tet Publications"
+      },
+      {
+        "label": "Catalogue",
+        "cat": "Marketing"
+      },
+      {
+        "label": "Restaurant Menu",
+        "cat": "Office"
+      },
+      {
+        "label": "Invitation Cards",
+        "cat": "Marketing"
+      }
     ]
   },
   "testimonials": {
@@ -186,9 +222,18 @@
     "subtitle": "From idea to finished product — three simple steps.",
     "cta": "Get Started",
     "steps": [
-      { "title": "Consultation & Quote", "desc": "Tell us what you need and get a transparent quote within 30 minutes." },
-      { "title": "Design & Approval", "desc": "Our design team builds a mockup and a sample print before mass production." },
-      { "title": "Printing & Delivery", "desc": "Fast production, delivered across Ho Chi Minh City, Dong Nai, Vung Tau & Binh Duong." }
+      {
+        "title": "Consultation & Quote",
+        "desc": "Tell us what you need and get a transparent quote within 30 minutes."
+      },
+      {
+        "title": "Design & Approval",
+        "desc": "Our design team builds a mockup and a sample print before mass production."
+      },
+      {
+        "title": "Printing & Delivery",
+        "desc": "Fast production, delivered across Ho Chi Minh City, Dong Nai, Vung Tau & Binh Duong."
+      }
     ]
   },
   "blogPreview": {
@@ -325,5 +370,60 @@
     "allPosts": "All Posts",
     "viewAll": "View all",
     "getQuote": "Get a Quote"
+  },
+  "subgroupShapes": {
+    "breadcrumbHome": "Home",
+    "breadcrumbProducts": "Products",
+    "shapesEyebrow": "Product Formats & Shapes",
+    "shapesAvailable": "Available Shapes",
+    "shapesSelectFor": "Select a Shape for {title}",
+    "shapesCount": "shapes",
+    "viewMaterialsAndPrice": "View Materials & Price",
+    "fastQuoteBtn": "Get a Fast Quote",
+    "freeConsultation": "Free Consultation",
+    "needCustomQuoteFor": "Need a custom quote for {title}?",
+    "getQuoteNow": "Get a Quote Now",
+    "allShapesOf": "All shapes of {title}"
+  },
+  "consultModal": {
+    "title": "Request detailed consultation on this product",
+    "phoneLabel": "Contact phone number",
+    "phonePlaceholder": "e.g. 0912 345 678",
+    "submitBtn": "Consult via Zalo",
+    "submittingBtn": "Sending information...",
+    "privacyNote": "Your information is secure and only used by Viet Dragon specialists for quotes and technical assistance.",
+    "successTitle": "Request sent successfully!",
+    "successDesc": "We have received your request and are redirecting you to Zalo for direct consultation...",
+    "errorRequired": "Please enter your phone number.",
+    "errorInvalid": "Invalid phone number format (e.g. 0901234567).",
+    "errorGeneric": "Failed to send request. Please try again.",
+    "scrollForMore": "Scroll for more"
+  },
+  "quoteModal": {
+    "eyebrow": "Quick Consultation & Quote",
+    "title": "Get a Free Instant Quote",
+    "subtitle": "Contact us now for expert advice & detailed pricing within 30 minutes.",
+    "hotlineTitle": "Call Hotline 24/7",
+    "hotline2": "Hotline 2:",
+    "hotlineAction": "Click to call now",
+    "hotlineSub": "Instant consultation & quote",
+    "zaloTitle": "Chat on Zalo",
+    "zaloAction": "Chat on Zalo",
+    "zaloSub": "Replies within 5 minutes",
+    "orDivider": "Or leave your phone number",
+    "phoneLabel": "Your phone number",
+    "phonePlaceholder": "E.g. 0901 448 377",
+    "noteLabel": "Product / printing specifications",
+    "notePlaceholder": "E.g. 500 business cards C300, kraft paper bags, gift boxes...",
+    "submit": "Submit Quote Request",
+    "submitting": "Submitting request...",
+    "trust1": "Quote in 30 minutes",
+    "trust2": "Free design & sample print",
+    "trust3": "Doorstep delivery",
+    "successTitle": "Request Received Successfully!",
+    "successDesc": "Viet Dragon specialist will contact you within 30 minutes via this phone number.",
+    "openZaloNow": "Chat via Zalo now",
+    "close": "Close",
+    "phoneError": "Please enter a valid phone number."
   }
 }

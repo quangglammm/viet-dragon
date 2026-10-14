@@ -76,6 +76,9 @@ export interface ProductOption {
   unitVi?: string;
   /** Display unit label in English (e.g. "Boxes", "Books", "Pieces") */
   unitEn?: string;
+  unitZh?: string;
+  unitJa?: string;
+  unitKo?: string;
 }
 
 /** A row of option flashcards (e.g. the paper-stock choices for a product). */
@@ -188,50 +191,59 @@ export function isFastPrint(id: string): boolean {
 }
 
 export function getStartingPrice(id: string, locale: string): string {
-  const isVi = locale === "vi";
-  const prices: Record<string, { vi: string; en: string }> = {
+  const prices: Record<string, { vi: string; en: string; zh: string; ja: string; ko: string }> = {
     // Legacy product keys
-    card: { vi: "Chỉ từ 200.000đ/Hộp", en: "From 200,000đ/Box" },
-    folder: { vi: "Chỉ từ 8.000đ/Cái", en: "From 8,000đ/Pcs" },
-    catalogue: { vi: "Chỉ từ 25.000đ/Cuốn", en: "From 25,000đ/Book" },
-    letterhead: { vi: "Chỉ từ 180.000đ/Ram", en: "From 180,000đ/Ream" },
-    envelope: { vi: "Chỉ từ 150.000đ/Hộp", en: "From 150,000đ/Box" },
-    "paper-bag": { vi: "Chỉ từ 12.000đ/Túi", en: "From 12,000đ/Bag" },
-    box: { vi: "Chỉ từ 15.000đ/Hộp", en: "From 15,000đ/Box" },
-    "paper-box": { vi: "Chỉ từ 15.000đ/Hộp", en: "From 15,000đ/Box" },
-    decal: { vi: "Chỉ từ 500đ/Tem", en: "From 500đ/Stamp" },
-    "li-xi": { vi: "Chỉ từ 1.500đ/Cái", en: "From 1,500đ/Pcs" },
-    photobook: { vi: "Chỉ từ 280.000đ/Cuốn", en: "From 280,000đ/Book" },
-    "thiep-ca-nhan": { vi: "Chỉ từ 5.000đ/Bộ", en: "From 5,000đ/Set" },
-    "tranh-canvas": { vi: "Chỉ từ 150.000đ/Bức", en: "From 150,000đ/Pcs" },
-    "ky-yeu": { vi: "Chỉ từ 120.000đ/Cuốn", en: "From 120,000đ/Book" },
-    "in-nhanh-danh-thiep": { vi: "Chỉ từ 120.000đ/Hộp", en: "From 120,000đ/Box" },
-    "in-nhanh-to-roi": { vi: "Chỉ từ 850đ/Tờ", en: "From 850đ/Sheet" },
-    "in-nhanh-voucher": { vi: "Chỉ từ 1.100đ/Tờ", en: "From 1,100đ/Sheet" },
-    "in-nhanh-tem-nhan": { vi: "Chỉ từ 400đ/Tem", en: "From 400đ/Stamp" },
+    card: { vi: "Chỉ từ 200.000đ/Hộp", en: "From 200,000đ/Box", zh: "起价 200,000đ/盒", ja: "200,000đ〜/箱", ko: "200,000đ부터/박스" },
+    folder: { vi: "Chỉ từ 8.000đ/Cái", en: "From 8,000đ/Pcs", zh: "起价 8,000đ/个", ja: "8,000đ〜/個", ko: "8,000đ부터/개" },
+    catalogue: { vi: "Chỉ từ 25.000đ/Cuốn", en: "From 25,000đ/Book", zh: "起价 25,000đ/本", ja: "25,000đ〜/冊", ko: "25,000đ부터/권" },
+    letterhead: { vi: "Chỉ từ 180.000đ/Ram", en: "From 180,000đ/Ream", zh: "起价 180,000đ/令", ja: "180,000đ〜/連", ko: "180,000đ부터/련" },
+    envelope: { vi: "Chỉ từ 150.000đ/Hộp", en: "From 150,000đ/Box", zh: "起价 150,000đ/盒", ja: "150,000đ〜/箱", ko: "150,000đ부터/박스" },
+    "paper-bag": { vi: "Chỉ từ 12.000đ/Túi", en: "From 12,000đ/Bag", zh: "起价 12,000đ/袋", ja: "12,000đ〜/袋", ko: "12,000đ부터/백" },
+    box: { vi: "Chỉ từ 15.000đ/Hộp", en: "From 15,000đ/Box", zh: "起价 15,000đ/盒", ja: "15,000đ〜/箱", ko: "15,000đ부터/박스" },
+    "paper-box": { vi: "Chỉ từ 15.000đ/Hộp", en: "From 15,000đ/Box", zh: "起价 15,000đ/盒", ja: "15,000đ〜/箱", ko: "15,000đ부터/박스" },
+    decal: { vi: "Chỉ từ 500đ/Tem", en: "From 500đ/Stamp", zh: "起价 500đ/贴", ja: "500đ〜/枚", ko: "500đ부터/매" },
+    "li-xi": { vi: "Chỉ từ 1.500đ/Cái", en: "From 1,500đ/Pcs", zh: "起价 1,500đ/个", ja: "1,500đ〜/個", ko: "1,500đ부터/개" },
+    photobook: { vi: "Chỉ từ 280.000đ/Cuốn", en: "From 280,000đ/Book", zh: "起价 280,000đ/本", ja: "280,000đ〜/冊", ko: "280,000đ부터/권" },
+    "thiep-ca-nhan": { vi: "Chỉ từ 5.000đ/Bộ", en: "From 5,000đ/Set", zh: "起价 5,000đ/套", ja: "5,000đ〜/セット", ko: "5,000đ부터/세트" },
+    "tranh-canvas": { vi: "Chỉ từ 150.000đ/Bức", en: "From 150,000đ/Pcs", zh: "起价 150,000đ/幅", ja: "150,000đ〜/点", ko: "150,000đ부터/점" },
+    "ky-yeu": { vi: "Chỉ từ 120.000đ/Cuốn", en: "From 120,000đ/Book", zh: "起价 120,000đ/本", ja: "120,000đ〜/冊", ko: "120,000đ부터/권" },
+    "in-nhanh-danh-thiep": { vi: "Chỉ từ 120.000đ/Hộp", en: "From 120,000đ/Box", zh: "起价 120,000đ/盒", ja: "120,000đ〜/箱", ko: "120,000đ부터/박스" },
+    "in-nhanh-to-roi": { vi: "Chỉ từ 850đ/Tờ", en: "From 850đ/Sheet", zh: "起价 850đ/张", ja: "850đ〜/枚", ko: "850đ부터/매" },
+    "in-nhanh-voucher": { vi: "Chỉ từ 1.100đ/Tờ", en: "From 1,100đ/Sheet", zh: "起价 1,100đ/张", ja: "1,100đ〜/枚", ko: "1,100đ부터/매" },
+    "in-nhanh-tem-nhan": { vi: "Chỉ từ 400đ/Tem", en: "From 400đ/Stamp", zh: "起价 400đ/贴", ja: "400đ〜/枚", ko: "400đ부터/매" },
 
     // Subgroup catalog keys
-    "danh-thiep": { vi: "Chỉ từ 200.000đ/Hộp", en: "From 200,000đ/Box" },
-    "poster-bangron-standee": { vi: "Chỉ từ 65.000đ/M2", en: "From 65,000đ/m²" },
-    "to-roi": { vi: "Chỉ từ 850đ/Tờ", en: "From 850đ/Sheet" },
-    "to-gap": { vi: "Chỉ từ 1.200đ/Tờ", en: "From 1,200đ/Sheet" },
-    "bao-thu": { vi: "Chỉ từ 150.000đ/Hộp", en: "From 150,000đ/Box" },
-    "giay-tieu-de": { vi: "Chỉ từ 180.000đ/Ram", en: "From 180,000đ/Ream" },
-    "nhan-dan": { vi: "Chỉ từ 500đ/Tem", en: "From 500đ/Stamp" },
-    "tui-giay": { vi: "Chỉ từ 12.000đ/Túi", en: "From 12,000đ/Bag" },
-    "hop-giay": { vi: "Chỉ từ 15.000đ/Hộp", en: "From 15,000đ/Box" },
-    "mac-san-pham": { vi: "Chỉ từ 350đ/Cái", en: "From 350đ/Pcs" },
-    "lich-tet": { vi: "Chỉ từ 45.000đ/Cuốn", en: "From 45,000đ/Book" },
-    "bao-li-xi": { vi: "Chỉ từ 1.500đ/Cái", en: "From 1,500đ/Pcs" },
-    "thiep-tet": { vi: "Chỉ từ 5.000đ/Bộ", en: "From 5,000đ/Set" },
-    catalogues: { vi: "Chỉ từ 25.000đ/Cuốn", en: "From 25,000đ/Book" },
-    "bia-dung-ho-so": { vi: "Chỉ từ 8.000đ/Cái", en: "From 8,000đ/Pcs" },
-    "giay-ghi-chu": { vi: "Chỉ từ 15.000đ/Cuốn", en: "From 15,000đ/Book" },
-    "ve-tickets": { vi: "Chỉ từ 400đ/Vé", en: "From 400đ/Ticket" },
-    vouchers: { vi: "Chỉ từ 600đ/Phiếu", en: "From 600đ/Voucher" },
-    "ao-thun": { vi: "Chỉ từ 85.000đ/Áo", en: "From 85,000đ/Shirt" },
+    "danh-thiep": { vi: "Chỉ từ 200.000đ/Hộp", en: "From 200,000đ/Box", zh: "起价 200,000đ/盒", ja: "200,000đ〜/箱", ko: "200,000đ부터/박스" },
+    "poster-bangron-standee": { vi: "Chỉ từ 65.000đ/M2", en: "From 65,000đ/m²", zh: "起价 65,000đ/平方米", ja: "65,000đ〜/m²", ko: "65,000đ부터/m²" },
+    "to-roi": { vi: "Chỉ từ 850đ/Tờ", en: "From 850đ/Sheet", zh: "起价 850đ/张", ja: "850đ〜/枚", ko: "850đ부터/매" },
+    "to-gap": { vi: "Chỉ từ 1.200đ/Tờ", en: "From 1,200đ/Sheet", zh: "起价 1,200đ/张", ja: "1,200đ〜/枚", ko: "1,200đ부터/매" },
+    "bao-thu": { vi: "Chỉ từ 150.000đ/Hộp", en: "From 150,000đ/Box", zh: "起价 150,000đ/盒", ja: "150,000đ〜/箱", ko: "150,000đ부터/박스" },
+    "giay-tieu-de": { vi: "Chỉ từ 180.000đ/Ram", en: "From 180,000đ/Ream", zh: "起价 180,000đ/令", ja: "180,000đ〜/連", ko: "180,000đ부터/련" },
+    "nhan-dan": { vi: "Chỉ từ 500đ/Tem", en: "From 500đ/Stamp", zh: "起价 500đ/贴", ja: "500đ〜/枚", ko: "500đ부터/매" },
+    "tui-giay": { vi: "Chỉ từ 12.000đ/Túi", en: "From 12,000đ/Bag", zh: "起价 12,000đ/袋", ja: "12,000đ〜/袋", ko: "12,000đ부터/백" },
+    "hop-giay": { vi: "Chỉ từ 15.000đ/Hộp", en: "From 15,000đ/Box", zh: "起价 15,000đ/盒", ja: "15,000đ〜/箱", ko: "15,000đ부터/박스" },
+    "mac-san-pham": { vi: "Chỉ từ 350đ/Cái", en: "From 350đ/Pcs", zh: "起价 350đ/个", ja: "350đ〜/個", ko: "350đ부터/개" },
+    "lich-tet": { vi: "Chỉ từ 45.000đ/Cuốn", en: "From 45,000đ/Book", zh: "起价 45,000đ/本", ja: "45,000đ〜/冊", ko: "45,000đ부터/권" },
+    "bao-li-xi": { vi: "Chỉ từ 1.500đ/Cái", en: "From 1,500đ/Pcs", zh: "起价 1,500đ/个", ja: "1,500đ〜/個", ko: "1,500đ부터/개" },
+    "thiep-tet": { vi: "Chỉ từ 5.000đ/Bộ", en: "From 5,000đ/Set", zh: "起价 5,000đ/套", ja: "5,000đ〜/セット", ko: "5,000đ부터/세트" },
+    catalogues: { vi: "Chỉ từ 25.000đ/Cuốn", en: "From 25,000đ/Book", zh: "起价 25,000đ/本", ja: "25,000đ〜/冊", ko: "25,000đ부터/권" },
+    "bia-dung-ho-so": { vi: "Chỉ từ 8.000đ/Cái", en: "From 8,000đ/Pcs", zh: "起价 8,000đ/个", ja: "8,000đ〜/個", ko: "8,000đ부터/개" },
+    "giay-ghi-chu": { vi: "Chỉ từ 15.000đ/Cuốn", en: "From 15,000đ/Book", zh: "起价 15,000đ/本", ja: "15,000đ〜/冊", ko: "15,000đ부터/권" },
+    "ve-tickets": { vi: "Chỉ từ 400đ/Vé", en: "From 400đ/Ticket", zh: "起价 400đ/张", ja: "400đ〜/枚", ko: "400đ부터/매" },
+    vouchers: { vi: "Chỉ từ 600đ/Phiếu", en: "From 600đ/Voucher", zh: "起价 600đ/张", ja: "600đ〜/枚", ko: "600đ부터/매" },
+    "ao-thun": { vi: "Chỉ từ 85.000đ/Áo", en: "From 85,000đ/Shirt", zh: "起价 85,000đ/件", ja: "85,000đ〜/枚", ko: "85,000đ부터/티셔츠" },
   };
   const match = prices[id];
-  if (match) return isVi ? match.vi : match.en;
-  return isVi ? "Nhận báo giá trong 30 phút" : "Get a quote in 30 mins";
+  if (match) {
+    if (locale === "vi") return match.vi;
+    if (locale === "zh") return match.zh;
+    if (locale === "ja") return match.ja;
+    if (locale === "ko") return match.ko;
+    return match.en;
+  }
+  if (locale === "vi") return "Nhận báo giá trong 30 phút";
+  if (locale === "zh") return "30分钟内获取报价";
+  if (locale === "ja") return "30分以内にお見積もり";
+  if (locale === "ko") return "30분 내 견적 받기";
+  return "Get a quote in 30 mins";
 }

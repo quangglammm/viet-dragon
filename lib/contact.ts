@@ -3,6 +3,9 @@
 // export const ZALO_CHAT_URL = `https://zalo.me/${ZALO_PHONE}`;
 // export const CONTACT_EMAIL = "contact@vietdragon.vn";
 export const PHONE_NUMBER = "0901448377";
+export const PHONE_NUMBER_FORMATTED = "0901 448 377";
+export const PHONE_NUMBER_2 = "0919510543";
+export const PHONE_NUMBER_2_FORMATTED = "0919 510 543";
 export const ZALO_PHONE = "0901448377"; // zalo.me phone-chat links use country code, no leading 0
 export const ZALO_CHAT_URL = `https://zalo.me/${ZALO_PHONE}`;
 export const CONTACT_EMAIL = "contact@vietdragon.vn";

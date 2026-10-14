@@ -46,7 +46,14 @@ export async function generateMetadata({
       subgroup.titleJa,
       subgroup.titleKo
     );
-    const desc = pickLocale(locale, subgroup.descriptionVi, subgroup.descriptionEn);
+    const desc = pickLocale(
+      locale,
+      subgroup.descriptionVi,
+      subgroup.descriptionEn,
+      subgroup.descriptionZh ?? ITEM_DESCS[subgroup.id]?.zh,
+      subgroup.descriptionJa ?? ITEM_DESCS[subgroup.id]?.ja,
+      subgroup.descriptionKo ?? ITEM_DESCS[subgroup.id]?.ko
+    );
     return {
       title: `${title} | Viet Dragon`,
       description: desc,
@@ -252,6 +259,7 @@ export default async function ProductDetailPage({
             </div>
             <Link
               href="/#cta"
+              data-quote-product={name}
               className="shrink-0 inline-flex items-center gap-2 px-7 py-3.5 bg-brand-primary text-white font-bold uppercase tracking-wide btn-wipe whitespace-nowrap text-sm"
             >
               {t("ctaButton")} <ArrowRight size={16} />

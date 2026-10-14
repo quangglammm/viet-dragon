@@ -279,7 +279,7 @@
       "testimonials": "お客様の声",
       "faq": "よくある質問"
     },
-    "copyright": "© {year} Viet Dragon. All rights reserved.",
+    "copyright": "© {year} Viet Dragon. 無断転載を禁じます。",
     "premium": "プレミアム印刷サービス"
   },
   "productsPage": {
@@ -370,5 +370,60 @@
     "allPosts": "全記事一覧",
     "viewAll": "すべて見る",
     "getQuote": "お見積り依頼"
+  },
+  "subgroupShapes": {
+    "breadcrumbHome": "ホーム",
+    "breadcrumbProducts": "製品一覧",
+    "shapesEyebrow": "製品形状・仕様一覧",
+    "shapesAvailable": "仕様・規格一覧",
+    "shapesSelectFor": "{title} の形状・仕様を選択",
+    "shapesCount": "種類",
+    "viewMaterialsAndPrice": "素材と見積もりを確認",
+    "fastQuoteBtn": "スピード見積もり",
+    "freeConsultation": "無料相談",
+    "needCustomQuoteFor": "{title} の特注印刷見積もりが必要ですか？",
+    "getQuoteNow": "今すぐ見積もり依頼",
+    "allShapesOf": "{title} のすべての仕様を見る"
+  },
+  "consultModal": {
+    "title": "この製品について詳しく相談する",
+    "phoneLabel": "ご連絡先電話番号",
+    "phonePlaceholder": "例: 0912 345 678",
+    "submitBtn": "Zaloで相談する",
+    "submittingBtn": "送信中...",
+    "privacyNote": "お客様の情報は厳重に保護され、Viet Dragon の専門スタッフによるお見積もり・技術案内にのみ使用されます。",
+    "successTitle": "送信が完了しました！",
+    "successDesc": "情報を受け付けました。直接ご相談いただけるようZaloへ移動しています...",
+    "errorRequired": "お電話番号を入力してください。",
+    "errorInvalid": "電話番号の形式が正しくありません（例: 0901234567）。",
+    "errorGeneric": "送信に失敗しました。もう一度お試しください。",
+    "scrollForMore": "スクロールして続きを見る"
+  },
+  "quoteModal": {
+    "eyebrow": "迅速なご相談・お見積り",
+    "title": "無料でお見積りを依頼する",
+    "subtitle": "今すぐお問い合わせいただき、30分以内に詳細な見積もりをお受け取りください。",
+    "hotlineTitle": "24時間ホットライン",
+    "hotline2": "ホットライン 2:",
+    "hotlineAction": "クリックして今すぐ通話",
+    "hotlineSub": "即時ご相談・スピード見積もり",
+    "zaloTitle": "Zalo チャット相談",
+    "zaloAction": "メッセージで相談",
+    "zaloSub": "5分以内にご返信",
+    "orDivider": "またはお電話番号をご入力ください",
+    "phoneLabel": "お客様のお電話番号",
+    "phonePlaceholder": "例: 0901 448 377",
+    "noteLabel": "商品 / 印刷仕様（任意）",
+    "notePlaceholder": "例: 名刺500枚、クラフト紙袋、ギフトボックス...",
+    "submit": "お見積りリクエストを送信",
+    "submitting": "送信中...",
+    "trust1": "30分以内のスピード見積もり",
+    "trust2": "無料デザイン＆サンプル校正",
+    "trust3": "全国配送対応",
+    "successTitle": "リクエストを承りました！",
+    "successDesc": "Viet Dragon 専門スタッフより30分以内にお電話にてご連絡いたします。",
+    "openZaloNow": "Zalo で直接相談する",
+    "close": "閉じる",
+    "phoneError": "有効な電話番号を入力してください。"
   }
 }

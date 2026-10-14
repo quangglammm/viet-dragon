@@ -1,4 +1,4 @@
-import type { AnchorHTMLAttributes, ReactNode } from "react";
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
@@ -28,49 +28,75 @@ const sizeClasses = {
 // in-app pathnames only and shouldn't get a locale prefix stitched onto them.
 const EXTERNAL_HREF = /^(tel:|mailto:|https?:\/\/)/;
 
-type WipeButtonProps = {
-  href: string;
+type BaseWipeButtonProps = {
   children: ReactNode;
   tone?: keyof typeof toneClasses;
   size?: keyof typeof sizeClasses;
   arrow?: boolean;
   className?: string;
+};
+
+type WipeLinkProps = BaseWipeButtonProps & {
+  href: string;
 } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "className" | "children">;
+
+type WipeActionProps = BaseWipeButtonProps & {
+  href?: undefined;
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className" | "children">;
+
+export type WipeButtonProps = WipeLinkProps | WipeActionProps;
 
 // The diagonal two-corner hover fill (`.btn-wipe`, defined in globals.css) wrapped
 // in the standard CTA markup shape — this was duplicated with minor padding/tone
 // variations across ~10 files.
-export function WipeButton({
-  href,
-  children,
-  tone = "primary",
-  size = "md",
-  arrow = true,
-  className,
-  ...rest
-}: Readonly<WipeButtonProps>) {
+export function WipeButton(props: Readonly<WipeButtonProps>) {
+  const {
+    children,
+    tone = "primary",
+    size = "md",
+    arrow = true,
+    className,
+    ...rest
+  } = props;
+
   const classes = cn(
-    "btn-wipe inline-flex items-center justify-center gap-2 font-bold uppercase tracking-wide whitespace-nowrap text-center",
+    "btn-wipe inline-flex items-center justify-center gap-2 font-bold uppercase tracking-wide whitespace-nowrap text-center cursor-pointer",
     toneClasses[tone],
     sizeClasses[size],
     className
   );
+
   const content = (
     <>
       {children} {arrow && <span aria-hidden>→</span>}
     </>
   );
 
+  if (!("href" in rest) || !rest.href) {
+    const buttonProps = rest as ButtonHTMLAttributes<HTMLButtonElement>;
+    return (
+      <button
+        type={buttonProps.type ?? "button"}
+        className={classes}
+        {...buttonProps}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  const { href, ...anchorRest } = rest as WipeLinkProps;
+
   if (EXTERNAL_HREF.test(href)) {
     return (
-      <a href={href} className={classes} {...rest}>
+      <a href={href} className={classes} {...anchorRest}>
         {content}
       </a>
     );
   }
 
   return (
-    <Link href={href} className={classes} {...rest}>
+    <Link href={href} className={classes} {...anchorRest}>
       {content}
     </Link>
   );

@@ -307,6 +307,7 @@ export default async function CategoryPage({
             </div>
             <Link
               href="/#cta"
+              data-quote-product={name}
               className="shrink-0 inline-flex items-center gap-2 px-7 py-3.5 bg-brand-primary text-white font-bold uppercase tracking-wide btn-wipe whitespace-nowrap text-sm"
             >
               {t("ctaButton")} <ArrowRight size={16} />

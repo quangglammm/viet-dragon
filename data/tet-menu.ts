@@ -344,6 +344,17 @@ export const TET_SUBMENU_COLUMNS: {
         image: "/images/category/poster-bangron-standee.webp",
         items: [
           {
+            id: "poster-pp",
+            nameVi: "Poster chất liệu PP",
+            nameEn: "PP Material Posters",
+            nameZh: "PP材质高清海报",
+            nameJa: "PP合成紙ポスター",
+            nameKo: "PP 합성지 포스터",
+            kind: "material",
+            href: "/products/tet/poster-bangron-standee/poster-pp",
+            image: "/images/category/poster-bangron-standee.webp",
+          },
+          {
             id: "banner-hiflex",
             nameVi: "Băng rôn Hiflex",
             nameEn: "Hiflex Banners",
@@ -353,17 +364,6 @@ export const TET_SUBMENU_COLUMNS: {
             kind: "material",
             href: "/products/tet/poster-bangron-standee/bang-ron-hiflex",
             image: "/images/category/poster-bangron-standee.webp",
-          },
-          {
-            id: "poster-pp",
-            nameVi: "Poster chất liệu PP",
-            nameEn: "PP Material Posters",
-            nameZh: "PP材质高清海报",
-            nameJa: "PP合成紙ポスター",
-            nameKo: "PP 합성지 포스터",
-            kind: "material",
-            href: "/products/tet/poster-bangron-standee/poster-pp",
-            image: "/images/product/posterchatlieupp.webp",
           },
           {
             id: "hashtag-handheld",

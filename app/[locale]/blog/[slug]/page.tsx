@@ -156,7 +156,7 @@ export default async function BlogPostPage({
               className="flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group max-w-xs"
             >
               <ArrowLeft size={16} className="shrink-0 group-hover:-translate-x-1 transition-transform" />
-              <span className="line-clamp-1">{pickLocale(locale, prev.title, prev.titleEn)}</span>
+              <span className="line-clamp-1">{pickLocale(locale, prev.title, prev.titleEn, prev.titleZh, prev.titleJa, prev.titleKo)}</span>
             </Link>
           ) : (
             <Link
@@ -177,7 +177,7 @@ export default async function BlogPostPage({
               href={`/blog/${next.slug}`}
               className="flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group max-w-xs text-right"
             >
-              <span className="line-clamp-1">{pickLocale(locale, next.title, next.titleEn)}</span>
+              <span className="line-clamp-1">{pickLocale(locale, next.title, next.titleEn, next.titleZh, next.titleJa, next.titleKo)}</span>
               <ArrowRight size={16} className="shrink-0 group-hover:translate-x-1 transition-transform" />
             </Link>
           ) : (

@@ -14,7 +14,7 @@ import { MAIN_CATEGORIES, SUBGROUPS_CATALOG, getSubgroupById } from "@/data/subg
 import { MaterialFlashcard } from "@/components/ui/material-flashcard";
 import { MaterialGlossaryFab } from "@/components/ui/material-glossary-fab";
 import { AutoScrollToTarget } from "@/components/ui/auto-scroll-to-target";
-import { CATEGORY_NAMES } from "@/data/translations";
+import { CATEGORY_NAMES, SHAPE_DESCS, ITEM_DESCS } from "@/data/translations";
 import { checkPublicImageExists, sanitizeOptionImages } from "@/lib/image-check";
 import { SHAPE_ALIASES, toSlug } from "@/lib/shape-aliases";
 import { cn } from "@/lib/utils";
@@ -75,7 +75,14 @@ export async function generateMetadata({
     const shapeName = pickLocale(locale, shape.nameVi, shape.nameEn, shape.nameZh, shape.nameJa, shape.nameKo);
     return {
       title: `${shapeName} - ${subgroupTitle} | Viet Dragon`,
-      description: pickLocale(locale, shape.descriptionVi, shape.descriptionEn),
+      description: pickLocale(
+        locale,
+        shape.descriptionVi,
+        shape.descriptionEn,
+        shape.descriptionZh ?? SHAPE_DESCS[shape.id]?.zh,
+        shape.descriptionJa ?? SHAPE_DESCS[shape.id]?.ja,
+        shape.descriptionKo ?? SHAPE_DESCS[shape.id]?.ko
+      ),
     };
   }
 
@@ -101,7 +108,14 @@ export async function generateMetadata({
     const matName = pickLocale(locale, matchedMat.nameVi, matchedMat.name, matchedMat.nameZh, matchedMat.nameJa, matchedMat.nameKo);
     return {
       title: `${subgroupTitle} - ${matName} | Viet Dragon`,
-      description: pickLocale(locale, subgroup.descriptionVi, subgroup.descriptionEn),
+      description: pickLocale(
+        locale,
+        subgroup.descriptionVi,
+        subgroup.descriptionEn,
+        subgroup.descriptionZh ?? ITEM_DESCS[subgroup.id]?.zh,
+        subgroup.descriptionJa ?? ITEM_DESCS[subgroup.id]?.ja,
+        subgroup.descriptionKo ?? ITEM_DESCS[subgroup.id]?.ko
+      ),
     };
   }
 
@@ -163,8 +177,22 @@ export default async function ShapeMaterialDetailPage({
   const displayImage = isMaterialMode ? subgroup.coverImage : (shape?.image || subgroup.coverImage);
   const displayImageAlt = isMaterialMode ? subgroupTitle : shapeName;
   const pageDesc = isMaterialMode
-    ? pickLocale(locale, subgroup.descriptionVi, subgroup.descriptionEn)
-    : pickLocale(locale, shape?.descriptionVi || "", shape?.descriptionEn || "");
+    ? pickLocale(
+        locale,
+        subgroup.descriptionVi,
+        subgroup.descriptionEn,
+        subgroup.descriptionZh ?? ITEM_DESCS[subgroup.id]?.zh,
+        subgroup.descriptionJa ?? ITEM_DESCS[subgroup.id]?.ja,
+        subgroup.descriptionKo ?? ITEM_DESCS[subgroup.id]?.ko
+      )
+    : pickLocale(
+        locale,
+        shape?.descriptionVi || "",
+        shape?.descriptionEn || "",
+        shape?.descriptionZh ?? (shape?.id ? SHAPE_DESCS[shape.id]?.zh : undefined),
+        shape?.descriptionJa ?? (shape?.id ? SHAPE_DESCS[shape.id]?.ja : undefined),
+        shape?.descriptionKo ?? (shape?.id ? SHAPE_DESCS[shape.id]?.ko : undefined)
+      );
 
   const breadcrumbLast = isMaterialMode && matchedMat
     ? pickLocale(locale, matchedMat.nameVi, matchedMat.name, matchedMat.nameZh, matchedMat.nameJa, matchedMat.nameKo)
@@ -382,7 +410,14 @@ export default async function ShapeMaterialDetailPage({
             href={`/products/${subgroup.categoryId}/${subgroup.id}`}
             className="text-xs text-zinc-400 hover:text-zinc-700 transition-colors"
           >
-            {locale === "vi" ? `Xem tất cả hình thức của ${subgroupTitle}` : `All shapes of ${subgroupTitle}`}
+            {pickLocale(
+              locale,
+              `Xem tất cả hình thức của ${subgroupTitle}`,
+              `All shapes of ${subgroupTitle}`,
+              `查看 ${subgroupTitle} 的全部款式`,
+              `${subgroupTitle} のすべての仕様を見る`,
+              `${subgroupTitle}의 모든 형태 보기`
+            )}
           </Link>
 
           {nextShape ? (
