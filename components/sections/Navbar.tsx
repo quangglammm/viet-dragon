@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { Menu, X, Phone, Mail, MapPin, ChevronDown, Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles, type LucideIcon } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
@@ -20,6 +21,7 @@ import { PackagingDesktopSubmenu } from "@/components/sections/PackagingDesktopS
 import { PackagingMobileSubmenu } from "@/components/sections/PackagingMobileSubmenu";
 import { TetDesktopSubmenu } from "@/components/sections/TetDesktopSubmenu";
 import { TetMobileSubmenu } from "@/components/sections/TetMobileSubmenu";
+import { useQuoteModal } from "@/components/providers/quote-modal-provider";
 
 const LANGUAGES: { code: Locale; flag: string; label: string; short: string }[] = [
   { code: "vi", flag: "🇻🇳", label: "Tiếng Việt", short: "VN" },
@@ -152,6 +154,7 @@ export default function Navbar() {
   const catTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const t = useTranslations("nav");
   const tContact = useTranslations("contact");
+  const { openQuote } = useQuoteModal();
   const locale = useLocale() as Locale;
   const pathname = usePathname();
   const router = useRouter();
@@ -262,12 +265,22 @@ export default function Navbar() {
           <Link
             href="/"
             className={cn(
-              "text-xl font-black tracking-tight transition-colors duration-300",
+              "flex items-center gap-2.5 transition-colors duration-300 group",
               transparent ? "text-white" : "text-zinc-900"
             )}
             onClick={handleBrandClick}
           >
-            VIET <span className={transparent ? "text-white/80" : "text-brand-primary"}>DRAGON</span>
+            <Image
+              src="/images/partner/logoweb.webp"
+              alt="Viet Dragon - Hơn cả một đối tác"
+              width={44}
+              height={50}
+              className="h-10 sm:h-11 w-auto object-contain shrink-0 group-hover:scale-105 transition-transform"
+              priority
+            />
+            <span className="text-xl font-black tracking-tight">
+              VIET <span className={transparent ? "text-white/80" : "text-brand-primary"}>DRAGON</span>
+            </span>
           </Link>
 
           {/* Desktop nav */}
@@ -335,16 +348,17 @@ export default function Navbar() {
           <div className="flex items-center gap-2 sm:gap-3">
 
             <WipeButton
-              href="/#cta"
               tone="primary"
               size="sm"
               arrow={false}
+              onClick={() => openQuote()}
               className={cn(
-                "hidden lg:inline-flex transition-colors duration-300",
+                "hidden lg:inline-flex items-center gap-1.5 transition-colors duration-300",
                 transparent && "bg-white text-brand-primary"
               )}
             >
-              {t("quote")}
+              <Phone size={13} className="shrink-0" />
+              <span>{t("quote")}</span>
             </WipeButton>
 
             {/* Hamburger — mobile & tablet */}
@@ -370,6 +384,20 @@ export default function Navbar() {
           menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}
       >
+        <div className="px-6 py-3 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/60">
+          <Link href="/" onClick={closeAllMenu} className="flex items-center gap-2.5">
+            <Image
+              src="/images/partner/logoweb.webp"
+              alt="Viet Dragon - Hơn cả một đối tác"
+              width={40}
+              height={45}
+              className="h-10 w-auto object-contain shrink-0"
+            />
+            <span className="text-lg font-black tracking-tight text-zinc-900">
+              VIET <span className="text-brand-primary">DRAGON</span>
+            </span>
+          </Link>
+        </div>
         <nav className="flex flex-col px-6 py-6 gap-2 flex-1 overflow-y-auto">
           {MAIN_CATEGORIES.map((cat) => {
             const Icon = iconMap[cat.icon] ?? Briefcase;
@@ -443,14 +471,18 @@ export default function Navbar() {
 
 
           <WipeButton
-            href="/#cta"
             tone="primary"
             size="lg"
             arrow={false}
-            className="w-full"
-            onClick={() => setMenuOpen(false)}
+            className="w-full flex items-center justify-center gap-2"
+            onClick={() => {
+              setMenuOpen(false);
+              openQuote();
+            }}
           >
-            {t("quote")}
+            <Phone size={15} className="shrink-0" />
+            <span>{t("quote")}</span>
+            <span className="opacity-85 text-xs font-normal tracking-normal">({tContact("phone1")})</span>
           </WipeButton>
           <p className="flex items-center justify-center gap-1.5 text-center text-zinc-400 text-xs mt-4">
             <Phone size={13} /> {tContact("phone1")} · <Mail size={13} /> {tContact("email")}

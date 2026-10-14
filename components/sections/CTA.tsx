@@ -6,9 +6,12 @@ import { useTranslations } from "next-intl";
 import { useSectionInView } from "@/hooks/use-section-in-view";
 import { IconBadge } from "@/components/ui/icon-badge";
 import { WipeButton } from "@/components/ui/wipe-button";
+import { useQuoteModal } from "@/components/providers/quote-modal-provider";
+import { PHONE_NUMBER_FORMATTED } from "@/lib/contact";
 
 export default function CTA() {
   const { ref, inView } = useSectionInView();
+  const { openQuote } = useQuoteModal();
   const t = useTranslations("cta");
   const tContact = useTranslations("contact");
 
@@ -55,8 +58,15 @@ export default function CTA() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <WipeButton href="tel:0901448377" tone="light" size="md" className="text-brand-primary shadow-xl">
-            {t("getQuote")}
+          <WipeButton
+            onClick={() => openQuote()}
+            tone="light"
+            size="md"
+            className="text-brand-primary shadow-xl inline-flex items-center gap-2"
+          >
+            <Phone size={14} className="shrink-0" />
+            <span>{t("getQuote")}</span>
+            <span className="opacity-85 text-xs font-normal">({PHONE_NUMBER_FORMATTED})</span>
           </WipeButton>
           <WipeButton href="mailto:contact@vietdragon.vn" tone="outline" size="md" arrow={false}>
             {tContact("email")}

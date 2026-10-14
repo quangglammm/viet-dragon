@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -77,9 +78,23 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-8 md:gap-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
-            <p className="text-2xl font-black tracking-tight mb-4">
-              VIET <span className="text-brand-primary">DRAGON</span>
-            </p>
+            <div className="flex items-center gap-3 mb-4">
+              <Image
+                src="/images/partner/logoweb.webp"
+                alt="Viet Dragon - Hơn cả một đối tác"
+                width={56}
+                height={63}
+                className="h-14 sm:h-16 w-auto object-contain shrink-0"
+              />
+              <div>
+                <p className="text-2xl font-black tracking-tight leading-none">
+                  VIET <span className="text-brand-primary">DRAGON</span>
+                </p>
+                <p className="text-[11px] font-semibold text-brand-dark/50 tracking-wider uppercase mt-1">
+                  Hơn cả một đối tác
+                </p>
+              </div>
+            </div>
             <p className="text-brand-dark/60 text-sm leading-relaxed mb-5">
               {t("tagline")}
             </p>
