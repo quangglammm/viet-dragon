@@ -5,6 +5,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import "../globals.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
+import { QuoteModalProvider } from "@/components/providers/quote-modal-provider";
 import { FloatingContact } from "@/components/ui/floating-contact";
 import { LanguageDetectorToast } from "@/components/ui/language-detector-toast";
 import { routing } from "@/i18n/routing";
@@ -90,9 +91,11 @@ export default async function RootLayout({
     >
       <body>
         <NextIntlClientProvider>
-          <SmoothScroll>{children}</SmoothScroll>
-          <FloatingContact />
-          <LanguageDetectorToast />
+          <QuoteModalProvider>
+            <SmoothScroll>{children}</SmoothScroll>
+            <FloatingContact />
+            <LanguageDetectorToast />
+          </QuoteModalProvider>
         </NextIntlClientProvider>
       </body>
     </html>
