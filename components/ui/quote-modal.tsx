@@ -165,11 +165,11 @@ export function QuoteModal({
                 <div className="mb-4 sm:mb-6">
                   <div className="flex items-center gap-2 mb-2">
                     <Image
-                      src="/images/partner/logoweb.webp"
-                      alt="Viet Dragon - Hơn cả một đối tác"
+                      src="/logo-icon.webp"
+                      alt="Viet Dragon - In Ấn Chuyên Nghiệp"
                       width={36}
-                      height={40}
-                      className="h-9 w-auto object-contain shrink-0"
+                      height={28}
+                      className="h-8 w-auto object-contain shrink-0"
                     />
                     <div className="inline-flex items-center gap-1.5 eyebrow-pill px-3 py-1">
                       <Sparkles size={12} className="text-brand-primary" />

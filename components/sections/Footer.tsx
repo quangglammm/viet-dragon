@@ -80,11 +80,11 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
               <Image
-                src="/images/partner/logoweb.webp"
-                alt="Viet Dragon - Hơn cả một đối tác"
+                src="/logo-icon.webp"
+                alt="Viet Dragon - In Ấn Chuyên Nghiệp"
                 width={56}
-                height={63}
-                className="h-14 sm:h-16 w-auto object-contain shrink-0"
+                height={44}
+                className="h-12 sm:h-14 w-auto object-contain shrink-0"
               />
               <div>
                 <p className="text-2xl font-black tracking-tight leading-none">
