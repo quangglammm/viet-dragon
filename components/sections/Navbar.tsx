@@ -271,11 +271,11 @@ export default function Navbar() {
             onClick={handleBrandClick}
           >
             <Image
-              src="/images/partner/logoweb.webp"
-              alt="Viet Dragon - Hơn cả một đối tác"
-              width={44}
-              height={50}
-              className="h-10 sm:h-11 w-auto object-contain shrink-0 group-hover:scale-105 transition-transform"
+              src="/logo-icon.webp"
+              alt="Viet Dragon - In Ấn Chuyên Nghiệp"
+              width={48}
+              height={38}
+              className="h-9 sm:h-10 w-auto object-contain shrink-0 group-hover:scale-105 transition-transform"
               priority
             />
             <span className="text-xl font-black tracking-tight">
@@ -387,11 +387,11 @@ export default function Navbar() {
         <div className="px-6 py-3 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/60">
           <Link href="/" onClick={closeAllMenu} className="flex items-center gap-2.5">
             <Image
-              src="/images/partner/logoweb.webp"
-              alt="Viet Dragon - Hơn cả một đối tác"
-              width={40}
-              height={45}
-              className="h-10 w-auto object-contain shrink-0"
+              src="/logo-icon.webp"
+              alt="Viet Dragon - In Ấn Chuyên Nghiệp"
+              width={42}
+              height={34}
+              className="h-9 w-auto object-contain shrink-0"
             />
             <span className="text-lg font-black tracking-tight text-zinc-900">
               VIET <span className="text-brand-primary">DRAGON</span>
