@@ -100,7 +100,7 @@ export default async function RootLayout({
       lang={locale}
       className={`${sans.variable} ${heading.variable} ${mono.variable} antialiased`}
     >
-      <body>
+      <body suppressHydrationWarning>
         <NextIntlClientProvider>
           <QuoteModalProvider>
             <SmoothScroll>{children}</SmoothScroll>

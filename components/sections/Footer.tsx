@@ -73,8 +73,21 @@ export default function Footer() {
   const pathname = usePathname();
 
   return (
-    <footer className="bg-brand-soft text-brand-dark">
-      <div className="max-w-7xl mx-auto px-6 py-12">
+    <footer className="relative bg-[#f0f1f3] text-brand-dark overflow-hidden border-t border-brand-border">
+      {/* Background Image — Full 3D emblem & tagline */}
+      <div className="absolute inset-0 pointer-events-none select-none z-0">
+        <Image
+          src="/images/footer-bg-seamless.webp"
+          alt="Viet Dragon - Hơn cả một đối tác"
+          fill
+          sizes="100vw"
+          className="object-cover object-center opacity-40 sm:opacity-50"
+          priority={false}
+        />
+        <div className="absolute inset-0 bg-white/20" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-16 pb-10">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-8 md:gap-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
@@ -95,7 +108,7 @@ export default function Footer() {
                 </p>
               </div>
             </div>
-            <p className="text-brand-dark/60 text-sm leading-relaxed mb-5">
+            <p className="text-brand-dark/70 text-sm leading-relaxed mb-5">
               {t("tagline")}
             </p>
             <div className="flex items-center gap-3">
@@ -106,7 +119,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={name}
-                  className="flex items-center justify-center w-9 h-9 rounded-full bg-white text-brand-dark hover:bg-brand-primary hover:text-white transition-colors"
+                  className="flex items-center justify-center w-9 h-9 rounded-full bg-white text-brand-dark hover:bg-brand-primary hover:text-white transition-colors shadow-xs"
                 >
                   <Icon size={15} />
                 </a>
@@ -116,7 +129,7 @@ export default function Footer() {
 
           {/* Products — categories from data */}
           <div>
-            <p className="text-xs font-semibold tracking-widest uppercase text-brand-dark/40 mb-4">
+            <p className="text-xs font-semibold tracking-widest uppercase text-brand-dark/50 mb-4">
               {t("productsLabel")}
             </p>
             <ul className="flex flex-col gap-2">
@@ -127,7 +140,7 @@ export default function Footer() {
                     "inline-block text-sm py-1 transition-all duration-200",
                     pathname === "/products"
                       ? "text-brand-primary font-bold"
-                      : "text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 font-medium"
+                      : "text-brand-dark/70 hover:text-brand-primary hover:translate-x-1 font-medium"
                   )}
                 >
                   {ALL_PRODUCTS_LABEL[locale] || "All Products"}
@@ -145,7 +158,7 @@ export default function Footer() {
                         "inline-block text-sm py-1 transition-all duration-200",
                         isActive
                           ? "text-brand-primary font-bold"
-                          : "text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 font-medium"
+                          : "text-brand-dark/70 hover:text-brand-primary hover:translate-x-1 font-medium"
                       )}
                     >
                       {pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)}
@@ -158,7 +171,7 @@ export default function Footer() {
 
           {/* Company links */}
           <div>
-            <p className="text-xs font-semibold tracking-widest uppercase text-brand-dark/40 mb-4">
+            <p className="text-xs font-semibold tracking-widest uppercase text-brand-dark/50 mb-4">
               {t("companyLabel")}
             </p>
             <ul className="flex flex-col gap-2">
@@ -172,7 +185,7 @@ export default function Footer() {
                         "inline-block text-sm py-1 transition-all duration-200",
                         isActive
                           ? "text-brand-primary font-bold"
-                          : "text-brand-dark/60 hover:text-brand-primary hover:translate-x-1 font-medium"
+                          : "text-brand-dark/70 hover:text-brand-primary hover:translate-x-1 font-medium"
                       )}
                     >
                       {link.ns === "nav" ? tNav(`links.${link.key}`) : t(`usefulLinks.${link.key}`)}
@@ -183,30 +196,28 @@ export default function Footer() {
             </ul>
           </div>
 
-
-
           {/* Contact */}
           <div className="col-span-2 md:col-span-2 lg:col-span-1">
-            <p className="text-xs font-semibold tracking-widest uppercase text-brand-dark/40 mb-4">
+            <p className="text-xs font-semibold tracking-widest uppercase text-brand-dark/50 mb-4">
               {t("contactLabel")}
             </p>
-            <ul className="flex flex-col gap-4 text-sm text-brand-dark/60">
+            <ul className="flex flex-col gap-4 text-sm text-brand-dark/70">
               <li className="flex items-center gap-3">
                 <IconBadge icon={Phone} size="md" />
                 <span className="flex flex-col">
-                  <a href="tel:0901448377" className="hover:text-brand-primary transition-colors">{tContact("phone1")}</a>
-                  <a href="tel:0919510543" className="hover:text-brand-primary transition-colors">{tContact("phone2")}</a>
+                  <a href="tel:0901448377" className="hover:text-brand-primary transition-colors font-medium">{tContact("phone1")}</a>
+                  <a href="tel:0919510543" className="hover:text-brand-primary transition-colors font-medium">{tContact("phone2")}</a>
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <IconBadge icon={Mail} size="md" />
-                <a href="mailto:contact@vietdragon.vn" className="hover:text-brand-primary transition-colors">
+                <a href="mailto:contact@vietdragon.vn" className="hover:text-brand-primary transition-colors font-medium">
                   {tContact("email")}
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <IconBadge icon={MapPin} size="md" />
-                <span className="leading-relaxed">
+                <span className="leading-relaxed font-medium">
                   {tContact("address")}
                 </span>
               </li>
@@ -214,8 +225,11 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-brand-border flex items-center justify-center text-xs text-brand-dark/40">
+        <div className="mt-14 pt-8 border-t border-brand-border/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-brand-dark/50">
           <p>{t("copyright", { year: new Date().getFullYear() })}</p>
+          <p className="hidden sm:block text-[11px] tracking-wider uppercase text-brand-dark/40 font-medium">
+            Viet Dragon Printing Co., Ltd.
+          </p>
         </div>
       </div>
     </footer>
