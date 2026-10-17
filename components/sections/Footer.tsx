@@ -74,16 +74,57 @@ export default function Footer() {
 
   return (
     <footer className="relative bg-[#f0f1f3] text-brand-dark overflow-hidden border-t border-brand-border">
-      {/* Background Image — Full 3D emblem & tagline */}
-      <div className="absolute inset-0 pointer-events-none select-none z-0">
-        <Image
-          src="/images/footer-bg-seamless.webp"
-          alt="Viet Dragon - Hơn cả một đối tác"
-          fill
-          sizes="100vw"
-          className="object-cover object-center opacity-40 sm:opacity-50"
-          priority={false}
-        />
+      {/* Background Image — Responsive watermark: mobile contained (no clipping) & desktop wide seamless */}
+      <div className="absolute inset-0 pointer-events-none select-none z-0 overflow-hidden">
+        {/* Mobile: separated clean wall shadow background + centered 3D emblem + tagline underneath */}
+        <div className="sm:hidden absolute inset-0">
+          {/* 1. Nền shadow (clean wall texture with lighting shadow as background) */}
+          <Image
+            src="/images/footer-wall-bg.webp"
+            alt="Viet Dragon - Background"
+            fill
+            sizes="100vw"
+            className="object-cover object-center opacity-80"
+            priority={false}
+          />
+
+          {/* 2. Logo ở giữa & 3. Hơn cả một đối tác ở dưới logo */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center -mt-10 opacity-40 px-6">
+            {/* 3D Emblem in the center */}
+            <div className="relative w-[185px] h-[225px] [filter:drop-shadow(0_16px_32px_rgba(0,0,0,0.25))]">
+              <Image
+                src="/images/footer-emblem-clean.webp"
+                alt="Viet Dragon Emblem"
+                fill
+                className="object-contain"
+                priority={false}
+              />
+            </div>
+
+            {/* Tagline "Hơn cả một đối tác" directly under logo */}
+            <div className="relative w-[230px] h-[36px] mt-3 [filter:drop-shadow(0_8px_16px_rgba(0,0,0,0.2))]">
+              <Image
+                src="/images/footer-tagline-clean.webp"
+                alt="Hơn cả một đối tác"
+                fill
+                className="object-contain"
+                priority={false}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop / Tablet (sm: and up): wide seamless banner */}
+        <div className="hidden sm:block absolute inset-0">
+          <Image
+            src="/images/footer-bg-seamless.webp"
+            alt="Viet Dragon - Hơn cả một đối tác"
+            fill
+            sizes="100vw"
+            className="object-cover object-center opacity-40 sm:opacity-50"
+            priority={false}
+          />
+        </div>
         <div className="absolute inset-0 bg-white/20" />
       </div>
 

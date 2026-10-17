@@ -86,39 +86,76 @@ export default function Hero() {
           pagination={{ clickable: true }}
           a11y={{ paginationBulletMessage: t("viewSlide", { number: "{{index}}" }) }}
           onSlideChange={(swiper: SwiperInstance) => setIndex(swiper.realIndex)}
-          className="hero-swiper !overflow-visible"
+          className="hero-swiper overflow-hidden"
         >
           {slides.map((slide, i) => (
-            <SwiperSlide key={slide.tag} className="!overflow-visible">
-              <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center min-h-[420px] lg:min-h-[480px]">
+            <SwiperSlide key={slide.tag} className="overflow-hidden">
+              <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-start min-h-[440px] lg:min-h-[480px]">
                 {/* ── Left: slide copy ── */}
-                <div className="relative flex flex-col gap-6 z-10">
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/90 relative z-20 [text-shadow:_0_1px_8px_rgba(9,5,47,0.4)]">
-                    {slide.tag}
-                  </p>
+                <div className="relative flex flex-col gap-3 sm:gap-4 lg:gap-5 z-10">
+                  {/* Fixed-height tag container */}
+                  <div className="h-6 flex items-center">
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/90 [text-shadow:_0_1px_8px_rgba(9,5,47,0.4)]">
+                      {slide.tag}
+                    </p>
+                  </div>
 
-                  <h1 className="text-[clamp(2.25rem,8vw,3.75rem)] font-black leading-tight tracking-tight text-white line-clamp-2 min-h-[2.5em] relative z-20 [text-shadow:_0_2px_16px_rgba(9,5,47,0.7)]">
-                    {slide.titleLine1}
-                    <span className="hidden sm:inline"> </span>
-                    <br className="sm:hidden" />
-                    {slide.titleLine2}
-                  </h1>
+                  {/* Fixed-height title container */}
+                  <div className="h-[4.25rem] sm:h-[5.25rem] lg:h-[7.25rem] flex flex-col justify-start">
+                    <h1 className="text-[clamp(1.5rem,4vw,1.85rem)] sm:text-3xl lg:text-5xl font-black leading-tight tracking-tight text-white [text-shadow:_0_2px_16px_rgba(9,5,47,0.7)]">
+                      {slide.titleLine1}
+                      <br />
+                      {slide.titleLine2}
+                    </h1>
+                  </div>
 
-                  <p className="text-[clamp(1rem,4vw,1.125rem)] text-white/95 leading-relaxed max-w-lg relative z-20 [text-shadow:_0_2px_12px_rgba(9,5,47,0.8),_0_1px_4px_rgba(9,5,47,0.8)]">
-                    {slide.desc}
-                  </p>
+                  {/* Fixed-height description container — sized to slide 3 on mobile (h-[88px] prevents 4th line cut off), layered above logo (z-20) */}
+                  <div className="h-[88px] sm:h-[84px] lg:h-[88px] flex items-start overflow-hidden relative z-20">
+                    <p className="text-sm sm:text-base lg:text-lg text-white/95 leading-relaxed max-w-lg [text-shadow:_0_2px_12px_rgba(9,5,47,0.8),_0_1px_4px_rgba(9,5,47,0.8)]">
+                      {slide.desc}
+                    </p>
+                  </div>
 
-                  <div className="relative z-10 mt-2">
-                    {/* ── Foreground: Nút Nhận báo giá & Số điện thoại ── */}
-                    <div className="relative z-10 flex flex-wrap items-center gap-5 pt-6">
-                      <WipeButton href="/#cta" tone="light" size="lg">
+                  {/* ── Action row: CTAs + Airplane Logo ── */}
+                  <div className="relative z-10 pt-0 sm:pt-2 lg:pt-3">
+                    {/* ── MOBILE / TABLET (< 1024px): Buttons left (z-20), Logo pulled up 50%, size +10%, shifted left 20% under text/buttons ── */}
+                    <div className="relative flex lg:hidden items-start">
+                      {/* Left: Buttons — foreground layer z-20 */}
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4 shrink-0 relative z-20">
+                        <WipeButton href="/#cta" tone="light" size="md">
+                          {t("cta")}
+                        </WipeButton>
+
+                        <a
+                          href={`tel:${PHONE_NUMBER}`}
+                          className="group relative inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-white/15 hover:bg-white border border-white/25 hover:border-white text-sm sm:text-base font-bold tracking-wide text-white hover:text-brand-primary transition-all duration-300 shadow-sm hover:shadow-[0_4px_24px_rgba(112,0,254,0.45)] backdrop-blur-md cursor-pointer shrink-0"
+                        >
+                          <Phone size={16} className="text-white group-hover:text-brand-primary transition-colors duration-300 shrink-0" />
+                          <span className="text-white group-hover:text-brand-primary transition-colors duration-300">{tContact("phone1")}</span>
+                        </a>
+                      </div>
+
+                      {/* Right/Background: Logo pulled down 20% (-top-[92px]), +10% size (w-[252px] h-[225px]), shifted left 20% (right-[42px]) */}
+                      <div className="absolute -top-[92px] sm:-top-[100px] right-[42px] sm:right-[60px] w-[252px] sm:w-[304px] h-[225px] sm:h-[258px] pointer-events-none select-none z-0 [filter:drop-shadow(0_16px_32px_rgba(0,0,0,0.4))]">
+                        <Image
+                          src="/images/hero-landing-plane.webp"
+                          alt="Viet Dragon - Airplane Landing"
+                          fill
+                          priority={i === 0}
+                          className="object-contain object-right"
+                        />
+                      </div>
+                    </div>
+
+                    {/* ── DESKTOP (≥ 1024px): Layered under buttons like Image 4, reduced by 20% (w-[310px]), text sits above logo ── */}
+                    <div className="hidden lg:flex items-center gap-5 pt-3">
+                      <WipeButton href="/#cta" tone="light" size="lg" className="relative z-20">
                         {t("cta")}
                       </WipeButton>
 
-                      {/* ── Khối Số điện thoại với Logo đặt ngay phía sau ── */}
                       <div className="relative inline-flex items-center">
-                        {/* ── Background Logo: Kéo lên 15% (-top-[138px]), cạnh nhọn vừa chạm nút báo giá ── */}
-                        <div className="absolute -top-[98px] sm:-top-[121px] lg:-top-[138px] -left-6 sm:-left-7 lg:-left-[29px] w-[224px] sm:w-[280px] lg:w-[320px] pointer-events-none select-none z-0 [filter:drop-shadow(0_20px_35px_rgba(0,0,0,0.4))]">
+                        {/* Background Logo: Layered under buttons, reduced by 20% to w-[310px] */}
+                        <div className="absolute -top-[122px] -left-[26px] w-[310px] pointer-events-none select-none z-0 [filter:drop-shadow(0_20px_35px_rgba(0,0,0,0.4))]">
                           <Image
                             src="/images/hero-landing-plane.webp"
                             alt="Viet Dragon - Airplane Landing"
@@ -129,10 +166,10 @@ export default function Hero() {
                           />
                         </div>
 
-                        {/* ── Hotline badge: Hiệu ứng rê chuột (hover) màu tím thương hiệu sang trọng ── */}
+                        {/* Hotline badge: Foreground layer above logo */}
                         <a
                           href={`tel:${PHONE_NUMBER}`}
-                          className="group relative z-20 inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-white/15 hover:bg-white border border-white/25 hover:border-white text-base sm:text-lg font-bold tracking-wide text-white hover:text-brand-primary transition-all duration-300 shadow-sm hover:shadow-[0_4px_24px_rgba(112,0,254,0.45)] backdrop-blur-md cursor-pointer"
+                          className="group relative z-20 inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white/15 hover:bg-white border border-white/25 hover:border-white text-base font-bold tracking-wide text-white hover:text-brand-primary transition-all duration-300 shadow-sm hover:shadow-[0_4px_24px_rgba(112,0,254,0.45)] backdrop-blur-md cursor-pointer"
                         >
                           <Phone size={18} className="text-white group-hover:text-brand-primary transition-colors duration-300 shrink-0" />
                           <span className="text-white group-hover:text-brand-primary transition-colors duration-300">{tContact("phone1")}</span>
@@ -142,13 +179,13 @@ export default function Hero() {
                   </div>
                 </div>
 
-                {/* ── Right: slide image ── */}
-                <div className="relative h-[280px] sm:h-[360px] lg:h-[440px] rounded-3xl overflow-hidden shadow-2xl">
+                {/* ── Right: slide image (scaled down on mobile) ── */}
+                <div className="relative w-full h-[190px] sm:h-[260px] lg:h-[420px] xl:h-[440px] rounded-2xl lg:rounded-3xl overflow-hidden shadow-xl lg:shadow-2xl">
                   <Image
                     src={slideImages[i]}
                     alt={`${slide.titleLine1} ${slide.titleLine2}`}
                     fill
-                    priority
+                    priority={i === 0}
                     sizes="(min-width: 1024px) 50vw, 100vw"
                     className="object-cover"
                   />
