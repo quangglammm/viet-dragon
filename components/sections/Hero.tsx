@@ -86,10 +86,10 @@ export default function Hero() {
           pagination={{ clickable: true }}
           a11y={{ paginationBulletMessage: t("viewSlide", { number: "{{index}}" }) }}
           onSlideChange={(swiper: SwiperInstance) => setIndex(swiper.realIndex)}
-          className="hero-swiper overflow-hidden"
+          className="hero-swiper !overflow-visible"
         >
           {slides.map((slide, i) => (
-            <SwiperSlide key={slide.tag} className="overflow-hidden">
+            <SwiperSlide key={slide.tag} className="!overflow-visible">
               <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-start min-h-[440px] lg:min-h-[480px]">
                 {/* ── Left: slide copy ── */}
                 <div className="relative flex flex-col gap-3 sm:gap-4 lg:gap-5 z-10">
@@ -118,7 +118,7 @@ export default function Hero() {
 
                   {/* ── Action row: CTAs + Airplane Logo ── */}
                   <div className="relative z-10 pt-0 sm:pt-2 lg:pt-3">
-                    {/* ── MOBILE / TABLET (< 1024px): Buttons left (z-20), Logo pulled up 50%, size +10%, shifted left 20% under text/buttons ── */}
+                    {/* ── MOBILE / TABLET (< 1024px): Buttons left (z-20), Logo overflows outside frame freely without clipping ── */}
                     <div className="relative flex lg:hidden items-start">
                       {/* Left: Buttons — foreground layer z-20 */}
                       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4 shrink-0 relative z-20">
@@ -135,32 +135,35 @@ export default function Hero() {
                         </a>
                       </div>
 
-                      {/* Right/Background: Logo pulled down 20% (-top-[92px]), +10% size (w-[252px] h-[225px]), shifted left 20% (right-[42px]) */}
-                      <div className="absolute -top-[92px] sm:-top-[100px] right-[42px] sm:right-[60px] w-[252px] sm:w-[304px] h-[225px] sm:h-[258px] pointer-events-none select-none z-0 [filter:drop-shadow(0_16px_32px_rgba(0,0,0,0.4))]">
+                      {/* Right/Background: Logo unconstrained, mobile pulled up by 20% */}
+                      <div className="absolute -top-[112px] sm:-top-[120px] -right-[12px] sm:-right-[8px] w-[250px] sm:w-[300px] pointer-events-none select-none z-0 [filter:drop-shadow(0_16px_32px_rgba(0,0,0,0.4))]">
                         <Image
                           src="/images/hero-landing-plane.webp"
                           alt="Viet Dragon - Airplane Landing"
-                          fill
+                          width={1042}
+                          height={907}
+                          sizes="(max-width: 640px) 250px, 300px"
                           priority={i === 0}
-                          className="object-contain object-right"
+                          className="w-full h-auto object-contain"
                         />
                       </div>
                     </div>
 
-                    {/* ── DESKTOP (≥ 1024px): Layered under buttons like Image 4, reduced by 20% (w-[310px]), text sits above logo ── */}
+                    {/* ── DESKTOP (≥ 1024px): Adjusted down by 13% ── */}
                     <div className="hidden lg:flex items-center gap-5 pt-3">
                       <WipeButton href="/#cta" tone="light" size="lg" className="relative z-20">
                         {t("cta")}
                       </WipeButton>
 
                       <div className="relative inline-flex items-center">
-                        {/* Background Logo: Layered under buttons, reduced by 20% to w-[310px] */}
-                        <div className="absolute -top-[122px] -left-[26px] w-[310px] pointer-events-none select-none z-0 [filter:drop-shadow(0_20px_35px_rgba(0,0,0,0.4))]">
+                        {/* Background Logo: Adjusted down by 13% */}
+                        <div className="absolute -top-[95px] xl:-top-[104px] left-[10px] xl:left-[25px] w-[340px] xl:w-[380px] pointer-events-none select-none z-0 [filter:drop-shadow(0_20px_35px_rgba(0,0,0,0.4))]">
                           <Image
                             src="/images/hero-landing-plane.webp"
                             alt="Viet Dragon - Airplane Landing"
-                            width={690}
-                            height={790}
+                            width={1042}
+                            height={907}
+                            sizes="(min-width: 1280px) 380px, 340px"
                             priority={i === 0}
                             className="w-full h-auto object-contain opacity-95"
                           />
@@ -179,8 +182,8 @@ export default function Hero() {
                   </div>
                 </div>
 
-                {/* ── Right: slide image (scaled down on mobile) ── */}
-                <div className="relative w-full h-[190px] sm:h-[260px] lg:h-[420px] xl:h-[440px] rounded-2xl lg:rounded-3xl overflow-hidden shadow-xl lg:shadow-2xl">
+                {/* ── Right: slide image (scaled down on mobile, shifted down 8% on mobile) ── */}
+                <div className="relative w-full h-[190px] sm:h-[260px] lg:h-[420px] xl:h-[440px] rounded-2xl lg:rounded-3xl overflow-hidden shadow-xl lg:shadow-2xl mt-[15px] sm:mt-[21px] lg:mt-0">
                   <Image
                     src={slideImages[i]}
                     alt={`${slide.titleLine1} ${slide.titleLine2}`}
