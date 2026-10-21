@@ -17,6 +17,12 @@ import { cn } from "@/lib/utils";
 import { ZaloIcon } from "@/components/ui/zalo-icon";
 import { ConsultBottomSheet } from "@/components/ui/consult-bottom-sheet";
 import { getProductSizes } from "@/lib/product-sizes";
+import {
+  FORM_TITLES,
+  PRINT_TECHNIQUES,
+  getProductMaterials,
+  getPostPressFinishing,
+} from "@/lib/product-specs";
 
 const optionIconMap: Record<string, LucideIcon> = {
   Layers, Sparkles, Palette, Award, Gem, Feather, PenLine, Minimize2, StickyNote,
@@ -115,63 +121,6 @@ const ZALO_BUTTON_LABEL: Record<string, string> = {
   zh: "Zalo 咨询",
   ja: "Zalo 相談",
   ko: "Zalo 상담",
-};
-
-
-
-const PRINT_TECHNIQUES: Record<string, string[]> = {
-  vi: ["In nhanh", "Offset", "Ép kim", "Dập nổi dập chìm"],
-  en: ["Fast print", "Offset", "Foil stamping", "Emboss / deboss"],
-  zh: ["快印", "胶印 (Offset)", "烫金", "压凸/压凹"],
-  ja: ["オンデマンド印刷", "オフセット", "箔押し", "型押し・エンボス"],
-  ko: ["디지털 인쇄", "옵셋", "박 인쇄", "형압 / 엠보싱"],
-};
-
-const FINISHING_OPTIONS: Record<string, string[]> = {
-  vi: ["Bế bo 4 góc", "Cắt vuông"],
-  en: ["Rounded 4 corners", "Square cut"],
-  zh: ["四角圆角模切", "直角裁切"],
-  ja: ["4角角丸加工", "直角断裁"],
-  ko: ["4각 귀도리 (라운딩)", "직각 재단"],
-};
-
-const LAMINATION_OPTIONS: Record<string, string[]> = {
-  vi: ["Bóng", "Mờ", "Không cán màng"],
-  en: ["Gloss", "Matte", "No lamination"],
-  zh: ["光膜", "哑膜", "不覆膜"],
-  ja: ["グロス", "マット", "加工なし"],
-  ko: ["유광", "무광", "코팅 없음"],
-};
-
-const FORM_TITLES: Record<string, Record<string, string>> = {
-  sizes: {
-    vi: "Kích thước phổ biến:",
-    en: "Popular sizes:",
-    zh: "常用尺寸:",
-    ja: "一般的なサイズ:",
-    ko: "자주 쓰이는 규격:",
-  },
-  printTech: {
-    vi: "Kỹ thuật in:",
-    en: "Printing technique:",
-    zh: "印刷工艺:",
-    ja: "印刷技術:",
-    ko: "인쇄 기법:",
-  },
-  finishing: {
-    vi: "Thành phẩm:",
-    en: "Finishing:",
-    zh: "后道成品:",
-    ja: "後加工・仕上がり:",
-    ko: "후가공 / 마감:",
-  },
-  lamination: {
-    vi: "Kỹ thuật cán màng:",
-    en: "Lamination:",
-    zh: "覆膜工艺:",
-    ja: "ラミネート加工:",
-    ko: "코팅 기법:",
-  },
 };
 
 function formatMaterialDisplayName(name: string, locale: Locale): string {
@@ -357,8 +306,8 @@ export function MaterialFlashcard({
   const sizes = getProductSizes(productName, locale, productId, shapeId, categoryId);
   const selectedSizeItem = sizes.find((s) => s.id === selectedSize);
   const printTechList = PRINT_TECHNIQUES[locale] ?? PRINT_TECHNIQUES.vi;
-  const finishingList = FINISHING_OPTIONS[locale] ?? FINISHING_OPTIONS.vi;
-  const laminationList = LAMINATION_OPTIONS[locale] ?? LAMINATION_OPTIONS.vi;
+  const materialList = getProductMaterials(productName, name, locale, productId, shapeId, categoryId);
+  const finishingList = getPostPressFinishing(productName, name, locale, productId, shapeId, categoryId);
 
   let rawImages: string[] = [];
   if (option.pureImages && option.pureImages.length > 0) {
@@ -740,38 +689,47 @@ export function MaterialFlashcard({
           </div>
         </div>
 
-        {/* 3. Thành phẩm: bế bo 4 góc hoặc cắt vuông */}
+        {/* 3. Chất liệu */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {FORM_TITLES.finishing[locale] ?? FORM_TITLES.finishing.vi}
+            {FORM_TITLES.material[locale] ?? FORM_TITLES.material.vi}
           </span>
           <div className="flex flex-wrap items-center gap-2">
-            {finishingList.map((item) => (
-              <span
-                key={item}
-                className="inline-flex items-center px-3 py-1.5 rounded-lg border border-[#7000fe]/30 bg-transparent text-xs font-medium text-zinc-700 select-none cursor-default"
-              >
-                {item}
-              </span>
-            ))}
+            {materialList.map((mat) => {
+              const isCurrent =
+                mat.toLowerCase() === name.toLowerCase() ||
+                name.toLowerCase().includes(mat.toLowerCase()) ||
+                mat.toLowerCase().includes(name.toLowerCase());
+              return (
+                <span
+                  key={mat}
+                  className={cn(
+                    "inline-flex items-center px-3 py-1.5 rounded-lg border text-xs select-none cursor-default transition-colors",
+                    isCurrent
+                      ? "bg-[#ede8ff] border-brand-primary text-brand-primary font-semibold ring-1 ring-brand-primary/40 shadow-2xs"
+                      : "border-[#7000fe]/30 bg-transparent text-zinc-700 font-medium"
+                  )}
+                >
+                  {mat}
+                </span>
+              );
+            })}
           </div>
         </div>
 
-        {/* 4. Với kỹ thuật cán màng: bóng, mờ hoặc ko cán màng */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+        {/* 4. Thành phẩm sau in (Bế, Dán, Cán màng... hiển thị ngang hàng và xuống hàng tự nhiên) */}
+        <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {FORM_TITLES.lamination[locale] ?? FORM_TITLES.lamination.vi}
+            {FORM_TITLES.finishing[locale] ?? FORM_TITLES.finishing.vi}
           </span>
-          <div className="flex flex-wrap items-center gap-2">
-            {laminationList.map((item) => (
-              <span
-                key={item}
-                className="inline-flex items-center px-3 py-1.5 rounded-lg border border-[#7000fe]/30 bg-transparent text-xs font-medium text-zinc-700 select-none cursor-default"
-              >
-                {item}
-              </span>
-            ))}
-          </div>
+          {finishingList.map((item) => (
+            <span
+              key={item}
+              className="inline-flex items-center px-3 py-1.5 rounded-lg border border-[#7000fe]/30 bg-transparent text-xs font-medium text-zinc-700 select-none cursor-default"
+            >
+              {item}
+            </span>
+          ))}
         </div>
 
         {/* Bottom action row: Nút tư vấn Zalo */}
