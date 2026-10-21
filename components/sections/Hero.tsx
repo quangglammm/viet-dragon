@@ -51,7 +51,7 @@ export default function Hero() {
 
   return (
     <section
-      className="relative w-full overflow-x-clip pt-24 pb-10 lg:pt-32 lg:pb-16 transition-[background] duration-700"
+      className="relative w-full overflow-hidden pt-24 pb-10 lg:pt-32 lg:pb-16 transition-[background] duration-700"
       style={{ background: gradients[index] }}
     >
       {/* The gradient itself gives the fixed navbar's white text enough contrast —
@@ -86,10 +86,10 @@ export default function Hero() {
           pagination={{ clickable: true }}
           a11y={{ paginationBulletMessage: t("viewSlide", { number: "{{index}}" }) }}
           onSlideChange={(swiper: SwiperInstance) => setIndex(swiper.realIndex)}
-          className="hero-swiper !overflow-visible"
+          className="hero-swiper"
         >
           {slides.map((slide, i) => (
-            <SwiperSlide key={slide.tag} className="!overflow-visible">
+            <SwiperSlide key={slide.tag}>
               <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-start min-h-[440px] lg:min-h-[480px]">
                 {/* ── Left: slide copy ── */}
                 <div className="relative flex flex-col gap-3 sm:gap-4 lg:gap-5 z-10">
@@ -109,76 +109,26 @@ export default function Hero() {
                     </h1>
                   </div>
 
-                  {/* Fixed-height description container — sized to slide 3 on mobile (h-[88px] prevents 4th line cut off), layered above logo (z-20) */}
-                  <div className="h-[88px] sm:h-[84px] lg:h-[88px] flex items-start overflow-hidden relative z-20">
+                  {/* Fixed-height description container */}
+                  <div className="h-[88px] sm:h-[84px] lg:h-[88px] flex items-start overflow-hidden">
                     <p className="text-sm sm:text-base lg:text-lg text-white/95 leading-relaxed max-w-lg [text-shadow:_0_2px_12px_rgba(9,5,47,0.8),_0_1px_4px_rgba(9,5,47,0.8)]">
                       {slide.desc}
                     </p>
                   </div>
 
-                  {/* ── Action row: CTAs + Airplane Logo ── */}
-                  <div className="relative z-10 pt-0 sm:pt-2 lg:pt-3">
-                    {/* ── MOBILE / TABLET (< 1024px): Buttons left (z-20), Logo overflows outside frame freely without clipping ── */}
-                    <div className="relative flex lg:hidden items-start">
-                      {/* Left: Buttons — foreground layer z-20 */}
-                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4 shrink-0 relative z-20">
-                        <WipeButton href="/#cta" tone="light" size="md">
-                          {t("cta")}
-                        </WipeButton>
+                  {/* ── Action row: CTAs ── */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-1 sm:pt-2 lg:pt-3">
+                    <WipeButton href="/#cta" tone="light" size="lg">
+                      {t("cta")}
+                    </WipeButton>
 
-                        <a
-                          href={`tel:${PHONE_NUMBER}`}
-                          className="group relative inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-white/15 hover:bg-white border border-white/25 hover:border-white text-sm sm:text-base font-bold tracking-wide text-white hover:text-brand-primary transition-all duration-300 shadow-sm hover:shadow-[0_4px_24px_rgba(112,0,254,0.45)] backdrop-blur-md cursor-pointer shrink-0"
-                        >
-                          <Phone size={16} className="text-white group-hover:text-brand-primary transition-colors duration-300 shrink-0" />
-                          <span className="text-white group-hover:text-brand-primary transition-colors duration-300">{tContact("phone1")}</span>
-                        </a>
-                      </div>
-
-                      {/* Right/Background: Logo unconstrained, mobile pulled up by 20% */}
-                      <div className="absolute -top-[112px] sm:-top-[120px] -right-[12px] sm:-right-[8px] w-[250px] sm:w-[300px] pointer-events-none select-none z-0 [filter:drop-shadow(0_16px_32px_rgba(0,0,0,0.4))]">
-                        <Image
-                          src="/images/hero-landing-plane.webp"
-                          alt="Viet Dragon - Airplane Landing"
-                          width={1042}
-                          height={907}
-                          sizes="(max-width: 640px) 250px, 300px"
-                          priority={i === 0}
-                          className="w-full h-auto object-contain"
-                        />
-                      </div>
-                    </div>
-
-                    {/* ── DESKTOP (≥ 1024px): Adjusted down by 13% ── */}
-                    <div className="hidden lg:flex items-center gap-5 pt-3">
-                      <WipeButton href="/#cta" tone="light" size="lg" className="relative z-20">
-                        {t("cta")}
-                      </WipeButton>
-
-                      <div className="relative inline-flex items-center">
-                        {/* Background Logo: Adjusted down by 13% */}
-                        <div className="absolute -top-[95px] xl:-top-[104px] left-[10px] xl:left-[25px] w-[340px] xl:w-[380px] pointer-events-none select-none z-0 [filter:drop-shadow(0_20px_35px_rgba(0,0,0,0.4))]">
-                          <Image
-                            src="/images/hero-landing-plane.webp"
-                            alt="Viet Dragon - Airplane Landing"
-                            width={1042}
-                            height={907}
-                            sizes="(min-width: 1280px) 380px, 340px"
-                            priority={i === 0}
-                            className="w-full h-auto object-contain opacity-95"
-                          />
-                        </div>
-
-                        {/* Hotline badge: Foreground layer above logo */}
-                        <a
-                          href={`tel:${PHONE_NUMBER}`}
-                          className="group relative z-20 inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white/15 hover:bg-white border border-white/25 hover:border-white text-base font-bold tracking-wide text-white hover:text-brand-primary transition-all duration-300 shadow-sm hover:shadow-[0_4px_24px_rgba(112,0,254,0.45)] backdrop-blur-md cursor-pointer"
-                        >
-                          <Phone size={18} className="text-white group-hover:text-brand-primary transition-colors duration-300 shrink-0" />
-                          <span className="text-white group-hover:text-brand-primary transition-colors duration-300">{tContact("phone1")}</span>
-                        </a>
-                      </div>
-                    </div>
+                    <a
+                      href={`tel:${PHONE_NUMBER}`}
+                      className="group inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/15 hover:bg-white border border-white/25 hover:border-white text-base font-bold tracking-wide text-white hover:text-brand-primary transition-all duration-300 shadow-sm hover:shadow-[0_4px_24px_rgba(112,0,254,0.45)] backdrop-blur-md cursor-pointer shrink-0"
+                    >
+                      <Phone size={18} className="text-white group-hover:text-brand-primary transition-colors duration-300 shrink-0" />
+                      <span className="text-white group-hover:text-brand-primary transition-colors duration-300">{tContact("phone1")}</span>
+                    </a>
                   </div>
                 </div>
 
