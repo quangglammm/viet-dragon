@@ -86,7 +86,7 @@ function FloatingLocaleSwitcher({
         )}
         aria-expanded={open}
         aria-haspopup="listbox"
-        aria-label="Chọn ngôn ngữ"
+        aria-label="Chọn ngôn ngữ."
         title={currentLang.label}
       >
         <span className={cn("leading-none select-none", isTopbar ? "text-sm" : "text-base")}>
