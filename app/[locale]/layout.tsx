@@ -9,6 +9,7 @@ import { QuoteModalProvider } from "@/components/providers/quote-modal-provider"
 import { FloatingContact } from "@/components/ui/floating-contact";
 import { LanguageDetectorToast } from "@/components/ui/language-detector-toast";
 import { routing } from "@/i18n/routing";
+import { getSiteEnv } from "@/lib/env";
 
 const sans = Be_Vietnam_Pro({
   variable: "--font-sans",
@@ -73,6 +74,7 @@ export async function generateMetadata({
   const baseMeta = meta[locale] ?? meta.en;
   return {
     ...baseMeta,
+    metadataBase: new URL(getSiteEnv().SITE_URL),
     icons: {
       icon: [
         { url: "/favicon.ico", sizes: "any" },

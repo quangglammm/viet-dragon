@@ -425,5 +425,11 @@
     "openZaloNow": "Chat via Zalo now",
     "close": "Close",
     "phoneError": "Please enter a valid phone number."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has moved. Head back home or browse Viet Dragon’s printing products.",
+    "homeCta": "Back to home",
+    "productsCta": "Browse products"
   }
 }

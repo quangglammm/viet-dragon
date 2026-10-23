@@ -1,0 +1,32 @@
+# SITE_ADDRESS comes from compose: a hostname (vietdragon.vn) gets automatic HTTPS;
+# `http://localhost` serves plain HTTP for a local run.
+{$SITE_ADDRESS} {
+	encode zstd gzip
+
+	# Cap request bodies before they reach the app. Phase 5 raises this for the upload route only.
+	request_body {
+		max_size 2MB
+	}
+
+	# The legacy admin has a hardcoded fallback password, a forgeable cookie and writes into the
+	# source tree — it must never be reachable. REMOVE these two blocks when Phase 2 (Better Auth) lands.
+	@legacy_admin path /admin /admin/* /api/admin/*
+	respond @legacy_admin 404
+
+	# Docker's healthcheck calls the app directly; there is no reason to expose this publicly.
+	@health path /api/health
+	respond @health 404
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	reverse_proxy app:3000 {
+		# Overwrite, never append: the app trusts this header for rate limiting (Phase 2/6),
+		# so a client-supplied value must not survive.
+		header_up X-Real-IP {remote_host}
+	}
+}

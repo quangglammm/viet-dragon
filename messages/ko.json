@@ -425,5 +425,11 @@
     "openZaloNow": "Zalo로 바로 문의하기",
     "close": "닫기",
     "phoneError": "올바른 전화번호를 입력해 주세요."
+  },
+  "notFound": {
+    "title": "페이지를 찾을 수 없습니다",
+    "description": "찾으시는 페이지가 존재하지 않거나 이동되었습니다. 홈으로 돌아가거나 Viet Dragon의 인쇄 제품을 둘러보세요.",
+    "homeCta": "홈으로 돌아가기",
+    "productsCta": "제품 보기"
   }
 }

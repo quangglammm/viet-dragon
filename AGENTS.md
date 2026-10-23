@@ -23,6 +23,9 @@ Other v16 facts, verified against those docs:
 | next-intl | 4.13.x | `/[locale]` routing — see Internationalization below |
 | Lenis | 1.3.x | Smooth scroll — desktop only (see below) |
 | Swiper | 14.x | Hero and Testimonials carousels — `swiper/react` + `swiper/modules` |
+| zod | 4.x | Env validation (`lib/env.ts`); request-body validation in the admin API (planned) |
+| pino | 10.x | Server logging — only through `lib/logger.ts`, see **Logging** below |
+| Drizzle ORM · drizzle-kit · `pg` | 0.45.x · 0.31.x · 8.x | PostgreSQL access (`lib/db`) and migrations (`drizzle.config.ts`) — no schema until Phase 3a |
 
 GSAP/ScrollTrigger and the old pin/cover scroll rig (`PanelContainer.tsx`) were removed —
 do not reintroduce them or look for that file; see **Scroll & entrance animation** below
@@ -88,6 +91,7 @@ Public routes are nested under `app/[locale]/` — `locale` is `"vi"` (default, 
 | `/[locale]/products/[categoryId]/[productId]/[shapeId]` | Server async | `await params`; per-shape page with its own `generateStaticParams`; shape ids go through `lib/shape-aliases.ts` |
 | `/[locale]/blog` | Server async | `await params` for `{ locale }` |
 | `/[locale]/blog/[slug]` | Server async | `await params`; `generateStaticParams` pre-generates every post in `blogPosts` (6 today) |
+| `/[locale]/[...rest]` | Server | Catch-all that only calls `notFound()`, so unknown URLs (and every other `notFound()` under `[locale]`) render `[locale]/not-found.tsx` — a localized 404 (namespace `notFound`, Navbar + Footer). Without it `[locale]` as the top-level segment never reaches that file |
 
 Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
 
@@ -96,13 +100,20 @@ Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
 | `/admin/*` | CMS UI — own root layout, Vietnamese only. See **Admin CMS** |
 | `/api/admin/*` | CMS API (auth, blog, media, products, translations, translate) |
 | `/api/consult` | Public. Receives quote/consult leads from `QuoteModal` / `ConsultBottomSheet`, emails them |
-| `/zalo-reply` | Client page that copies a prepared reply message and opens Zalo |
+| `/zalo-reply` | Client page that copies a prepared reply message and opens Zalo (`noindex`) |
+| `/api/health` | Liveness for the Docker healthcheck: always 200 while the process serves, body `{ status, db: "ok" \| "down" }` — a database outage must not mark the app unhealthy |
+| `/robots.txt` | `app/robots.ts` — disallows `/admin`, `/api/`, `/zalo-reply`; no `sitemap` entry until Phase 4 |
 
 `/products` and `/blog` have their own `layout.tsx` that wraps Navbar + Footer
 (the `[categoryId]/[productId]` detail pages nest under the `/products` layout).
 Root `app/[locale]/layout.tsx` calls `generateStaticParams` for all five locales and
 `setRequestLocale` — today every nested page/layout under it is statically generated per
 locale (this changes when content moves to the database — see **Admin CMS**).
+
+**SEO today:** per-page `title` + `description` only (5 languages), `metadataBase` from `SITE_URL`,
+`noindex` on `/admin` and `/zalo-reply`. Canonical, `hreflang` (+ `x-default`), Open Graph, JSON-LD
+and `sitemap.xml` are Phase 4 (`lib/seo`); the SEO fields (`seo_title`, `seo_description`,
+`og_media_id`) go into the Phase 3a schema — see `docs/data-model.md` §11.5a.
 
 ---
 
@@ -307,7 +318,7 @@ design, the seed rules and the owner-review list are in `docs/data-model.md` (+ 
   (Today: `getAdminSession()`. From Phase 2: `requireUser()` / `requireApiUser()` in `lib/dal.ts`.)
 - **Validate every write body** with zod; never `await request.json() as SomeType`.
 - **No secrets or default credentials in source.** Read config through `lib/env.ts`
-  once it exists (Phase 1) and fail fast when it is missing.
+  (never `process.env` directly) and fail fast when it is missing.
 - **Mutations must invalidate the public site** — `revalidateTag(tag, { expire: 0 })`
   (two-argument form) from a Route Handler.
 - **Don't import `lib/content-store.ts` or `lib/admin-auth.ts` from public pages**; both
@@ -323,26 +334,57 @@ design, the seed rules and the owner-review list are in `docs/data-model.md` (+ 
 ---
 
 ## Environment variables
-Read today, with no central validation yet (`lib/env.ts` is planned for Phase 1):
+All config goes through `lib/env.ts` (zod) — never read `process.env` directly in new code. It has
+four independently validated groups, each behind its own lazy accessor so one group's problem never
+breaks an unrelated consumer: `getDatabaseEnv()`, `getMailEnv()`, `getLogEnv()`, `getSiteEnv()`.
+`assertEnv()` validates all four at once at server start (`instrumentation.ts` →
+`instrumentation-node.ts`) and **exits with code 1** on a bad config, printing variable names, never
+values. It is skipped during `next build`, so the Docker build stage needs no secrets.
 
-| Variable | Read by | Notes |
+| Variable | Group | Notes |
 |---|---|---|
-| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | `app/api/consult/route.ts` | All three are required to send mail. **If any is unset, a consult lead is only logged with `console.info` and never emailed.** |
-| `SMTP_PORT` (default 587), `SMTP_SECURE`, `SMTP_FROM` | same | Optional |
-| `CONSULT_RECEIVER_EMAIL` | same | Defaults to `CONTACT_EMAIL` in `lib/contact.ts` |
-| `ADMIN_USERNAME`, `ADMIN_PASSWORD` | `lib/admin-auth.ts` | Fall back to insecure defaults in code; removed in Phase 2 |
+| `DATABASE_URL` | database | `postgres://` URL, required; in production its password must be ≥ 12 characters |
+| `SITE_URL` | site | Public origin, no path. Required in production (dev default `http://localhost:3000`). **Needed at build time too** — pages are prerendered, so it is baked in (docker build arg) |
+| `LOG_LEVEL` | logging | `fatal` … `trace` / `silent`; default `info` in production, `debug` in dev, `silent` under test |
+| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | mail | **Required in production.** Elsewhere, if any is unset a consult lead is only logged (phone masked) and never emailed |
+| `SMTP_PORT` (587), `SMTP_SECURE`, `SMTP_FROM`, `CONSULT_RECEIVER_EMAIL` | mail | Optional; the receiver defaults to `CONTACT_EMAIL` in `lib/contact.ts` |
+| `POSTGRES_PASSWORD`, `APP_DB_PASSWORD`, `SITE_ADDRESS`, `HTTP_PORT`, `HTTPS_PORT`, `APP_TAG` | compose only | Interpolated by `compose.yaml` / `compose.dev.yaml`; the app never reads them. See `.env.example` |
+| `ADMIN_USERNAME`, `ADMIN_PASSWORD` | legacy | `lib/admin-auth.ts` only; insecure fallbacks, removed in Phase 2 |
 
-`.env*` is gitignored — never commit real values. The local `.env` may still hold
-`PAYLOAD_SECRET` / `DATABASE_URI` from the abandoned Payload branch; nothing on this
-branch reads them.
+`.env*` is gitignored except `.env.example` — never commit real values. `pnpm dev` needs
+`DATABASE_URL` (and `SITE_URL` for `pnpm build`) in the local `.env` and exits at start-up without
+`DATABASE_URL`; the database container itself is optional (`/api/health` reports `db: "down"`).
+The local `.env` may still hold `PAYLOAD_SECRET` / `DATABASE_URI` from the abandoned Payload
+branch; nothing reads them.
+
+### Logging
+Server code logs with `getLogger("scope")` from `lib/logger.ts` (pino, JSON lines on stdout) —
+no `console.*` on the server (client components may use `console.error`). Pass errors as
+`{ err }`. Values under keys named `password`, `token`, `secret`, `authorization` or `cookie` are
+censored to depth 2, but still never log request bodies or headers wholesale; mask phone numbers
+with `maskPhone()`. `instrumentation.ts` logs uncaught request errors through `onRequestError`
+(method, path without query string, route, error — no headers).
 
 ---
 
-## Docker & deployment **(planned — Phase 1 / 6 / 7)**
-The production target is Docker Compose on a single VPS (Caddy → Next standalone app →
-Postgres, single app instance). There is no `Dockerfile` or `compose.yaml` yet; the
-design and runbook are in `docs/deployment.md`. `next.config.ts` currently carries a
-Vercel-era `outputFileTracingExcludes` workaround for `public/` that is removed in Phase 4.
+## Docker & deployment
+Production target: Docker Compose on a single VPS. Files: `Dockerfile` (stages `deps` → `build` →
+`runner`, plus `tools` for the migrate job), `compose.yaml` (`caddy` → `app` → `db`, plus a one-shot
+`migrate`), `deploy/Caddyfile`, `deploy/db-init/` (creates the DML-only `vietdragon_app` role on
+first init), `.env.example`. `compose.dev.yaml` is Postgres only, on `127.0.0.1:5432`, for `pnpm dev`.
+Runbook and rationale: `docs/deployment.md`.
+- The app connects as `vietdragon_app` (SELECT/INSERT/UPDATE/DELETE only — no DDL, no TRUNCATE);
+  `migrate` runs as the owner. Never point the app at the owner role.
+- App container: non-root, read-only root FS (writable: `/tmp` and the `.next/cache` volume),
+  `cap_drop: ALL`, no published ports. `db` sits on an `internal` network. **One app instance only.**
+- Building needs internet (`next/font/google`) and `--build-arg SITE_URL=…` — nothing else.
+- `deploy/Caddyfile` 404s `/admin*` and `/api/admin/*` (the legacy admin is unsafe and writes to the
+  source tree — **remove those blocks when Phase 2 lands**) and `/api/health` (internal healthcheck only).
+  It overwrites `X-Real-IP` with the TCP peer.
+- `output: "standalone"` does not copy `public/` or `.next/static`; the runner stage does.
+  `next.config.ts` still carries the Vercel-era `outputFileTracingExcludes` workaround for `public/`,
+  removed in Phase 4. The image is ~1.1 GB mostly because ~1,700 prerendered pages ship in
+  `.next/server/app`; request-time rendering (Phase 4) shrinks it.
 
 ---
 
@@ -381,9 +423,16 @@ zero warnings.
 app/
   [locale]/                 public site — layout mounts SmoothScroll, QuoteModalProvider, FloatingContact, LanguageDetectorToast
   admin/                    CMS UI — own root layout, Vietnamese only, outside next-intl (see Admin CMS)
+  [locale]/not-found.tsx    localized 404 (Navbar + Footer); reached via the [locale]/[...rest] catch-all
   api/consult/              public lead endpoint (nodemailer)
+  api/health/               liveness for the Docker healthcheck (always 200; db state in the body)
   api/admin/                CMS API: auth, blog, media, products, translations, translate
+  robots.ts                 robots.txt (no sitemap yet)
   zalo-reply/               client page: copy a prepared reply, open Zalo
+instrumentation.ts          register(): env fail-fast (Node runtime only, skipped at build) · onRequestError → lib/logger
+instrumentation-node.ts     validateEnvOrExit() — Node-only, imported dynamically so the Edge bundle stays clean
+drizzle.config.ts, drizzle/ drizzle-kit config (loads .env via @next/env) · migrations — empty journal until Phase 3a
+Dockerfile, compose.yaml, compose.dev.yaml, .env.example, .dockerignore, deploy/   see Docker & deployment
 i18n/
   routing.ts               defineRouting({ locales: [vi, en, zh, ja, ko], defaultLocale: vi })
   navigation.ts             Locale-aware Link/usePathname/useRouter/redirect — import from here, not next/*
@@ -395,6 +444,9 @@ hooks/
   use-section-in-view.ts    Shared useRef + useInView(once, margin -80px)
   use-current-hash.ts, use-hash-pulse.ts   Current-hash tracking and hash-target pulse highlight
 lib/
+  env.ts                    zod-validated config: getDatabaseEnv/getMailEnv/getLogEnv/getSiteEnv + assertEnv (relative imports: drizzle.config.ts loads it outside Next)
+  logger.ts                 getLogger(scope) (pino, redaction), maskPhone(), logRequestError()
+  db/index.ts               lazy pg Pool + drizzle handle (getPool/getDb/pingDatabase); schema arrives in Phase 3a
   locale.ts                 pickLocale(locale, vi, en, zh?, ja?, ko?) for data/*.ts fields
   contact.ts                Phone / Zalo / email constants
   motion.ts                 imageWipeReveal Motion variant (clip-path wipe-down reveal)

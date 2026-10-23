@@ -425,5 +425,11 @@
     "openZaloNow": "Chat qua Zalo ngay",
     "close": "Đóng",
     "phoneError": "Vui lòng nhập số điện thoại hợp lệ (10 số)."
+  },
+  "notFound": {
+    "title": "Không tìm thấy trang",
+    "description": "Trang bạn đang tìm không tồn tại hoặc đã được chuyển đi. Hãy quay về trang chủ hoặc xem các sản phẩm in ấn của Viet Dragon.",
+    "homeCta": "Về trang chủ",
+    "productsCta": "Xem sản phẩm"
   }
 }

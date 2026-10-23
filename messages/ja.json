@@ -425,5 +425,11 @@
     "openZaloNow": "Zalo で直接相談する",
     "close": "閉じる",
     "phoneError": "有効な電話番号を入力してください。"
+  },
+  "notFound": {
+    "title": "ページが見つかりません",
+    "description": "お探しのページは存在しないか、移動した可能性があります。ホームに戻るか、Viet Dragon の印刷商品をご覧ください。",
+    "homeCta": "ホームに戻る",
+    "productsCta": "商品を見る"
   }
 }

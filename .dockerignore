@@ -1,0 +1,26 @@
+# Never send secrets, VCS history or local tooling into the build context.
+.git
+.env*
+.claude
+.codegraph
+.playwright-mcp
+.DS_Store
+
+# Rebuilt inside the image.
+node_modules
+.next
+*.tsbuildinfo
+next-env.d.ts
+
+# Not part of the app.
+template
+media
+docs
+mau.txt
+README.md
+
+# Deployment files are consumed by compose, not by the image.
+Dockerfile
+.dockerignore
+compose*.yaml
+deploy

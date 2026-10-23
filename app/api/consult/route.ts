@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import { CONTACT_EMAIL } from "@/lib/contact";
+import { getMailEnv } from "@/lib/env";
+import { getLogger, maskPhone } from "@/lib/logger";
+
+const log = getLogger("consult");
 
 const PHONE_REGEX = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/;
-const TARGET_EMAIL = process.env.CONSULT_RECEIVER_EMAIL ?? CONTACT_EMAIL;
+const SMTPS_PORT = 465;
 
 interface ConsultPayload {
   phone: string;
@@ -23,6 +26,8 @@ function formatZaloPhone(phone: string): string {
 
 export async function POST(req: Request) {
   try {
+    const mail = getMailEnv();
+    const targetEmail = mail.CONSULT_RECEIVER_EMAIL;
     const body = (await req.json()) as Partial<ConsultPayload>;
     const phone = body.phone?.trim() ?? "";
     const productName = body.productName?.trim() ?? "Sản phẩm Viet Dragon";
@@ -145,7 +150,7 @@ export async function POST(req: Request) {
     <!-- Footer -->
     <tr>
       <td style="padding: 20px 32px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; font-size: 12px; color: #94a3b8;">
-        Email thông báo tự động từ Website <strong>vietdragon.vn</strong> tới <strong>${TARGET_EMAIL}</strong>
+        Email thông báo tự động từ Website <strong>vietdragon.vn</strong> tới <strong>${targetEmail}</strong>
       </td>
     </tr>
   </table>
@@ -153,14 +158,12 @@ export async function POST(req: Request) {
 </html>
     `.trim();
 
-    // Check if SMTP environment variables are configured
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
+    // SMTP is only guaranteed in production (lib/env.ts); elsewhere an unset one just logs the lead.
+    const { SMTP_HOST: smtpHost, SMTP_USER: smtpUser, SMTP_PASS: smtpPass } = mail;
 
     if (smtpHost && smtpUser && smtpPass) {
-      const port = Number(process.env.SMTP_PORT ?? 587);
-      const secure = process.env.SMTP_SECURE === "true" || port === 465;
+      const port = mail.SMTP_PORT;
+      const secure = mail.SMTP_SECURE || port === SMTPS_PORT;
 
       const transporter = nodemailer.createTransport({
         host: smtpHost,
@@ -173,22 +176,19 @@ export async function POST(req: Request) {
       });
 
       await transporter.sendMail({
-        from: process.env.SMTP_FROM ?? `"Viet Dragon Web" <${smtpUser}>`,
-        to: TARGET_EMAIL,
+        from: mail.SMTP_FROM ?? `"Viet Dragon Web" <${smtpUser}>`,
+        to: targetEmail,
         subject: emailSubject,
         text: `Số điện thoại: ${phone}\nNhắn tin qua Zalo: ${zaloChatLink}\nSản phẩm: ${productName}\n${consultQuote}`,
         html: htmlContent,
       });
     } else {
-      // In development or when SMTP is not configured, log the email details
-      console.info("[CONSULT REQUEST - SIMULATED EMAIL DISPATCH]", {
-        to: TARGET_EMAIL,
-        subject: emailSubject,
-        phone,
-        productName,
-        materialName,
-        zaloChatLink,
-      });
+      // In development or when SMTP is not configured, log the lead instead of emailing it.
+      // The phone is masked: the subject and Zalo link embed the full number, so they are omitted.
+      log.info(
+        { to: targetEmail, phone: maskPhone(phone), productName, materialName },
+        "consult lead not emailed: SMTP is not configured",
+      );
     }
 
     return NextResponse.json({
@@ -197,7 +197,7 @@ export async function POST(req: Request) {
       zaloChatLink,
     });
   } catch (error) {
-    console.error("Consult API Error:", error);
+    log.error({ err: error }, "consult submission failed");
     return NextResponse.json(
       { error: "Đã xảy ra lỗi khi gửi yêu cầu. Vui lòng thử lại sau." },
       { status: 500 }

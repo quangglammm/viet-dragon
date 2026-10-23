@@ -11,6 +11,7 @@ const sans = Be_Vietnam_Pro({
 export const metadata: Metadata = {
   title: "Viet Dragon - Zalo Reply",
   description: "Viet Dragon Chat Bridge",
+  robots: { index: false, follow: false },
 };
 
 export default function ZaloReplyLayout({

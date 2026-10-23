@@ -17,6 +17,7 @@ const heading = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "Viet Dragon Admin Portal | Quản Trị Hệ Thống In Ấn & Nội Dung",
   description: "Trang quản trị sản phẩm in ấn, bảng giá, media và đa ngôn ngữ Viet Dragon Printing.",
+  robots: { index: false, follow: false },
 };
 
 export default function AdminRootLayout({

@@ -10,6 +10,9 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const EXCLUDE_PUBLIC_FROM_TRACE = ["./public/**/*"];
 
 const nextConfig: NextConfig = {
+  // Self-contained server for the Docker image (.next/standalone). It does not copy
+  // `public/` or `.next/static` — the Dockerfile's runner stage does.
+  output: "standalone",
   outputFileTracingExcludes: {
     "**/*": EXCLUDE_PUBLIC_FROM_TRACE,
   },
