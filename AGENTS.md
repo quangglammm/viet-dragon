@@ -27,6 +27,7 @@ Other v16 facts, verified against those docs:
 | pino | 10.x | Server logging — only through `lib/logger.ts`, see **Logging** below |
 | Drizzle ORM · drizzle-kit · `pg` | 0.45.x · 0.31.x · 8.x | PostgreSQL access (`lib/db`) and migrations (`drizzle.config.ts`); schema so far = auth + audit tables only (content tables arrive in Phase 3a) |
 | Better Auth · `@better-auth/drizzle-adapter` · `auth` CLI | 1.7.12 (exact, keep all three in lockstep) | Invite-only accounts, DB sessions, admin plugin (roles). `@node-rs/argon2` hashes passwords. See **Authentication** below |
+| tsx | 4.x | Runs `scripts/admin-cli.ts` (`admin:create` / `admin:reset-password`). Dev dependency, also used inside the Docker `tools` image |
 
 GSAP/ScrollTrigger and the old pin/cover scroll rig (`PanelContainer.tsx`) were removed —
 do not reintroduce them or look for that file; see **Scroll & entrance animation** below
@@ -39,7 +40,8 @@ This project uses **pnpm** (pinned via `packageManager` in `package.json`) — n
 - Install deps: `pnpm install` — never `npm install`/`yarn install`. Running the wrong tool
   regenerates `package-lock.json`/`yarn.lock` as a second, conflicting lockfile.
 - Add a dependency: `pnpm add <pkg>` · dev dependency: `pnpm add -D <pkg>`
-- Run scripts: `pnpm dev`, `pnpm build` (runs `next build --webpack`), `pnpm start`, `pnpm lint`, `pnpm test`, `pnpm test:int`
+- Run scripts: `pnpm dev`, `pnpm build` (runs `next build --webpack`), `pnpm start`, `pnpm lint`, `pnpm test`, `pnpm test:int`,
+  `pnpm admin:create`, `pnpm admin:reset-password <email>` (see **Authentication**)
 - `pnpm-lock.yaml` is the only lockfile committed — if `package-lock.json` or `yarn.lock`
   ever reappear (e.g. an editor auto-ran `npm install`), delete them, don't commit them.
 - `pnpm-workspace.yaml` holds `allowBuilds` approvals for deps with native build scripts
@@ -337,11 +339,19 @@ design, the seed rules and the owner-review list are in `docs/data-model.md` (+ 
   `xVi`/`x`/`xZh` suffix fields — new text goes in a `*_i18n` table or `messages/`.
 - Admin text is Vietnamese-only and the admin stays outside `app/[locale]`.
 
-### Authentication (Phase 2 — in progress)
-**Landed (M1–M4):** Better Auth core (`lib/auth.ts`), schema + migrations, roles (`lib/permissions.ts`), `/api/auth/*`,
+### Authentication (Phase 2 — complete)
+**Landed (M1–M5):** Better Auth core (`lib/auth.ts`), schema + migrations, roles (`lib/permissions.ts`), `/api/auth/*`,
 the security hooks (`lib/auth/hooks.ts`), the DAL (`lib/dal.ts`), the `proxy.ts` admin branch, and the admin UI (login,
-forced password change, account/sessions, users, audit) and the `/api/admin/*` guards (M4). **Not there yet:** there is no
-`pnpm admin:create` (M5) — until then the first admin is created with a scratch script calling `getAuth().api.createUser`.
+forced password change, account/sessions, users, audit), the `/api/admin/*` guards (M4) and the admin CLI (M5).
+- **Admin CLI** (`scripts/admin-cli.ts`, logic in `scripts/admin/`): `pnpm admin:create` makes an `admin` (the first one, or
+  recovery when every admin is locked out) and `pnpm admin:reset-password <email>` sets a new password. Shell access to the
+  server IS the authorization, so neither needs a session. Passwords are typed twice at a hidden raw-mode prompt and are never
+  accepted from arguments, the environment or a pipe (no TTY → refuses). `create` goes through Better Auth's session-less
+  `createUser`, so the policy hook and the `user.created` audit row (actor `cli`) apply and the new admin is NOT forced to
+  change the password. `reset-password` cannot use `setUserPassword` (it needs a session), so it works on the auth context
+  directly and repeats what the admin-UI reset does: forced change, all sessions ended, lockout lifted, `user.password_reset`
+  audit row (actor `cli`); a deactivated account stays deactivated. In Docker:
+  `docker compose --env-file <env> run --rm admin-cli create` (never `-T`); it connects as the DML-only app role.
 - **Admin UI conventions:** sign-in and every account/user action go through the browser client `lib/auth-client.ts`
   (HTTP `/api/auth/*`, so rate limit + hooks + audit apply). Error codes become Vietnamese text in
   `lib/auth/error-messages.ts` — unknown codes get a generic line, never the server's English message. A
@@ -365,7 +375,7 @@ forced password change, account/sessions, users, audit) and the `/api/admin/*` g
 - **Tests:** `pnpm test` (unit, no database) and `pnpm test:int` (needs `docker compose -f compose.dev.yaml up -d`; it
   creates and drops a throwaway database per run). `audit_log` is append-only, so integration tests use unique emails/IPs
   (`tests/helpers/auth.ts`) instead of cleaning up. Run both before committing auth changes.
-- Accounts are **invite-only** (`disableSignUp`); the first admin comes from `pnpm admin:create` (M5), never from a default.
+- Accounts are **invite-only** (`disableSignUp`); the first admin comes from `pnpm admin:create`, never from a default.
   New accounts get a temporary password and `mustChangePassword` (forced change at first login).
 - Roles: `admin` (users, audit, media delete, content) and `editor` (content, media upload). **Deactivate (ban), never
   delete** — `audit_log` and the content tables foreign-key `app_user`. Impersonation and `user:delete` exist in no role.
@@ -416,8 +426,8 @@ with `maskPhone()`. `instrumentation.ts` logs uncaught request errors through `o
 
 ## Docker & deployment
 Production target: Docker Compose on a single VPS. Files: `Dockerfile` (stages `deps` → `build` →
-`runner`, plus `tools` for the migrate job), `compose.yaml` (`caddy` → `app` → `db`, plus a one-shot
-`migrate`), `deploy/Caddyfile`, `deploy/db-init/` (creates the DML-only `vietdragon_app` role on
+`runner`, plus `tools` for the migrate job and the admin CLI), `compose.yaml` (`caddy` → `app` → `db`, plus a one-shot
+`migrate` and the on-demand `admin-cli` under profile `tools`), `deploy/Caddyfile`, `deploy/db-init/` (creates the DML-only `vietdragon_app` role on
 first init), `.env.example`. `compose.dev.yaml` is Postgres only, on `127.0.0.1:5432`, for `pnpm dev`.
 Runbook and rationale: `docs/deployment.md`.
 - The app connects as `vietdragon_app` (SELECT/INSERT/UPDATE/DELETE only — no DDL, no TRUNCATE);
@@ -526,6 +536,7 @@ data/
   material-traits.ts        MaterialTrait icon glossary for product-option bullets
   content/                  JSON written by the current admin (only posts.json is read by the site)
 scripts/
+  admin-cli.ts, admin/      `pnpm admin:create` / `admin:reset-password` — entry + prompt.ts (hidden raw-mode input), commands.ts (testable logic), rules.ts, errors.ts
   optimize-images.mjs       sharp-based image optimization script (run by hand)
 components/
   providers/

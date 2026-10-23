@@ -8,6 +8,8 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
+    "admin:create": "tsx scripts/admin-cli.ts create",
+    "admin:reset-password": "tsx scripts/admin-cli.ts reset-password",
     "auth:schema": "auth generate --config lib/auth.cli.ts --adapter drizzle --dialect pg --output lib/db/auth-schema.ts -y",
     "test": "vitest run",
     "test:int": "vitest run --config vitest.int.config.mts",
@@ -52,6 +54,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5",
     "vitest": "^5.0.5"
   }

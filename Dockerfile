@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 #
 # deps -> build -> runner   (the production app image)
-#     \-> tools             (one-shot jobs: drizzle migrate; seed / admin:create arrive in later phases)
+#     \-> tools             (one-shot jobs: drizzle migrate, the admin CLI; seed arrives in Phase 3)
 #
 # Build:  docker build --build-arg SITE_URL=https://vietdragon.vn --target runner .
 # The build stage needs NO secrets (`.env*` is in .dockerignore). SITE_URL is the exception only
@@ -61,9 +61,14 @@ WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json tsconfig.json drizzle.config.ts ./
-# drizzle.config.ts imports lib/env.ts, which imports lib/contact.ts.
-COPY lib/env.ts lib/contact.ts ./lib/
+# drizzle.config.ts needs lib/env.ts (+ lib/contact.ts); the admin CLI imports Better Auth, the DAL's helpers and
+# the schema through the `@/` alias, so it gets all of lib/ — it is a one-shot image, size does not matter.
+COPY lib ./lib
+COPY scripts/admin-cli.ts ./scripts/admin-cli.ts
+COPY scripts/admin ./scripts/admin
 COPY drizzle ./drizzle
+# Fail the BUILD if tsx's native esbuild was silently skipped by a flaky install, or if the `@/` alias / lib/ copy is wrong.
+RUN node_modules/.bin/tsx -e "import('@/lib/auth/constants').then((m) => console.log('tsx and @/ alias work:', m.COOKIE_PREFIX))"
 USER node
 # Invoked by path: corepack/pnpm would try to download pnpm again at run time as a non-root user.
 CMD ["node_modules/.bin/drizzle-kit", "migrate"]

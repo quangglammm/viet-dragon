@@ -118,6 +118,35 @@ services:
     security_opt: ["no-new-privileges:true"]
     logging: *default-logging
 
+  # Break-glass account management — not started by `up` (profile). Create the first admin, or recover:
+  #   docker compose --env-file /etc/vietdragon/.env run --rm admin-cli create
+  #   docker compose --env-file /etc/vietdragon/.env run --rm admin-cli reset-password someone@example.com
+  # Interactive (hidden password prompt), so `run` must keep its terminal: never pass -T. Connects as the
+  # DML-only app role, exactly like the app — it creates rows and never needs DDL.
+  admin-cli:
+    profiles: [tools]
+    build:
+      context: .
+      target: tools
+    image: viet-dragon-tools:${APP_TAG:-local}
+    entrypoint: ["node_modules/.bin/tsx", "scripts/admin-cli.ts"]
+    restart: "no"
+    stdin_open: true
+    tty: true
+    environment:
+      DATABASE_URL: postgres://vietdragon_app:${APP_DB_PASSWORD:?set APP_DB_PASSWORD}@db:5432/vietdragon
+      SITE_URL: ${SITE_URL:?set SITE_URL}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET}
+    networks: [internal]
+    depends_on:
+      db:
+        condition: service_healthy
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    logging: *default-logging
+
 networks:
   edge: {}
   # No route to the internet or the host: the database is reachable only from app and migrate.
