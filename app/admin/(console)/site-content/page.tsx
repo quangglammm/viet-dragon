@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { AdminShell } from "@/components/admin/admin-shell";
 import {
   Save,
   Check,
@@ -202,7 +201,7 @@ export default function AdminSiteContentPage() {
   const currentData: SectionData = (bundle?.[activeLocale] as unknown as SectionData) || {};
 
   return (
-    <AdminShell>
+    <>
       {/* Page Header */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
@@ -851,6 +850,6 @@ export default function AdminSiteContentPage() {
           )}
         </div>
       </div>
-    </AdminShell>
+    </>
   );
 }

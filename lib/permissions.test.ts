@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { can, DEFAULT_ROLE, hasPermission, isAdminRole, roles } from "./permissions";
+import { can, DEFAULT_ROLE, hasPermission, isAdminRole, isRole, ROLE_LABELS, ROLE_NAMES, roleLabel, roles } from "./permissions";
 
 describe("role matrix", () => {
   it.each([
@@ -83,5 +83,25 @@ describe("isAdminRole", () => {
     expect(isAdminRole("editor")).toBe(false);
     expect(isAdminRole("superadmin")).toBe(false);
     expect(isAdminRole(null)).toBe(false);
+  });
+});
+
+describe("role labels", () => {
+  it("has a Vietnamese label for every role, in the same order as the roles", () => {
+    expect(ROLE_NAMES).toEqual(Object.keys(roles));
+    expect(Object.keys(ROLE_LABELS).sort()).toEqual([...ROLE_NAMES].sort());
+  });
+
+  it("spells out stored values, including comma-separated and unknown ones", () => {
+    expect(roleLabel("admin")).toBe("Quản trị viên");
+    expect(roleLabel("editor, admin")).toBe("Biên tập viên, Quản trị viên");
+    expect(roleLabel("auditor")).toBe("auditor");
+    expect(roleLabel(null)).toBe("Chưa phân quyền");
+  });
+
+  it("isRole only accepts names that exist, not Object.prototype keys", () => {
+    expect(isRole("editor")).toBe(true);
+    expect(isRole("toString")).toBe(false);
+    expect(isRole("")).toBe(false);
   });
 });

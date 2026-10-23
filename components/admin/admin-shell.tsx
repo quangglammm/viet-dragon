@@ -1,161 +1,55 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  Languages,
-  Package,
-  FileText,
-  Image as ImageIcon,
-  LogOut,
-  ExternalLink,
-  Menu,
-  X,
-  Printer,
-  Bell,
-  ChevronRight,
-  ShieldCheck,
-  LayoutTemplate,
-  Sun,
-  Moon,
-} from "lucide-react";
+import { ChevronRight, ExternalLink, LogOut, Menu, Printer, ShieldCheck, X } from "lucide-react";
+import { buildNav, isNavItemActive } from "@/components/admin/admin-nav";
+import { ThemeToggle, useAdminTheme } from "@/components/admin/admin-theme";
+import { ACCOUNT_PATH, ADMIN_LOGIN_PATH } from "@/lib/admin-access";
+import { authClient } from "@/lib/auth-client";
+import type { SessionUser } from "@/lib/dal";
+import { roleLabel } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
-const NAV_ITEMS = [
-  {
-    href: "/admin/site-content",
-    label: "Quản Lý Giao Diện & Ảnh",
-    subtitle: "Sửa tất cả chữ & ảnh website",
-    icon: LayoutTemplate,
-  },
-  {
-    href: "/admin/products",
-    label: "Sản Phẩm & Quy Cách In",
-    subtitle: "20 sản phẩm · 8 danh mục",
-    icon: Package,
-  },
-  {
-    href: "/admin/translations",
-    label: "Bản Dịch 5 Ngôn Ngữ",
-    subtitle: "VI · EN · ZH · JA · KO",
-    icon: Languages,
-  },
-  {
-    href: "/admin/media",
-    label: "Thư Viện Mẫu In & Ảnh",
-    subtitle: "Ảnh mẫu in, bao bì & xưởng",
-    icon: ImageIcon,
-  },
-  {
-    href: "/admin/blog",
-    label: "Kiến Thức & Tin Tức In",
-    subtitle: "Mẹo in ấn, case study",
-    icon: FileText,
-  },
-];
+type AdminShellProps = {
+  /** Already authenticated by the server layout (lib/dal.ts) — the shell never decides access itself. */
+  user: Pick<SessionUser, "name" | "email" | "role">;
+  showLegacyEditors: boolean;
+  children: React.ReactNode;
+};
 
-export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>) {
+export function AdminShell({ user, showLegacyEditors, children }: Readonly<AdminShellProps>) {
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [authChecking, setAuthChecking] = useState(true);
-  const [adminUser, setAdminUser] = useState<string>("admin");
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useAdminTheme();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const saved = localStorage.getItem("vd_admin_theme") as "light" | "dark" | null;
-      const initialTheme = saved === "dark" ? "dark" : "light";
-      setTheme(initialTheme);
-      if (initialTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    }, 0);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const toggleTheme = (newTheme: "light" | "dark") => {
-    setTheme(newTheme);
-    localStorage.setItem("vd_admin_theme", newTheme);
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  };
-
-  useEffect(() => {
-    fetch("/api/admin/auth/me")
-      .then((res) => {
-        if (!res.ok) {
-          router.replace("/admin/login");
-        } else {
-          return res.json();
-        }
-      })
-      .then((data) => {
-        if (data?.username) setAdminUser(data.username);
-        setAuthChecking(false);
-      })
-      .catch(() => {
-        router.replace("/admin/login");
-      });
-  }, [router]);
+  const sections = buildNav(user.role, showLegacyEditors);
+  const currentLabel = sections.flatMap((section) => section.items).find((item) => isNavItemActive(pathname, item.href))?.label;
 
   const handleLogout = async () => {
-    try {
-      await fetch("/api/admin/auth/logout", { method: "POST" });
-      router.replace("/admin/login");
-    } catch {
-      router.replace("/admin/login");
-    }
+    await authClient.signOut().catch(() => undefined);
+    router.replace(ADMIN_LOGIN_PATH);
   };
 
-  if (authChecking) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-[#09052f] text-white">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-9 w-9 animate-spin rounded-full border-3 border-brand-primary border-t-transparent" />
-          <div className="flex items-center gap-2 text-sm font-semibold tracking-wide text-zinc-300">
-            <Printer size={16} className="text-brand-primary animate-pulse" />
-            <span>Đang kết nối hệ thống quản trị Viet Dragon...</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Find active nav item for breadcrumb
-  const currentNav = NAV_ITEMS.find(
-    (item) => pathname === item.href || pathname.startsWith(item.href)
-  ) || NAV_ITEMS[0];
-
   return (
-    <div className={cn(
-      "admin-theme-root flex min-h-screen font-sans transition-colors duration-200",
-      theme === "dark" ? "bg-[#080526] text-white dark" : "bg-[#f4f6fb] text-slate-900"
-    )}>
+    // Colours come from `dark:` variants, not from `theme` state: the inline script in app/admin/layout.tsx
+    // puts `dark` on <html> before the first paint, so a full page load never flashes the light theme.
+    <div className="admin-theme-root flex min-h-screen bg-[#f4f6fb] font-sans text-slate-900 transition-colors duration-200 dark:bg-[#080526] dark:text-white">
       {/* Mobile Sidebar Overlay */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-xs lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      {sidebarOpen && <div className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-xs lg:hidden" onClick={() => setSidebarOpen(false)} />}
 
       {/* Sidebar - Viet Dragon Deep Navy */}
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-[#09052f] text-white transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 shadow-2xl",
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          sidebarOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         {/* Brand Header */}
         <div className="flex h-20 items-center justify-between border-b border-white/10 px-6 bg-[#060322]">
-          <Link href="/admin/site-content" className="flex items-center gap-3">
+          <Link href={ACCOUNT_PATH} className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-brand-primary via-purple-500 to-pink-500 text-white shadow-lg shadow-brand-primary/40">
               <Printer size={20} strokeWidth={2.5} />
             </div>
@@ -172,7 +66,9 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
             </div>
           </Link>
           <button
+            type="button"
             onClick={() => setSidebarOpen(false)}
+            aria-label="Đóng menu"
             className="rounded-lg p-1.5 text-zinc-400 hover:bg-white/10 hover:text-white lg:hidden"
           >
             <X size={20} />
@@ -180,65 +76,59 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
         </div>
 
         {/* Navigation Section */}
-        <nav className="flex-1 space-y-1.5 px-4 py-6 overflow-y-auto">
-          <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-2">
-            Danh Mục Quản Trị
-          </p>
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
-            const isActive =
-              pathname === item.href || pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setSidebarOpen(false)}
-                className={cn(
-                  "group flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-semibold transition-all duration-200",
-                  isActive
-                    ? "bg-gradient-to-r from-brand-primary to-purple-600 text-white shadow-lg shadow-brand-primary/30 font-bold"
-                    : "text-zinc-300 hover:bg-white/8 hover:text-white"
-                )}
-              >
-                <div
-                  className={cn(
-                    "flex h-9 w-9 items-center justify-center rounded-xl transition-colors",
-                    isActive
-                      ? "bg-white/20 text-white"
-                      : "bg-white/5 text-zinc-400 group-hover:bg-white/10 group-hover:text-white"
-                  )}
-                >
-                  <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
-                </div>
-                <div className="flex-1">
-                  <div className="leading-tight">{item.label}</div>
-                  <div
+        <nav className="flex-1 space-y-6 px-4 py-6 overflow-y-auto">
+          {sections.map((section) => (
+            <div key={section.title} className="space-y-1.5">
+              <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-2">{section.title}</p>
+              {section.items.map((item) => {
+                const Icon = item.icon;
+                const isActive = isNavItemActive(pathname, item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setSidebarOpen(false)}
                     className={cn(
-                      "text-[10px] mt-0.5 font-normal",
-                      isActive ? "text-purple-200" : "text-zinc-400"
+                      "group flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-semibold transition-all duration-200",
+                      isActive
+                        ? "bg-gradient-to-r from-brand-primary to-purple-600 text-white shadow-lg shadow-brand-primary/30 font-bold"
+                        : "text-zinc-300 hover:bg-white/8 hover:text-white",
                     )}
                   >
-                    {item.subtitle}
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+                    <div
+                      className={cn(
+                        "flex h-9 w-9 items-center justify-center rounded-xl transition-colors",
+                        isActive ? "bg-white/20 text-white" : "bg-white/5 text-zinc-400 group-hover:bg-white/10 group-hover:text-white",
+                      )}
+                    >
+                      <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="leading-tight">{item.label}</div>
+                      <div className={cn("text-[10px] mt-0.5 font-normal", isActive ? "text-purple-200" : "text-zinc-400")}>{item.subtitle}</div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </nav>
 
         {/* User Card & Action Footer */}
         <div className="border-t border-white/10 bg-[#060322] p-4">
-          <div className="mb-3 flex items-center justify-between rounded-xl bg-white/5 p-3 border border-white/5">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                <ShieldCheck size={16} />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-white capitalize">{adminUser}</p>
-                <p className="text-[10px] text-emerald-400 font-medium">Quản lý xưởng & Báo giá</p>
-              </div>
+          <Link
+            href={ACCOUNT_PATH}
+            onClick={() => setSidebarOpen(false)}
+            className="mb-3 flex items-center gap-2.5 rounded-xl border border-white/5 bg-white/5 p-3 transition-colors hover:bg-white/10"
+          >
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              <ShieldCheck size={16} />
             </div>
-          </div>
+            <div className="min-w-0">
+              <p className="truncate text-xs font-bold text-white">{user.name}</p>
+              <p className="truncate text-[10px] font-medium text-emerald-400">{roleLabel(user.role)}</p>
+            </div>
+          </Link>
 
           <div className="grid grid-cols-2 gap-2">
             <Link
@@ -249,7 +139,8 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
               <ExternalLink size={12} /> Xem Web
             </Link>
             <button
-              onClick={handleLogout}
+              type="button"
+              onClick={() => void handleLogout()}
               className="flex items-center justify-center gap-1.5 rounded-xl bg-rose-500/15 px-3 py-2 text-xs font-semibold text-rose-300 transition-colors hover:bg-rose-500/25 cursor-pointer"
             >
               <LogOut size={12} /> Thoát
@@ -259,81 +150,40 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
       </aside>
 
       {/* Main Layout Area */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* Top Header Bar */}
         <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6 shadow-xs lg:h-20 lg:px-10 dark:bg-[#060322] dark:border-white/10 dark:text-white transition-colors duration-200">
           <div className="flex items-center gap-4">
             <button
+              type="button"
               onClick={() => setSidebarOpen(true)}
+              aria-label="Mở menu"
               className="rounded-xl border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 lg:hidden dark:border-white/10 dark:text-zinc-300 dark:hover:bg-white/10 cursor-pointer"
             >
               <Menu size={20} />
             </button>
 
             {/* Breadcrumb */}
-            <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-zinc-400">
-              <Link href="/admin/site-content" className="hover:text-brand-primary transition-colors">
+            <div className="hidden shrink-0 items-center gap-2 whitespace-nowrap text-xs font-medium text-slate-500 sm:flex dark:text-zinc-400">
+              <Link href={ACCOUNT_PATH} className="hover:text-brand-primary transition-colors">
                 Admin
               </Link>
               <ChevronRight size={14} className="text-slate-400" />
-              <span className="font-bold text-slate-800 dark:text-white">{currentNav.label}</span>
+              <span className="font-bold text-slate-800 dark:text-white">{currentLabel ?? "Quản trị"}</span>
             </div>
           </div>
 
           {/* Quick Header Actions */}
           <div className="flex items-center gap-3">
-            {/* Quick Link to Customer Website */}
             <div className="hidden md:flex items-center gap-1.5 rounded-xl bg-purple-50 border border-purple-100 px-3 py-1.5 text-xs text-purple-700 font-semibold dark:bg-brand-primary/20 dark:border-brand-primary/30 dark:text-purple-300">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Xưởng In & Showroom: <strong>TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương</strong></span>
-            </div>
-
-            {/* Theme Toggle (Sun & Moon Icons Only - No Text) */}
-            <div className="flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200/80 dark:bg-white/10 dark:border-white/10">
-              <button
-                type="button"
-                onClick={() => toggleTheme("light")}
-                className={cn(
-                  "flex h-8 w-8 items-center justify-center rounded-lg transition-all cursor-pointer",
-                  theme === "light"
-                    ? "bg-white text-amber-500 shadow-xs"
-                    : "text-slate-400 hover:text-slate-600 dark:text-zinc-400 dark:hover:text-white"
-                )}
-                title="Giao diện sáng"
-                aria-label="Giao diện sáng"
-              >
-                <Sun size={16} />
-              </button>
-              <button
-                type="button"
-                onClick={() => toggleTheme("dark")}
-                className={cn(
-                  "flex h-8 w-8 items-center justify-center rounded-lg transition-all cursor-pointer",
-                  theme === "dark"
-                    ? "bg-[#1e293b] text-purple-300 shadow-xs dark:bg-brand-primary dark:text-white"
-                    : "text-slate-400 hover:text-slate-600 dark:text-zinc-400 dark:hover:text-white"
-                )}
-                title="Giao diện tối"
-                aria-label="Giao diện tối"
-              >
-                <Moon size={16} />
-              </button>
-            </div>
-
-            {/* Notification Indicator */}
-            <Link
-              href="/admin/site-content"
-              title="Thông báo hệ thống"
-              className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:border-brand-primary hover:text-brand-primary transition-colors dark:bg-white/5 dark:border-white/10 dark:text-zinc-300 dark:hover:text-white"
-            >
-              <Bell size={18} />
-              <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-400 opacity-75" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-rose-500" />
+              <span>
+                Xưởng In & Showroom: <strong>TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương</strong>
               </span>
-            </Link>
+            </div>
 
-            {/* View Live Site Button */}
+            <ThemeToggle theme={theme} onChange={setTheme} />
+
             <Link
               href="/"
               target="_blank"
@@ -346,10 +196,7 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
         </header>
 
         {/* Content Canvas */}
-        <main className={cn(
-          "flex-1 overflow-y-auto p-6 lg:p-10 transition-colors duration-200",
-          theme === "dark" ? "bg-[#080526]" : "bg-[#f4f6fb]"
-        )}>
+        <main className="flex-1 overflow-y-auto bg-[#f4f6fb] p-6 transition-colors duration-200 lg:p-10 dark:bg-[#080526]">
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>
       </div>

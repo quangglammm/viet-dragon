@@ -285,25 +285,29 @@ the VPS/Docker runbook in `docs/deployment.md`. Sections marked **(planned)** de
 target — until a phase lands, the "current state" below is the truth.
 
 ### Current state (`develop`)
-- UI: `app/admin/{site-content,products,blog,media,translations,login}`; shell in
-  `components/admin/admin-shell.tsx`. The admin has its own root layout
-  (`app/admin/layout.tsx`, Vietnamese-only UI) and sits **outside** `app/[locale]` and
-  outside next-intl.
+- UI: the admin has its own root layout (`app/admin/layout.tsx`, Vietnamese-only UI) and sits
+  **outside** `app/[locale]` and outside next-intl. `app/admin/login` and `app/admin/account/password`
+  (the forced change) are standalone dark-card pages (`AuthCardShell`); everything else lives in the
+  route group `app/admin/(console)/`, whose server layout calls `requireUser()` and renders
+  `components/admin/admin-shell.tsx`. Console pages: `account`, `users` and `audit` (new, Phase 2) plus
+  the five legacy editors `site-content`, `products`, `blog`, `media`, `translations` (client components,
+  no longer wrapping themselves in the shell; hidden from the sidebar when `NODE_ENV=production`).
 - API: `app/api/admin/{auth,blog,media,products,translations,translate}`. Persistence is
   `lib/content-store.ts`, which reads and writes `data/content/*.json`, `messages/*.json`
   and `public/uploads/` on the **local filesystem**.
-- Auth: `lib/admin-auth.ts` — one shared password, a hardcoded fallback password and
-  session secret, and a base64 cookie that anyone with the source can forge. **Not safe
-  to deploy; do not copy this pattern.** Page access is only checked client-side
-  (`AdminShell` → `/api/admin/auth/me`); each API route checks `getAdminSession()`.
+- Auth: **pages** are now guarded by Better Auth (see **Authentication**). The legacy editors' **API routes**
+  (`app/api/admin/{blog,media,products,translations,translate}`) still check `getAdminSession()` from
+  `lib/admin-auth.ts` — one shared password, a hardcoded fallback password and session secret, and a base64
+  cookie that anyone with the source can forge. **Not safe to deploy; do not copy this pattern.** Because
+  sign-in no longer sets that cookie, the five legacy editor pages load but their data calls answer 401
+  until M4 swaps those guards for `requireApiUser`.
 - **The public site does not see admin edits at runtime**: products come from static
   `data/subgroups-catalog.ts`, blog posts from `data/posts.ts` (bundles
   `data/content/posts.json` at build time), UI copy from `messages/*.json` (bundled at
   build time by `i18n/request.ts`). Edits only show in `next dev` or after a rebuild —
   and `products.json` / `subgroups.json` are never read at all.
 - `/api/admin/translate` is a stub (returns the input unchanged unless it is one of six
-  hardcoded nav labels). The admin sidebar's counts ("20 sản phẩm · 8 danh mục") are
-  hardcoded and wrong (the catalog has 25 subgroups in 4 categories).
+  hardcoded nav labels).
 
 ### Target **(planned — see the phases in `docs/admin-architecture.md`)**
 PostgreSQL + Drizzle ORM · Better Auth with invite-only named accounts and `admin` /
@@ -334,11 +338,19 @@ design, the seed rules and the owner-review list are in `docs/data-model.md` (+ 
 - Admin text is Vietnamese-only and the admin stays outside `app/[locale]`.
 
 ### Authentication (Phase 2 — in progress)
-**Landed (M1–M2):** Better Auth core (`lib/auth.ts`), schema + migrations, roles (`lib/permissions.ts`), `/api/auth/*`,
-the security hooks (`lib/auth/hooks.ts`), the DAL (`lib/dal.ts`) and the `proxy.ts` admin branch. **Not wired yet:** the
-admin UI (M3) and the `/api/admin/*` routes (M4) still use the legacy `lib/admin-auth.ts`. **Until M3 the legacy admin is
-unreachable by design:** the proxy redirects every `/admin/*` request without a `vd.session_token` cookie to `/admin/login`,
-and the legacy login only sets the old cookie.
+**Landed (M1–M3):** Better Auth core (`lib/auth.ts`), schema + migrations, roles (`lib/permissions.ts`), `/api/auth/*`,
+the security hooks (`lib/auth/hooks.ts`), the DAL (`lib/dal.ts`), the `proxy.ts` admin branch, and the admin UI (login,
+forced password change, account/sessions, users, audit). **Not wired yet:** the `/api/admin/*` content routes (M4) still use
+the legacy `lib/admin-auth.ts`, and there is no `pnpm admin:create` (M5) — until then the first admin is created with a
+scratch script calling `getAuth().api.createUser`.
+- **Admin UI conventions:** sign-in and every account/user action go through the browser client `lib/auth-client.ts`
+  (HTTP `/api/auth/*`, so rate limit + hooks + audit apply). Error codes become Vietnamese text in
+  `lib/auth/error-messages.ts` — unknown codes get a generic line, never the server's English message. A
+  `SESSION_NOT_FRESH` failure shows `FailureNotice`'s "Đăng nhập lại", which calls `reauthenticate()` (sign out →
+  `/admin/login?next=…&reason=fresh`). Temporary passwords are generated in the admin's browser
+  (`lib/auth/temp-password.ts`), shown once in a dialog that cannot be dismissed by accident, and never stored. The shell
+  gets its colours from `dark:` variants (the inline script in `app/admin/layout.tsx` sets `dark` on `<html>` before paint),
+  not from React state — state-driven colours flash light on every full load.
 - **Access control lives in the DAL, close to the data** — never only in a layout (it does not re-render on client
   navigation) or the proxy (it sees cookie presence, nothing more). Every admin page calls `requireUser({ permission? })`;
   every `/api/admin/*` handler calls `requireApiUser(request, permission?, { contentType? })` and returns `auth.response` when
@@ -459,7 +471,7 @@ zero warnings.
 ```
 app/
   [locale]/                 public site — layout mounts SmoothScroll, QuoteModalProvider, FloatingContact, LanguageDetectorToast
-  admin/                    CMS UI — own root layout, Vietnamese only, outside next-intl (see Admin CMS)
+  admin/                    CMS UI — own root layout, Vietnamese only, outside next-intl (see Admin CMS); login/, account/password/ standalone; (console)/ = shell + account, users, audit + legacy editors
   [locale]/not-found.tsx    localized 404 (Navbar + Footer); reached via the [locale]/[...rest] catch-all
   api/consult/              public lead endpoint (nodemailer)
   api/health/               liveness for the Docker healthcheck (always 200; db state in the body)
@@ -487,10 +499,14 @@ lib/
   auth.cli.ts               eager `auth` export for the Better Auth CLI only (`pnpm auth:schema` regenerates lib/db/auth-schema.ts)
   auth/constants.ts, password.ts   cookie prefix + session/lockout/rate-limit tuning (import-free) · hashPassword/verifyPassword (argon2id), password policy
   auth/hooks.ts             Better Auth before/after hooks: lockout, session freshness, password policy, self-action rule, audit trail
-  auth/lockout.ts, audit.ts per-account lock state machine (pure `applyFailure` + transactional persistence) · `recordAudit` (append-only audit_log, never throws)
+  auth/lockout.ts, audit.ts per-account lock state machine (pure `applyFailure` + transactional persistence) · `recordAudit` + `AUDIT_ACTIONS`/`AUDIT_ACTION_LABELS` (append-only audit_log, never throws)
+  auth/error-messages.ts, temp-password.ts   auth error code → Vietnamese text (+ Retry-After parsing) · browser-side temporary password generator — both client-safe
+  auth-client.ts            browser Better Auth client (`adminClient({ ac, roles })`) + `reauthenticate()`
+  audit-query.ts            read side of audit_log for /admin/audit: `parseAuditFilters`, `queryAuditLog` (filters, paging, resolves the target's email), `auditPageHref`
+  format-date.ts, user-agent.ts, search-params.ts   Asia/Ho_Chi_Minh date formatting (same output on server and client) · "Chrome trên macOS" device label · `firstParam()` for `searchParams`
   dal.ts                    the authorization point: getSessionUser, requireUser (pages), requireApiUser (Route Handlers: 401/403/415, same-origin check)
-  admin-access.ts           pure /admin routing decision for proxy.ts + `safeAdminNextPath` (open-redirect guard) — import-free
-  permissions.ts            access control: roles `admin` / `editor`, `can()` / `hasPermission()` — one source of truth for DAL, UI and the admin plugin
+  admin-access.ts           pure /admin routing decision for proxy.ts + `safeAdminNextPath` (open-redirect guard) + the shared admin paths — import-free
+  permissions.ts            access control: roles `admin` / `editor`, `can()` / `hasPermission()`, Vietnamese `ROLE_LABELS` — one source of truth for DAL, UI and the admin plugin
   db/schema.ts, auth-schema.ts   Drizzle schema: auth-schema.ts is GENERATED (never hand-edit); schema.ts adds login_attempt + audit_log (append-only)
   logger.ts                 getLogger(scope) (pino, redaction), maskPhone(), logRequestError()
   db/index.ts               lazy pg Pool + drizzle handle (getPool/getDb/pingDatabase); schema arrives in Phase 3a
@@ -517,7 +533,9 @@ components/
   providers/
     SmoothScroll.tsx        Lenis init (desktop only, ≥1024px) — no GSAP, no pinning
     quote-modal-provider.tsx  Context that opens the QuoteModal from anywhere
-  admin/                    admin-shell, donut-chart, media-card, media-delete-modal, media-picker-modal
+  admin/                    admin-shell (+ admin-nav.ts role-filtered sidebar, admin-theme.tsx), auth-card-shell, password-field, notice, failure-notice, modal, page-parts (PageHeader, AdminCard, button/input classes)
+    account/, users/, audit/   sessions panel · users manager (cards, create / confirm / one-time-password dialogs, user-actions.ts) · audit filter form + table
+    donut-chart, media-card, media-delete-modal, media-picker-modal   legacy editors' pieces
   sections/                 all "use client"; landing page order = page.tsx import order
     Navbar.tsx              Fixed top nav, mobile hamburger drawer, 5-locale flag switcher
     *DesktopSubmenu.tsx, *MobileSubmenu.tsx   Mega-menu panels for Marketing / Office / Packaging / Tet

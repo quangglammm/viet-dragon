@@ -1,9 +1,9 @@
 import { APIError, createAuthMiddleware, getSessionFromCtx } from "better-auth/api";
 import { getLogger } from "@/lib/logger";
 import { CLI_ACTOR, recordAudit, requestMeta, type AuditAction } from "./audit";
-import { SESSION_FRESH_AGE_SECONDS } from "./constants";
+import { PASSWORD_POLICY_MESSAGE, SESSION_FRESH_AGE_SECONDS } from "./constants";
 import { clearAttempts, getLockState, lockSecondsRemaining, normalizeEmailKey, registerFailure } from "./lockout";
-import { PASSWORD_POLICY_MESSAGE, violatesPasswordPolicy } from "./password";
+import { violatesPasswordPolicy } from "./password";
 
 // Better Auth hooks that close the gaps found in the Phase 2 spike:
 //   * per-account lockout (the library only rate-limits per IP)

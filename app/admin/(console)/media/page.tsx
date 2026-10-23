@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
-import { AdminShell } from "@/components/admin/admin-shell";
 import {
   Upload,
   Copy,
@@ -236,7 +235,7 @@ export default function AdminMediaPage() {
   };
 
   return (
-    <AdminShell>
+    <>
       {/* Header */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
@@ -573,6 +572,6 @@ export default function AdminMediaPage() {
         onConfirmDelete={handleConfirmDelete}
         formatFileSize={formatFileSize}
       />
-    </AdminShell>
+    </>
   );
 }

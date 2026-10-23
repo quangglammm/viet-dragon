@@ -21,6 +21,21 @@ export const AUDIT_ACTIONS = [
 ] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 
+/** Vietnamese label per action — exhaustive, so adding an action without a label fails to compile. */
+export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
+  "auth.sign_in": "Đăng nhập",
+  "auth.sign_in_failed": "Đăng nhập sai",
+  "auth.account_locked": "Khóa tài khoản tạm thời",
+  "auth.sign_out": "Đăng xuất",
+  "auth.password_changed": "Đổi mật khẩu",
+  "user.created": "Tạo tài khoản",
+  "user.role_changed": "Đổi vai trò",
+  "user.banned": "Vô hiệu hóa tài khoản",
+  "user.unbanned": "Kích hoạt lại tài khoản",
+  "user.password_reset": "Đặt lại mật khẩu",
+  "user.sessions_revoked": "Thu hồi phiên đăng nhập",
+};
+
 /** Who acted when there is no signed-in user: the CLI (`pnpm admin:create`) or an unauthenticated visitor. */
 export const CLI_ACTOR = "cli";
 

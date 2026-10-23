@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { AdminShell } from "@/components/admin/admin-shell";
 import {
   Save,
   Search,
@@ -245,7 +244,7 @@ export default function AdminTranslationsPage() {
   };
 
   return (
-    <AdminShell>
+    <>
       {/* Header */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
@@ -427,6 +426,6 @@ export default function AdminTranslationsPage() {
           })}
         </div>
       )}
-    </AdminShell>
+    </>
   );
 }

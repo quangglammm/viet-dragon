@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import { cache } from "react";
-import { ADMIN_LOGIN_PATH } from "@/lib/admin-access";
+import { ACCOUNT_PATH, ADMIN_LOGIN_PATH, PASSWORD_CHANGE_PATH } from "@/lib/admin-access";
 import { getAuth } from "@/lib/auth";
 import { getSiteEnv } from "@/lib/env";
 import { hasPermission, type Permission } from "@/lib/permissions";
@@ -10,9 +10,6 @@ import { hasPermission, type Permission } from "@/lib/permissions";
 // The Data Access Layer: the ONE place that decides "who is this and may they do that". Every
 // admin page and every /api/admin/* handler calls it — proxy.ts and layouts are only convenience
 // (a layout does not re-render on client navigation, so it can never be the access check).
-
-export const ACCOUNT_PATH = "/admin/account";
-export const PASSWORD_CHANGE_PATH = "/admin/account/password";
 
 /** What the UI may know about the signed-in user — never the session token, password hash or ban fields. */
 export type SessionUser = {

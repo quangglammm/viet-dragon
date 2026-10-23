@@ -4,6 +4,8 @@
 
 export const ADMIN_ROOT = "/admin";
 export const ADMIN_LOGIN_PATH = "/admin/login";
+export const ACCOUNT_PATH = "/admin/account";
+export const PASSWORD_CHANGE_PATH = "/admin/account/password";
 
 const MAX_NEXT_LENGTH = 512;
 // Control characters and backslashes (browsers read `\` as `/`, so `/\evil.example` is protocol-relative).

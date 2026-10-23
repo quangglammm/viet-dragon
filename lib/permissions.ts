@@ -34,13 +34,27 @@ export const roles = {
 export type Role = keyof typeof roles;
 export const DEFAULT_ROLE: Role = "editor";
 
+/** Admin UI is Vietnamese-only; this is the one place role names are spelled out for people. */
+export const ROLE_LABELS: Record<Role, string> = { admin: "Quản trị viên", editor: "Biên tập viên" };
+export const ROLE_NAMES = Object.keys(roles) as Role[];
+
 export type Resource = keyof typeof statements;
 type Action<R extends Resource> = (typeof statements)[R][number];
 /** A `[resource, action]` pair, typed so each action belongs to its resource. */
 export type Permission = { [R in Resource]: readonly [R, Action<R>] }[Resource];
 
-function isRole(value: string): value is Role {
+export function isRole(value: string): value is Role {
   return Object.hasOwn(roles, value);
+}
+
+/** "Quản trị viên" for a stored role value (which may hold several, comma-separated). */
+export function roleLabel(role: string | null | undefined): string {
+  if (!role) return "Chưa phân quyền";
+  return role
+    .split(",")
+    .map((part) => part.trim())
+    .map((name) => (isRole(name) ? ROLE_LABELS[name] : name))
+    .join(", ");
 }
 
 /** The admin plugin stores several roles comma-separated; any one of them may grant the action. */

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { AdminShell } from "@/components/admin/admin-shell";
 import {
   Save,
   Check,
@@ -301,7 +300,7 @@ export default function AdminProductsPage() {
   });
 
   return (
-    <AdminShell>
+    <>
       {/* Header */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
@@ -1110,6 +1109,6 @@ export default function AdminProductsPage() {
         title={pickerConfig.title}
         currentValue={pickerConfig.currentValue}
       />
-    </AdminShell>
+    </>
   );
 }

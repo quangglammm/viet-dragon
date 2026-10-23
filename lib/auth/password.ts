@@ -1,8 +1,6 @@
 import { type Algorithm, hash, verify } from "@node-rs/argon2";
 import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from "./constants";
 
-export const PASSWORD_POLICY_MESSAGE = `Mật khẩu phải có từ ${MIN_PASSWORD_LENGTH} đến ${MAX_PASSWORD_LENGTH} ký tự.`;
-
 /**
  * Better Auth enforces the length limits on change-password and set-user-password, but NOT on the
  * admin plugin's create-user — the hooks call this for every path that sets a password.
