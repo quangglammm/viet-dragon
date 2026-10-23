@@ -1,16 +1,22 @@
 # Viet Dragon – Agent Instructions
 
 ## Read the docs before touching Next.js APIs
-This project uses **Next.js 16.2.9** — breaking changes from earlier versions are real.
+This project uses **Next.js 16.2.x** (16.2.12 installed) — breaking changes from earlier versions are real.
 Read `node_modules/next/dist/docs/` before writing any Next.js-specific code.
 Most important breaking change: **`params` is now `Promise<{...}>`** — always `await params` in page and metadata functions.
+
+Other v16 facts, verified against those docs:
+- `proxy.ts` (not `middleware.ts`) defaults to the **Node.js runtime**.
+- `revalidateTag(tag, profile)` needs the second argument (`{ expire: 0 }` for immediate expiry
+  from a Route Handler); the one-argument form is deprecated.
+- `output: "standalone"` does **not** copy `public/` or `.next/static` — a Docker image must copy them itself.
 
 ---
 
 ## Stack & exact versions
 | Package | Version | Notes |
 |---|---|---|
-| Next.js | 16.2.9 | App Router, React Server Components |
+| Next.js | 16.2.x (16.2.12 installed) | App Router, React Server Components |
 | React | 19.2.4 | |
 | Tailwind CSS | v4 | `@theme inline` syntax — no `tailwind.config.ts` |
 | Motion | 12.x | Import from `"motion/react"` — NOT `"framer-motion"` |
@@ -29,7 +35,7 @@ This project uses **pnpm** (pinned via `packageManager` in `package.json`) — n
 - Install deps: `pnpm install` — never `npm install`/`yarn install`. Running the wrong tool
   regenerates `package-lock.json`/`yarn.lock` as a second, conflicting lockfile.
 - Add a dependency: `pnpm add <pkg>` · dev dependency: `pnpm add -D <pkg>`
-- Run scripts: `pnpm dev`, `pnpm build`, `pnpm start`, `pnpm lint`
+- Run scripts: `pnpm dev`, `pnpm build` (runs `next build --webpack`), `pnpm start`, `pnpm lint`
 - `pnpm-lock.yaml` is the only lockfile committed — if `package-lock.json` or `yarn.lock`
   ever reappear (e.g. an editor auto-ran `npm install`), delete them, don't commit them.
 - `pnpm-workspace.yaml` holds `allowBuilds` approvals for deps with native build scripts
@@ -43,44 +49,60 @@ This project uses **pnpm** (pinned via `packageManager` in `package.json`) — n
 
 ## Project overview
 **Viet Dragon** (vietdragon.vn) — professional printing company, TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương.
-- Two real language **modes** — Vietnamese (default, unprefixed URLs) and English
-  (`/en/...`) — switchable via the flag toggle in `Navbar.tsx`. Content shows in ONE
-  language at a time; never render both inline (`"VI · EN"` strings) — see
-  **Internationalization** below.
+- Five locales — Vietnamese (`vi`, default, unprefixed URLs), English (`en`), Chinese (`zh`),
+  Japanese (`ja`) and Korean (`ko`), all non-default ones prefixed (`/en/...`, `/zh/...`) —
+  switchable via the flag dropdown in `Navbar.tsx`. Content shows in ONE language at a
+  time; never render both inline (`"VI · EN"` strings) — see **Internationalization** below.
 - Primary CTA everywhere: **"Nhận Báo Giá" / "Get a Quote"** → `/#cta`
 - Visual direction: white/neutral backgrounds, printed product images take the spotlight
 - Real photos live under `public/images/<section>/` (hero, about, category, product,
   portfolio, service, quality, cta, faq, blog) — these `<Image>`s render without an
   `unoptimized` prop. Exception: **testimonial avatars** (`Testimonials.tsx`) still hit
   `picsum.photos/seed/vdt{1,2,3}/80/80`, so `next.config.ts`'s `images.remotePatterns`
-  entry for `picsum.photos` must stay until those are replaced. See
-  `docs/image-shotlist.md` for the generation prompts if regenerating/replacing any shot.
+  entry for `picsum.photos` must stay until those are replaced.
 - `public/videos/about.mp4` — background/loop video used by the About section.
 - Floating chrome rendered outside the section stack: `FloatingContact` (Zalo + phone
   buttons, bottom-right, global in `app/[locale]/layout.tsx`) and `MaterialGlossaryFab`
   (bottom-left icon-legend popover, product detail page only, when the product has
   `optionGroups`). Shared phone/Zalo constants live in `lib/contact.ts` — reuse those
-  instead of re-hardcoding the number.
+  instead of re-hardcoding the number. `app/[locale]/layout.tsx` also mounts
+  `QuoteModalProvider` (the quote modal) and `LanguageDetectorToast`.
+- Consult leads: `QuoteModal` and `ConsultBottomSheet` both POST to `/api/consult`, which emails
+  the lead via nodemailer (SMTP env vars — see **Environment variables**). `/zalo-reply` is a
+  standalone client page (outside `[locale]`) that copies a prepared reply and opens Zalo.
 
 ---
 
 ## Routes
-Every route is nested under `app/[locale]/` — `locale` is `"vi"` (default, unprefixed:
-`/`, `/products`) or `"en"` (prefixed: `/en`, `/en/products`).
+Public routes are nested under `app/[locale]/` — `locale` is `"vi"` (default, unprefixed:
+`/`, `/products`) or one of `"en"`, `"zh"`, `"ja"`, `"ko"` (prefixed: `/en`, `/en/products`,
+`/zh/products`, …).
 
 | Route | Type | Notes |
 |---|---|---|
-| `/[locale]` | Server | 16 stacked sections (Hero → Footer), no scroll pinning |
-| `/[locale]/products` | Server async | `await params` for `{ locale }` |
-| `/[locale]/products/[categoryId]` | Server async | `await params`; `generateStaticParams` pre-generates all 4 categories (locales handled by the parent layout) |
-| `/[locale]/products/[categoryId]/[productId]` | Server async | `await params`; `generateStaticParams` pre-generates every product across all categories; renders `MaterialFlashcard` per option and, when the product has `optionGroups`, `MaterialGlossaryFab` |
+| `/[locale]` | Server | Navbar + 17 stacked sections (Hero → Footer, including `PartnerLogos`), no scroll pinning |
+| `/[locale]/products` | Server async | `await params`; showcase gallery + the 4 `MAIN_CATEGORIES` cards |
+| `/[locale]/products/fast-print` | Server + client | "In nhanh lấy liền" page; interactive part in `FastPrintClient.tsx` |
+| `/[locale]/products/[categoryId]` | Server async | `await params`; `generateStaticParams` pre-generates the 4 categories (locales handled by the parent layout) |
+| `/[locale]/products/[categoryId]/[productId]` | Server async | `await params`; `generateStaticParams`; product = a subgroup from `data/subgroups-catalog.ts`; renders `MaterialFlashcard` per option and, when the product has `optionGroups`, `MaterialGlossaryFab` |
+| `/[locale]/products/[categoryId]/[productId]/[shapeId]` | Server async | `await params`; per-shape page with its own `generateStaticParams`; shape ids go through `lib/shape-aliases.ts` |
 | `/[locale]/blog` | Server async | `await params` for `{ locale }` |
-| `/[locale]/blog/[slug]` | Server async | `await params`; `generateStaticParams` pre-generates all 6 posts |
+| `/[locale]/blog/[slug]` | Server async | `await params`; `generateStaticParams` pre-generates every post in `blogPosts` (6 today) |
 
-Both `/products` and `/blog` have their own `layout.tsx` that wraps Navbar + Footer
-(the `[categoryId]/[productId]` detail page nests under the `/products` layout).
-Root `app/[locale]/layout.tsx` calls `generateStaticParams` for both locales and
-`setRequestLocale` — every nested page/layout under it is statically generated per locale.
+Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
+
+| Route | Notes |
+|---|---|
+| `/admin/*` | CMS UI — own root layout, Vietnamese only. See **Admin CMS** |
+| `/api/admin/*` | CMS API (auth, blog, media, products, translations, translate) |
+| `/api/consult` | Public. Receives quote/consult leads from `QuoteModal` / `ConsultBottomSheet`, emails them |
+| `/zalo-reply` | Client page that copies a prepared reply message and opens Zalo |
+
+`/products` and `/blog` have their own `layout.tsx` that wraps Navbar + Footer
+(the `[categoryId]/[productId]` detail pages nest under the `/products` layout).
+Root `app/[locale]/layout.tsx` calls `generateStaticParams` for all five locales and
+`setRequestLocale` — today every nested page/layout under it is statically generated per
+locale (this changes when content moves to the database — see **Admin CMS**).
 
 ---
 
@@ -148,12 +170,25 @@ element inside the existing column/grid div instead of appending it as a row sib
 ---
 
 ## Data files
-- `data/categories.ts` — `ProductCategory[]` (4 categories: Tiếp thị/Marketing, Văn phòng/Office,
-  Bao bì/Packaging, Ấn phẩm Tết/Tet Publications — item counts vary per category); exports
-  `showcaseImages`. Every name/description field is split `xVi`/`x` (English) — read with
-  `pickLocale()`, never both at once.
-- `data/posts.ts` — `BlogPost[]` (6 posts); exports `categoryColors`. Same split pattern,
-  including full article bodies (`content` / `contentEn`).
+- `data/subgroups-catalog.ts` (≈9,200 lines) — **source of truth for products as the public site
+  renders them today**: `MAIN_CATEGORIES` (4: Tiếp thị/Marketing, Văn phòng/Office, Bao bì/Packaging,
+  Ấn phẩm Tết/Tet Publications) and `SUBGROUPS_CATALOG` (25 subgroups — 7 marketing, 6 office,
+  4 packaging, 8 tet — with 77 shapes and 101 materials in total); lookups via
+  `getSubgroupById()` / `getSubgroupsByCategory()`. Product and category pages import from here.
+- `data/categories.ts` — the **types** (`ProductCategory`, `ProductItem`, `ProductOption`,
+  `ProductOptionGroup`) plus `showcaseImages`. Every name/description field is split `xVi`/`x`
+  (English) with optional `xZh`/`xJa`/`xKo` — read with `pickLocale()`, never several at once.
+- `data/translations.ts` — extra zh/ja/ko text kept **outside** the records
+  (`SHOWCASE_LABELS`, `CATEGORY_NAMES`, `CATEGORY_DESCS`, `ITEM_NAMES`, `ITEM_DESCS`,
+  `SHAPE_DESCS`, keyed by id). Product pages read it directly.
+- `data/posts.ts` — `BlogPost` type, `blogPosts` (6 posts, **imported from
+  `data/content/posts.json`** at build time) and `categoryColors`. Same `xVi`/`x` split,
+  including full article bodies (`content` / `contentEn` / `contentZh` / …).
+- `data/marketing-menu.ts`, `office-menu.ts`, `packaging-menu.ts`, `tet-menu.ts` — Navbar
+  mega-menu column definitions, consumed by the `*DesktopSubmenu` / `*MobileSubmenu` components.
+- `data/content/*.json` — files written by the current admin (`posts.json`, `products.json`,
+  `subgroups.json`). Only `posts.json` is read by the site (via `data/posts.ts`); `products.json`
+  and `subgroups.json` are **not read by any public page**.
 - `data/material-traits.ts` — `Record<MaterialTraitKey, MaterialTrait>` icon glossary for
   `ProductOption.descriptionTraits` bullets (in `data/categories.ts`); consumed by
   `MaterialFlashcard` (per-bullet icon) and `MaterialGlossaryFab` (full legend popover).
@@ -164,39 +199,44 @@ element inside the existing column/grid div instead of appending it as a row sib
   those live inline in the component, zipped with `messages/*.json` `t.raw("items")`).
 - **`data/*.ts` vs `messages/*.json`**: structured records with a stable shape (categories,
   products, blog posts, material traits) live in `data/` with `xVi`/`x` field pairs. Pure UI
-  copy (headings, buttons, FAQ, checklists) lives in `messages/vi.json` + `messages/en.json` —
+  copy (headings, buttons, FAQ, checklists) lives in `messages/<locale>.json` (all five) —
   see Internationalization below. Don't move one into the other's convention.
 
 ---
 
 ## Internationalization
-`next-intl` with `/[locale]` App Router segment routing. `vi` is default/unprefixed
-(`/`, `/products`), `en` is prefixed (`/en`, `/en/products`) — `localePrefix: "as-needed"`
-in `i18n/routing.ts`.
+`next-intl` with `/[locale]` App Router segment routing. Locales: `vi` (default/unprefixed:
+`/`, `/products`), `en`, `zh`, `ja`, `ko` (prefixed: `/en`, `/zh/products`, …) —
+`localePrefix: "as-needed"` and `localeDetection: false` in `i18n/routing.ts`.
 
 - **Always import `Link`, `usePathname`, `useRouter` from `@/i18n/navigation`** for internal
   links/navigation — never `next/link` or `next/navigation`. Using the plain Next.js versions
-  is the single easiest way to break EN-locale navigation (links silently drop the `/en`
-  prefix). `WipeButton` already does this internally.
+  is the single easiest way to break non-default-locale navigation (links silently drop the
+  `/en`, `/zh`, … prefix). `WipeButton` already does this internally. (The admin and
+  `/zalo-reply` live outside `[locale]` and correctly use the plain Next.js versions.)
 - **UI copy** (headings, buttons, checklists, FAQ, etc.) lives in
-  `messages/vi.json` / `messages/en.json`, namespaced per section (`about`, `shop`, `faq`, …).
+  `messages/{vi,en,zh,ja,ko}.json`, namespaced per section (`about`, `shop`, `faq`, …).
   Read with `useTranslations("namespace")` (client components) or
-  `getTranslations({ locale, namespace })` (server/async). Both files must stay in sync —
-  diff their flattened key sets after editing either one (a missing key throws at runtime).
+  `getTranslations({ locale, namespace })` (server/async). **All five files must stay in
+  sync** — diff their flattened key sets after editing any one (a missing key throws at
+  runtime). `i18n/request.ts` loads them with a build-time dynamic `import()`, so editing
+  the JSON at runtime has no effect on a production build.
 - **List content** (arrays of translated objects — FAQ items, process steps) — use
   `t.raw("key")`, which returns the JSON array/object unprocessed. Keep non-translatable
   metadata (icons, hrefs, image seeds, `highlighted` flags) in the component as a
   locale-agnostic array and zip it with `t.raw()` by index — see `Portfolio.tsx` for the
   pattern.
-- **`data/*.ts` fields** (not UI copy) — read via `pickLocale(locale, viValue, enValue)`
-  from `lib/locale.ts`, with `locale` from `useLocale()` (client) or the page's own
-  `params.locale` (server).
-- **Never render both languages inline** (`"VI · EN"` or `{vi} / {en}`) — one locale
+- **`data/*.ts` fields** (not UI copy) — read via
+  `pickLocale(locale, viValue, enValue, zhValue?, jaValue?, koValue?)` from `lib/locale.ts`
+  (falls back to the English value when a zh/ja/ko value is `undefined`), with `locale` from
+  `useLocale()` (client) or the page's own `params.locale` (server).
+- **Never render several languages inline** (`"VI · EN"` or `{vi} / {en}`) — one locale
   renders at a time.
-- Date formatting: `toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {...})` — see
-  `formatDate()` in the blog pages.
+- Date formatting: map the locale to a BCP-47 code (`vi-VN`, `en-US`, `zh-CN`, `ja-JP`,
+  `ko-KR`) before `toLocaleDateString` — see `formatDate()` in the blog pages.
 - `proxy.ts` (project root, **not** `middleware.ts` — Next 16 renamed the convention)
-  runs `next-intl`'s `createMiddleware(routing)`.
+  runs `next-intl`'s `createMiddleware(routing)`. Its `matcher` skips `api`, `admin`,
+  `zalo-reply`, `_next`, `_vercel` and any path containing a file extension.
 
 ## Reusable UI primitives
 Introduced to stop re-implementing the same JSX per section — reach for these before
@@ -208,8 +248,9 @@ writing a new eyebrow/heading/button/badge block:
 - `components/ui/icon-badge.tsx` — icon-in-circle badge (`size`: sm/md/lg, `rounded`: full/xl).
 - `hooks/use-section-in-view.ts` — the `useRef` + `useInView(ref, { once: true, margin: "-80px" })`
   pair, for sections where multiple children must reveal off one shared trigger.
-- `lib/locale.ts` — `pickLocale(locale, vi, en)` for `data/*.ts` field selection.
-- `lib/contact.ts` — `PHONE_NUMBER` / `ZALO_CHAT_URL` constants; reuse these instead of
+- `lib/locale.ts` — `pickLocale(locale, vi, en, zh?, ja?, ko?)` for `data/*.ts` field selection.
+- `lib/contact.ts` — phone / Zalo / email constants (`PHONE_NUMBER`, `PHONE_NUMBER_2`,
+  `ZALO_CHAT_URL`, `CONTACT_EMAIL`, plus `*_FORMATTED` variants); reuse these instead of
   re-hardcoding the phone/Zalo number in a new component (`FloatingContact` and
   `MaterialFlashcard` already do).
 
@@ -221,6 +262,87 @@ wrapper would need as many props as it saves.
 - Hash links must always be absolute: `/#cta`, `/#services`, `/#vision` — never bare `#cta`
 - Bare hashes (e.g. `#cta`) resolve relative to the current URL, breaking navigation from `/products` or `/blog`
 - Navbar breakpoint: `lg` (1024px) — hamburger shows on mobile AND tablet; full nav at desktop only
+
+---
+
+## Admin CMS
+**Status: being rebuilt** on branch `feature/admin-cms`. Decisions, phases and acceptance
+criteria live in `docs/admin-architecture.md`; the auth checklist in `docs/security.md`;
+the VPS/Docker runbook in `docs/deployment.md`. Sections marked **(planned)** describe the
+target — until a phase lands, the "current state" below is the truth.
+
+### Current state (`develop`)
+- UI: `app/admin/{site-content,products,blog,media,translations,login}`; shell in
+  `components/admin/admin-shell.tsx`. The admin has its own root layout
+  (`app/admin/layout.tsx`, Vietnamese-only UI) and sits **outside** `app/[locale]` and
+  outside next-intl.
+- API: `app/api/admin/{auth,blog,media,products,translations,translate}`. Persistence is
+  `lib/content-store.ts`, which reads and writes `data/content/*.json`, `messages/*.json`
+  and `public/uploads/` on the **local filesystem**.
+- Auth: `lib/admin-auth.ts` — one shared password, a hardcoded fallback password and
+  session secret, and a base64 cookie that anyone with the source can forge. **Not safe
+  to deploy; do not copy this pattern.** Page access is only checked client-side
+  (`AdminShell` → `/api/admin/auth/me`); each API route checks `getAdminSession()`.
+- **The public site does not see admin edits at runtime**: products come from static
+  `data/subgroups-catalog.ts`, blog posts from `data/posts.ts` (bundles
+  `data/content/posts.json` at build time), UI copy from `messages/*.json` (bundled at
+  build time by `i18n/request.ts`). Edits only show in `next dev` or after a rebuild —
+  and `products.json` / `subgroups.json` are never read at all.
+- `/api/admin/translate` is a stub (returns the input unchanged unless it is one of six
+  hardcoded nav labels). The admin sidebar's counts ("20 sản phẩm · 8 danh mục") are
+  hardcoded and wrong (the catalog has 25 subgroups in 4 categories).
+
+### Target **(planned — see the phases in `docs/admin-architecture.md`)**
+PostgreSQL + Drizzle ORM · Better Auth with invite-only named accounts and `admin` /
+`editor` roles · public pages reading content through `lib/content/*` (tag-cached, with a
+static-seed fallback) · validated media pipeline served from a volume · Docker Compose +
+Caddy on one VPS. **The customer must be able to edit every product attribute in all 5
+languages**, and edits are **drafts until published** (draft → preview → publish, every publish a
+restorable revision). The relational schema (validated against the real data), the draft/publish
+design, the seed rules and the owner-review list are in `docs/data-model.md` (+ `docs/data-model.sql`).
+
+### Rules for admin / CMS code
+- **Server-side access control only.** Every admin page and every `/api/admin/*` handler
+  must authenticate on the server; a client-side redirect is not access control.
+  (Today: `getAdminSession()`. From Phase 2: `requireUser()` / `requireApiUser()` in `lib/dal.ts`.)
+- **Validate every write body** with zod; never `await request.json() as SomeType`.
+- **No secrets or default credentials in source.** Read config through `lib/env.ts`
+  once it exists (Phase 1) and fail fast when it is missing.
+- **Mutations must invalidate the public site** — `revalidateTag(tag, { expire: 0 })`
+  (two-argument form) from a Route Handler.
+- **Don't import `lib/content-store.ts` or `lib/admin-auth.ts` from public pages**; both
+  are deleted by Phase 4 / Phase 2 respectively.
+- **Never write content to the filesystem at runtime** in new code — content goes to the
+  database (Phase 3), uploads to the uploads volume (Phase 5), never into `public/`.
+- **No product attribute in code.** Names, text, sizes, spec lists, icons, prices and menu
+  placement belong in the database and must have an editor control (a registry test enforces
+  it). Don't add new `if (name.includes(...))` heuristics, inline per-locale dictionaries, or
+  `xVi`/`x`/`xZh` suffix fields — new text goes in a `*_i18n` table or `messages/`.
+- Admin text is Vietnamese-only and the admin stays outside `app/[locale]`.
+
+---
+
+## Environment variables
+Read today, with no central validation yet (`lib/env.ts` is planned for Phase 1):
+
+| Variable | Read by | Notes |
+|---|---|---|
+| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | `app/api/consult/route.ts` | All three are required to send mail. **If any is unset, a consult lead is only logged with `console.info` and never emailed.** |
+| `SMTP_PORT` (default 587), `SMTP_SECURE`, `SMTP_FROM` | same | Optional |
+| `CONSULT_RECEIVER_EMAIL` | same | Defaults to `CONTACT_EMAIL` in `lib/contact.ts` |
+| `ADMIN_USERNAME`, `ADMIN_PASSWORD` | `lib/admin-auth.ts` | Fall back to insecure defaults in code; removed in Phase 2 |
+
+`.env*` is gitignored — never commit real values. The local `.env` may still hold
+`PAYLOAD_SECRET` / `DATABASE_URI` from the abandoned Payload branch; nothing on this
+branch reads them.
+
+---
+
+## Docker & deployment **(planned — Phase 1 / 6 / 7)**
+The production target is Docker Compose on a single VPS (Caddy → Next standalone app →
+Postgres, single app instance). There is no `Dockerfile` or `compose.yaml` yet; the
+design and runbook are in `docs/deployment.md`. `next.config.ts` currently carries a
+Vercel-era `outputFileTracingExcludes` workaround for `public/` that is removed in Phase 4.
 
 ---
 
@@ -256,29 +378,52 @@ zero warnings.
 
 ## Component map
 ```
+app/
+  [locale]/                 public site — layout mounts SmoothScroll, QuoteModalProvider, FloatingContact, LanguageDetectorToast
+  admin/                    CMS UI — own root layout, Vietnamese only, outside next-intl (see Admin CMS)
+  api/consult/              public lead endpoint (nodemailer)
+  api/admin/                CMS API: auth, blog, media, products, translations, translate
+  zalo-reply/               client page: copy a prepared reply, open Zalo
 i18n/
-  routing.ts               defineRouting({ locales: [vi, en], defaultLocale: vi })
+  routing.ts               defineRouting({ locales: [vi, en, zh, ja, ko], defaultLocale: vi })
   navigation.ts             Locale-aware Link/usePathname/useRouter/redirect — import from here, not next/*
-  request.ts                getRequestConfig — loads messages/<locale>.json
+  request.ts                getRequestConfig — loads messages/<locale>.json (build-time dynamic import)
 messages/
-  vi.json, en.json          UI copy, namespaced per section — keep key sets in sync
-proxy.ts                    next-intl createMiddleware (Next 16 "proxy" convention, not middleware.ts)
+  vi, en, zh, ja, ko .json  UI copy, namespaced per section — keep all five key sets in sync
+proxy.ts                    next-intl createMiddleware (Next 16 "proxy" convention, not middleware.ts); matcher skips api/admin/zalo-reply
 hooks/
   use-section-in-view.ts    Shared useRef + useInView(once, margin -80px)
+  use-current-hash.ts, use-hash-pulse.ts   Current-hash tracking and hash-target pulse highlight
 lib/
-  locale.ts                 pickLocale(locale, vi, en) for data/*.ts fields
-  contact.ts                PHONE_NUMBER, ZALO_CHAT_URL constants
+  locale.ts                 pickLocale(locale, vi, en, zh?, ja?, ko?) for data/*.ts fields
+  contact.ts                Phone / Zalo / email constants
   motion.ts                 imageWipeReveal Motion variant (clip-path wipe-down reveal)
   utils.ts                  cn()
+  hash-navigation.ts, menu-active.ts, shape-aliases.ts   Safe hash navigation, active-menu detection, shape-id aliasing
+  image-check.ts            Sanitizes option image paths (deliberately avoids node:fs so NFT does not trace public/)
+  product-sizes.ts, product-specs.ts   Standard print sizes / material specs per category · subgroup · shape
+  content-store.ts          admin-only: local-filesystem persistence — to be replaced (see Admin CMS)
+  admin-auth.ts             admin-only: shared-password session — to be replaced (see Admin CMS)
 data/
-  categories.ts             ProductCategory[] (4 categories) + showcaseImages
-  posts.ts                  BlogPost[] (6 posts) + categoryColors
+  subgroups-catalog.ts      MAIN_CATEGORIES (4) + SUBGROUPS_CATALOG (25) — what product pages render
+  categories.ts             ProductCategory/ProductItem/ProductOption types + showcaseImages
+  translations.ts           zh/ja/ko text for showcase labels, categories, items, shapes
+  posts.ts                  BlogPost type, blogPosts (from content/posts.json) + categoryColors
+  marketing-menu.ts, office-menu.ts, packaging-menu.ts, tet-menu.ts   Navbar mega-menu columns
   material-traits.ts        MaterialTrait icon glossary for product-option bullets
+  content/                  JSON written by the current admin (only posts.json is read by the site)
+scripts/
+  optimize-images.mjs       sharp-based image optimization script (run by hand)
 components/
   providers/
     SmoothScroll.tsx        Lenis init (desktop only, ≥1024px) — no GSAP, no pinning
+    quote-modal-provider.tsx  Context that opens the QuoteModal from anywhere
+  admin/                    admin-shell, donut-chart, media-card, media-delete-modal, media-picker-modal
   sections/                 all "use client"; landing page order = page.tsx import order
-    Navbar.tsx              Fixed top nav, mobile hamburger drawer, VI/EN flag switcher
+    Navbar.tsx              Fixed top nav, mobile hamburger drawer, 5-locale flag switcher
+    *DesktopSubmenu.tsx, *MobileSubmenu.tsx   Mega-menu panels for Marketing / Office / Packaging / Tet
+    SubgroupShapesView.tsx  Shapes view for a product subgroup
+    PartnerLogos.tsx        Partner logo strip (between CTA and Footer)
     Hero.tsx                Swiper fade-effect autoplay carousel, per-slide gradient bg
     ShopCategories.tsx      Horizontal category rail (scroll-snap on mobile)
     ShopBanner.tsx          2-up promo banner
@@ -299,6 +444,8 @@ components/
     section-heading.tsx, wipe-button.tsx, icon-badge.tsx   Reusable primitives — see above
     accordion.tsx, avatar.tsx, badge.tsx, button.tsx, card.tsx, separator.tsx, tabs.tsx   shadcn/ui primitives
     floating-contact.tsx      Global Zalo/phone floating buttons (root layout)
+    quote-modal.tsx, consult-bottom-sheet.tsx   Lead-capture UIs; both POST to /api/consult
+    language-detector-toast.tsx, auto-scroll-to-target.tsx, zalo-icon.tsx   Locale suggestion toast, hash auto-scroll helper, Zalo glyph
     material-flashcard.tsx    Per-option flip card on product detail — image/traits, foil &
                                double-sided checkboxes, copy-to-Zalo consult flow
     material-glossary-fab.tsx Bottom-left icon-legend popover for material-flashcard traits
