@@ -14,5 +14,13 @@ export const SESSION_UPDATE_AGE_SECONDS = SECONDS_PER_HOUR;
 /** A session older than this must sign in again before sensitive actions (enforced by our own hook). */
 export const SESSION_FRESH_AGE_SECONDS = 15 * SECONDS_PER_MINUTE;
 
+// Per-account lockout (lib/auth/lockout.ts): N consecutive failures lock the address for BASE seconds,
+// doubling with each further lock, up to MAX. A quiet period of MEMORY seconds forgets past failures.
+export const LOCK_THRESHOLD = 5;
+export const LOCK_BASE_SECONDS = 5 * SECONDS_PER_MINUTE;
+export const LOCK_MAX_SECONDS = 24 * SECONDS_PER_HOUR;
+export const ATTEMPT_MEMORY_SECONDS = 24 * SECONDS_PER_HOUR;
+export const MAX_EMAIL_KEY_LENGTH = 254;
+
 export const SIGN_IN_RATE_LIMIT = { window: SECONDS_PER_MINUTE, max: 5 } as const;
 export const DEFAULT_RATE_LIMIT = { window: SECONDS_PER_MINUTE, max: 100 } as const;

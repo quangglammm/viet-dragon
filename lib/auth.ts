@@ -11,6 +11,7 @@ import {
   SESSION_UPDATE_AGE_SECONDS,
   SIGN_IN_RATE_LIMIT,
 } from "@/lib/auth/constants";
+import { createAuthHooks } from "@/lib/auth/hooks";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { getDb } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
@@ -32,8 +33,10 @@ export function createAuth() {
     trustedOrigins: [SITE_URL],
     database: drizzleAdapter(getDb(), { provider: "pg", schema }),
     telemetry: { enabled: false },
-    // Message only — the extra args carry request details we do not want in logs.
-    logger: { level: "warn", log: (level, message) => log[level](message) },
+    // Message only — the extra args carry request details we do not want in logs. Better Auth reports
+    // rejected requests (bad origin, lockout, wrong password) at "error"; those are client mistakes, not
+    // server faults, so they log as warnings. Real server faults surface through Next's onRequestError.
+    logger: { level: "warn", log: (level, message) => log[level === "error" ? "warn" : level](message) },
 
     // `app_user` is the table docs/data-model.sql foreign-keys against.
     user: {
@@ -65,6 +68,10 @@ export function createAuth() {
     },
 
     advanced: {
+      // Explicit, not defaulted: Better Auth skips the origin check when NODE_ENV=test. Stating it keeps the
+      // CSRF/origin protection identical in every environment (and exercised by the integration tests).
+      disableOriginCheck: false,
+      disableCSRFCheck: false,
       cookiePrefix: COOKIE_PREFIX,
       useSecureCookies: SITE_URL.startsWith("https://"),
       defaultCookieAttributes: { sameSite: "strict" },
@@ -83,6 +90,9 @@ export function createAuth() {
     },
 
     plugins: [admin({ ac, roles, defaultRole: DEFAULT_ROLE, bannedUserMessage: BANNED_USER_MESSAGE })],
+
+    // Lockout, session freshness, password policy, last-mile guards and the audit trail.
+    hooks: createAuthHooks(),
   });
 }
 

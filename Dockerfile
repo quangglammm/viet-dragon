@@ -20,6 +20,11 @@ RUN corepack enable && corepack install
 FROM base AS deps
 COPY pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
+# pnpm exits 0 even when an OPTIONAL dependency's download keeps failing (it just skips it), and Docker would
+# then cache that half-installed layer. Prove the native modules load here so a bad install fails — and is
+# never cached. Transitive ones are resolved from the package that loads them: @swc/core by next-intl's plugin
+# (while reading next.config.ts), sharp by Next's image optimizer.
+RUN node -e "const r = require; const from = (name, parent) => r(r.resolve(name, { paths: [r.resolve(parent)] })); r('@node-rs/argon2'); from('@swc/core', 'next-intl/plugin'); from('sharp', 'next'); console.log('native modules load')"
 
 FROM base AS build
 ARG SITE_URL
@@ -41,6 +46,9 @@ COPY --from=build --chown=node:node /app/.next/standalone ./
 COPY --from=build --chown=node:node /app/.next/static ./.next/static
 COPY --from=build --chown=node:node /app/public ./public
 RUN mkdir -p .next/cache && chown node:node .next/cache
+# Fail the BUILD, not the first sign-in, if standalone tracing left a native module out of the image.
+# `sharp` is Next's own copy (the image optimizer), resolved from inside `next`, not our top-level dependency.
+RUN node -e "const r = require; r('@node-rs/argon2'); r(r.resolve('sharp', { paths: [r.resolve('next')] })); console.log('native modules load')"
 USER node
 EXPOSE 3000
 # /api/health answers 200 while the process serves requests (db state is in the body).

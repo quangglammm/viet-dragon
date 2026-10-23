@@ -39,7 +39,7 @@ This project uses **pnpm** (pinned via `packageManager` in `package.json`) — n
 - Install deps: `pnpm install` — never `npm install`/`yarn install`. Running the wrong tool
   regenerates `package-lock.json`/`yarn.lock` as a second, conflicting lockfile.
 - Add a dependency: `pnpm add <pkg>` · dev dependency: `pnpm add -D <pkg>`
-- Run scripts: `pnpm dev`, `pnpm build` (runs `next build --webpack`), `pnpm start`, `pnpm lint`
+- Run scripts: `pnpm dev`, `pnpm build` (runs `next build --webpack`), `pnpm start`, `pnpm lint`, `pnpm test`, `pnpm test:int`
 - `pnpm-lock.yaml` is the only lockfile committed — if `package-lock.json` or `yarn.lock`
   ever reappear (e.g. an editor auto-ran `npm install`), delete them, don't commit them.
 - `pnpm-workspace.yaml` holds `allowBuilds` approvals for deps with native build scripts
@@ -334,16 +334,36 @@ design, the seed rules and the owner-review list are in `docs/data-model.md` (+ 
 - Admin text is Vietnamese-only and the admin stays outside `app/[locale]`.
 
 ### Authentication (Phase 2 — in progress)
-**Landed (M1):** Better Auth core (`lib/auth.ts`), schema + migrations (`drizzle/0000_auth_core`,
-`0001_audit_log_append_only`), roles/permissions (`lib/permissions.ts`), `/api/auth/*`. **Not wired yet:** the admin
-UI, `proxy.ts`, the DAL and the `/api/admin/*` routes still use the legacy `lib/admin-auth.ts` until M3–M4.
+**Landed (M1–M2):** Better Auth core (`lib/auth.ts`), schema + migrations, roles (`lib/permissions.ts`), `/api/auth/*`,
+the security hooks (`lib/auth/hooks.ts`), the DAL (`lib/dal.ts`) and the `proxy.ts` admin branch. **Not wired yet:** the
+admin UI (M3) and the `/api/admin/*` routes (M4) still use the legacy `lib/admin-auth.ts`. **Until M3 the legacy admin is
+unreachable by design:** the proxy redirects every `/admin/*` request without a `vd.session_token` cookie to `/admin/login`,
+and the legacy login only sets the old cookie.
+- **Access control lives in the DAL, close to the data** — never only in a layout (it does not re-render on client
+  navigation) or the proxy (it sees cookie presence, nothing more). Every admin page calls `requireUser({ permission? })`;
+  every `/api/admin/*` handler calls `requireApiUser(request, permission?, { contentType? })` and returns `auth.response` when
+  `!auth.ok`. On mutations it also enforces a same-origin `Origin` (or Fetch Metadata) and the declared body type.
+- **Lockout** (`lib/auth/lockout.ts`): 5 consecutive credential failures lock an address — one with no account too, so
+  it never reveals which addresses exist — for 5 min, doubling per further lock up to 24 h; the quiet period that resets the
+  ladder (24 h) runs from the lock's END. Validation errors and bans are not counted. A visitor can lock any address by
+  failing on purpose; that is the accepted cost, bounded by the per-IP rate limit.
+- **Proxy redirects must be absolute URLs built from `SITE_URL`**: Next rejects a relative `Location` in `proxy.ts`, and behind
+  Caddy `request.url` is `http://`, which would downgrade the redirect.
+- Better Auth skips its origin check when `NODE_ENV=test`; `lib/auth.ts` pins `disableOriginCheck`/`disableCSRFCheck` to
+  `false` so the protection is identical everywhere.
+- **Tests:** `pnpm test` (unit, no database) and `pnpm test:int` (needs `docker compose -f compose.dev.yaml up -d`; it
+  creates and drops a throwaway database per run). `audit_log` is append-only, so integration tests use unique emails/IPs
+  (`tests/helpers/auth.ts`) instead of cleaning up. Run both before committing auth changes.
 - Accounts are **invite-only** (`disableSignUp`); the first admin comes from `pnpm admin:create` (M5), never from a default.
   New accounts get a temporary password and `mustChangePassword` (forced change at first login).
 - Roles: `admin` (users, audit, media delete, content) and `editor` (content, media upload). **Deactivate (ban), never
   delete** — `audit_log` and the content tables foreign-key `app_user`. Impersonation and `user:delete` exist in no role.
 - `audit_log` is append-only (triggers bind every role; the app role also lacks UPDATE/DELETE/TRUNCATE). Don't work around it.
-- Better Auth does **not** enforce `freshAge` and `createUser` skips the password minimum — our before-hooks do (M2).
-  Session tokens are stored in plaintext, which is why the database must stay on the internal network.
+- Better Auth does **not** enforce `freshAge` and `createUser` skips the password minimum — our before-hooks do
+  (`lib/auth/hooks.ts`: sensitive actions need a session < 15 min old; `SESSION_NOT_FRESH` means "sign in again").
+  `admin:update-user` is removed from every role (it could rewrite `role`/`banned` around those guards); an admin cannot
+  change their own role or ban themselves. Session tokens are stored in plaintext, which is why the database must stay on
+  the internal network.
 - After changing a Better Auth plugin/option that affects the schema: `pnpm auth:schema`, then `pnpm db:generate`;
   never edit `lib/db/auth-schema.ts` by hand. Migrations run as the schema owner (`pnpm db:migrate`), never as the app role.
 
@@ -456,7 +476,8 @@ i18n/
   request.ts                getRequestConfig — loads messages/<locale>.json (build-time dynamic import)
 messages/
   vi, en, zh, ja, ko .json  UI copy, namespaced per section — keep all five key sets in sync
-proxy.ts                    next-intl createMiddleware (Next 16 "proxy" convention, not middleware.ts); matcher skips api/admin/zalo-reply
+proxy.ts                    Next 16 "proxy" (not middleware.ts): `/admin/*` → optimistic session-cookie check (lib/admin-access.ts); everything else → next-intl createMiddleware; the intl matcher still skips api/admin/zalo-reply
+vitest.config.mts, vitest.int.config.mts, tests/   unit config · integration config (throwaway DB via tests/db-setup.ts) · shared helpers; `*.test.ts` live beside the code, `*.int.test.ts` need the dev DB
 hooks/
   use-section-in-view.ts    Shared useRef + useInView(once, margin -80px)
   use-current-hash.ts, use-hash-pulse.ts   Current-hash tracking and hash-target pulse highlight
@@ -464,8 +485,12 @@ lib/
   env.ts                    zod-validated config: getDatabaseEnv/getMailEnv/getLogEnv/getSiteEnv/getAuthEnv + assertEnv (relative imports: drizzle.config.ts loads it outside Next)
   auth.ts                   createAuth() / lazy getAuth() — Better Auth config (argon2id, 12 h DB sessions, `vd` strict cookies, DB rate limit, admin plugin). Importing it reads no env
   auth.cli.ts               eager `auth` export for the Better Auth CLI only (`pnpm auth:schema` regenerates lib/db/auth-schema.ts)
-  auth/constants.ts, password.ts   cookie prefix + session/rate-limit tuning (import-free) · hashPassword/verifyPassword (argon2id)
-  permissions.ts            access control: roles `admin` / `editor`, `can(role, resource, action)` — one source of truth for DAL, UI and the admin plugin
+  auth/constants.ts, password.ts   cookie prefix + session/lockout/rate-limit tuning (import-free) · hashPassword/verifyPassword (argon2id), password policy
+  auth/hooks.ts             Better Auth before/after hooks: lockout, session freshness, password policy, self-action rule, audit trail
+  auth/lockout.ts, audit.ts per-account lock state machine (pure `applyFailure` + transactional persistence) · `recordAudit` (append-only audit_log, never throws)
+  dal.ts                    the authorization point: getSessionUser, requireUser (pages), requireApiUser (Route Handlers: 401/403/415, same-origin check)
+  admin-access.ts           pure /admin routing decision for proxy.ts + `safeAdminNextPath` (open-redirect guard) — import-free
+  permissions.ts            access control: roles `admin` / `editor`, `can()` / `hasPermission()` — one source of truth for DAL, UI and the admin plugin
   db/schema.ts, auth-schema.ts   Drizzle schema: auth-schema.ts is GENERATED (never hand-edit); schema.ts adds login_attempt + audit_log (append-only)
   logger.ts                 getLogger(scope) (pino, redaction), maskPhone(), logRequestError()
   db/index.ts               lazy pg Pool + drizzle handle (getPool/getDb/pingDatabase); schema arrives in Phase 3a

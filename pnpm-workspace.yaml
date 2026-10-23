@@ -4,3 +4,8 @@ allowBuilds:
   esbuild: false
   sharp: true
   unrs-resolver: true
+# pnpm silently skips an optional dependency (e.g. a platform's native binary) whose download keeps failing,
+# leaving a half-working install that exits 0. The default of 2 retries is too few on a throttled link
+# (seen in Docker builds), so retry harder; the Dockerfile also verifies the native modules load.
+fetchRetries: 6
+fetchRetryMaxtimeout: 120000

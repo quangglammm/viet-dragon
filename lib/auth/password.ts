@@ -1,4 +1,15 @@
 import { type Algorithm, hash, verify } from "@node-rs/argon2";
+import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from "./constants";
+
+export const PASSWORD_POLICY_MESSAGE = `Mật khẩu phải có từ ${MIN_PASSWORD_LENGTH} đến ${MAX_PASSWORD_LENGTH} ký tự.`;
+
+/**
+ * Better Auth enforces the length limits on change-password and set-user-password, but NOT on the
+ * admin plugin's create-user — the hooks call this for every path that sets a password.
+ */
+export function violatesPasswordPolicy(password: unknown): boolean {
+  return typeof password !== "string" || password.length < MIN_PASSWORD_LENGTH || password.length > MAX_PASSWORD_LENGTH;
+}
 
 // Algorithm.Argon2id. The library declares `Algorithm` as an ambient const enum, which cannot be
 // imported under `isolatedModules`, so the value is spelled out; password.test.ts asserts the
