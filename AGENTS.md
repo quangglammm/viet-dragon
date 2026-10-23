@@ -99,7 +99,7 @@ Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
 | Route | Notes |
 |---|---|
 | `/admin/*` | CMS UI — own root layout, Vietnamese only. See **Admin CMS** |
-| `/api/admin/*` | CMS API (auth, blog, media, products, translations, translate) |
+| `/api/admin/*` | CMS API (blog, media, products, translations, translate) — every handler starts with `requireApiUser` (a test enforces it) |
 | `/api/auth/*` | Better Auth (`app/api/auth/[...all]/route.ts`): sign-in/out, session, password change, admin-plugin user management. Sign-in must use this HTTP surface — only HTTP requests are rate limited, not `auth.api.*` calls |
 | `/api/consult` | Public. Receives quote/consult leads from `QuoteModal` / `ConsultBottomSheet`, emails them |
 | `/zalo-reply` | Client page that copies a prepared reply message and opens Zalo (`noindex`) |
@@ -292,15 +292,15 @@ target — until a phase lands, the "current state" below is the truth.
   `components/admin/admin-shell.tsx`. Console pages: `account`, `users` and `audit` (new, Phase 2) plus
   the five legacy editors `site-content`, `products`, `blog`, `media`, `translations` (client components,
   no longer wrapping themselves in the shell; hidden from the sidebar when `NODE_ENV=production`).
-- API: `app/api/admin/{auth,blog,media,products,translations,translate}`. Persistence is
+- API: `app/api/admin/{blog,media,products,translations,translate}`. Persistence is
   `lib/content-store.ts`, which reads and writes `data/content/*.json`, `messages/*.json`
   and `public/uploads/` on the **local filesystem**.
-- Auth: **pages** are now guarded by Better Auth (see **Authentication**). The legacy editors' **API routes**
-  (`app/api/admin/{blog,media,products,translations,translate}`) still check `getAdminSession()` from
-  `lib/admin-auth.ts` — one shared password, a hardcoded fallback password and session secret, and a base64
-  cookie that anyone with the source can forge. **Not safe to deploy; do not copy this pattern.** Because
-  sign-in no longer sets that cookie, the five legacy editor pages load but their data calls answer 401
-  until M4 swaps those guards for `requireApiUser`.
+- Auth: Better Auth guards both the pages and these API routes (`requireApiUser`: content routes need
+  `content:edit`, media upload `media:upload` as multipart, media delete `media:delete`). The old shared-password
+  session (`lib/admin-auth.ts`, a hardcoded fallback password and a forgeable base64 cookie) is deleted; those
+  credentials remain in git history until Phase 7 rotates anything that ever used them. The handlers still parse
+  bodies with `request.json() as T` and write to the source tree — they are Caddy-blocked in production and are
+  replaced wholesale in Phase 3, so don't extend them.
 - **The public site does not see admin edits at runtime**: products come from static
   `data/subgroups-catalog.ts`, blog posts from `data/posts.ts` (bundles
   `data/content/posts.json` at build time), UI copy from `messages/*.json` (bundled at
@@ -321,14 +321,14 @@ design, the seed rules and the owner-review list are in `docs/data-model.md` (+ 
 ### Rules for admin / CMS code
 - **Server-side access control only.** Every admin page and every `/api/admin/*` handler
   must authenticate on the server; a client-side redirect is not access control.
-  (Today: `getAdminSession()`. From Phase 2: `requireUser()` / `requireApiUser()` in `lib/dal.ts`.)
+  Pages call `requireUser()`, Route Handlers `requireApiUser()` (both in `lib/dal.ts`);
+  `app/api/admin/route-guards.test.ts` fails if a handler under `app/api/admin` does not call it first.
 - **Validate every write body** with zod; never `await request.json() as SomeType`.
 - **No secrets or default credentials in source.** Read config through `lib/env.ts`
   (never `process.env` directly) and fail fast when it is missing.
 - **Mutations must invalidate the public site** — `revalidateTag(tag, { expire: 0 })`
   (two-argument form) from a Route Handler.
-- **Don't import `lib/content-store.ts` or `lib/admin-auth.ts` from public pages**; both
-  are deleted by Phase 4 / Phase 2 respectively.
+- **Don't import `lib/content-store.ts` from public pages**; it is deleted by Phase 4.
 - **Never write content to the filesystem at runtime** in new code — content goes to the
   database (Phase 3), uploads to the uploads volume (Phase 5), never into `public/`.
 - **No product attribute in code.** Names, text, sizes, spec lists, icons, prices and menu
@@ -338,11 +338,10 @@ design, the seed rules and the owner-review list are in `docs/data-model.md` (+ 
 - Admin text is Vietnamese-only and the admin stays outside `app/[locale]`.
 
 ### Authentication (Phase 2 — in progress)
-**Landed (M1–M3):** Better Auth core (`lib/auth.ts`), schema + migrations, roles (`lib/permissions.ts`), `/api/auth/*`,
+**Landed (M1–M4):** Better Auth core (`lib/auth.ts`), schema + migrations, roles (`lib/permissions.ts`), `/api/auth/*`,
 the security hooks (`lib/auth/hooks.ts`), the DAL (`lib/dal.ts`), the `proxy.ts` admin branch, and the admin UI (login,
-forced password change, account/sessions, users, audit). **Not wired yet:** the `/api/admin/*` content routes (M4) still use
-the legacy `lib/admin-auth.ts`, and there is no `pnpm admin:create` (M5) — until then the first admin is created with a
-scratch script calling `getAuth().api.createUser`.
+forced password change, account/sessions, users, audit) and the `/api/admin/*` guards (M4). **Not there yet:** there is no
+`pnpm admin:create` (M5) — until then the first admin is created with a scratch script calling `getAuth().api.createUser`.
 - **Admin UI conventions:** sign-in and every account/user action go through the browser client `lib/auth-client.ts`
   (HTTP `/api/auth/*`, so rate limit + hooks + audit apply). Error codes become Vietnamese text in
   `lib/auth/error-messages.ts` — unknown codes get a generic line, never the server's English message. A
@@ -398,7 +397,6 @@ values. It is skipped during `next build`, so the Docker build stage needs no se
 | `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | mail | **Required in production.** Elsewhere, if any is unset a consult lead is only logged (phone masked) and never emailed |
 | `SMTP_PORT` (587), `SMTP_SECURE`, `SMTP_FROM`, `CONSULT_RECEIVER_EMAIL` | mail | Optional; the receiver defaults to `CONTACT_EMAIL` in `lib/contact.ts` |
 | `POSTGRES_PASSWORD`, `APP_DB_PASSWORD`, `SITE_ADDRESS`, `HTTP_PORT`, `HTTPS_PORT`, `APP_TAG` | compose only | Interpolated by `compose.yaml` / `compose.dev.yaml`; the app never reads them. See `.env.example` |
-| `ADMIN_USERNAME`, `ADMIN_PASSWORD` | legacy | `lib/admin-auth.ts` only; insecure fallbacks, removed in Phase 2 |
 
 `.env*` is gitignored except `.env.example` — never commit real values. `pnpm dev` needs
 `DATABASE_URL` (and `SITE_URL` for `pnpm build`) in the local `.env` and exits at start-up without
@@ -427,9 +425,10 @@ Runbook and rationale: `docs/deployment.md`.
 - App container: non-root, read-only root FS (writable: `/tmp` and the `.next/cache` volume),
   `cap_drop: ALL`, no published ports. `db` sits on an `internal` network. **One app instance only.**
 - Building needs internet (`next/font/google`) and `--build-arg SITE_URL=…` — nothing else.
-- `deploy/Caddyfile` 404s `/admin*` and `/api/admin/*` (the legacy admin is unsafe and writes to the
-  source tree — **remove those blocks when Phase 2 lands**) and `/api/health` (internal healthcheck only).
-  It overwrites `X-Real-IP` with the TCP peer.
+- `deploy/Caddyfile` is fail-closed for the admin: under `/admin` only `login`, `account`, `users` and `audit`
+  are reachable; every other `/admin*` path and all of `/api/admin/*` (the pre-Phase-3 editors, which write to the
+  source tree) 404 — **add a rebuilt page's path to the `not path` list when Phase 3 ships it**. `/api/auth/*` is
+  open (sign-in). It also 404s `/api/health` (internal healthcheck only) and overwrites `X-Real-IP` with the TCP peer.
 - `output: "standalone"` does not copy `public/` or `.next/static`; the runner stage does.
   `next.config.ts` still carries the Vercel-era `outputFileTracingExcludes` workaround for `public/`,
   removed in Phase 4. The image is ~1.1 GB mostly because ~1,700 prerendered pages ship in
@@ -475,7 +474,7 @@ app/
   [locale]/not-found.tsx    localized 404 (Navbar + Footer); reached via the [locale]/[...rest] catch-all
   api/consult/              public lead endpoint (nodemailer)
   api/health/               liveness for the Docker healthcheck (always 200; db state in the body)
-  api/admin/                CMS API: auth, blog, media, products, translations, translate
+  api/admin/                CMS API: blog, media, products, translations, translate (route-guards.test.ts + legacy-routes.int.test.ts enforce the guard)
   robots.ts                 robots.txt (no sitemap yet)
   zalo-reply/               client page: copy a prepared reply, open Zalo
 instrumentation.ts          register(): env fail-fast (Node runtime only, skipped at build) · onRequestError → lib/logger
@@ -518,7 +517,6 @@ lib/
   image-check.ts            Sanitizes option image paths (deliberately avoids node:fs so NFT does not trace public/)
   product-sizes.ts, product-specs.ts   Standard print sizes / material specs per category · subgroup · shape
   content-store.ts          admin-only: local-filesystem persistence — to be replaced (see Admin CMS)
-  admin-auth.ts             admin-only: shared-password session — to be replaced (see Admin CMS)
 data/
   subgroups-catalog.ts      MAIN_CATEGORIES (4) + SUBGROUPS_CATALOG (25) — what product pages render
   categories.ts             ProductCategory/ProductItem/ProductOption types + showcaseImages

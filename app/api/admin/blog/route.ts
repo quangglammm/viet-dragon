@@ -1,14 +1,12 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { getAdminSession } from "@/lib/admin-auth";
+import { requireApiUser } from "@/lib/dal";
 import { getStoredBlogPosts, saveStoredBlogPosts } from "@/lib/content-store";
 import type { BlogPost } from "@/data/posts";
 
-export async function GET() {
-  const session = await getAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+export async function GET(request: Request) {
+  const auth = await requireApiUser(request, ["content", "edit"]);
+  if (!auth.ok) return auth.response;
 
   try {
     const posts = await getStoredBlogPosts();
@@ -19,10 +17,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const session = await getAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = await requireApiUser(request, ["content", "edit"]);
+  if (!auth.ok) return auth.response;
 
   try {
     const posts = (await request.json()) as BlogPost[];

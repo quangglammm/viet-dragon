@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdminSession } from "@/lib/admin-auth";
+import { requireApiUser } from "@/lib/dal";
 
 const COMMON_DICTIONARY: Record<string, Record<string, string>> = {
   "Nhận Báo Giá": {
@@ -41,10 +41,8 @@ const COMMON_DICTIONARY: Record<string, Record<string, string>> = {
 };
 
 export async function POST(request: Request) {
-  const session = await getAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = await requireApiUser(request, ["content", "edit"]);
+  if (!auth.ok) return auth.response;
 
   try {
     const { text, targetLocale } = await request.json();

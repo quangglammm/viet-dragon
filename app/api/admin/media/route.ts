@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { getAdminSession } from "@/lib/admin-auth";
+import { requireApiUser } from "@/lib/dal";
 import { getMediaAssets, saveUploadedFile, deleteMediaFiles } from "@/lib/content-store";
 
-export async function GET() {
-  const session = await getAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+export async function GET(request: Request) {
+  const auth = await requireApiUser(request, ["content", "edit"]);
+  if (!auth.ok) return auth.response;
 
   try {
     const media = await getMediaAssets();
@@ -18,10 +16,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const session = await getAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = await requireApiUser(request, ["media", "upload"], { contentType: "multipart" });
+  if (!auth.ok) return auth.response;
 
   try {
     const formData = await request.formData();
@@ -39,10 +35,8 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const session = await getAdminSession();
-  if (!session.authenticated) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = await requireApiUser(request, ["media", "delete"]);
+  if (!auth.ok) return auth.response;
 
   try {
     const body = await request.json();
