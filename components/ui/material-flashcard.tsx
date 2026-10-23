@@ -620,101 +620,95 @@ export function MaterialFlashcard({
       <div className="flex flex-col gap-4 p-5 bg-white border-t border-zinc-100">
         
         {/* 1. Kích thước phổ biến (thu nhỏ vừa với chữ, click để nở ra ghi đè kích thước luôn bên trong ô, click lại hiện lại chữ) */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-bold text-zinc-900 shrink-0">
             {FORM_TITLES.sizes[locale] ?? FORM_TITLES.sizes.vi}
           </span>
-          <div className="flex flex-wrap items-center gap-2">
-            {sizes.map((s) => {
-              const isSelected = selectedSize === s.id;
-              return (
-                <motion.button
-                  layout
-                  key={s.id}
-                  type="button"
-                  onClick={() => setSelectedSize((prev) => (prev === s.id ? null : s.id))}
-                  transition={{ layout: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } }}
-                  className={cn(
-                    "inline-flex items-center justify-center px-3 py-1.5 rounded-lg border text-xs transition-colors duration-200 cursor-pointer select-none overflow-hidden",
-                    isSelected
-                      ? "bg-[#ede8ff] border-brand-primary text-brand-primary ring-1 ring-brand-primary/40 shadow-xs font-semibold"
-                      : "bg-[#f3f5ff] border-brand-primary/25 text-brand-primary hover:bg-[#eae8ff] hover:border-brand-primary/40 font-bold"
+          {sizes.map((s) => {
+            const isSelected = selectedSize === s.id;
+            return (
+              <motion.button
+                layout
+                key={s.id}
+                type="button"
+                onClick={() => setSelectedSize((prev) => (prev === s.id ? null : s.id))}
+                transition={{ layout: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } }}
+                className={cn(
+                  "inline-flex items-center justify-center px-3 py-1.5 rounded-lg border text-xs transition-colors duration-200 cursor-pointer select-none overflow-hidden",
+                  isSelected
+                    ? "bg-[#ede8ff] border-brand-primary text-brand-primary ring-1 ring-brand-primary/40 shadow-xs font-semibold"
+                    : "bg-[#f3f5ff] border-brand-primary/25 text-brand-primary hover:bg-[#eae8ff] hover:border-brand-primary/40 font-bold"
+                )}
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  {isSelected ? (
+                    <motion.span
+                      key="dims"
+                      initial={{ opacity: 0, scale: 0.92 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.92 }}
+                      transition={{ duration: 0.15 }}
+                      className="whitespace-nowrap font-semibold text-brand-primary"
+                    >
+                      {s.dims}
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="label"
+                      initial={{ opacity: 0, scale: 0.92 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.92 }}
+                      transition={{ duration: 0.15 }}
+                      className="whitespace-nowrap font-bold"
+                    >
+                      {s.label}
+                    </motion.span>
                   )}
-                >
-                  <AnimatePresence mode="wait" initial={false}>
-                    {isSelected ? (
-                      <motion.span
-                        key="dims"
-                        initial={{ opacity: 0, scale: 0.92 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.92 }}
-                        transition={{ duration: 0.15 }}
-                        className="whitespace-nowrap font-semibold text-brand-primary"
-                      >
-                        {s.dims}
-                      </motion.span>
-                    ) : (
-                      <motion.span
-                        key="label"
-                        initial={{ opacity: 0, scale: 0.92 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.92 }}
-                        transition={{ duration: 0.15 }}
-                        className="whitespace-nowrap font-bold"
-                      >
-                        {s.label}
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
-              );
-            })}
-          </div>
+                </AnimatePresence>
+              </motion.button>
+            );
+          })}
         </div>
 
         {/* 2. Kỹ thuật in: in nhanh, offset, ép kim, dập nổi dập chìm */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-bold text-zinc-900 shrink-0">
             {FORM_TITLES.printTech[locale] ?? FORM_TITLES.printTech.vi}
           </span>
-          <div className="flex flex-wrap items-center gap-2">
-            {printTechList.map((tech) => (
-              <span
-                key={tech}
-                className="inline-flex items-center px-3 py-1.5 rounded-lg border border-[#7000fe]/30 bg-transparent text-xs font-medium text-zinc-700 select-none cursor-default"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
+          {printTechList.map((tech) => (
+            <span
+              key={tech}
+              className="inline-flex items-center px-3 py-1.5 rounded-lg border border-[#7000fe]/30 bg-transparent text-xs font-medium text-zinc-700 select-none cursor-default"
+            >
+              {tech}
+            </span>
+          ))}
         </div>
 
-        {/* 3. Chất liệu */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+        {/* 3. Chất liệu (hiển thị ngang hàng và xuống hàng tự nhiên) */}
+        <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-bold text-zinc-900 shrink-0">
             {FORM_TITLES.material[locale] ?? FORM_TITLES.material.vi}
           </span>
-          <div className="flex flex-wrap items-center gap-2">
-            {materialList.map((mat) => {
-              const isCurrent =
-                mat.toLowerCase() === name.toLowerCase() ||
-                name.toLowerCase().includes(mat.toLowerCase()) ||
-                mat.toLowerCase().includes(name.toLowerCase());
-              return (
-                <span
-                  key={mat}
-                  className={cn(
-                    "inline-flex items-center px-3 py-1.5 rounded-lg border text-xs select-none cursor-default transition-colors",
-                    isCurrent
-                      ? "bg-[#ede8ff] border-brand-primary text-brand-primary font-semibold ring-1 ring-brand-primary/40 shadow-2xs"
-                      : "border-[#7000fe]/30 bg-transparent text-zinc-700 font-medium"
-                  )}
-                >
-                  {mat}
-                </span>
-              );
-            })}
-          </div>
+          {materialList.map((mat) => {
+            const isCurrent =
+              mat.toLowerCase() === name.toLowerCase() ||
+              name.toLowerCase().includes(mat.toLowerCase()) ||
+              mat.toLowerCase().includes(name.toLowerCase());
+            return (
+              <span
+                key={mat}
+                className={cn(
+                  "inline-flex items-center px-3 py-1.5 rounded-lg border text-xs select-none cursor-default transition-colors",
+                  isCurrent
+                    ? "bg-[#ede8ff] border-brand-primary text-brand-primary font-semibold ring-1 ring-brand-primary/40 shadow-2xs"
+                    : "border-[#7000fe]/30 bg-transparent text-zinc-700 font-medium"
+                )}
+              >
+                {mat}
+              </span>
+            );
+          })}
         </div>
 
         {/* 4. Thành phẩm sau in (Bế, Dán, Cán màng... hiển thị ngang hàng và xuống hàng tự nhiên) */}
