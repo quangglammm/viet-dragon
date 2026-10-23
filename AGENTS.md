@@ -25,7 +25,8 @@ Other v16 facts, verified against those docs:
 | Swiper | 14.x | Hero and Testimonials carousels — `swiper/react` + `swiper/modules` |
 | zod | 4.x | Env validation (`lib/env.ts`); request-body validation in the admin API (planned) |
 | pino | 10.x | Server logging — only through `lib/logger.ts`, see **Logging** below |
-| Drizzle ORM · drizzle-kit · `pg` | 0.45.x · 0.31.x · 8.x | PostgreSQL access (`lib/db`) and migrations (`drizzle.config.ts`) — no schema until Phase 3a |
+| Drizzle ORM · drizzle-kit · `pg` | 0.45.x · 0.31.x · 8.x | PostgreSQL access (`lib/db`) and migrations (`drizzle.config.ts`); schema so far = auth + audit tables only (content tables arrive in Phase 3a) |
+| Better Auth · `@better-auth/drizzle-adapter` · `auth` CLI | 1.7.12 (exact, keep all three in lockstep) | Invite-only accounts, DB sessions, admin plugin (roles). `@node-rs/argon2` hashes passwords. See **Authentication** below |
 
 GSAP/ScrollTrigger and the old pin/cover scroll rig (`PanelContainer.tsx`) were removed —
 do not reintroduce them or look for that file; see **Scroll & entrance animation** below
@@ -99,6 +100,7 @@ Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
 |---|---|
 | `/admin/*` | CMS UI — own root layout, Vietnamese only. See **Admin CMS** |
 | `/api/admin/*` | CMS API (auth, blog, media, products, translations, translate) |
+| `/api/auth/*` | Better Auth (`app/api/auth/[...all]/route.ts`): sign-in/out, session, password change, admin-plugin user management. Sign-in must use this HTTP surface — only HTTP requests are rate limited, not `auth.api.*` calls |
 | `/api/consult` | Public. Receives quote/consult leads from `QuoteModal` / `ConsultBottomSheet`, emails them |
 | `/zalo-reply` | Client page that copies a prepared reply message and opens Zalo (`noindex`) |
 | `/api/health` | Liveness for the Docker healthcheck: always 200 while the process serves, body `{ status, db: "ok" \| "down" }` — a database outage must not mark the app unhealthy |
@@ -331,12 +333,26 @@ design, the seed rules and the owner-review list are in `docs/data-model.md` (+ 
   `xVi`/`x`/`xZh` suffix fields — new text goes in a `*_i18n` table or `messages/`.
 - Admin text is Vietnamese-only and the admin stays outside `app/[locale]`.
 
+### Authentication (Phase 2 — in progress)
+**Landed (M1):** Better Auth core (`lib/auth.ts`), schema + migrations (`drizzle/0000_auth_core`,
+`0001_audit_log_append_only`), roles/permissions (`lib/permissions.ts`), `/api/auth/*`. **Not wired yet:** the admin
+UI, `proxy.ts`, the DAL and the `/api/admin/*` routes still use the legacy `lib/admin-auth.ts` until M3–M4.
+- Accounts are **invite-only** (`disableSignUp`); the first admin comes from `pnpm admin:create` (M5), never from a default.
+  New accounts get a temporary password and `mustChangePassword` (forced change at first login).
+- Roles: `admin` (users, audit, media delete, content) and `editor` (content, media upload). **Deactivate (ban), never
+  delete** — `audit_log` and the content tables foreign-key `app_user`. Impersonation and `user:delete` exist in no role.
+- `audit_log` is append-only (triggers bind every role; the app role also lacks UPDATE/DELETE/TRUNCATE). Don't work around it.
+- Better Auth does **not** enforce `freshAge` and `createUser` skips the password minimum — our before-hooks do (M2).
+  Session tokens are stored in plaintext, which is why the database must stay on the internal network.
+- After changing a Better Auth plugin/option that affects the schema: `pnpm auth:schema`, then `pnpm db:generate`;
+  never edit `lib/db/auth-schema.ts` by hand. Migrations run as the schema owner (`pnpm db:migrate`), never as the app role.
+
 ---
 
 ## Environment variables
 All config goes through `lib/env.ts` (zod) — never read `process.env` directly in new code. It has
-four independently validated groups, each behind its own lazy accessor so one group's problem never
-breaks an unrelated consumer: `getDatabaseEnv()`, `getMailEnv()`, `getLogEnv()`, `getSiteEnv()`.
+five independently validated groups, each behind its own lazy accessor so one group's problem never
+breaks an unrelated consumer: `getDatabaseEnv()`, `getMailEnv()`, `getLogEnv()`, `getSiteEnv()`, `getAuthEnv()`.
 `assertEnv()` validates all four at once at server start (`instrumentation.ts` →
 `instrumentation-node.ts`) and **exits with code 1** on a bad config, printing variable names, never
 values. It is skipped during `next build`, so the Docker build stage needs no secrets.
@@ -344,6 +360,7 @@ values. It is skipped during `next build`, so the Docker build stage needs no se
 | Variable | Group | Notes |
 |---|---|---|
 | `DATABASE_URL` | database | `postgres://` URL, required; in production its password must be ≥ 12 characters |
+| `BETTER_AUTH_SECRET` | auth | ≥ 32 characters, required in **every** environment (no dev default): `openssl rand -hex 32`. Signs session cookies; rotating it signs everyone out |
 | `SITE_URL` | site | Public origin, no path. Required in production (dev default `http://localhost:3000`). **Needed at build time too** — pages are prerendered, so it is baked in (docker build arg) |
 | `LOG_LEVEL` | logging | `fatal` … `trace` / `silent`; default `info` in production, `debug` in dev, `silent` under test |
 | `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | mail | **Required in production.** Elsewhere, if any is unset a consult lead is only logged (phone masked) and never emailed |
@@ -444,7 +461,12 @@ hooks/
   use-section-in-view.ts    Shared useRef + useInView(once, margin -80px)
   use-current-hash.ts, use-hash-pulse.ts   Current-hash tracking and hash-target pulse highlight
 lib/
-  env.ts                    zod-validated config: getDatabaseEnv/getMailEnv/getLogEnv/getSiteEnv + assertEnv (relative imports: drizzle.config.ts loads it outside Next)
+  env.ts                    zod-validated config: getDatabaseEnv/getMailEnv/getLogEnv/getSiteEnv/getAuthEnv + assertEnv (relative imports: drizzle.config.ts loads it outside Next)
+  auth.ts                   createAuth() / lazy getAuth() — Better Auth config (argon2id, 12 h DB sessions, `vd` strict cookies, DB rate limit, admin plugin). Importing it reads no env
+  auth.cli.ts               eager `auth` export for the Better Auth CLI only (`pnpm auth:schema` regenerates lib/db/auth-schema.ts)
+  auth/constants.ts, password.ts   cookie prefix + session/rate-limit tuning (import-free) · hashPassword/verifyPassword (argon2id)
+  permissions.ts            access control: roles `admin` / `editor`, `can(role, resource, action)` — one source of truth for DAL, UI and the admin plugin
+  db/schema.ts, auth-schema.ts   Drizzle schema: auth-schema.ts is GENERATED (never hand-edit); schema.ts adds login_attempt + audit_log (append-only)
   logger.ts                 getLogger(scope) (pino, redaction), maskPhone(), logRequestError()
   db/index.ts               lazy pg Pool + drizzle handle (getPool/getDb/pingDatabase); schema arrives in Phase 3a
   locale.ts                 pickLocale(locale, vi, en, zh?, ja?, ko?) for data/*.ts fields

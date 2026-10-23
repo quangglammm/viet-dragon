@@ -5,6 +5,7 @@ import { CONTACT_EMAIL } from "./contact";
 // bundler, where the `@/` alias does not resolve.
 
 const MIN_PRODUCTION_DB_PASSWORD_LENGTH = 12;
+const MIN_AUTH_SECRET_LENGTH = 32;
 const DEFAULT_SMTP_PORT = 587;
 const MAX_TCP_PORT = 65_535;
 const POSTGRES_PROTOCOLS = new Set(["postgres:", "postgresql:"]);
@@ -127,16 +128,26 @@ const siteSchema = z
     return { ...env, SITE_URL: origin };
   });
 
+// Signs session cookies. Required in every environment — there is deliberately no dev default.
+const authSchema = z.object({
+  NODE_ENV: nodeEnv,
+  BETTER_AUTH_SECRET: z
+    .string()
+    .min(MIN_AUTH_SECRET_LENGTH, `must be at least ${MIN_AUTH_SECRET_LENGTH} characters (openssl rand -hex 32)`),
+});
+
 export type DatabaseEnv = z.output<typeof databaseSchema>;
 export type MailEnv = z.output<typeof mailSchema>;
 export type LogEnv = z.output<typeof loggingSchema>;
 export type SiteEnv = z.output<typeof siteSchema>;
+export type AuthEnv = z.output<typeof authSchema>;
 
 const ENV_GROUPS = [
   ["database", databaseSchema],
   ["mail", mailSchema],
   ["logging", loggingSchema],
   ["site", siteSchema],
+  ["auth", authSchema],
 ] as const;
 
 // Issue text names the variable and the rule, never the value — these are secrets.
@@ -158,6 +169,7 @@ let databaseEnv: DatabaseEnv | undefined;
 let mailEnv: MailEnv | undefined;
 let logEnv: LogEnv | undefined;
 let siteEnv: SiteEnv | undefined;
+let authEnv: AuthEnv | undefined;
 
 export function getDatabaseEnv(): DatabaseEnv {
   databaseEnv ??= parseEnv("database", databaseSchema);
@@ -177,6 +189,11 @@ export function getLogEnv(): LogEnv {
 export function getSiteEnv(): SiteEnv {
   siteEnv ??= parseEnv("site", siteSchema);
   return siteEnv;
+}
+
+export function getAuthEnv(): AuthEnv {
+  authEnv ??= parseEnv("auth", authSchema);
+  return authEnv;
 }
 
 /** Validates every group at once so a misconfigured deploy reports all problems in one boot failure. */

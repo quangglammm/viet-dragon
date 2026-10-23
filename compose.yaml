@@ -52,6 +52,7 @@ services:
       # The DML-only role (deploy/db-init/01-app-role.sh) — never the owner.
       DATABASE_URL: postgres://vietdragon_app:${APP_DB_PASSWORD:?set APP_DB_PASSWORD}@db:5432/vietdragon
       SITE_URL: ${SITE_URL:?set SITE_URL}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET (openssl rand -hex 32)}
       LOG_LEVEL: ${LOG_LEVEL:-}
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-}
