@@ -49,3 +49,14 @@ export function digest(html: string): PageDigest {
   }
   return { title, description: description ? decodeEntities(attribute(description, "content") ?? "") : "", text: visibleText(html), links: [...links] };
 }
+
+/** Every other name a card on the page answers to (`data-aliases`), keyed to the card's canonical `id`: alias → id. */
+export function anchorAliases(html: string): Map<string, string> {
+  const owners = new Map<string, string>();
+  for (const [tag] of html.matchAll(/<[a-z]+\s[^>]*data-aliases=[^>]*>/gi)) {
+    const id = attribute(tag, "id");
+    if (!id) continue;
+    for (const alias of (attribute(tag, "data-aliases") ?? "").split(/\s+/).filter(Boolean)) if (!owners.has(alias)) owners.set(alias, id);
+  }
+  return owners;
+}

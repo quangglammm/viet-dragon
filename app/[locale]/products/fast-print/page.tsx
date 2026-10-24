@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import type { Locale } from "@/i18n/routing";
 import FastPrintClient from "./FastPrintClient";
 
-import { routing } from "@/i18n/routing";
-
+// Rendered on its first request (the locale layout reads the content database) and cached — see app/[locale]/layout.tsx.
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
+  return [];
 }
 
 export async function generateMetadata({

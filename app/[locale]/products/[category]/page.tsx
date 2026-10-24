@@ -1,130 +1,42 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { notFound } from "next/navigation";
-import {
-  Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles,
-  ArrowLeft, ArrowRight, type LucideIcon,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { pickLocale } from "@/lib/locale";
-import { MAIN_CATEGORIES, getSubgroupsByCategory, getSubgroupById } from "@/data/subgroups-catalog";
-import { CATEGORY_NAMES, CATEGORY_DESCS, ITEM_NAMES, ITEM_DESCS } from "@/data/translations";
-import { TET_SUBMENU_COLUMNS } from "@/data/tet-menu";
+import { NamedIcon } from "@/components/ui/named-icon";
+import { categoryPageOf } from "@/lib/content/read/pages";
+import { peekPage, resolvePage } from "@/lib/content/read/resolve-page";
 
-interface DisplayProductItem {
-  id: string;
-  nameVi: string;
-  nameEn: string;
-  nameZh?: string;
-  nameJa?: string;
-  nameKo?: string;
-  descriptionVi: string;
-  description: string;
-  image: string;
-  images?: string[];
-  href?: string;
-  optionGroups?: Array<{ options: Array<{ images?: string[]; pureImages?: string[] }> }>;
-  shapes?: Array<{
-    id: string;
-    nameVi: string;
-    nameEn: string;
-    nameZh?: string;
-    nameJa?: string;
-    nameKo?: string;
-  }>;
+type CategoryParams = { locale: Locale; category: string };
+
+export async function generateMetadata({ params }: { params: Promise<CategoryParams> }): Promise<Metadata> {
+  const { locale, category } = await params;
+  const found = await peekPage(locale, { category });
+  if (!found) return {};
+  return categoryPageOf(found.catalog, locale, found.category).meta;
 }
 
-const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
-
-export function generateStaticParams() {
-  return MAIN_CATEGORIES.map((cat) => ({ categoryId: cat.id }));
-}
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: Locale; categoryId: string }>;
-}): Promise<Metadata> {
-  const { locale, categoryId } = await params;
-  const cat = MAIN_CATEGORIES.find((c) => c.id === categoryId);
-  if (!cat) return {};
-  return {
-    title: `${pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)} | Viet Dragon`,
-    description: pickLocale(locale, cat.descriptionVi, cat.description, CATEGORY_DESCS[cat.id]?.zh, CATEGORY_DESCS[cat.id]?.ja, CATEGORY_DESCS[cat.id]?.ko),
-  };
-}
-
-export default async function CategoryPage({
-  params,
-}: Readonly<{
-  params: Promise<{ locale: Locale; categoryId: string }>;
-}>) {
-  const { locale, categoryId } = await params;
+export default async function CategoryPage({ params }: Readonly<{ params: Promise<CategoryParams> }>) {
+  const { locale, category } = await params;
   const t = await getTranslations({ locale, namespace: "categoryPage" });
-  const cat = MAIN_CATEGORIES.find((c) => c.id === categoryId);
-  if (!cat) notFound();
-
-  const name = pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko);
-  const Icon = iconMap[cat.icon] ?? Briefcase;
-  const idx = MAIN_CATEGORIES.findIndex((c) => c.id === categoryId);
-  const prev = idx > 0 ? MAIN_CATEGORIES[idx - 1] : null;
-  const next = idx < MAIN_CATEGORIES.length - 1 ? MAIN_CATEGORIES[idx + 1] : null;
-
-  // When categoryId is "tet", load the 8 product groups from TET_SUBMENU_COLUMNS so items match the megamenu exactly!
-  let items: DisplayProductItem[] = [];
-  if (categoryId === "tet") {
-    items = TET_SUBMENU_COLUMNS.flatMap((col) => col.groups).map((group) => {
-      const sub = getSubgroupById(group.id, categoryId);
-      return {
-        id: group.id,
-        nameVi: group.titleVi,
-        nameEn: group.titleEn,
-        nameZh: group.titleZh ?? sub?.titleZh,
-        nameJa: group.titleJa ?? sub?.titleJa,
-        nameKo: group.titleKo ?? sub?.titleKo,
-        descriptionVi: sub?.descriptionVi ?? "",
-        description: sub?.descriptionEn ?? "",
-        image: group.image,
-        images: [group.image, ...(sub?.shapes.map((s) => s.image) ?? [])],
-        href: group.href,
-        optionGroups: sub?.materials && sub.materials.length > 0 ? [{ options: sub.materials }] : [],
-        shapes: sub?.shapes,
-      };
-    });
-  } else {
-    const subgroups = getSubgroupsByCategory(categoryId);
-    items = subgroups.length > 0
-      ? subgroups.map((sub) => ({
-          id: sub.id,
-          nameVi: sub.titleVi,
-          nameEn: sub.titleEn,
-          nameZh: sub.titleZh,
-          nameJa: sub.titleJa,
-          nameKo: sub.titleKo,
-          descriptionVi: sub.descriptionVi,
-          description: sub.descriptionEn,
-          image: sub.coverImage,
-          images: [sub.coverImage, ...sub.shapes.map((s) => s.image)],
-          optionGroups: sub.materials?.length > 0 ? [{ options: sub.materials }] : [],
-          shapes: sub.shapes,
-        }))
-      : [];
-  }
+  const found = await resolvePage(locale, { category });
+  const { name, description, icon, cover, cards: items, prev, next } = categoryPageOf(found.catalog, locale, found.category);
 
   return (
     <div className="bg-white">
       {/* ── Full-width hero image ── */}
       <div className="relative h-[420px] lg:h-[520px] w-full overflow-hidden">
-        <Image
-          src={cat.coverImage}
-          alt={name}
-          fill
-          sizes="100vw"
-          className="object-cover"
-          preload
-        />
+        {cover && (
+          <Image
+            src={cover}
+            alt={name}
+            fill
+            sizes="100vw"
+            className="object-cover"
+            preload
+          />
+        )}
         {/* Dark overlay + content */}
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/95 via-zinc-950/65 to-zinc-950/25" />
         <div className="absolute inset-0 flex items-end">
@@ -140,7 +52,7 @@ export default async function CategoryPage({
 
             <div className="flex items-end gap-5">
               <span className="p-4 rounded-2xl bg-black/35 backdrop-blur-md border border-white/25 text-white shrink-0 shadow-xl">
-                <Icon size={28} strokeWidth={1.5} className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
+                <NamedIcon name={icon} size={28} strokeWidth={1.5} className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
               </span>
               <div>
                 <p className="text-white text-sm font-semibold tracking-widest uppercase mb-1 text-shadow-dark">
@@ -159,7 +71,7 @@ export default async function CategoryPage({
       <div className="border-b border-zinc-100">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <p className="text-zinc-500 leading-relaxed max-w-2xl">
-            {pickLocale(locale, cat.descriptionVi, cat.description, CATEGORY_DESCS[cat.id]?.zh, CATEGORY_DESCS[cat.id]?.ja, CATEGORY_DESCS[cat.id]?.ko)}
+            {description}
           </p>
           <Link
             href="/#cta"
@@ -178,15 +90,8 @@ export default async function CategoryPage({
 
         <div className={items.length === 8 ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"}>
           {items.map((item) => {
-            const itemHref = item.href ?? `/products/${cat.id}/${item.id}`;
-            const itemName = pickLocale(
-              locale,
-              item.nameVi,
-              item.nameEn,
-              item.nameZh ?? ITEM_NAMES[item.id]?.zh,
-              item.nameJa ?? ITEM_NAMES[item.id]?.ja,
-              item.nameKo ?? ITEM_NAMES[item.id]?.ko
-            );
+            const itemHref = item.href;
+            const itemName = item.title;
             return (
               <div
                 key={item.id}
@@ -194,13 +99,15 @@ export default async function CategoryPage({
               >
                 {/* Item image */}
                 <Link href={itemHref} className="relative h-52 overflow-hidden bg-zinc-100 block">
-                  <Image
-                    src={item.image}
-                    alt={itemName}
-                    fill
-                    sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+                  {item.image && (
+                    <Image
+                      src={item.image}
+                      alt={itemName}
+                      fill
+                      sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  )}
                 </Link>
 
                 {/* Item info */}
@@ -211,14 +118,7 @@ export default async function CategoryPage({
                     </Link>
                   </div>
                   <p className="text-zinc-500 text-sm leading-relaxed flex-1">
-                    {pickLocale(
-                      locale,
-                      item.descriptionVi,
-                      item.description,
-                      ITEM_DESCS[item.id]?.zh,
-                      ITEM_DESCS[item.id]?.ja,
-                      ITEM_DESCS[item.id]?.ko
-                    )}
+                    {item.description}
                   </p>
 
                   <Link
@@ -239,49 +139,20 @@ export default async function CategoryPage({
             {t("referenceGallery")}
           </p>
           <div className={items.length === 8 ? "grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3" : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"}>
-            {items.map((item) => {
-              let refImage = item.image;
-              
-              if (item.images && item.images.length > 1) {
-                const altImg = item.images.find((img) => img !== item.image);
-                if (altImg) refImage = altImg;
-              } else if (item.optionGroups && item.optionGroups.length > 0) {
-                const allMaterialImages: string[] = [];
-                for (const group of item.optionGroups) {
-                  for (const option of group.options) {
-                    if (option.images) allMaterialImages.push(...option.images);
-                    if (option.pureImages) allMaterialImages.push(...option.pureImages);
-                  }
-                }
-                
-                const uniqueImages = allMaterialImages.filter((img) => img !== item.image);
-                if (uniqueImages.length >= 2) {
-                  refImage = uniqueImages[1]; 
-                } else if (uniqueImages.length === 1) {
-                  refImage = uniqueImages[0];
-                }
-              }
-
-              return (
-                <div key={item.id} className="relative rounded-xl overflow-hidden group h-32 sm:h-36 lg:h-40">
+            {items.map((item) => (
+              <div key={item.id} className="relative rounded-xl overflow-hidden group h-32 sm:h-36 lg:h-40">
+                {item.referenceImage && (
                   <Image
-                    src={refImage}
-                    alt={pickLocale(
-                      locale,
-                      item.nameVi,
-                      item.nameEn,
-                      item.nameZh ?? ITEM_NAMES[item.id]?.zh,
-                      item.nameJa ?? ITEM_NAMES[item.id]?.ja,
-                      item.nameKo ?? ITEM_NAMES[item.id]?.ko
-                    )}
+                    src={item.referenceImage}
+                    alt={item.title}
                     fill
                     sizes={items.length === 8 ? "(min-width: 1024px) 12.5vw, (min-width: 640px) 25vw, 50vw" : "(min-width: 1024px) 16vw, (min-width: 640px) 33vw, 50vw"}
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                </div>
-              );
-            })}
+                )}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+              </div>
+            ))}
           </div>
         </div>
 
@@ -321,11 +192,11 @@ export default async function CategoryPage({
         <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between gap-4">
           {prev ? (
             <Link
-              href={`/products/${prev.id}`}
+              href={prev.href}
               className="flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group"
             >
               <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-              <span className="hidden sm:inline">{pickLocale(locale, prev.nameVi, prev.nameEn, CATEGORY_NAMES[prev.id]?.zh, CATEGORY_NAMES[prev.id]?.ja, CATEGORY_NAMES[prev.id]?.ko)}</span>
+              <span className="hidden sm:inline">{prev.label}</span>
               <span className="sm:hidden">{t("prevShort")}</span>
             </Link>
           ) : (
@@ -344,10 +215,10 @@ export default async function CategoryPage({
 
           {next ? (
             <Link
-              href={`/products/${next.id}`}
+              href={next.href}
               className="flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group"
             >
-              <span className="hidden sm:inline">{pickLocale(locale, next.nameVi, next.nameEn, CATEGORY_NAMES[next.id]?.zh, CATEGORY_NAMES[next.id]?.ja, CATEGORY_NAMES[next.id]?.ko)}</span>
+              <span className="hidden sm:inline">{next.label}</span>
               <span className="sm:hidden">{t("nextShort")}</span>
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </Link>

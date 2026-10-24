@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { findHashTarget } from "@/lib/hash-navigation";
 
 /**
  * Hook to reactively track window.location.hash across client interactions,
- * popstate and hashchange events.
+ * popstate and hashchange events. A hash that is an old or foreign name of a card on the page
+ * is reported as that card's canonical id, so callers compare it with canonical links only.
  */
 export function useCurrentHash(): string {
   const [hash, setHash] = useState("");
@@ -14,7 +16,7 @@ export function useCurrentHash(): string {
       if (typeof window !== "undefined") {
         const raw = window.location.hash.replace(/^#+/, "");
         const clean = raw.split("#")[0]?.trim() || "";
-        setHash(clean);
+        setHash(findHashTarget(clean)?.id ?? clean);
       }
     }
 

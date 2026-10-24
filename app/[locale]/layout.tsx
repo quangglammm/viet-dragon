@@ -6,9 +6,11 @@ import { setRequestLocale } from "next-intl/server";
 import "../globals.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import { QuoteModalProvider } from "@/components/providers/quote-modal-provider";
+import { SiteDataProvider } from "@/components/providers/site-data-provider";
 import { FloatingContact } from "@/components/ui/floating-contact";
 import { LanguageDetectorToast } from "@/components/ui/language-detector-toast";
 import { routing } from "@/i18n/routing";
+import { getNavigation } from "@/lib/content/read/site";
 import { getSiteEnv } from "@/lib/env";
 
 const sans = Be_Vietnam_Pro({
@@ -31,8 +33,10 @@ const mono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Nothing under [locale] is prerendered: every page reads the content database, so each is rendered on its first request and cached
+// until a publish revalidates what it read (and `next build` needs no database).
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
+  return [];
 }
 
 export async function generateMetadata({
@@ -96,6 +100,7 @@ export default async function RootLayout({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
+  const navigation = await getNavigation(locale);
 
   return (
     <html
@@ -104,11 +109,13 @@ export default async function RootLayout({
     >
       <body suppressHydrationWarning>
         <NextIntlClientProvider>
-          <QuoteModalProvider>
-            <SmoothScroll>{children}</SmoothScroll>
-            <FloatingContact />
-            <LanguageDetectorToast />
-          </QuoteModalProvider>
+          <SiteDataProvider navigation={navigation}>
+            <QuoteModalProvider>
+              <SmoothScroll>{children}</SmoothScroll>
+              <FloatingContact />
+              <LanguageDetectorToast />
+            </QuoteModalProvider>
+          </SiteDataProvider>
         </NextIntlClientProvider>
       </body>
     </html>

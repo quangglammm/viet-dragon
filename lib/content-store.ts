@@ -1,7 +1,8 @@
 import fs from "fs/promises";
 import path from "path";
 import { routing, type Locale } from "@/i18n/routing";
-import { type ProductCategory, type ProductItem, showcaseImages } from "@/data/categories";
+import { type ProductCategory, type ProductItem } from "@/data/categories";
+import { showcaseImages } from "@/data/showcase";
 import {
   MAIN_CATEGORIES,
   SUBGROUPS_CATALOG,

@@ -63,3 +63,7 @@ screenshot*.mjs
 
 # page-text parity corpus (generated from a local build; large)
 /.parity/
+
+# browser-smoke artifacts (Playwright MCP output and screenshots)
+/.playwright-mcp/
+/smoke-*.png

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 import { z } from "zod";
-import { showcaseImages } from "@/data/categories";
+import { showcaseImages } from "@/data/showcase";
 import { materialTraits } from "@/data/material-traits";
 import { MARKETING_SUBMENU_COLUMNS } from "@/data/marketing-menu";
 import { OFFICE_SUBMENU_COLUMNS } from "@/data/office-menu";
@@ -82,7 +82,7 @@ export interface Sources {
   productLinks: ReadonlyMap<string, string>;
   /** Storage keys (`images/hero/a.webp`) that some source file mentions: used by components, styles or data, not only by seeded rows. */
   mediaReferences: ReadonlySet<string>;
-  /** The lucide icons the product card imports — the ones it can draw today (the report counts the option icons outside this set). */
+  /** The lucide icons the old product card could draw (the report counts the option icons outside this set). */
   cardIcons: ReadonlySet<string>;
 }
 
@@ -145,12 +145,15 @@ function scanSource(root: string): { productLinks: Map<string, string>; mediaRef
   return { productLinks, mediaReferences };
 }
 
-function loadCardIcons(root: string): Set<string> {
-  const source = fs.readFileSync(path.join(root, "components/ui/material-flashcard.tsx"), "utf8");
-  const list = /import\s*\{([^}]*)\}\s*from\s*"lucide-react"/.exec(source)?.[1];
-  if (!list) throw new Error("Cannot find the lucide-react import in components/ui/material-flashcard.tsx — update scripts/seed/sources.ts");
-  return new Set(list.split(",").map((name) => name.trim()).filter((name) => /^[A-Z]\w*$/.test(name)));
-}
+/**
+ * The lucide icons the OLD product card imported (components/ui/material-flashcard.tsx before Phase 4 made it draw any icon of lib/icons.ts):
+ * the seed's report counts the options whose icon that card could not draw. The card no longer says, so the list is kept here.
+ */
+const OLD_CARD_ICONS: readonly string[] = [
+  "Layers", "Sparkles", "Palette", "Award", "Gem", "Feather", "PenLine", "Minimize2", "StickyNote",
+  "Stamp", "ShieldCheck", "Briefcase", "Gift", "ArrowLeftRight", "ImagePlus", "ChevronLeft", "ChevronRight",
+  "ChevronDown",
+];
 
 function loadMessages(root: string): Record<Locale, Record<string, unknown>> {
   const entries = LOCALES.map((locale) => [locale, JSON.parse(fs.readFileSync(path.join(root, `messages/${locale}.json`), "utf8")) as Record<string, unknown>]);
@@ -178,6 +181,6 @@ export function loadSources(root: string = process.cwd()): Sources {
     messages: loadMessages(root),
     productLinks: scanned.productLinks,
     mediaReferences: scanned.mediaReferences,
-    cardIcons: loadCardIcons(root),
+    cardIcons: new Set(OLD_CARD_ICONS),
   };
 }

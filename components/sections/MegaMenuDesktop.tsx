@@ -4,35 +4,27 @@ import { useState } from "react";
 import Image from "next/image";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { MARKETING_SUBMENU_COLUMNS } from "@/data/marketing-menu";
+import type { NavMenu } from "@/lib/content/read/navigation";
 import { isSubmenuItemActive, isSubmenuGroupActive } from "@/lib/menu-active";
 import { useCurrentHash } from "@/hooks/use-current-hash";
 import { navigateToShapeHash } from "@/lib/hash-navigation";
+import { FAST_PRINT_TAGS } from "@/components/sections/fast-print-tags";
 
-const FAST_PRINT_TAGS: Record<Locale, string> = {
-  vi: "in nhanh",
-  en: "fast",
-  zh: "快印",
-  ja: "特急",
-  ko: "당일인쇄",
-};
-
-const DEFAULT_IMAGE = "/images/category/poster-bangron-standee.webp";
-
-export function MarketingDesktopSubmenu({
+export function MegaMenuDesktop({
+  menu,
   locale,
   isOpen,
   onItemClick,
 }: Readonly<{
+  menu: NavMenu;
   locale: Locale;
   isOpen: boolean;
   onItemClick?: () => void;
 }>) {
   const pathname = usePathname();
   const currentHash = useCurrentHash();
-  const [bgImage, setBgImage] = useState<string>(DEFAULT_IMAGE);
+  const [bgImage, setBgImage] = useState<string | null>(menu.defaultImage);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const handleLinkClick = (href: string, e: React.MouseEvent) => {
@@ -51,20 +43,22 @@ export function MarketingDesktopSubmenu({
       )}
     >
       {/* Layer 1: Background Image with smooth transition */}
-      <Image
-        src={bgImage}
-        alt=""
-        fill
-        sizes="980px"
-        className="object-cover -z-20 transition-all duration-300"
-      />
+      {bgImage && (
+        <Image
+          src={bgImage}
+          alt=""
+          fill
+          sizes="980px"
+          className="object-cover -z-20 transition-all duration-300"
+        />
+      )}
 
       {/* Layer 2: Transparent Overlay matching reference image (pure white 70%, no blur) */}
       <div className="absolute inset-0 bg-white/70 -z-10" />
 
       {/* Layer 3: Menu 3-Column Content */}
       <div className="grid grid-cols-3 gap-8 relative z-10">
-        {MARKETING_SUBMENU_COLUMNS.map((col) => (
+        {menu.columns.map((col) => (
           <div key={col.id} className="flex flex-col gap-6">
             {col.groups.map((group) => {
               const isGroupActive = isSubmenuGroupActive(group.href, pathname);
@@ -74,7 +68,7 @@ export function MarketingDesktopSubmenu({
                     href={group.href}
                     onClick={(e) => handleLinkClick(group.href, e)}
                     onMouseEnter={() => {
-                      setBgImage(group.image);
+                      setBgImage(group.image ?? menu.defaultImage);
                       setHoveredId(group.id);
                     }}
                     onMouseLeave={() => setHoveredId(null)}
@@ -93,14 +87,7 @@ export function MarketingDesktopSubmenu({
                           : "text-zinc-900 group-hover:text-brand-primary"
                       )}
                     >
-                      {pickLocale(
-                        locale,
-                        group.titleVi,
-                        group.titleEn,
-                        group.titleZh,
-                        group.titleJa,
-                        group.titleKo
-                      )}
+                      {group.title}
                     </span>
                   </Link>
 
@@ -113,7 +100,7 @@ export function MarketingDesktopSubmenu({
                             href={item.href}
                             onClick={(e) => handleLinkClick(item.href, e)}
                             onMouseEnter={() => {
-                              setBgImage(item.image);
+                              setBgImage(item.image ?? menu.defaultImage);
                               setHoveredId(item.id);
                             }}
                             onMouseLeave={() => setHoveredId(null)}
@@ -126,16 +113,7 @@ export function MarketingDesktopSubmenu({
                                   : "text-zinc-800 hover:text-brand-primary hover:bg-brand-primary/10 font-medium"
                             )}
                           >
-                            <span className="leading-snug">
-                              {pickLocale(
-                                locale,
-                                item.nameVi,
-                                item.nameEn,
-                                item.nameZh,
-                                item.nameJa,
-                                item.nameKo
-                              )}
-                            </span>
+                            <span className="leading-snug">{item.label}</span>
                             {item.isFast && (
                               <span
                                 className={cn(
@@ -143,7 +121,7 @@ export function MarketingDesktopSubmenu({
                                   isActive ? "bg-brand-primary text-white" : "bg-amber-500 text-white"
                                 )}
                               >
-                                {FAST_PRINT_TAGS[locale] || "in nhanh"}
+                                {FAST_PRINT_TAGS[locale]}
                               </span>
                             )}
                           </Link>

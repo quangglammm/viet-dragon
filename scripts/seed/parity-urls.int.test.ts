@@ -73,7 +73,7 @@ describe("URLs (checked in every language)", () => {
 
   // INDEPENDENT: the inventory comes from scanning the source for "/products/…" string literals, not from any resolver.
   // Each literal is a URL that works today; it must still resolve in EVERY language (category, product, then segment).
-  it("resolve every /products/… link found in the source (130 of them) in every language", async () => {
+  it("resolve every /products/… link found in the source (127 of them) in every language", async () => {
     const categories = await rows<{ locale: string; slug: string; category_id: string }>(`select locale, slug, category_id from category_slug`);
     const slugs = await rows<{ locale: string; category_id: string; slug: string; product_id: number }>(`select locale, category_id, slug, product_id from product_slug`);
     const segments = await rows<{ product_id: number; locale: string; slug: string }>(`select product_id, locale, slug from product_segment`);
@@ -97,7 +97,7 @@ describe("URLs (checked in every language)", () => {
         else if (segment && !segmentSet.has(`${productId}|${locale}|${segment}`)) unresolved.push(`${href} (${file}) — segment '${segment}' in ${locale}`);
       }
     }
-    expect(seeded.src.productLinks.size).toBe(130);
+    expect(seeded.src.productLinks.size).toBe(127); // 130 before Phase 4 moved the chrome to the database and rewrote the examples in lib/menu-active.ts
     expect(unresolved).toEqual([]);
   });
 });

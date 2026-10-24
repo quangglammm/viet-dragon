@@ -3,30 +3,45 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-import {
-  Layers, Sparkles, Palette, Award, Gem, Feather, PenLine, Minimize2, StickyNote,
-  Stamp, ShieldCheck, Briefcase, Gift, ArrowLeftRight, ImagePlus, ChevronLeft, ChevronRight,
-  ChevronDown,
-  type LucideIcon,
-} from "lucide-react";
-import type { ProductOption } from "@/data/categories";
-import { materialTraits } from "@/data/material-traits";
+import { ArrowLeftRight, ImagePlus, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { pickLocale } from "@/lib/locale";
+import { NamedIcon } from "@/components/ui/named-icon";
+import type { CardView } from "@/lib/content/read/card";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { ZaloIcon } from "@/components/ui/zalo-icon";
 import { ConsultBottomSheet } from "@/components/ui/consult-bottom-sheet";
-import { getProductSizes } from "@/lib/product-sizes";
-import {
-  FORM_TITLES,
-  PRINT_TECHNIQUES,
-  getProductMaterials,
-  getPostPressFinishing,
-} from "@/lib/product-specs";
 
-const optionIconMap: Record<string, LucideIcon> = {
-  Layers, Sparkles, Palette, Award, Gem, Feather, PenLine, Minimize2, StickyNote,
-  Stamp, ShieldCheck, Briefcase, Gift,
+// The titles of the form under the card: interface wording (the lists they head come from the content database).
+const FORM_TITLES: Record<"sizes" | "printTech" | "material" | "finishing", Record<Locale, string>> = {
+  sizes: {
+    vi: "Kích thước phổ biến:",
+    en: "Popular sizes:",
+    zh: "常用尺寸:",
+    ja: "一般的なサイズ:",
+    ko: "자주 쓰이는 규격:",
+  },
+  printTech: {
+    vi: "Kỹ thuật in:",
+    en: "Printing technique:",
+    zh: "印刷工艺:",
+    ja: "印刷技術:",
+    ko: "인쇄 기법:",
+  },
+  material: {
+    vi: "Chất liệu:",
+    en: "Material:",
+    zh: "材质:",
+    ja: "素材:",
+    ko: "재질:",
+  },
+  finishing: {
+    vi: "Thành phẩm sau in:",
+    en: "Post-press finishing:",
+    zh: "印后加工:",
+    ja: "印刷後加工・仕上がり:",
+    ko: "인쇄 후가공 / 마감:",
+  },
 };
 
 const SLOT_LABEL: Record<string, { main: string; detail: string }> = {
@@ -123,101 +138,22 @@ const ZALO_BUTTON_LABEL: Record<string, string> = {
   ko: "Zalo 상담",
 };
 
-function formatMaterialDisplayName(name: string, locale: Locale): string {
-  if (locale === "vi") {
-    if (/^(c300(\s*\(chuẩn\))?|c300\s*-\s*c350.*|couche\b.*|giấy\s+couche\b.*)$/i.test(name)) {
-      if (/bồi carton/i.test(name)) {
-        return name.replace(/couche/i, "Giấy loại C");
-      }
-      return "Giấy loại C";
-    }
-    if (/^c300\s+ép kim/i.test(name)) {
-      return "Giấy loại C Ép Kim Vàng";
-    }
-    if (/^(ford\s*300(gsm)?(\s*\(.*\))?|ford\s+\d+.*(\(.*\))?|ruột\s+giấy\s+ford.*|lịch\s+để\s+bàn\s+giấy\s+ford.*)$/i.test(name)) {
-      return "Giấy loại F";
-    }
-    if (/^ivory\b.*$/i.test(name)) {
-      return "Giấy loại I";
-    }
-
-    let result = name;
-    result = result.replace(/\bgiấy\s+couche\b/gi, "Giấy loại C");
-    result = result.replace(/\b(c300|couche)\b/gi, "Giấy loại C");
-    result = result.replace(/\bgiấy\s+ford(\s*300(gsm)?)?\b/gi, "Giấy loại F");
-    result = result.replace(/\bford\s*300(gsm)?\b/gi, "Giấy loại F");
-    result = result.replace(/\bford\b/gi, "Giấy loại F");
-    result = result.replace(/\bgiấy\s+ivory\b/gi, "Giấy loại I");
-    result = result.replace(/\bivory\b/gi, "Giấy loại I");
-    return result;
-  }
-  if (locale === "en") {
-    if (/^(c300.*|couche.*)$/i.test(name)) {
-      if (/corrugated|carton/i.test(name)) {
-        return name.replace(/couche/i, "Type C Paper");
-      }
-      return "Type C Paper";
-    }
-    if (/^ford\b.*$/i.test(name)) {
-      return "Type F Paper";
-    }
-    if (/^ivory\b.*$/i.test(name)) {
-      return "Type I Paper";
-    }
-    let result = name;
-    result = result.replace(/\b(c300|couche)\b/gi, "Type C Paper");
-    result = result.replace(/\bford\s*300(gsm)?\b/gi, "Type F Paper");
-    result = result.replace(/\bford\b/gi, "Type F Paper");
-    result = result.replace(/\bivory\b/gi, "Type I Paper");
-    return result;
-  }
-  if (locale === "zh") {
-    if (/^c300\b/i.test(name) || /^couche\b/i.test(name) || /铜版纸/.test(name)) return "C类纸";
-    if (/^ford\b/i.test(name) || /道林纸/.test(name)) return "F类纸";
-    if (/^ivory\b/i.test(name) || /白卡纸/.test(name)) return "I类纸";
-  }
-  if (locale === "ja") {
-    if (/^c300\b/i.test(name) || /^couche\b/i.test(name) || /コート紙/.test(name)) return "Cタイプ用紙";
-    if (/^ford\b/i.test(name) || /上質紙/.test(name)) return "Fタイプ用紙";
-    if (/^ivory\b/i.test(name) || /アイボリー/.test(name)) return "Iタイプ用紙";
-  }
-  if (locale === "ko") {
-    if (/^c300\b/i.test(name) || /^couche\b/i.test(name) || /아트지/.test(name)) return "C타입 용지";
-    if (/^ford\b/i.test(name) || /모조지/.test(name)) return "F타입 용지";
-    if (/^ivory\b/i.test(name) || /백상지|아이보리/.test(name)) return "I타입 용지";
-  }
-  return name;
-}
-
 interface MaterialFlashcardProps {
-  option: ProductOption;
+  card: CardView;
   locale: Locale;
-  productName: string;
-  fallbackImage: string;
   descriptionLabel: string;
   bestForLabel: string;
   viewImageHint: string;
   backToDetailsHint: string;
-  foilCheckboxLabel?: string;
-  doubleSidedCheckboxLabel?: string;
-  hideFoilCheckbox?: boolean;
-  hideDoubleSidedCheckbox?: boolean;
-  productId?: string;
-  shapeId?: string;
-  categoryId?: string;
 }
 
 export function MaterialFlashcard({
-  option,
+  card,
   locale,
-  productName,
   descriptionLabel,
   bestForLabel,
   viewImageHint,
   backToDetailsHint,
-  productId,
-  shapeId,
-  categoryId,
 }: Readonly<MaterialFlashcardProps>) {
   const [flipped, setFlipped] = useState(false);
   const [selectedSize, setSelectedSize] = useState<"large" | "medium" | "small" | null>(null);
@@ -229,11 +165,7 @@ export function MaterialFlashcard({
   const isSwiping = useRef<boolean>(false);
   const ignoreClickUntil = useRef<number>(0);
 
-  const OptIcon = optionIconMap[option.icon ?? ""] ?? Layers;
-  const rawName = pickLocale(locale, option.nameVi, option.name, option.nameZh, option.nameJa, option.nameKo);
-  const name = formatMaterialDisplayName(rawName, locale);
-  const description = pickLocale(locale, option.descriptionVi, option.description, option.descriptionZh, option.descriptionJa, option.descriptionKo);
-  const bestFor = pickLocale(locale, option.bestForVi, option.bestFor, option.bestForZh, option.bestForJa, option.bestForKo);
+  const { heading: name, features, bestFor, sizes, consultName: productName } = card;
 
   const scrollContentRef = useRef<HTMLDivElement>(null);
   const [canScrollDown, setCanScrollDown] = useState(false);
@@ -254,7 +186,7 @@ export function MaterialFlashcard({
       const timer = setTimeout(checkScroll, 120);
       return () => clearTimeout(timer);
     }
-  }, [flipped, checkScroll, description, bestFor]);
+  }, [flipped, checkScroll, features, bestFor]);
 
   const handleContentMouseDown = (e: React.MouseEvent) => {
     mouseStartRef.current = { x: e.clientX, y: e.clientY };
@@ -303,22 +235,12 @@ export function MaterialFlashcard({
     }
   };
 
-  const sizes = getProductSizes(productName, locale, productId, shapeId, categoryId);
   const selectedSizeItem = sizes.find((s) => s.id === selectedSize);
-  const printTechList = PRINT_TECHNIQUES[locale] ?? PRINT_TECHNIQUES.vi;
-  const materialList = getProductMaterials(productName, name, locale, productId, shapeId, categoryId);
-  const finishingList = getPostPressFinishing(productName, name, locale, productId, shapeId, categoryId);
+  const printTechList = card.techniques;
+  const materialList = card.materials;
+  const finishingList = card.finishing;
 
-  let rawImages: string[] = [];
-  if (option.pureImages && option.pureImages.length > 0) {
-    rawImages = option.pureImages.map((s) => s?.trim() ?? "");
-  } else if (option.images && option.images.length > 0) {
-    rawImages = option.images.map((s) => s?.trim() ?? "");
-  } else if (option.pureImage) {
-    rawImages = [option.pureImage.trim()];
-  } else if (option.image) {
-    rawImages = [option.image.trim()];
-  }
+  const rawImages = card.images;
 
   // Ensure 3 slots are always present for the collage
   let cardImages: [string, string, string] = ["", "", ""];
@@ -511,7 +433,7 @@ export function MaterialFlashcard({
               className="absolute inset-x-0 bottom-0 px-5 pt-4 pb-3 md:pb-4 flex flex-col gap-2 z-10 cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
-                <OptIcon size={16} className="text-white shrink-0" />
+                <NamedIcon name={card.icon} size={16} className="text-white shrink-0" />
                 <span className="text-white font-black text-base line-clamp-2 flex-1">{name}</span>
                 <ArrowLeftRight size={14} strokeWidth={2} className="text-white/60 shrink-0" />
               </div>
@@ -545,7 +467,7 @@ export function MaterialFlashcard({
               onClick={handleCardFlip}
               className="flex items-center gap-2.5 px-5 py-4 bg-zinc-50 border-b border-zinc-100 shrink-0 cursor-pointer select-none hover:bg-zinc-100/70 transition-colors"
             >
-              <OptIcon size={16} className="text-brand-primary shrink-0" />
+              <NamedIcon name={card.icon} size={16} className="text-brand-primary shrink-0" />
               <h3 className="font-black text-zinc-900 text-base truncate flex-1">{name}</h3>
             </div>
 
@@ -566,15 +488,12 @@ export function MaterialFlashcard({
                   {descriptionLabel}
                 </span>
                 <ul className="mt-2 flex flex-col gap-2">
-                  {description.map((line, i) => {
-                    const TraitIcon = materialTraits[option.descriptionTraits?.[i]]?.icon ?? Layers;
-                    return (
-                      <li key={line} className="flex items-start gap-2.5 text-sm text-zinc-700 leading-relaxed">
-                        <TraitIcon size={14} strokeWidth={1.75} className="mt-0.5 text-brand-primary shrink-0" />
-                        <span>{line}</span>
-                      </li>
-                    );
-                  })}
+                  {features.map((feature, i) => (
+                    <li key={`${i}:${feature.text}`} className="flex items-start gap-2.5 text-sm text-zinc-700 leading-relaxed">
+                      <NamedIcon name={feature.icon} size={14} strokeWidth={1.75} className="mt-0.5 text-brand-primary shrink-0" />
+                      <span>{feature.text}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
@@ -583,8 +502,8 @@ export function MaterialFlashcard({
                   {bestForLabel}
                 </span>
                 <ul className="mt-2 flex flex-col gap-1.5 pb-4">
-                  {bestFor.map((line) => (
-                    <li key={line} className="flex items-start gap-2 text-sm text-zinc-700 leading-relaxed">
+                  {bestFor.map((line, i) => (
+                    <li key={`${i}:${line}`} className="flex items-start gap-2 text-sm text-zinc-700 leading-relaxed">
                       <span className="mt-2 size-1 rounded-full bg-brand-primary shrink-0" />
                       <span>{line}</span>
                     </li>
@@ -622,7 +541,7 @@ export function MaterialFlashcard({
         {/* 1. Kích thước phổ biến (thu nhỏ vừa với chữ, click để nở ra ghi đè kích thước luôn bên trong ô, click lại hiện lại chữ) */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {FORM_TITLES.sizes[locale] ?? FORM_TITLES.sizes.vi}
+            {FORM_TITLES.sizes[locale]}
           </span>
           <div className="flex flex-wrap items-center gap-2">
             {sizes.map((s) => {
@@ -675,7 +594,7 @@ export function MaterialFlashcard({
         {/* 2. Kỹ thuật in: in nhanh, offset, ép kim, dập nổi dập chìm */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {FORM_TITLES.printTech[locale] ?? FORM_TITLES.printTech.vi}
+            {FORM_TITLES.printTech[locale]}
           </span>
           <div className="flex flex-wrap items-center gap-2">
             {printTechList.map((tech) => (
@@ -692,7 +611,7 @@ export function MaterialFlashcard({
         {/* 3. Chất liệu */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {FORM_TITLES.material[locale] ?? FORM_TITLES.material.vi}
+            {FORM_TITLES.material[locale]}
           </span>
           <div className="flex flex-wrap items-center gap-2">
             {materialList.map((mat) => {
@@ -720,7 +639,7 @@ export function MaterialFlashcard({
         {/* 4. Thành phẩm sau in (Bế, Dán, Cán màng... hiển thị ngang hàng và xuống hàng tự nhiên) */}
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {FORM_TITLES.finishing[locale] ?? FORM_TITLES.finishing.vi}
+            {FORM_TITLES.finishing[locale]}
           </span>
           {finishingList.map((item) => (
             <span

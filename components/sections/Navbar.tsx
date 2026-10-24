@@ -2,26 +2,17 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Menu, X, Phone, Mail, MapPin, ChevronDown, Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles, type LucideIcon } from "lucide-react";
-
-const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
+import { Menu, X, Phone, Mail, MapPin, ChevronDown } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { WipeButton } from "@/components/ui/wipe-button";
 import { cn } from "@/lib/utils";
-import { MAIN_CATEGORIES, getSubgroupsByCategory } from "@/data/subgroups-catalog";
-import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { CATEGORY_NAMES } from "@/data/translations";
-import { OfficeDesktopSubmenu } from "@/components/sections/OfficeDesktopSubmenu";
-import { OfficeMobileSubmenu } from "@/components/sections/OfficeMobileSubmenu";
-import { MarketingDesktopSubmenu } from "@/components/sections/MarketingDesktopSubmenu";
-import { MarketingMobileSubmenu } from "@/components/sections/MarketingMobileSubmenu";
-import { PackagingDesktopSubmenu } from "@/components/sections/PackagingDesktopSubmenu";
-import { PackagingMobileSubmenu } from "@/components/sections/PackagingMobileSubmenu";
-import { TetDesktopSubmenu } from "@/components/sections/TetDesktopSubmenu";
-import { TetMobileSubmenu } from "@/components/sections/TetMobileSubmenu";
+import { NamedIcon } from "@/components/ui/named-icon";
+import { MegaMenuDesktop } from "@/components/sections/MegaMenuDesktop";
+import { MegaMenuMobile } from "@/components/sections/MegaMenuMobile";
 import { useQuoteModal } from "@/components/providers/quote-modal-provider";
+import { useSiteData } from "@/components/providers/site-data-provider";
 
 const LANGUAGES: { code: Locale; flag: string; label: string; short: string }[] = [
   { code: "vi", flag: "🇻🇳", label: "Tiếng Việt", short: "VN" },
@@ -156,6 +147,7 @@ export default function Navbar() {
   const tContact = useTranslations("contact");
   const { openQuote } = useQuoteModal();
   const locale = useLocale() as Locale;
+  const { categories } = useSiteData();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -285,9 +277,8 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center justify-center flex-1 gap-1.5 xl:gap-3 2xl:gap-5 px-2 xl:px-4">
-            {MAIN_CATEGORIES.map((cat) => {
-              const Icon = iconMap[cat.icon] ?? Briefcase;
-              const isActiveCat = pathname.startsWith(`/products/${cat.id}`);
+            {categories.map((cat) => {
+              const isActiveCat = pathname.startsWith(cat.href);
               return (
                 <div
                   key={cat.id}
@@ -296,7 +287,7 @@ export default function Navbar() {
                   onMouseLeave={handleCatMouseLeave}
                 >
                   <Link
-                    href={`/products/${cat.id}`}
+                    href={cat.href}
                     className={cn(
                       "flex items-center gap-1 xl:gap-1.5 py-2 text-[11px] xl:text-[13px] 2xl:text-sm font-bold uppercase tracking-wide whitespace-nowrap transition-colors duration-300",
                       transparent
@@ -306,40 +297,23 @@ export default function Navbar() {
                       (activeDesktopCat === cat.id || isActiveCat) && transparent && "text-white"
                     )}
                   >
-                    <Icon size={13} className="shrink-0" strokeWidth={2.5} />
-                    <span>{pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)}</span>
+                    <NamedIcon name={cat.icon} size={13} className="shrink-0" strokeWidth={2.5} />
+                    <span>{cat.name}</span>
                   </Link>
 
-                  <div
-                    onMouseEnter={() => handleCatMouseEnter(cat.id)}
-                    onMouseLeave={handleCatMouseLeave}
-                  >
-                    {cat.id === "marketing" ? (
-                      <MarketingDesktopSubmenu
+                  {cat.menu.columns.length > 0 && (
+                    <div
+                      onMouseEnter={() => handleCatMouseEnter(cat.id)}
+                      onMouseLeave={handleCatMouseLeave}
+                    >
+                      <MegaMenuDesktop
+                        menu={cat.menu}
                         locale={locale}
                         isOpen={activeDesktopCat === cat.id}
                         onItemClick={() => setActiveDesktopCat(null)}
                       />
-                    ) : cat.id === "office" ? (
-                      <OfficeDesktopSubmenu
-                        locale={locale}
-                        isOpen={activeDesktopCat === cat.id}
-                        onItemClick={() => setActiveDesktopCat(null)}
-                      />
-                    ) : cat.id === "packaging" ? (
-                      <PackagingDesktopSubmenu
-                        locale={locale}
-                        isOpen={activeDesktopCat === cat.id}
-                        onItemClick={() => setActiveDesktopCat(null)}
-                      />
-                    ) : cat.id === "tet" ? (
-                      <TetDesktopSubmenu
-                        locale={locale}
-                        isOpen={activeDesktopCat === cat.id}
-                        onItemClick={() => setActiveDesktopCat(null)}
-                      />
-                    ) : null}
-                  </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -399,22 +373,21 @@ export default function Navbar() {
           </Link>
         </div>
         <nav className="flex flex-col px-6 py-6 gap-2 flex-1 overflow-y-auto">
-          {MAIN_CATEGORIES.map((cat) => {
-            const Icon = iconMap[cat.icon] ?? Briefcase;
-            const isActiveCat = pathname.startsWith(`/products/${cat.id}`);
+          {categories.map((cat) => {
+            const isActiveCat = pathname.startsWith(cat.href);
             return (
               <div key={cat.id} className="flex flex-col">
                 <div className="flex items-center justify-between rounded-2xl hover:bg-zinc-50 transition-colors">
                   <Link
-                    href={`/products/${cat.id}`}
+                    href={cat.href}
                     onClick={closeAllMenu}
                     className={cn(
                       "flex items-center gap-2.5 pl-4 py-3.5 text-xl font-semibold flex-1 transition-colors",
                       isActiveCat ? "text-brand-primary" : "text-zinc-800"
                     )}
                   >
-                    <Icon size={22} className={isActiveCat ? "text-brand-primary" : "text-brand-primary/80"} />
-                    {pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)}
+                    <NamedIcon name={cat.icon} size={22} className={isActiveCat ? "text-brand-primary" : "text-brand-primary/80"} />
+                    {cat.name}
                   </Link>
                 <button
                   onClick={() => setOpenMobileCat((current) => current === cat.id ? null : cat.id)}
@@ -430,34 +403,25 @@ export default function Navbar() {
 
               {/* Mobile Accordion Subcategories */}
               {openMobileCat === cat.id && (
-                cat.id === "marketing" ? (
-                  <MarketingMobileSubmenu locale={locale} onItemClick={closeAllMenu} />
-                ) : cat.id === "office" ? (
-                  <OfficeMobileSubmenu locale={locale} onItemClick={closeAllMenu} />
-                ) : cat.id === "packaging" ? (
-                  <PackagingMobileSubmenu locale={locale} onItemClick={closeAllMenu} />
-                ) : cat.id === "tet" ? (
-                  <TetMobileSubmenu locale={locale} onItemClick={closeAllMenu} />
+                cat.menu.columns.length > 0 ? (
+                  <MegaMenuMobile menu={cat.menu} locale={locale} onItemClick={closeAllMenu} />
                 ) : (
                   <div className="pl-6 pr-4 py-2 flex flex-col gap-2 border-l-2 border-brand-primary/20 ml-4 my-1">
                     <ul className="flex flex-col gap-1">
-                      {getSubgroupsByCategory(cat.id).map((item) => {
-                        const isActive = pathname === `/products/${cat.id}/${item.id}`;
-                        return (
-                          <li key={item.id}>
-                            <Link
-                              href={`/products/${cat.id}/${item.id}`}
-                              onClick={closeAllMenu}
-                              className={cn(
-                                "block py-2 text-base font-medium transition-colors hover:text-brand-primary",
-                                isActive ? "text-brand-primary font-bold" : "text-zinc-700"
-                              )}
-                            >
-                              {pickLocale(locale, item.titleVi, item.titleEn, item.titleZh, item.titleJa, item.titleKo)}
-                            </Link>
-                          </li>
-                        );
-                      })}
+                      {cat.cards.map((card) => (
+                        <li key={card.id}>
+                          <Link
+                            href={card.href}
+                            onClick={closeAllMenu}
+                            className={cn(
+                              "block py-2 text-base font-medium transition-colors hover:text-brand-primary",
+                              pathname === card.href ? "text-brand-primary font-bold" : "text-zinc-700"
+                            )}
+                          >
+                            {card.title}
+                          </Link>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 )

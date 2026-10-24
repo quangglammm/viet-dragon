@@ -1,18 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import {
-  Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles,
-  ArrowRight, type LucideIcon,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { pickLocale } from "@/lib/locale";
-import { showcaseImages } from "@/data/categories";
-import { MAIN_CATEGORIES, getSubgroupsByCategory } from "@/data/subgroups-catalog";
-import { SHOWCASE_LABELS, CATEGORY_NAMES, CATEGORY_DESCS } from "@/data/translations";
-
-const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
+import { NamedIcon } from "@/components/ui/named-icon";
+import { getNavigation } from "@/lib/content/read/site";
+import { showcaseImages } from "@/data/showcase";
+import { SHOWCASE_LABELS } from "@/data/translations";
 
 export async function generateMetadata({
   params,
@@ -31,6 +27,7 @@ export default async function ProductsPage({
 }>) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "productsPage" });
+  const { categories } = await getNavigation(locale);
   const [s1, s2, s3, s4, s5] = showcaseImages;
   const showcaseLabel = (s: (typeof showcaseImages)[number]) =>
     pickLocale(locale, s.label, s.labelEn, SHOWCASE_LABELS[s.seed]?.zh, SHOWCASE_LABELS[s.seed]?.ja, SHOWCASE_LABELS[s.seed]?.ko);
@@ -159,27 +156,27 @@ export default async function ProductsPage({
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {MAIN_CATEGORIES.map((cat) => {
-              const Icon = iconMap[cat.icon] ?? Briefcase;
-              const name = pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko);
-              const description = pickLocale(locale, cat.descriptionVi, cat.description, CATEGORY_DESCS[cat.id]?.zh, CATEGORY_DESCS[cat.id]?.ja, CATEGORY_DESCS[cat.id]?.ko);
-              const subgroups = getSubgroupsByCategory(cat.id);
+            {categories.map((cat) => {
+              const { name, description } = cat;
+              const subgroups = cat.cards;
               return (
                 <div key={cat.id} className="group block">
                   <div className="h-full rounded-2xl border border-zinc-100 overflow-hidden hover:border-zinc-300 hover:shadow-lg transition-all duration-300 bg-white flex flex-col">
                     {/* Cover image */}
-                    <Link href={`/products/${cat.id}`} className="block relative h-52 overflow-hidden shrink-0">
-                      <Image
-                        src={cat.coverImage}
-                        alt={name}
-                        fill
-                        sizes="(min-width: 768px) 50vw, 100vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
+                    <Link href={cat.href} className="block relative h-52 overflow-hidden shrink-0">
+                      {cat.cover && (
+                        <Image
+                          src={cat.cover}
+                          alt={name}
+                          fill
+                          sizes="(min-width: 768px) 50vw, 100vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/70 to-transparent" />
                       <div className="absolute bottom-4 left-5 flex items-center gap-3">
                         <span className="p-2 rounded-lg bg-white/20 backdrop-blur-sm text-white">
-                          <Icon size={18} strokeWidth={1.5} />
+                          <NamedIcon name={cat.icon} size={18} strokeWidth={1.5} />
                         </span>
                         <div>
                           <p className="text-white font-black text-base leading-snug">{name}</p>
@@ -195,7 +192,7 @@ export default async function ProductsPage({
                     <div className="p-6 flex flex-col justify-between gap-6 flex-1">
                       <div className="flex flex-col gap-4">
                         <Link
-                          href={`/products/${cat.id}`}
+                          href={cat.href}
                           className="block text-zinc-500 text-sm leading-relaxed hover:text-zinc-800 transition-colors"
                         >
                           {description}
@@ -205,10 +202,10 @@ export default async function ProductsPage({
                           {subgroups.map((sub) => (
                             <Link
                               key={sub.id}
-                              href={`/products/${cat.id}/${sub.id}`}
+                              href={sub.href}
                               className="px-3.5 py-1.5 bg-zinc-50 hover:bg-brand-soft hover:text-brand-primary border border-zinc-200 hover:border-brand-primary/30 text-zinc-700 text-xs font-semibold rounded-full transition-all duration-200"
                             >
-                              {pickLocale(locale, sub.titleVi, sub.titleEn, sub.titleZh, sub.titleJa, sub.titleKo)}
+                              {sub.title}
                             </Link>
                           ))}
                         </div>
@@ -216,7 +213,7 @@ export default async function ProductsPage({
 
                       <div className="pt-2 border-t border-zinc-100 flex items-center justify-between">
                         <Link
-                          href={`/products/${cat.id}`}
+                          href={cat.href}
                           className="text-brand-primary text-sm font-semibold hover:underline"
                         >
                           {t("viewDetail")}

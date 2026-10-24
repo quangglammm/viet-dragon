@@ -1,9 +1,8 @@
 import type { Locale } from "@/i18n/routing";
 
-// A verbatim copy of `formatMaterialDisplayName` from components/ui/material-flashcard.tsx, where it is private to a
-// client component. It rewrites a stored material name into the canonical stock name the product card shows
-// ("Couche" -> "Giấy loại C"); the seed uses it to find the ~44 distinct stocks behind the 110 option rows.
-// material-name.test.ts fails if the original is edited. Phase 4 moves this rule into the database and deletes both.
+// The rule that rewrote a stored material name into the canonical stock name the product card showed ("Couche" -> "Giấy loại C"),
+// kept verbatim from the card it used to live in (components/ui/material-flashcard.tsx, which now reads the heading from the database).
+// The seed uses it to find the ~44 distinct stocks behind the 110 option rows. It leaves with the seed's legacy sources.
 
 export function formatMaterialDisplayName(name: string, locale: Locale): string {
   if (locale === "vi") {

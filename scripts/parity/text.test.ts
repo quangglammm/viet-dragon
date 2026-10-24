@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { decodeEntities, digest, visibleText } from "./text";
+import { anchorAliases, decodeEntities, digest, visibleText } from "./text";
 
 const PAGE = `<!DOCTYPE html><html><head><title>Tờ rơi &amp; Flyers | Viet Dragon</title>
 <meta name="description" content="Mô tả &quot;ngắn&quot;"/><script>var hidden = "no";</script><style>.x{color:red}</style></head>
@@ -34,5 +34,16 @@ describe("digest", () => {
 
   it("copes with a page that has no title, description or links", () => {
     expect(digest("<body>x</body>")).toEqual({ title: "", description: "", text: "x", links: [] });
+  });
+});
+
+describe("anchorAliases", () => {
+  it("maps every other name of a card to its id, in either attribute order", () => {
+    const html = '<div id="a5" class="x" data-aliases="a5-flyer kho-a5"></div><div data-aliases="old" id="b"></div><p id="plain"></p>';
+    expect([...anchorAliases(html)]).toEqual([["a5-flyer", "a5"], ["kho-a5", "a5"], ["old", "b"]]);
+  });
+
+  it("ignores an empty list and an element with no id", () => {
+    expect(anchorAliases('<div id="a" data-aliases=""></div><div data-aliases="x"></div>').size).toBe(0);
   });
 });

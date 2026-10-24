@@ -74,6 +74,20 @@ function segmentsOf(product: ProductView): { slugs: ShapeView["slugs"]; value: S
 
 // ───────────── building a URL ─────────────
 
+export interface Anchor {
+  /** The `id` of the element: the slug in the page's language. */
+  id: string;
+  /** Every other slug the thing has had or has in any language — what a `#hash` pasted from an old or foreign link may say. */
+  aliases: string[];
+}
+
+/** The anchor of a shape or option on its product page, with the slugs that must still scroll to it. */
+export function anchorOf(slugs: ShapeView["slugs"], locale: LocaleCode): Anchor {
+  const id = slugs[locale].slug;
+  const every = LOCALES.flatMap((language) => [slugs[language].slug, ...slugs[language].aliases]);
+  return { id, aliases: [...new Set(every)].filter((slug) => slug !== id) };
+}
+
 export const categoryPath = (locale: LocaleCode, category: CategoryView): string => `/${PRODUCTS_SEGMENT}/${category.slugs[locale].slug}`;
 
 export function productPath(catalog: Catalog, locale: LocaleCode, product: ProductView): string {

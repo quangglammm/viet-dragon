@@ -5,11 +5,11 @@ import { LOCALES, localizedList, localizedText, translated } from "@/scripts/see
 import { formatMaterialDisplayName } from "@/scripts/seed/material-name";
 import { readSizesAndSpecs, replayCardCalls, type SizeSpecReadback } from "@/scripts/seed/measures";
 import { menuSegment, resolveSegment, segmentCandidates } from "@/scripts/seed/resolve";
-import { BASE_LABEL, TIERS } from "@/scripts/seed/steps/sizes-specs";
 import { suggestedBulletsFor } from "@/scripts/seed/suggested-translations";
 import { isBlankText, orNull } from "@/scripts/seed/util";
 import { createSeededDatabase, type SeededDatabase } from "@/tests/helpers/seeded-db";
 import { buildCatalog } from "./catalog";
+import { sizeOf } from "./card";
 import { loadCatalogInput } from "./load";
 import { buildMenus } from "./menus";
 import { sizesFor, specsFor } from "./selectors";
@@ -189,15 +189,8 @@ describe("options", () => {
 describe("sizes and spec lists", () => {
   /** The view's sizes and spec lists in the shape the old code returned them, so they can be compared with it and with the database. */
   function viewReadback(): SizeSpecReadback {
-    const centimetres = (millimetres: number): string => (millimetres / 10).toString();
     return {
-      sizes: (record, shape, locale) =>
-        sizesFor(viewOf(record), shape?.uid ?? null).map((size) => {
-          const base = BASE_LABEL[locale][TIERS.indexOf(size.tier)];
-          const note = size.note[locale];
-          const dims = size.text ?? `${centimetres(size.w!)} x ${centimetres(size.h!)}${size.d ? ` x ${centimetres(size.d)}` : ""} cm`;
-          return { id: size.tier, label: note ? `${base} (${note})` : base, dims };
-        }),
+      sizes: (record, shape, locale) => sizesFor(viewOf(record), shape?.uid ?? null).map((size) => sizeOf(size, locale)),
       specs: (record, shape, kind, locale) => specsFor(viewOf(record), shape?.uid ?? null, kind).flatMap((spec) => (spec.label[locale] ? [spec.label[locale]] : [])),
     };
   }
@@ -353,7 +346,7 @@ describe("URLs", () => {
     expect(differences).toEqual([]);
   });
 
-  it("find every /products/… link written in the old source (130 of them), in every language", () => {
+  it("find every /products/… link written in the public source (127 of them), in every language", () => {
     const unresolved: string[] = [];
     for (const [href, file] of seeded.src.productLinks) {
       const [path, hash] = href.split("#");
@@ -366,7 +359,7 @@ describe("URLs", () => {
         if (hash && parts[2] && resolveUrl(catalog, locale, { ...asked, segment: hash }).status === "notFound") unresolved.push(`${href}#${hash} (${file}) in ${locale}`);
       }
     }
-    expect(seeded.src.productLinks.size).toBe(130);
+    expect(seeded.src.productLinks.size).toBe(127); // 130 before the chrome moved to the database and the examples in lib/menu-active.ts were rewritten
     expect(unresolved).toEqual([]);
   });
 });

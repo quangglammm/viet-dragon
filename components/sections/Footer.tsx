@@ -5,9 +5,8 @@ import { Phone, Mail, MapPin } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { pickLocale } from "@/lib/locale";
-import { MAIN_CATEGORIES } from "@/data/subgroups-catalog";
 import { IconBadge } from "@/components/ui/icon-badge";
+import { useSiteData } from "@/components/providers/site-data-provider";
 import { cn } from "@/lib/utils";
 
 type CompanyLink = { href: string; ns: "nav" | "footer"; key: string };
@@ -58,18 +57,12 @@ const ALL_PRODUCTS_LABEL: Record<Locale, string> = {
   ko: "전체 제품",
 };
 
-const CATEGORY_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
-  marketing: { zh: "营销物料", ja: "マーケティング", ko: "마케팅" },
-  office: { zh: "办公文具", ja: "オフィス用品", ko: "오피스/사무" },
-  packaging: { zh: "包装制品", ja: "パッケージ包装", ko: "패키지/포장" },
-  tet: { zh: "新年年品", ja: "テト・新年", ko: "새해 인쇄물" },
-};
-
 export default function Footer() {
   const t = useTranslations("footer");
   const tNav = useTranslations("nav");
   const tContact = useTranslations("contact");
   const locale = useLocale() as Locale;
+  const { categories } = useSiteData();
   const pathname = usePathname();
 
   return (
@@ -114,7 +107,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Products — categories from data */}
+          {/* Products — the categories of the content database */}
           <div>
             <p className="text-xs font-semibold tracking-widest uppercase text-brand-dark/50 mb-4">
               {t("productsLabel")}
@@ -133,14 +126,12 @@ export default function Footer() {
                   {ALL_PRODUCTS_LABEL[locale] || "All Products"}
                 </Link>
               </li>
-              {MAIN_CATEGORIES.map((cat) => {
-                const isActive =
-                  pathname === `/products/${cat.id}` ||
-                  pathname.startsWith(`/products/${cat.id}/`);
+              {categories.map((cat) => {
+                const isActive = pathname === cat.href || pathname.startsWith(`${cat.href}/`);
                 return (
                   <li key={cat.id}>
                     <Link
-                      href={`/products/${cat.id}`}
+                      href={cat.href}
                       className={cn(
                         "inline-block text-sm py-1 transition-all duration-200",
                         isActive
@@ -148,7 +139,7 @@ export default function Footer() {
                           : "text-brand-dark/70 hover:text-brand-primary hover:translate-x-1 font-medium"
                       )}
                     >
-                      {pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)}
+                      {cat.name}
                     </Link>
                   </li>
                 );

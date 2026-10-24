@@ -1,9 +1,8 @@
 // data/material-traits.ts
-// Shared icon glossary for product-option description bullets (see
-// `ProductOption.descriptionTraits` in data/categories.ts). One small, reusable
-// registry — any page/component can look up a trait's icon + label/explanation
-// by key instead of re-defining icon choices locally. Currently consumed by
-// `MaterialFlashcard` (per-bullet icon) and `MaterialGlossaryFab` (full legend).
+// The old icon glossary for product-option description bullets (see `ProductOption.descriptionTraits` in
+// data/categories.ts). The public site no longer reads it: the traits (icon, label, explanation, in five
+// languages) are rows of the content database, seeded from here (scripts/seed) and shown by the flashcard
+// and the glossary popover.
 
 import {
   Sparkles, Square, Stamp, Feather, CloudFog,

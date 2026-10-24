@@ -69,10 +69,9 @@ This project uses **pnpm** (pinned via `packageManager` in `package.json`) — n
 - `public/videos/about.mp4` — background/loop video used by the About section.
 - Floating chrome rendered outside the section stack: `FloatingContact` (Zalo + phone
   buttons, bottom-right, global in `app/[locale]/layout.tsx`) and `MaterialGlossaryFab`
-  (bottom-left icon-legend popover, product detail page only, when the product has
-  `optionGroups`). Shared phone/Zalo constants live in `lib/contact.ts` — reuse those
+  (bottom-left icon-legend popover, on the pages that show material cards). Shared phone/Zalo constants live in `lib/contact.ts` — reuse those
   instead of re-hardcoding the number. `app/[locale]/layout.tsx` also mounts
-  `QuoteModalProvider` (the quote modal) and `LanguageDetectorToast`.
+  `SiteDataProvider` (the navigation read from the content database), `QuoteModalProvider` (the quote modal) and `LanguageDetectorToast`.
 - Consult leads: `QuoteModal` and `ConsultBottomSheet` both POST to `/api/consult`, which emails
   the lead via nodemailer (SMTP env vars — see **Environment variables**). `/zalo-reply` is a
   standalone client page (outside `[locale]`) that copies a prepared reply and opens Zalo.
@@ -87,11 +86,11 @@ Public routes are nested under `app/[locale]/` — `locale` is `"vi"` (default, 
 | Route | Type | Notes |
 |---|---|---|
 | `/[locale]` | Server | Navbar + 17 stacked sections (Hero → Footer, including `PartnerLogos`), no scroll pinning |
-| `/[locale]/products` | Server async | `await params`; showcase gallery + the 4 `MAIN_CATEGORIES` cards |
-| `/[locale]/products/fast-print` | Server + client | "In nhanh lấy liền" page; interactive part in `FastPrintClient.tsx` |
-| `/[locale]/products/[categoryId]` | Server async | `await params`; `generateStaticParams` pre-generates the 4 categories (locales handled by the parent layout) |
-| `/[locale]/products/[categoryId]/[productId]` | Server async | `await params`; `generateStaticParams`; product = a subgroup from `data/subgroups-catalog.ts`; renders `MaterialFlashcard` per option and, when the product has `optionGroups`, `MaterialGlossaryFab` |
-| `/[locale]/products/[categoryId]/[productId]/[shapeId]` | Server async | `await params`; per-shape page with its own `generateStaticParams`; shape ids go through `lib/shape-aliases.ts` |
+| `/[locale]/products` | Server async | `await params`; showcase gallery + one card per category from the content database |
+| `/[locale]/products/fast-print` | Server + client | "In nhanh lấy liền" page; interactive part in `FastPrintClient.tsx` (static until the next milestone) |
+| `/[locale]/products/[category]` | Server async, **dynamic** | `await params`; `resolvePage` (`lib/content/read/resolve-page.ts`) → `categoryPageOf`; the segment is the category's slug in the page's language |
+| `/[locale]/products/[category]/[product]` | Server async, **dynamic** | a product's shapes grid (`SubgroupShapesView`) or, with no shapes, its materials (`ProductDetailView`) |
+| `/[locale]/products/[category]/[product]/[segment]` | Server async, **dynamic** | one shape of the product, or one of its materials scrolled to; both through `ProductDetailView` |
 | `/[locale]/blog` | Server async | `await params` for `{ locale }` |
 | `/[locale]/blog/[slug]` | Server async | `await params`; `generateStaticParams` pre-generates every post in `blogPosts` (6 today) |
 | `/[locale]/[...rest]` | Server | Catch-all that only calls `notFound()`, so unknown URLs (and every other `notFound()` under `[locale]`) render `[locale]/not-found.tsx` — a localized 404 (namespace `notFound`, Navbar + Footer). Without it `[locale]` as the top-level segment never reaches that file |
@@ -109,12 +108,19 @@ Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
 | `/robots.txt` | `app/robots.ts` — disallows `/admin`, `/api/`, `/zalo-reply`; no `sitemap` entry until Phase 4 |
 
 `/products` and `/blog` have their own `layout.tsx` that wraps Navbar + Footer
-(the `[categoryId]/[productId]` detail pages nest under the `/products` layout).
-Root `app/[locale]/layout.tsx` calls `generateStaticParams` for all five locales and
-`setRequestLocale` — today every nested page/layout under it is statically generated per
-locale (this changes when content moves to the database — see **Admin CMS**).
+(the `[category]/[product]` detail pages nest under the `/products` layout).
+Root `app/[locale]/layout.tsx` reads the navigation from the content database (`getNavigation`) and calls `setRequestLocale`;
+its `generateStaticParams` returns `[]`, so **nothing under `[locale]` is prerendered**: `next build` needs no database, the home page and
+the other static pages are generated on their first request and cached until a publish touches what they read (tags), and the three
+catalog routes above are plain dynamic routes (no `generateStaticParams`) that render per request from the tag-cached reads
+(~15–30 ms measured). Why dynamic: when a cached (ISR) page throws a redirect, Next 16.2.12 sends the `Location` header twice on the first
+response, and clients that join repeated headers (Node's `fetch`, some crawlers) follow «/a, /a» to a 404 — found by the parity run; a
+dynamic render sends it once, and an alias released in the admin stops redirecting at once. Do not add `generateStaticParams` or
+`connection()` to those routes (a dynamic API under ISR is a 500, `DYNAMIC_SERVER_USAGE`).
 
-**SEO today:** per-page `title` + `description` only (5 languages), `metadataBase` from `SITE_URL`,
+**SEO today:** per-page `title` + `description` only (5 languages; the catalog pages' come from the database), `metadataBase` from `SITE_URL`,
+`alternateLinks: false` in `i18n/routing.ts` (next-intl's automatic `Link: rel="alternate"` headers name the SAME path in every language, which
+is wrong now that each language has its own slugs),
 `noindex` on `/admin` and `/zalo-reply`. Canonical, `hreflang` (+ `x-default`), Open Graph, JSON-LD
 and `sitemap.xml` are Phase 4 (`lib/seo`); the SEO fields (`seo_title`, `seo_description`,
 `og_media_id`) are in the content schema since Phase 3a (nothing reads them yet) — see `docs/data-model.md` §11.5a.
@@ -185,35 +191,36 @@ element inside the existing column/grid div instead of appending it as a row sib
 ---
 
 ## Data files
-- `data/subgroups-catalog.ts` (≈9,200 lines) — **source of truth for products as the public site
-  renders them today**: `MAIN_CATEGORIES` (4: Tiếp thị/Marketing, Văn phòng/Office, Bao bì/Packaging,
+- `data/subgroups-catalog.ts` (≈9,200 lines) — **no longer read by the public site (since Phase 4 M2): it is the seed's input**
+  (`pnpm seed`) and the legacy admin's; a test (`lib/content/read/legacy-sources.test.ts`) fails if public code imports it, the menus,
+  `data/translations`, `data/categories` (values), `lib/product-sizes`, `lib/product-specs`, `lib/shape-aliases` or `lib/content-store`
+  (one listed leftover until M3: the showcase captions on `/products`). Phase 4 M5 moves them under `scripts/seed/legacy/`. What it holds: `MAIN_CATEGORIES` (4: Tiếp thị/Marketing, Văn phòng/Office, Bao bì/Packaging,
   Ấn phẩm Tết/Tet Publications) and `SUBGROUPS_CATALOG` (25 subgroups — 7 marketing, 6 office,
   4 packaging, 8 tet — with 77 shapes and 101 materials in total); lookups via
-  `getSubgroupById()` / `getSubgroupsByCategory()`. Product and category pages import from here.
+  `getSubgroupById()` / `getSubgroupsByCategory()`.
 - `data/categories.ts` — the **types** (`ProductCategory`, `ProductItem`, `ProductOption`,
-  `ProductOptionGroup`) plus `showcaseImages`. Every name/description field is split `xVi`/`x`
+  `ProductOptionGroup`), still read by the seed and the legacy admin; `showcaseImages` moved to `data/showcase.ts`. Every name/description field is split `xVi`/`x`
   (English) with optional `xZh`/`xJa`/`xKo` — read with `pickLocale()`, never several at once.
 - `data/translations.ts` — extra zh/ja/ko text kept **outside** the records
   (`SHOWCASE_LABELS`, `CATEGORY_NAMES`, `CATEGORY_DESCS`, `ITEM_NAMES`, `ITEM_DESCS`,
-  `SHAPE_DESCS`, keyed by id). Product pages read it directly.
+  `SHAPE_DESCS`, keyed by id). The seed reads it; of the public site only `/products` still does (showcase captions).
 - `data/posts.ts` — `BlogPost` type, `blogPosts` (6 posts, **imported from
   `data/content/posts.json`** at build time) and `categoryColors`. Same `xVi`/`x` split,
   including full article bodies (`content` / `contentEn` / `contentZh` / …).
-- `data/marketing-menu.ts`, `office-menu.ts`, `packaging-menu.ts`, `tet-menu.ts` — Navbar
-  mega-menu column definitions, consumed by the `*DesktopSubmenu` / `*MobileSubmenu` components.
+- `data/marketing-menu.ts`, `office-menu.ts`, `packaging-menu.ts`, `tet-menu.ts` — the old Navbar
+  mega-menu definitions; the seed reads them, the Navbar now draws the menus from the database (`MegaMenuDesktop` / `MegaMenuMobile`).
 - `data/content/*.json` — files written by the current admin (`posts.json`, `products.json`,
   `subgroups.json`). Only `posts.json` is read by the site (via `data/posts.ts`); `products.json`
   and `subgroups.json` are **not read by any public page**.
-- `data/material-traits.ts` — `Record<MaterialTraitKey, MaterialTrait>` icon glossary for
-  `ProductOption.descriptionTraits` bullets (in `data/categories.ts`); consumed by
-  `MaterialFlashcard` (per-bullet icon) and `MaterialGlossaryFab` (full legend popover).
+- `data/material-traits.ts` — the old icon glossary for `ProductOption.descriptionTraits` bullets; the seed reads it, the card and the
+  glossary popover now read the traits from the database.
 - `coverImage` / `image` fields are real local paths (`/images/category/...`,
   `/images/product/...`, `/images/blog/...`) served straight from `public/` — no
   `unoptimized` prop needed on those `<Image>`s. The one picsum reference in the
   codebase is the testimonial avatar seeds in `Testimonials.tsx` (not a `data/*.ts` field —
   those live inline in the component, zipped with `messages/*.json` `t.raw("items")`).
-- **`data/*.ts` vs `messages/*.json`**: structured records with a stable shape (categories,
-  products, blog posts, material traits) live in `data/` with `xVi`/`x` field pairs. Pure UI
+- **`data/*.ts` vs `messages/*.json`**: structured records with a stable shape (blog posts, until the next
+  milestone moves them; categories, products and traits are in the database) live in `data/` with `xVi`/`x` field pairs. Pure UI
   copy (headings, buttons, FAQ, checklists) lives in `messages/<locale>.json` (all five) —
   see Internationalization below. Don't move one into the other's convention.
 
@@ -224,7 +231,7 @@ element inside the existing column/grid div instead of appending it as a row sib
 `/`, `/products`), `en`, `zh`, `ja`, `ko` (prefixed: `/en`, `/zh/products`, …) —
 `localePrefix: "as-needed"` and `localeDetection: false` in `i18n/routing.ts`.
 
-- **Always import `Link`, `usePathname`, `useRouter` from `@/i18n/navigation`** for internal
+- **Always import `Link`, `usePathname`, `useRouter` (and `redirect` / `permanentRedirect`) from `@/i18n/navigation`** for internal
   links/navigation — never `next/link` or `next/navigation`. Using the plain Next.js versions
   is the single easiest way to break non-default-locale navigation (links silently drop the
   `/en`, `/zh`, … prefix). `WipeButton` already does this internally. (The admin and
@@ -304,11 +311,11 @@ target — until a phase lands, the "current state" below is the truth.
   credentials remain in git history until Phase 7 rotates anything that ever used them. The handlers still parse
   bodies with `request.json() as T` and write to the source tree — they are Caddy-blocked in production and are
   replaced wholesale in Phase 3, so don't extend them.
-- **The public site does not see admin edits at runtime**: products come from static
-  `data/subgroups-catalog.ts`, blog posts from `data/posts.ts` (bundles
-  `data/content/posts.json` at build time), UI copy from `messages/*.json` (bundled at
-  build time by `i18n/request.ts`). Edits only show in `next dev` or after a rebuild —
-  and `products.json` / `subgroups.json` are never read at all.
+- **What the public site sees of admin edits (Phase 4 M2):** the catalog — products, categories, shapes, materials, traits, sizes and
+  specs — and the whole navigation (mega-menus, footer, home shop strips) come from the content database, so a publish shows on the
+  next request, no rebuild. Still static until M3: blog posts (`data/posts.ts`, bundling `data/content/posts.json` at build time), UI
+  copy (`messages/*.json`, bundled by `i18n/request.ts`), Fast Print and the showcase gallery. `products.json` / `subgroups.json` are
+  never read at all.
 - `/api/admin/translate` is a stub (returns the input unchanged unless it is one of six
   hardcoded nav labels).
 
@@ -321,7 +328,7 @@ languages**, and edits are **drafts until published** (draft → preview → pub
 restorable revision). The relational schema (validated against the real data), the draft/publish
 design, the seed rules and the owner-review list are in `docs/data-model.md` (+ `docs/data-model.sql`).
 
-### Content model (Phase 3a schema + 3b seed + localized URLs + 3c draft / publish / delete services and the `/api/admin/content` API landed; the editors (3d) use it, the public site does not yet)
+### Content model (Phase 3a schema + 3b seed + localized URLs + 3c draft / publish / delete services and the `/api/admin/content` API landed; the editors (3d) use it; the public catalog pages and navigation read it since Phase 4 M2, blog / UI copy / Fast Print / showcase in M3)
 The full design is `docs/data-model.md` (local); this is what the code now guarantees.
 - **Tables:** `lib/db/content/*.ts` (foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog,
   site-message, drafts; shared builders in `columns.ts`, SEO/Open Graph columns in `seo.ts`), re-exported by `lib/db/schema.ts`.
@@ -364,8 +371,9 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   system-owned. `lib/db/column-registry.int.test.ts` fails when the database and the registry disagree, and
   `lib/content/column-registry.test.ts` when a path is not in the zod schema. **A new column is not done until it is
   registered**, carried by the document schema, and (Phase 3d) has an editor control.
-- **Icons:** `lib/icons.ts` is the one name → component registry (the DB stores names). The old per-component maps remain
-  until Phase 4.
+- **Icons:** `lib/icons.ts` is the one name → component registry (the DB stores names); public components draw a stored name with
+  `<NamedIcon name={…} />` (`components/ui/named-icon.tsx`) — not `const Icon = resolveIcon(name)`, which the React compiler lint rejects
+  as «component created during render». The old per-component maps are gone from the catalog pages, the navbar and the flashcard.
 - **Site-wide facts** (business, address, social links, default OG image, JSON-LD Organization) go in the reserved
   `site_message` namespaces `seo` and `business`.
 - **Seed (3b):** `pnpm seed [--dry-run] [--report <path>]` (`scripts/seed-cli.ts`, logic in `scripts/seed/`) loads the site's own
@@ -495,7 +503,7 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   `site-message-labels.ts` (a test keeps them equal to the keys of `messages/vi.json`). A missing required text reads «Bắt buộc phải nhập.»
   (`MESSAGES.required`), not zod's default. Known gaps: aliases of posts and categories are listed but cannot be released (the service only
   releases product URLs); the reserved `seo` / `business` namespaces cannot be created from the UI (site_message is not creatable).
-- **Public read layer (Phase 4, M1 — built and tested; no page uses it yet, M2 switches them).** `lib/content/read/`: `catalog.ts` / `menus.ts` /
+- **Public read layer (Phase 4: M1 foundation, M2 catalog pages + navigation — landed).** `lib/content/read/`: `catalog.ts` / `menus.ts` /
   `selectors.ts` / `urls.ts` / `messages.ts` are PURE functions from the documents (`composeEntity`, proven lossless) to the public site's view
   models (`types.ts`: `CategoryView`, `ProductView` with shapes / options / sizes / specs, `MenuView`, traits, materials); `load.ts` has the
   database loaders (`loadCatalog`, `loadMenus`, `loadPublishedMessages`, any executor — the tests use a seeded scratch database) and the cached
@@ -515,6 +523,27 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   `/products/…` link in every language; 11 mutations are caught. `scripts/parity/` (`pnpm parity:capture`) keeps the old site's prerendered pages
   (1,867, text + links) in `.parity/legacy.json` (gitignored) for the page-text comparison after each page milestone. Files meant for the browser
   (`text.ts`, `types.ts`, `selectors.ts`, `urls.ts`) are guarded by `lib/content/read/client-bundle.test.ts` (`tests/helpers/import-graph.ts`).
+  **M2 — page models and chrome.** Pure, language-resolved models on top of the views: `navigation.ts` (`navigationOf`: categories, product `cards`, the
+  mega-menu as columns → groups → items with ready hrefs; `cardsOf` words a card as the PRODUCT — title, description, cover — never as the menu
+  group, `referenceImageOf` = the gallery picture), `card.ts` (`cardOf`: everything one flashcard draws — heading, tagline, features with trait icon
+  names, photos, sizes `{id,label,dims}`, technique / material / finishing lists, `consultName`; `TIER_LABELS` = the seed's `BASE_LABEL`, a test keeps
+  them equal), `pages.ts` (`categoryPageOf`, `productPageOf` → `shapes` | `detail` | `shape` | `material`, `glossaryOf`; metadata titles
+  `… | Viet Dragon`), `site.ts` (`getNavigation(locale)`), `resolve-page.ts` (`peekPage` for metadata, `resolvePage`: `resolveUrl` →
+  `notFound()` / `permanentRedirect` to the canonical / the page). Hash anchors are DOM-level: a card has `id=<canonical slug in the page's language>`
+  and `data-aliases="<every other slug or alias in any language>"` (`anchorOf`); `findHashTarget` (`lib/hash-navigation.ts`) falls back to
+  `[data-aliases~=…]`, `useCurrentHash` reports the canonical id, the shapes grid rewrites an alias hash to the canonical one — there is no
+  alias dictionary any more. Client chrome (`Navbar`, `Footer`, `Shop`, `ShopCategories`) reads `useSiteData()` (`components/providers/site-data-provider.tsx`,
+  mounted by the locale layout); ONE `MegaMenuDesktop` + `MegaMenuMobile` replace the eight per-category submenus (the desktop backdrop defaults to
+  the first group's picture — a test pins the four old pictures); `ProductDetailView` draws the three material pages (product without shapes, a shape,
+  a material) and `SubgroupShapesView` the shapes grid, both from the models; `MaterialFlashcard` / `MaterialGlossaryFab` take `CardView` /
+  `GlossaryTrait[]` as props. **Equivalence:** `lib/content/read/pages.int.test.ts` (navigation vs the four old menus — all 100 links equal, 8
+  material links now name the canonical slug and 1 shape anchor its own id, each proven to redirect / still scroll; cards, shapes grid, shape and
+  material pages vs the old page logic, 77 shape pages); `pnpm parity:compare [--base http://localhost:3105]` (`scripts/parity/compare.ts`) requests
+  every URL of `.parity/legacy.json` from a running server and classifies it: on the scratch database 1,865 pages = 361 identical + 1,491 that differ
+  only in the cards' sizes / specs form (owner decision 1, measured) + 13 explained (Tet category cards worded as the products; the
+  title-precedence pages; AI-suggested translations of one Tet option) + 0 unexplained. **Known small changes:** the glossary lists traits by key
+  (traits have no stored order; the old popover used the authored order); a size's tier names (Lớn / Vừa / Nhỏ …) and the form titles are interface
+  words kept in code until M3.
 - **Tests:** `app/api/admin/content/content-api.int.test.ts` (who may call what, preconditions, error shapes, cache tags, audit rows —
   with the app's own database pointed at a seeded scratch one by setting `DATABASE_URL` before the first `getDb()`),
   `lib/content/http.test.ts`; `lib/content/entities.int.test.ts` (all 198 seeded entities publish unchanged; each of the nine creatable types is created,
@@ -689,7 +718,7 @@ zero warnings.
 ## Component map
 ```
 app/
-  [locale]/                 public site — layout mounts SmoothScroll, QuoteModalProvider, FloatingContact, LanguageDetectorToast
+  [locale]/                 public site — layout mounts SiteDataProvider, SmoothScroll, QuoteModalProvider, FloatingContact, LanguageDetectorToast; products/[category]/[product]/[segment] are dynamic routes
   admin/                    CMS UI — own root layout, Vietnamese only, outside next-intl (see Admin CMS); login/, account/password/ standalone; (console)/ = shell + account, users, audit + legacy editors
   [locale]/not-found.tsx    localized 404 (Navbar + Footer); reached via the [locale]/[...rest] catch-all
   api/consult/              public lead endpoint (nodemailer)
@@ -703,7 +732,7 @@ drizzle.config.ts, drizzle/ drizzle-kit config (loads .env via @next/env) · mig
 Dockerfile, compose.yaml, compose.dev.yaml, .env.example, .dockerignore, deploy/   see Docker & deployment
 i18n/
   routing.ts               defineRouting({ locales: [vi, en, zh, ja, ko], defaultLocale: vi })
-  navigation.ts             Locale-aware Link/usePathname/useRouter/redirect — import from here, not next/*
+  navigation.ts             Locale-aware Link/usePathname/useRouter/redirect/permanentRedirect — import from here, not next/*
   request.ts                getRequestConfig — loads messages/<locale>.json (build-time dynamic import)
 messages/
   vi, en, zh, ja, ko .json  UI copy, namespaced per section — keep all five key sets in sync
@@ -711,7 +740,7 @@ proxy.ts                    Next 16 "proxy" (not middleware.ts): `/admin/*` → 
 vitest.config.mts, vitest.int.config.mts, tests/   unit config · integration config (throwaway DB via tests/db-setup.ts + tests/migrate.ts) · shared helpers (auth, db, content-db) and document fixtures; `*.test.ts` live beside the code, `*.int.test.ts` need the dev DB
 hooks/
   use-section-in-view.ts    Shared useRef + useInView(once, margin -80px)
-  use-current-hash.ts, use-hash-pulse.ts   Current-hash tracking and hash-target pulse highlight
+  use-current-hash.ts, use-hash-pulse.ts   Current-hash tracking (reports a card's canonical id for an alias hash) and hash-target pulse highlight
 lib/
   env.ts                    zod-validated config: getDatabaseEnv/getMailEnv/getLogEnv/getSiteEnv/getAuthEnv + assertEnv (relative imports: drizzle.config.ts loads it outside Next)
   auth.ts                   createAuth() / lazy getAuth() — Better Auth config (argon2id, 12 h DB sessions, `vd` strict cookies, DB rate limit, admin plugin). Importing it reads no env
@@ -733,48 +762,52 @@ lib/
   content/validate.ts, references.ts, diff.ts, humanize.ts, identity.ts, errors.ts, cache-tags.ts   advice + checks, what a document points at, field-level diff, DB error → Vietnamese, URL type names / ids, Conflict / Invalid / NotFound, cache tags
   content/delete.ts, summaries.ts   delete / archive-first rules (+ the "delete" revision) · admin list rows
   content/editor/           the editors' client-safe logic: paths, session reducer, API client, completeness, create templates, entity meta, vocabulary, product ops / menu ops / lists / slugs / slug ops / message tree / sections / uid (no server imports — client-bundle.test.ts)
-  content/read/             the PUBLIC site's reads (Phase 4): pure document → view-model builders (catalog, menus, selectors, urls, messages), the loaders and the cached reads (load.ts, cache.ts) — pages call the `get*` ones
+  content/read/             the PUBLIC site's reads (Phase 4): pure document → view-model builders (catalog, menus, selectors, urls, messages), language-resolved page models (navigation, card, pages), the loaders and cached reads (load.ts, cache.ts, site.ts) and resolve-page.ts — pages call the `get*` ones
   content/field-registry.ts, entity-types.ts, slugify.ts, media-library.ts, authors.ts, vocabulary.ts   every editable leaf → label + control · the 12 entity types (database-free) · URL slugs · media picker data · account names for the history · picker lists
   content/http.ts, requests.ts, effects.ts   the HTTP layer of app/api/admin/content: URL / If-Match / capped JSON body / error mapping · zod request bodies · cache tags + audit after commit
   content/apply/            one applier per entity type (all twelve): document → live rows, plus the per-language slug planning (`planSegments` also serves posts and categories)
   db/content/*.ts           the CMS content model: foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog, site-message, drafts (+ columns.ts, seo.ts builders)
   content/schemas/          zod document schemas (product, menu, post, library entities) + DOCUMENT_SCHEMAS / parseDocument / documentIdentity
   content/column-registry.ts, schema-paths.ts   every content column → the document path that carries it (or system-owned) · resolver that checks the paths against the zod schemas
-  icons.ts                  the icon registry: stored name → lucide component (ICONS, ICON_NAMES, resolveIcon)
+  icons.ts                  the icon registry: stored name → lucide component (ICONS, ICON_NAMES, resolveIcon); draw with components/ui/named-icon.tsx
   logger.ts                 getLogger(scope) (pino, redaction), maskPhone(), logRequestError()
   db/index.ts               lazy pg Pool + drizzle handle (getPool/getDb/pingDatabase)
   locale.ts                 pickLocale(locale, vi, en, zh?, ja?, ko?) for data/*.ts fields
   contact.ts                Phone / Zalo / email constants
   motion.ts                 imageWipeReveal Motion variant (clip-path wipe-down reveal)
   utils.ts                  cn()
-  hash-navigation.ts, menu-active.ts, shape-aliases.ts   Safe hash navigation, active-menu detection, shape-id aliasing
-  image-check.ts            Sanitizes option image paths (deliberately avoids node:fs so NFT does not trace public/)
-  product-sizes.ts, product-specs.ts   Standard print sizes / material specs per category · subgroup · shape
+  hash-navigation.ts, menu-active.ts   Safe hash navigation (aliases through `data-aliases`), active-menu detection (plain comparison of canonical links)
+  shape-aliases.ts          the old shape-id dictionary — seed only (public code must not import it)
+  product-sizes.ts, product-specs.ts   the old name-matching size / spec heuristics — seed only
   content-store.ts          admin-only: local-filesystem persistence — to be replaced (see Admin CMS)
 data/
-  subgroups-catalog.ts      MAIN_CATEGORIES (4) + SUBGROUPS_CATALOG (25) — what product pages render
-  categories.ts             ProductCategory/ProductItem/ProductOption types + showcaseImages
-  translations.ts           zh/ja/ko text for showcase labels, categories, items, shapes
+  subgroups-catalog.ts      MAIN_CATEGORIES (4) + SUBGROUPS_CATALOG (25) — the seed's input (the public site reads the database)
+  categories.ts             ProductCategory/ProductItem/ProductOption types (seed / legacy admin)
+  showcase.ts               showcaseImages (the /products gallery; moves to the database in M3)
+  translations.ts           zh/ja/ko text for showcase labels, categories, items, shapes (seed; /products showcase captions until M3)
   posts.ts                  BlogPost type, blogPosts (from content/posts.json) + categoryColors
-  marketing-menu.ts, office-menu.ts, packaging-menu.ts, tet-menu.ts   Navbar mega-menu columns
-  material-traits.ts        MaterialTrait icon glossary for product-option bullets
+  marketing-menu.ts, office-menu.ts, packaging-menu.ts, tet-menu.ts   the old mega-menu columns (seed input)
+  material-traits.ts        the old MaterialTrait icon glossary (seed input)
   content/                  JSON written by the current admin (only posts.json is read by the site)
 scripts/
   admin-cli.ts, admin/      `pnpm admin:create` / `admin:reset-password` — entry + prompt.ts (hidden raw-mode input), commands.ts (testable logic), rules.ts, errors.ts
+  parity/                   `pnpm parity:capture` / `parity:compare` — page text + links of the old site vs the new (classify.ts, compare.ts, text.ts, capture.ts)
   seed-cli.ts, seed/        `pnpm seed` — entry · index.ts (seed-if-empty, dry run) · run.ts (the order of the steps) · sources.ts · steps/* · measures.ts · report/* (Vietnamese owner report) · *.int.test.ts (counts, parity with the source, URLs, menus)
   optimize-images.mjs       sharp-based image optimization script (run by hand)
 components/
   providers/
     SmoothScroll.tsx        Lenis init (desktop only, ≥1024px) — no GSAP, no pinning
     quote-modal-provider.tsx  Context that opens the QuoteModal from anywhere
+    site-data-provider.tsx  SiteDataProvider / useSiteData(): the language's navigation (categories, cards, menus) for the client chrome
   admin/                    admin-shell (+ admin-nav.ts role-filtered sidebar, admin-theme.tsx), auth-card-shell, password-field, notice, failure-notice, modal, page-parts (PageHeader, AdminCard, button/input classes)
     content/                the content editors: entity-editor, entity-list, create-dialog, editor-context, field primitives (fields, media-field, icon-field, field-shell), language-tabs, publish-dialog, history-panel, danger-card, diff-view, issue-list, use-draft-session; forms/ = one form per entity type (forms/product/ = the six-tab product editor, forms/menu/ = the menu editor, post-form, category-form, site-message-form) + forms.test.ts (coverage of all twelve); list-card, slug-field, alias-list, media-list-field, use-open-keys = the building blocks of the nested editors
     account/, users/, audit/   sessions panel · users manager (cards, create / confirm / one-time-password dialogs, user-actions.ts) · audit filter form + table
     donut-chart, media-card, media-delete-modal, media-picker-modal   legacy editors' pieces
   sections/                 all "use client"; landing page order = page.tsx import order
-    Navbar.tsx              Fixed top nav, mobile hamburger drawer, 5-locale flag switcher
-    *DesktopSubmenu.tsx, *MobileSubmenu.tsx   Mega-menu panels for Marketing / Office / Packaging / Tet
-    SubgroupShapesView.tsx  Shapes view for a product subgroup
+    Navbar.tsx              Fixed top nav, mobile hamburger drawer, 5-locale flag switcher (reads useSiteData)
+    MegaMenuDesktop.tsx, MegaMenuMobile.tsx, fast-print-tags.ts   the ONE mega-menu pair, driven by a category's NavMenu
+    SubgroupShapesView.tsx  Shapes grid of a product (ShapesPageModel)
+    ProductDetailView.tsx   Server component: product without shapes / one shape / one material page (DetailPageModel | ShapePageModel | MaterialPageModel)
     PartnerLogos.tsx        Partner logo strip (between CTA and Footer)
     Hero.tsx                Swiper fade-effect autoplay carousel, per-slide gradient bg
     ShopCategories.tsx      Horizontal category rail (scroll-snap on mobile)
@@ -798,7 +831,7 @@ components/
     floating-contact.tsx      Global Zalo/phone floating buttons (root layout)
     quote-modal.tsx, consult-bottom-sheet.tsx   Lead-capture UIs; both POST to /api/consult
     language-detector-toast.tsx, auto-scroll-to-target.tsx, zalo-icon.tsx   Locale suggestion toast, hash auto-scroll helper, Zalo glyph
-    material-flashcard.tsx    Per-option flip card on product detail — image/traits, foil &
-                               double-sided checkboxes, copy-to-Zalo consult flow
-    material-glossary-fab.tsx Bottom-left icon-legend popover for material-flashcard traits
+    named-icon.tsx            <NamedIcon name> — draws an icon the database names (lib/icons.ts)
+    material-flashcard.tsx    Per-option flip card (takes a CardView): images, traits, sizes / specs form, copy-to-Zalo consult flow
+    material-glossary-fab.tsx Bottom-left icon-legend popover (takes GlossaryTrait[])
 ```

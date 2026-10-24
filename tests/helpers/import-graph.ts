@@ -62,3 +62,26 @@ export function serverImportsFrom(entries: readonly string[]): string[] {
   for (const entry of entries) visit(entry, entry.slice(ROOT.length + 1));
   return found;
 }
+
+/**
+ * Value imports, anywhere in the graph below these files, of the given files (relative to the repository root). Used to keep the public
+ * site off the static sources the content database replaced.
+ */
+export function importsOfFiles(entries: readonly string[], files: readonly string[]): string[] {
+  const wanted = new Set(files.map((file) => join(ROOT, file)));
+  const seen = new Set<string>();
+  const found: string[] = [];
+  const visit = (file: string) => {
+    if (seen.has(file)) return;
+    seen.add(file);
+    for (const match of readFileSync(file, "utf8").matchAll(IMPORT)) {
+      const specifier = match[1] ?? match[2];
+      const target = resolve(file, specifier);
+      if (!target) continue;
+      if (wanted.has(target)) found.push(`${file.slice(ROOT.length + 1)} imports ${target.slice(ROOT.length + 1)}`);
+      else visit(target);
+    }
+  };
+  for (const entry of entries) visit(entry);
+  return found;
+}

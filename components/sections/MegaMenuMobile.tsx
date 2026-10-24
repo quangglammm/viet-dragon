@@ -1,32 +1,26 @@
 "use client";
 
 import { Link, usePathname } from "@/i18n/navigation";
-import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { PACKAGING_SUBMENU_COLUMNS } from "@/data/packaging-menu";
+import type { NavMenu } from "@/lib/content/read/navigation";
 import { isSubmenuItemActive } from "@/lib/menu-active";
 import { useCurrentHash } from "@/hooks/use-current-hash";
 import { navigateToShapeHash } from "@/lib/hash-navigation";
 import { cn } from "@/lib/utils";
+import { FAST_PRINT_TAGS } from "@/components/sections/fast-print-tags";
 
-const FAST_PRINT_TAGS: Record<Locale, string> = {
-  vi: "in nhanh",
-  en: "fast",
-  zh: "快印",
-  ja: "特急",
-  ko: "당일인쇄",
-};
-
-export function PackagingMobileSubmenu({
+export function MegaMenuMobile({
+  menu,
   locale,
   onItemClick,
 }: Readonly<{
+  menu: NavMenu;
   locale: Locale;
   onItemClick?: () => void;
 }>) {
   const pathname = usePathname();
   const currentHash = useCurrentHash();
-  const allGroups = PACKAGING_SUBMENU_COLUMNS.flatMap((col) => col.groups);
+  const allGroups = menu.columns.flatMap((col) => col.groups);
 
   const handleLinkClick = (href: string, e: React.MouseEvent) => {
     navigateToShapeHash(href, e);
@@ -42,14 +36,7 @@ export function PackagingMobileSubmenu({
             onClick={(e) => handleLinkClick(group.href, e)}
             className="text-[14px] font-bold text-brand-primary mb-1.5 pb-0.5 border-b border-brand-primary/20 inline-block"
           >
-            {pickLocale(
-              locale,
-              group.titleVi,
-              group.titleEn,
-              group.titleZh,
-              group.titleJa,
-              group.titleKo
-            )}
+            {group.title}
           </Link>
           <ul className="flex flex-col gap-1 pl-1">
             {group.items.map((item) => {
@@ -66,19 +53,10 @@ export function PackagingMobileSubmenu({
                         : "text-zinc-700 hover:text-brand-primary hover:bg-zinc-50/50"
                     )}
                   >
-                    <span className="leading-snug">
-                      {pickLocale(
-                        locale,
-                        item.nameVi,
-                        item.nameEn,
-                        item.nameZh,
-                        item.nameJa,
-                        item.nameKo
-                      )}
-                    </span>
+                    <span className="leading-snug">{item.label}</span>
                     {item.isFast && (
                       <span className="px-1.5 py-0.5 text-[9px] font-bold text-white bg-[#f5a623] rounded leading-none shrink-0 ml-1.5">
-                        {FAST_PRINT_TAGS[locale] || "in nhanh"}
+                        {FAST_PRINT_TAGS[locale]}
                       </span>
                     )}
                   </Link>
