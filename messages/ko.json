@@ -60,11 +60,13 @@
     "banners": [
       {
         "eyebrow": "베스트셀러",
-        "title": "제품 카탈로그 / 브로셔"
+        "title": "제품 카탈로그 / 브로셔",
+        "href": "/products/marketing/catalogue"
       },
       {
         "eyebrow": "베스트셀러",
-        "title": "프리미엄 종이 쇼핑백"
+        "title": "프리미엄 종이 쇼핑백",
+        "href": "/products/packaging/paper-bag"
       }
     ],
     "cta": "지금 보기"
@@ -510,5 +512,9 @@
   "siteMeta": {
     "title": "Viet Dragon – 베트남 전문 프리미엄 인쇄 제작 서비스",
     "description": "Viet Dragon – 호치민시, 동나이, 붕따우 및 빈증성 전문 프리미엄 인쇄 서비스. 명함, 카탈로그, 종이 박스, 스티커 라벨. 1:1 무료 상담, 디자인, 샘플 인쇄 및 직배송."
+  },
+  "seo": {
+    "siteName": "Viet Dragon",
+    "defaultOgImage": "/images/hero/slide-1.jpg"
   }
 }

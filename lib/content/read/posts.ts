@@ -1,6 +1,7 @@
 import type { LocaleCode, PostCategoryDocument, PostDocument } from "../schemas";
 import { publicPath } from "./catalog";
 import { parseContent, type Block, type ContentFormat } from "./markdown";
+import { seoMeta, type Meta } from "./seo";
 import { localize, pickText, type Localized } from "./text";
 import type { Seo, Slugs } from "./types";
 
@@ -140,7 +141,7 @@ export function blogPreviewOf(blog: Blog, locale: LocaleCode, count = 3): PostCa
 }
 
 export interface PostPageModel {
-  meta: { title: string; description: string };
+  meta: Meta;
   post: PostCard;
   /** The date written out in full (`June 10, 2026`). */
   dateLong: string;
@@ -155,7 +156,7 @@ export function postPageOf(blog: Blog, locale: LocaleCode, post: PostView): Post
   const link = (other: PostView | undefined) => (other ? { label: pickText(locale, other.title), href: postPath(locale, other) } : null);
   const card = cardOf(blog, locale, post);
   return {
-    meta: { title: `${card.title} | Viet Dragon Blog`, description: card.excerpt },
+    meta: seoMeta(locale, post.seo, { title: `${card.title} | Viet Dragon Blog`, description: card.excerpt }, post.ogImage ?? post.cover),
     post: card,
     dateLong: formatPostDate(post.publishedOn, locale, "long"),
     blocks: parseContent(post.contentFormat, pickText(locale, post.content)),

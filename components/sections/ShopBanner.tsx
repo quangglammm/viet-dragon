@@ -10,14 +10,15 @@ import { WipeButton } from "@/components/ui/wipe-button";
 // since the blue gradient isn't part of this project's brand token set.
 // Reuses the same "card" / "paper-box" product photos shown elsewhere
 // (Shop.tsx, category pages) rather than needing dedicated banner images.
+// The links are UI copy (`shopBanner.banners[i].href`, editable) that the home page resolves to each page's canonical address.
 const banners = [
-  { href: "/products/marketing/catalogue", src: "/images/product/banner-catalogue.webp", background: "var(--brand-primary)" },
-  { href: "/products/packaging/paper-bag", src: "/images/product/banner-paperbag.webp", background: "linear-gradient(90deg, #4971f9 0%, #2fabf7 100%)" },
+  { src: "/images/product/banner-catalogue.webp", background: "var(--brand-primary)" },
+  { src: "/images/product/banner-paperbag.webp", background: "linear-gradient(90deg, #4971f9 0%, #2fabf7 100%)" },
 ] as const;
 
 type BannerCopy = { eyebrow: string; title: string };
 
-export default function ShopBanner() {
+export default function ShopBanner({ hrefs }: Readonly<{ hrefs: readonly string[] }>) {
   const t = useTranslations("shopBanner");
   const copy = t.raw("banners") as BannerCopy[];
 
@@ -28,7 +29,7 @@ export default function ShopBanner() {
           const { eyebrow, title } = copy[i];
           return (
             <motion.div
-              key={b.href}
+              key={b.src}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-60px" }}
@@ -53,7 +54,7 @@ export default function ShopBanner() {
                   <h3 className="text-xl lg:text-2xl font-black leading-tight mb-6 text-white">
                     {title}
                   </h3>
-                  <WipeButton href={b.href} tone="light" size="md">
+                  <WipeButton href={hrefs[i]} tone="light" size="md">
                     {t("cta")}
                   </WipeButton>
                 </div>

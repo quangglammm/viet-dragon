@@ -4,7 +4,10 @@ import { ArrowLeft, ArrowRight, Clock, Calendar } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { postPageOf } from "@/lib/content/read/posts";
+import { LOCALES } from "@/lib/content/schemas";
+import { postPageOf, postPath } from "@/lib/content/read/posts";
+import { blogPostingLd, breadcrumbLd, metadataFor } from "@/lib/content/read/page-seo";
+import { JsonLd } from "@/components/seo/json-ld";
 import { peekPost, resolvePost } from "@/lib/content/read/resolve-post";
 import { PostBody } from "@/components/blog/post-body";
 import { PostCategoryBadge } from "@/components/blog/post-category-badge";
@@ -14,17 +17,25 @@ type PostParams = { locale: Locale; slug: string };
 export async function generateMetadata({ params }: { params: Promise<PostParams> }): Promise<Metadata> {
   const { locale, slug } = await params;
   const found = await peekPost(locale, slug);
-  return found ? postPageOf(found.blog, locale, found.post).meta : {};
+  if (!found) return {};
+  const paths = Object.fromEntries(LOCALES.map((language) => [language, postPath(language, found.post)])) as Record<(typeof LOCALES)[number], string>;
+  return metadataFor({ locale, meta: postPageOf(found.blog, locale, found.post).meta, paths, type: "article", publishedTime: found.post.publishedOn });
 }
 
 export default async function BlogPostPage({ params }: Readonly<{ params: Promise<PostParams> }>) {
   const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: "blogPostPage" });
   const found = await resolvePost(locale, slug);
-  const { post, dateLong, blocks, prev, next } = postPageOf(found.blog, locale, found.post);
+  const { post, dateLong, blocks, prev, next, meta } = postPageOf(found.blog, locale, found.post);
+  const crumbs = [
+    { name: t("breadcrumbHome"), path: "/" },
+    { name: t("breadcrumbBlog"), path: "/blog" },
+    { name: post.title, path: post.href },
+  ];
 
   return (
     <div className="bg-white">
+      <JsonLd data={[breadcrumbLd(locale, crumbs), await blogPostingLd(locale, { headline: post.title, description: meta.description, path: post.href, image: meta.image, datePublished: post.publishedOn })]} />
       {/* ── Hero ── */}
       <div className="relative h-[380px] lg:h-[480px] w-full overflow-hidden">
         {post.cover && (

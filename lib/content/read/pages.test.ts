@@ -22,7 +22,7 @@ describe("categoryPageOf", () => {
 
   it("titles the page «<name> | Viet Dragon» with the category's description, and lists its cards", () => {
     const page = categoryPageOf(catalog(), "vi", catalog().categories[0]);
-    expect(page.meta).toEqual({ title: "Tiếp thị | Viet Dragon", description: "Ấn phẩm quảng bá" });
+    expect(page.meta).toEqual({ title: "Tiếp thị | Viet Dragon", description: "Ấn phẩm quảng bá", image: "/images/category/mkt.jpg" });
     expect(page).toMatchObject({ name: "Tiếp thị", icon: "Briefcase", cover: "/images/category/mkt.jpg" });
     expect(page.cards.map((card) => card.href)).toEqual(["/products/tiep-thi/to-roi"]);
   });
@@ -45,7 +45,7 @@ describe("productPageOf", () => {
   it("is a grid of the product's shapes when it has any, each with its anchor and page", () => {
     const shapes = page({});
     if (shapes.kind !== "shapes") throw new Error(shapes.kind);
-    expect(shapes.meta).toEqual({ title: "Tờ rơi | Viet Dragon", description: "In tờ rơi nhanh" });
+    expect(shapes.meta).toEqual({ title: "In tờ rơi giá rẻ", description: "In tờ rơi nhanh", image: "/images/product/to-roi.webp" }); // the fixture has a Vietnamese SEO title
     expect(shapes.context).toMatchObject({ title: "Tờ rơi", category: { label: "Tiếp thị", href: "/products/tiep-thi", icon: "Briefcase" }, product: { label: "Tờ rơi", href: "/products/tiep-thi/to-roi" } });
     expect(shapes.shapes.map((shape) => [shape.name, shape.href, shape.anchor.id])).toEqual([
       ["A5", "/products/tiep-thi/to-roi/a5", "a5"],
@@ -96,6 +96,32 @@ describe("productPageOf", () => {
     expect(english.meta.title).toBe("A5 flyer - Flyers | Viet Dragon");
     expect(english.context.category.href).toBe("/products/marketing");
     expect(english.next?.href).toBe("/products/marketing/flyers/a4-flyer");
+  });
+});
+
+describe("the SEO fields", () => {
+  it("replace a page's title and description in the language they were written for, and only there", () => {
+    const doc = productDocument();
+    doc.i18n.vi = { ...doc.i18n.vi!, seoTitle: "In tờ rơi giá rẻ", seoDescription: "Mô tả cho Google" };
+    const built = buildCatalog({ ...catalogInput(), products: [doc] });
+    const category = built.categories[0];
+    const product = built.products[0];
+    const vi = productPageOf(built, "vi", category, product, null);
+    expect(vi.meta).toMatchObject({ title: "In tờ rơi giá rẻ", description: "Mô tả cho Google" });
+    expect(productPageOf(built, "en", category, product, null).meta.title).toBe("Flyers | Viet Dragon"); // the Vietnamese SEO title is not shown in English
+  });
+
+  it("choose the picture a link preview shows: the entity's own, else its parents', else the cover", () => {
+    const doc = productDocument();
+    doc.ogImage = "images/og/product.jpg";
+    doc.shapes[0].ogImage = "images/og/shape.jpg";
+    const built = buildCatalog({ ...catalogInput(), products: [doc] });
+    const [category, product] = [built.categories[0], built.products[0]];
+    const shapeA5 = product.shapes[0];
+    const shapeA4 = product.shapes[1];
+    expect(productPageOf(built, "vi", category, product, null).meta.image).toBe("/images/og/product.jpg");
+    expect(productPageOf(built, "vi", category, product, { shape: shapeA5 }).meta.image).toBe("/images/og/shape.jpg");
+    expect(productPageOf(built, "vi", category, product, { shape: shapeA4 }).meta.image).toBe("/images/og/product.jpg"); // no picture of its own: the product's
   });
 });
 

@@ -60,11 +60,13 @@
     "banners": [
       {
         "eyebrow": "Bán chạy nhất",
-        "title": "Catalogue / Cẩm Nang Sản Phẩm"
+        "title": "Catalogue / Cẩm Nang Sản Phẩm",
+        "href": "/products/marketing/catalogue"
       },
       {
         "eyebrow": "Bán chạy nhất",
-        "title": "Túi Giấy Cao Cấp"
+        "title": "Túi Giấy Cao Cấp",
+        "href": "/products/packaging/paper-bag"
       }
     ],
     "cta": "Xem ngay"
@@ -510,5 +512,9 @@
   "siteMeta": {
     "title": "Viet Dragon – In Ấn Chuyên Nghiệp | Premium Printing Services",
     "description": "Viet Dragon – dịch vụ in ấn chuyên nghiệp tại TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương. Danh thiếp, catalogue, hộp giấy, decal. Tư vấn, thiết kế, in thử, giao hàng miễn phí."
+  },
+  "seo": {
+    "siteName": "Viet Dragon",
+    "defaultOgImage": "/images/hero/slide-1.jpg"
   }
 }

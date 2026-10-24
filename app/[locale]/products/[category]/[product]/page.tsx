@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import type { Locale } from "@/i18n/routing";
 import { glossaryOf, productPageOf } from "@/lib/content/read/pages";
+import { breadcrumbLd, metadataFor, productCrumbs } from "@/lib/content/read/page-seo";
 import { peekPage, resolvePage } from "@/lib/content/read/resolve-page";
+import { alternatePaths } from "@/lib/content/read/urls";
+import { JsonLd } from "@/components/seo/json-ld";
 import { ProductDetailView } from "@/components/sections/ProductDetailView";
 import { SubgroupShapesView } from "@/components/sections/SubgroupShapesView";
 
@@ -11,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<ProductPara
   const { locale, category, product } = await params;
   const found = await peekPage(locale, { category, product });
   if (!found?.product) return {};
-  return productPageOf(found.catalog, locale, found.category, found.product, null).meta;
+  return metadataFor({ locale, meta: productPageOf(found.catalog, locale, found.category, found.product, null).meta, paths: alternatePaths(found.catalog, found.category, found.product, null) });
 }
 
 export default async function ProductPage({ params }: Readonly<{ params: Promise<ProductParams> }>) {
@@ -19,6 +22,10 @@ export default async function ProductPage({ params }: Readonly<{ params: Promise
   const found = await resolvePage(locale, { category, product });
   if (!found.product) throw new Error("a product URL resolved without a product");
   const model = productPageOf(found.catalog, locale, found.category, found.product, null);
-  if (model.kind === "shapes") return <SubgroupShapesView model={model} />;
-  return <ProductDetailView locale={locale} model={model} traits={glossaryOf(found.catalog, locale)} />;
+  return (
+    <>
+      <JsonLd data={breadcrumbLd(locale, await productCrumbs(locale, model.context))} />
+      {model.kind === "shapes" ? <SubgroupShapesView model={model} /> : <ProductDetailView locale={locale} model={model} traits={glossaryOf(found.catalog, locale)} />}
+    </>
+  );
 }

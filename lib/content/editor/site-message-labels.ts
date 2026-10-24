@@ -34,6 +34,7 @@ export const SITE_MESSAGE_LABELS: Record<string, string> = {
   materialCard: "Thẻ chất liệu (kích thước, kỹ thuật in, nút Zalo)",
   fastPrint: "Trang In nhanh lấy liền",
   siteMeta: "Tiêu đề & mô tả trang chủ (kết quả tìm kiếm)",
+  seo: "Chia sẻ & tìm kiếm (tên website, ảnh mặc định khi chia sẻ)",
 };
 
 export const siteMessageLabel = (namespace: string): string => SITE_MESSAGE_LABELS[namespace] ?? namespace;

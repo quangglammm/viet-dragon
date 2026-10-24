@@ -357,7 +357,7 @@ describe("URLs", () => {
     expect(differences).toEqual([]);
   });
 
-  it("find every /products/… link written in the public source (127 of them), in every language", () => {
+  it("find every /products/… link written in the public source (128 of them), in every language", () => {
     const unresolved: string[] = [];
     for (const [href, file] of seeded.src.productLinks) {
       const [path, hash] = href.split("#");
@@ -370,7 +370,7 @@ describe("URLs", () => {
         if (hash && parts[2] && resolveUrl(catalog, locale, { ...asked, segment: hash }).status === "notFound") unresolved.push(`${href}#${hash} (${file}) in ${locale}`);
       }
     }
-    expect(seeded.src.productLinks.size).toBe(127); // 130 before the chrome moved to the database and the examples in lib/menu-active.ts were rewritten
+    expect(seeded.src.productLinks.size).toBe(128); // 130 before the chrome moved to the database and the examples in lib/menu-active.ts were rewritten; +1 for /products/fast-print in its page's metadata
     expect(unresolved).toEqual([]);
   });
 });

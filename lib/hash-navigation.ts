@@ -2,6 +2,7 @@
 // Utility to handle safe hash navigation on shapes and avoid Next.js fragment duplication
 
 import type React from "react";
+import { toInternalPath } from "@/lib/routes";
 
 /**
  * Normalizes a pathname by stripping query params, locale prefix (/vi, /en, etc.), and trailing slash.
@@ -76,7 +77,8 @@ export function navigateToShapeHash(targetHref: string, e?: React.MouseEvent): b
   if (typeof window === "undefined" || !targetHref) return false;
 
   const [rawTargetPath, targetHash] = targetHref.split("#");
-  const currentPath = normalizePathname(window.location.pathname);
+  // The address bar shows the language's words (`/san-pham/…`); the links are internal paths (`/products/…`).
+  const currentPath = toInternalPath(normalizePathname(window.location.pathname));
   const targetPath = normalizePathname(rawTargetPath);
 
   if (currentPath === targetPath) {

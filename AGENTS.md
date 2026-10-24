@@ -105,7 +105,8 @@ Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
 | `/api/consult` | Public. Receives quote/consult leads from `QuoteModal` / `ConsultBottomSheet`, emails them |
 | `/zalo-reply` | Client page that copies a prepared reply message and opens Zalo (`noindex`) |
 | `/api/health` | Liveness for the Docker healthcheck: always 200 while the process serves, body `{ status, db: "ok" \| "down" }` — a database outage must not mark the app unhealthy |
-| `/robots.txt` | `app/robots.ts` — disallows `/admin`, `/api/`, `/zalo-reply`; no `sitemap` entry until Phase 4 |
+| `/robots.txt` | `app/robots.ts` — disallows `/admin`, `/api/`, `/zalo-reply`; names `<SITE_URL>/sitemap.xml` (static, baked at build) |
+| `/sitemap.xml` | `app/sitemap.ts` — `force-dynamic` (so `next build` needs no database), built by the pure `lib/content/read/sitemap.ts` from the cached catalog, blog and revision dates: every canonical page in five languages (~1,130 entries today) with `hreflang` alternates + `x-default` and a `lastmod` only where one record decides it |
 
 `/products` and `/blog` have their own `layout.tsx` that wraps Navbar + Footer
 (the `[category]/[product]` detail pages nest under the `/products` layout).
@@ -118,12 +119,17 @@ response, and clients that join repeated headers (Node's `fetch`, some crawlers)
 dynamic render sends it once, and an alias released in the admin stops redirecting at once. Do not add `generateStaticParams` or
 `connection()` to those routes (a dynamic API under ISR is a 500, `DYNAMIC_SERVER_USAGE`).
 
-**SEO today:** per-page `title` + `description` only (5 languages; the catalog pages' come from the database), `metadataBase` from `SITE_URL`,
-`alternateLinks: false` in `i18n/routing.ts` (next-intl's automatic `Link: rel="alternate"` headers name the SAME path in every language, which
-is wrong now that each language has its own slugs),
-`noindex` on `/admin` and `/zalo-reply`. Canonical, `hreflang` (+ `x-default`), Open Graph, JSON-LD
-and `sitemap.xml` are Phase 4 (`lib/seo`); the SEO fields (`seo_title`, `seo_description`,
-`og_media_id`) are in the content schema since Phase 3a (nothing reads them yet) — see `docs/data-model.md` §11.5a.
+**SEO (Phase 4 M4):** every page's `generateMetadata` goes through `metadataFor` (`lib/content/read/page-seo.ts`) → `pageMetadata` (`seo.ts`): `title` +
+`description`, **canonical**, **`hreflang`** for the five languages plus **`x-default` = the Vietnamese page**, Open Graph (`og:locale` / `alternateLocale`,
+image, `article` + `publishedTime` for a post) and a `summary_large_image` Twitter card. `metadataBase` comes from `SITE_URL`; the home page is the bare
+origin (`absoluteUrl`, the form Next writes) in the canonical, the sitemap and the JSON-LD alike. **The SEO fields are used:** a product / shape / option /
+category / post takes its `seoTitle` / `seoDescription` / `ogImage` only for **the exact language** it was written in (never another language's text; blank
+= the page's own title / description), and the image falls back to the entity's cover, then the site default (`seo.defaultOgImage`). Site-wide facts are the
+UI-copy namespace `seo` (`siteName`, `defaultOgImage`), editable in the UI-copy editor. **JSON-LD** (`components/seo/json-ld.tsx`, escapes `< > & U+2028/9`):
+`Organization` + `WebSite` on the home page, `BreadcrumbList` on the catalog pages / blog / posts / Fast Print, `BlogPosting` on a post; **no `Product`
+markup** (no public prices) and no `sameAs` (the footer's social links are placeholders). `alternateLinks: false` in `i18n/routing.ts` (next-intl's automatic
+`Link: rel="alternate"` headers name the SAME path in every language, which is wrong now that each language has its own slugs), `noindex` on `/admin` and
+`/zalo-reply`.
 
 ---
 
@@ -230,8 +236,10 @@ element inside the existing column/grid div instead of appending it as a row sib
 `/`, `/products`), `en`, `zh`, `ja`, `ko` (prefixed: `/en`, `/zh/products`, …) —
 `localePrefix: "as-needed"` and `localeDetection: false` in `i18n/routing.ts`.
 
-- **Always import `Link`, `usePathname`, `useRouter` (and `redirect` / `permanentRedirect`) from `@/i18n/navigation`** for internal
-  links/navigation — never `next/link` or `next/navigation`. Using the plain Next.js versions
+- **Always import `Link`, `usePathname`, `useRouter` (and `redirect` / `permanentRedirect`, `getPathname`) from `@/i18n/navigation`** for internal
+  links/navigation — never `next/link` or `next/navigation`. It is a thin wrapper over next-intl's `createNavigation(routing)` (`i18n/navigation.tsx`, no `pathnames`):
+  **every href in the code is the INTERNAL path** (`/products/…`, `/blog/…`) and the wrapper writes the language's own fixed words (`lib/routes.ts`), so
+  `usePathname()` returns the internal path too — active-menu / footer checks and `hash-navigation.ts` compare internal paths, never `/san-pham`. Using the plain Next.js versions
   is the single easiest way to break non-default-locale navigation (links silently drop the
   `/en`, `/zh`, … prefix). `WipeButton` already does this internally. (The admin and
   `/zalo-reply` live outside `[locale]` and correctly use the plain Next.js versions.)
@@ -261,8 +269,14 @@ element inside the existing column/grid div instead of appending it as a row sib
 - Date formatting: map the locale to a BCP-47 code (`vi-VN`, `en-US`, `zh-CN`, `ja-JP`,
   `ko-KR`) before `toLocaleDateString` — see `formatDate()` in the blog pages.
 - `proxy.ts` (project root, **not** `middleware.ts` — Next 16 renamed the convention)
-  runs `next-intl`'s `createMiddleware(routing)`. Its `matcher` skips `api`, `admin`,
-  `zalo-reply`, `_next`, `_vercel` and any path containing a file extension.
+  first asks `decideRoute()` (`lib/routes.ts`, pure, table-tested) what to do with the fixed words, then runs `next-intl`'s `createMiddleware(routing)`.
+  The Vietnamese words (`/san-pham`, `/bai-viet`, `/san-pham/in-nhanh`) are **rewritten** to the internal route; the English ones in Vietnamese
+  (every URL the old site had), another language's word (`/en/san-pham`) and an explicit `/vi/…` are answered with a **308** to the canonical address
+  (absolute, from `SITE_URL`, query kept). A legacy catalog URL whose slug also changed takes two hops (word, then the page's own slug redirect); a test
+  and `pnpm parity:compare` cap it at 2. Its `matcher` skips `api`, `admin`, `zalo-reply`, `_next`, `_vercel` and any path containing a file extension
+  (so `sitemap.xml` / `robots.txt` never reach it).
+- **Language switcher:** `lib/locale-switch.ts` reads the page's own `<link rel="alternate" hreflang>` (Next replaces them on every client navigation) and
+  goes straight to the other language's canonical address; with none (a 404) it keeps the path and lets the resolver redirect.
 
 ## Reusable UI primitives
 Introduced to stop re-implementing the same JSX per section — reach for these before
@@ -288,6 +302,7 @@ wrapper would need as many props as it saves.
 - Hash links must always be absolute: `/#cta`, `/#services`, `/#vision` — never bare `#cta`
 - Bare hashes (e.g. `#cta`) resolve relative to the current URL, breaking navigation from `/products` or `/blog`
 - Navbar breakpoint: `lg` (1024px) — hamburger shows on mobile AND tablet; full nav at desktop only
+- **Never hard-code `/san-pham`, `/bai-viet` or `/in-nhanh` in a component, model, builder or UI-copy file** (tests may assert them) — write the internal path (`/products/…`, `/blog/…`, `/products/fast-print`) and let `Link` / `getPathname` / `publicPath` write the language's words. A catalog link typed into UI copy goes through `canonicalCatalogHref` on the server before it reaches a component (see `ShopBanner`).
 
 ---
 
@@ -350,13 +365,14 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   `uid`; vocabulary (material, trait, unit, spec item, category, post category, UI-copy namespace, media) an immutable key.
   Slugs are attributes owned by `product_slug` / `product_segment` / `post_slug` / `category_slug` (canonical + aliases), **one
   namespace per language**: PKs include `locale`; the same text may exist in two languages, never twice in one.
-- **Localized URLs (decided 2026-10-24):** every product, shape, option, post and category has a slug in EACH language; slugs are
+- **Localized URLs (decided 2026-10-24, live since Phase 4 M4):** every product, shape, option, post and category has a slug in EACH language; slugs are
   Latin letters, digits and dashes only, in every language, forever (the CHECK stays ASCII kebab-case). Vietnamese keeps today's
   slugs, English is generated from the English name, zh/ja/ko start as a copy of English; today's shared slug stays valid in every
-  language as a 308 alias. The fixed words (`products`, `blog`, `fast-print`) and the category segment are localized too
-  (proposed: vi `san-pham` / `bai-viet` / `in-nhanh`, en as today, zh/ja/ko = English) — put in `i18n/routing.ts` `pathnames` in
-  **Phase 4**, together with a redirect rule for every old Vietnamese URL and a language switcher that maps to the other
-  language's URL. Switch all URLs in ONE step at cutover: the Vietnamese move is the largest SEO risk of the project.
+  language as a 308 alias. **The fixed words are code, not content:** `lib/routes.ts` `WORDS` — vi `san-pham` / `bai-viet` / `in-nhanh`, en/zh/ja/ko keep
+  `products` / `blog` / `fast-print` (next-intl `pathnames` was rejected: it localizes only a template key + params, redirects with 307 and makes
+  `usePathname()` return the template). `localizePath` / `toInternalPath` / `publicPath` / `parsePublicPath` / `decideRoute` are the whole API; a new word
+  or language is a change to that table, its test and the proxy decision together. Switch all URLs in ONE step at cutover: the Vietnamese move is the
+  largest SEO risk of the project.
 - **Master languages:** Vietnamese AND English must be complete (document schemas require both; the database requires only `vi`).
   zh/ja/ko follow English: slugs are copies, text that exists is kept, and the gaps are filled with AI-suggested translations
   (`scripts/seed/suggested-translations.ts`, applied as revision 2 with the comment «Bản dịch đề xuất (AI) — cần người bản ngữ duyệt»;
@@ -508,7 +524,7 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   `site-message-labels.ts` (a test keeps them equal to the keys of `messages/vi.json`). A missing required text reads «Bắt buộc phải nhập.»
   (`MESSAGES.required`), not zod's default. Known gaps: aliases of posts and categories are listed but cannot be released (the service only
   releases product URLs); the reserved `seo` / `business` namespaces cannot be created from the UI (site_message is not creatable).
-- **Public read layer (Phase 4: M1 foundation, M2 catalog pages + navigation — landed).** `lib/content/read/`: `catalog.ts` / `menus.ts` /
+- **Public read layer (Phase 4: M1 foundation, M2 catalog pages + navigation, M3 blog / Fast Print / showcase / UI copy, M4 URL words + SEO + sitemap — landed).** `lib/content/read/`: `catalog.ts` / `menus.ts` /
   `selectors.ts` / `urls.ts` / `messages.ts` are PURE functions from the documents (`composeEntity`, proven lossless) to the public site's view
   models (`types.ts`: `CategoryView`, `ProductView` with shapes / options / sizes / specs, `MenuView`, traits, materials); `load.ts` has the
   database loaders (`loadCatalog`, `loadMenus`, `loadPublishedMessages`, any executor — the tests use a seeded scratch database) and the cached
@@ -562,9 +578,25 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   covers and bodies of the six posts in five languages, the old URLs), `merchandising.int.test.ts` (Fast Print items and every language's price line, the
   showcase captions and slots, the UI copy merge on a seeded database); parity on the scratch database: 1,865 pages = 331 identical + 1,491
   sizes-/specs-form-only + 43 explained (the 13 of M2 + 30 for the newest-first post order) + 0 unexplained.
+  **M4 — localized URL words, redirects, SEO, sitemap.** `lib/routes.ts` (see **Localized URLs**), `seo.ts` (`seoMeta`, `alternatesOf`, `pageMetadata`,
+  `absoluteUrl`), `jsonld.ts` (pure builders + `serializeJsonLd`), `page-seo.ts` (server: `metadataFor`, breadcrumbs, `siteLd`), `sitemap.ts` (`sitemapOf`,
+  `revisionKey`), `loadRevisionDates` / `getRevisionDates` (newest `content_revision` per product / category / post → `lastmod`; a category is dated by the
+  newest of itself and its products; the four fixed pages have no date), `urls.ts` `canonicalCatalogHref` (a catalog link typed into UI copy —
+  `shopBanner.banners[i].href` — is followed to the page's canonical internal path, a missing page falls back to `/products`).
+  **The data cache is keyed by build:** `cachedRead` adds `process.env.CONTENT_CACHE_BUILD` (a UUID `next.config.ts` generates per build and inlines via `env`) to
+  every key, because `.next/cache` is a volume that survives a deploy and an entry holds what the code of ITS build computed (view models, the defaults of
+  `messages/*.json`) — found when a cached merged-messages tree from before the `seo` namespace served `seo.siteName` as a raw key. A restart of the same build
+  reuses the cache; a new build starts clean (old entries are never read again — clear the volume when disk matters). A publish still expires by tag.
+  **Evidence:** `sitemap.test.ts` / `sitemap.int.test.ts` (every URL answers on its own in its language, five alternates each, dates equal the revisions,
+  archived and renamed pages), `routes.test.ts`, `seo.test.ts`, `jsonld.test.ts`, `locale-switch.test.ts`; on the scratch database in production mode: parity over
+  1,865 legacy pages = 331 identical + 1,491 forms-only + 43 explained + 0 other, every legacy URL ends in a 200 within 2 redirects (29 × 0, 1,473 × 1, 363 × 2),
+  every `Location` sent once; all 1,130 sitemap URLs 200 with no redirect and a head that agrees with the sitemap (canonical, five hreflang + x-default,
+  og:url / locale / image, Twitter card, JSON-LD parses, title = og:title); a vi-only `seoTitle` shows in Vietnamese only; a `shopBanner` link and `seo.siteName`
+  publish show without a rebuild; the switcher lands on the other language's canonical in one request from a product, material, post, Fast Print and the home
+  page; hash deep links and in-page hash navigation work on `/san-pham/…`.
 - **Tests:** `app/api/admin/content/content-api.int.test.ts` (who may call what, preconditions, error shapes, cache tags, audit rows —
   with the app's own database pointed at a seeded scratch one by setting `DATABASE_URL` before the first `getDb()`),
-  `lib/content/http.test.ts`; `lib/content/entities.int.test.ts` (all 198 seeded entities publish unchanged; each of the nine creatable types is created,
+  `lib/content/http.test.ts`; `lib/content/entities.int.test.ts` (all 202 seeded entities publish unchanged; each of the nine creatable types is created,
   edited, archived, deleted and brought back; URL renames; site-message versions; lists) and `delete.int.test.ts` (every refusal next to
   the deletions that must work); `lib/content/{product,draft,menu}-lifecycle.int.test.ts` run the prototype's lifecycle (docs/spike) through the shipped
   services on the seeded scratch database (all 25 products and 4 menus round-trip losslessly with every id preserved; renames, swaps,
@@ -688,7 +720,7 @@ first init), `.env.example`. `compose.dev.yaml` is Postgres only, on `127.0.0.1:
 Runbook and rationale: `docs/deployment.md`.
 - The app connects as `vietdragon_app` (SELECT/INSERT/UPDATE/DELETE only — no DDL, no TRUNCATE);
   `migrate` runs as the owner. Never point the app at the owner role.
-- App container: non-root, read-only root FS (writable: `/tmp` and the `.next/cache` volume),
+- App container: non-root, read-only root FS (writable: `/tmp` and the `.next/cache` volume — the data cache is keyed by build, so a deploy never reads the previous build's entries),
   `cap_drop: ALL`, no published ports. `db` sits on an `internal` network. **One app instance only.**
 - Building needs internet (`next/font/google`) and `--build-arg SITE_URL=…` — nothing else.
 - `deploy/Caddyfile` is fail-closed for the admin: under `/admin` only `login`, `account`, `users`, `audit` and
@@ -742,7 +774,8 @@ app/
   api/consult/              public lead endpoint (nodemailer)
   api/health/               liveness for the Docker healthcheck (always 200; db state in the body)
   api/admin/                CMS API: blog, media, products, translations, translate (route-guards.test.ts + legacy-routes.int.test.ts enforce the guard)
-  robots.ts                 robots.txt (no sitemap yet)
+  robots.ts                 robots.txt (names the sitemap)
+  sitemap.ts                sitemap.xml — dynamic, built by lib/content/read/sitemap.ts
   zalo-reply/               client page: copy a prepared reply, open Zalo
 instrumentation.ts          register(): env fail-fast (Node runtime only, skipped at build) · onRequestError → lib/logger
 instrumentation-node.ts     validateEnvOrExit() — Node-only, imported dynamically so the Edge bundle stays clean
@@ -750,12 +783,12 @@ drizzle.config.ts, drizzle/ drizzle-kit config (loads .env via @next/env) · mig
 Dockerfile, compose.yaml, compose.dev.yaml, .env.example, .dockerignore, deploy/   see Docker & deployment
 i18n/
   routing.ts               defineRouting({ locales: [vi, en, zh, ja, ko], defaultLocale: vi })
-  navigation.ts             Locale-aware Link/usePathname/useRouter/redirect/permanentRedirect — import from here, not next/*
+  navigation.tsx            Locale-aware Link/usePathname/useRouter/redirect/permanentRedirect/getPathname over createNavigation — internal paths in, the language's words out; import from here, not next/*
   request.ts                getRequestConfig — messages = getMessages(locale): messages/<locale>.json + the published UI copy of the database (cached)
   messages.test.ts          the five message files have the same texts, no empty one, only the Vietnamese text's {variables}
 messages/
   vi, en, zh, ja, ko .json  UI copy, namespaced per section — keep all five key sets in sync
-proxy.ts                    Next 16 "proxy" (not middleware.ts): `/admin/*` → optimistic session-cookie check (lib/admin-access.ts); everything else → next-intl createMiddleware; the intl matcher still skips api/admin/zalo-reply
+proxy.ts                    Next 16 "proxy" (not middleware.ts): `/admin/*` → optimistic session-cookie check (lib/admin-access.ts); everything else → `decideRoute()` (fixed URL words: rewrite / 308) then next-intl createMiddleware; the intl matcher still skips api/admin/zalo-reply
 vitest.config.mts, vitest.int.config.mts, tests/   unit config · integration config (throwaway DB via tests/db-setup.ts + tests/migrate.ts) · shared helpers (auth, db, content-db) and document fixtures; `*.test.ts` live beside the code, `*.int.test.ts` need the dev DB
 hooks/
   use-section-in-view.ts    Shared useRef + useInView(once, margin -80px)
@@ -792,6 +825,8 @@ lib/
   logger.ts                 getLogger(scope) (pino, redaction), maskPhone(), logRequestError()
   db/index.ts               lazy pg Pool + drizzle handle (getPool/getDb/pingDatabase)
   locale.ts                 pickLocale(locale, vi, en, zh?, ja?, ko?) for data/*.ts fields
+  routes.ts                 the fixed URL words per language + localizePath / toInternalPath / publicPath / parsePublicPath / decideRoute (import-free: browser, proxy, tests)
+  locale-switch.ts          client: the other language's address from the page's own <link rel=alternate hreflang>
   contact.ts                Phone / Zalo / email constants
   motion.ts                 imageWipeReveal Motion variant (clip-path wipe-down reveal)
   utils.ts                  cn()
@@ -852,6 +887,7 @@ components/
     floating-contact.tsx      Global Zalo/phone floating buttons (root layout)
     quote-modal.tsx, consult-bottom-sheet.tsx   Lead-capture UIs; both POST to /api/consult
     language-detector-toast.tsx, auto-scroll-to-target.tsx, zalo-icon.tsx   Locale suggestion toast, hash auto-scroll helper, Zalo glyph
+  seo/json-ld.tsx           <script type="application/ld+json"> that cannot be closed by editor text (serializeJsonLd)
     named-icon.tsx            <NamedIcon name> — draws an icon the database names (lib/icons.ts)
     material-flashcard.tsx    Per-option flip card (takes a CardView): images, traits, sizes / specs form, copy-to-Zalo consult flow
     material-glossary-fab.tsx Bottom-left icon-legend popover (takes GlossaryTrait[])

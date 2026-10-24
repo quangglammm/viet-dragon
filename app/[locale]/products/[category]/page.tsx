@@ -6,6 +6,9 @@ import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { NamedIcon } from "@/components/ui/named-icon";
 import { categoryPageOf } from "@/lib/content/read/pages";
+import { breadcrumbLd, metadataFor } from "@/lib/content/read/page-seo";
+import { alternatePaths, categoryPath } from "@/lib/content/read/urls";
+import { JsonLd } from "@/components/seo/json-ld";
 import { peekPage, resolvePage } from "@/lib/content/read/resolve-page";
 
 type CategoryParams = { locale: Locale; category: string };
@@ -14,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<CategoryPar
   const { locale, category } = await params;
   const found = await peekPage(locale, { category });
   if (!found) return {};
-  return categoryPageOf(found.catalog, locale, found.category).meta;
+  return metadataFor({ locale, meta: categoryPageOf(found.catalog, locale, found.category).meta, paths: alternatePaths(found.catalog, found.category, null, null) });
 }
 
 export default async function CategoryPage({ params }: Readonly<{ params: Promise<CategoryParams> }>) {
@@ -23,8 +26,15 @@ export default async function CategoryPage({ params }: Readonly<{ params: Promis
   const found = await resolvePage(locale, { category });
   const { name, description, icon, cover, cards: items, prev, next } = categoryPageOf(found.catalog, locale, found.category);
 
+  const crumbs = [
+    { name: t("breadcrumbHome"), path: "/" },
+    { name: t("breadcrumbProducts"), path: "/products" },
+    { name, path: categoryPath(locale, found.category) },
+  ];
+
   return (
     <div className="bg-white">
+      <JsonLd data={breadcrumbLd(locale, crumbs)} />
       {/* ── Full-width hero image ── */}
       <div className="relative h-[420px] lg:h-[520px] w-full overflow-hidden">
         {cover && (

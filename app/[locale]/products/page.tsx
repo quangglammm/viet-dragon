@@ -7,7 +7,10 @@ import type { Locale } from "@/i18n/routing";
 import { NamedIcon } from "@/components/ui/named-icon";
 import { getShowcase } from "@/lib/content/read/load";
 import { showcaseCardsOf } from "@/lib/content/read/merchandising";
+import { breadcrumbLd, metadataFor } from "@/lib/content/read/page-seo";
+import { samePath } from "@/lib/content/read/seo";
 import { getNavigation } from "@/lib/content/read/site";
+import { JsonLd } from "@/components/seo/json-ld";
 import { ShowcaseGallery } from "@/components/sections/ShowcaseGallery";
 
 export async function generateMetadata({
@@ -17,7 +20,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "productsPage" });
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  return metadataFor({ locale, meta: { title: t("metaTitle"), description: t("metaDescription"), image: null }, paths: samePath("/products") });
 }
 
 export default async function ProductsPage({
@@ -32,6 +35,7 @@ export default async function ProductsPage({
 
   return (
     <div className="bg-white">
+      <JsonLd data={breadcrumbLd(locale, [{ name: t("breadcrumbHome"), path: "/" }, { name: t("breadcrumbCurrent"), path: "/products" }])} />
       {/* ── Page header ── */}
       <div className="max-w-7xl mx-auto px-6 pt-14 pb-10">
         <nav aria-label="breadcrumb" className="flex items-center gap-2 text-sm text-zinc-400 mb-10">

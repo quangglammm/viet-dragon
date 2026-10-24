@@ -127,7 +127,7 @@ describe("the models the pages draw", () => {
   it("titles a post page «<title> | Viet Dragon Blog», describes it with the excerpt and links its neighbours", () => {
     const blogs = blog();
     const middle = postPageOf(blogs, "en", blogs.posts[1]);
-    expect(middle.meta).toEqual({ title: "Post b | Viet Dragon Blog", description: "About b" });
+    expect(middle.meta).toEqual({ title: "Post b | Viet Dragon Blog", description: "About b", image: null });
     expect(middle.prev).toEqual({ label: "Post a", href: "/blog/a-en" });
     expect(middle.next).toEqual({ label: "Post c", href: "/blog/c-en" });
     expect(postPageOf(blogs, "en", blogs.posts[0]).prev).toBeNull();

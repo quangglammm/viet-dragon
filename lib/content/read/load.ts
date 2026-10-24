@@ -1,5 +1,7 @@
+import { inArray, max } from "drizzle-orm";
 import type { DbExecutor } from "@/lib/db/types";
 import { getDb } from "@/lib/db";
+import { contentRevision } from "@/lib/db/schema";
 import type { DraftEntityType } from "@/lib/db/content/drafts";
 import { readTags } from "../cache-tags";
 import { composeEntity, listEntities, type Composed } from "../compose";
@@ -10,6 +12,7 @@ import { buildMenus } from "./menus";
 import { buildFastPrint, buildShowcase, type FastPrint, type ShowcaseItemView } from "./merchandising";
 import { buildBlog, type Blog } from "./posts";
 import { mergeMessages, type Messages } from "./messages";
+import { MODIFIED_TYPES, revisionKey, type Modified } from "./sitemap";
 import type { Catalog, MenuView } from "./types";
 
 // Where the public site's reads meet the database. `load*` take any executor (the tests give them a seeded scratch database); `get*`
@@ -70,6 +73,16 @@ export async function loadPublishedMessages(x: DbExecutor, locale: LocaleCode): 
   return Object.fromEntries(messages.flatMap((message) => (message.data[locale] === undefined ? [] : [[message.key, message.data[locale]] as const])));
 }
 
+/** When each product, category and post last changed (its newest revision), for the sitemap's `lastmod`. */
+export async function loadRevisionDates(x: DbExecutor): Promise<Modified> {
+  const rows = await x
+    .select({ type: contentRevision.entityType, uid: contentRevision.entityUid, key: contentRevision.entityKey, at: max(contentRevision.createdAt) })
+    .from(contentRevision)
+    .where(inArray(contentRevision.entityType, [...MODIFIED_TYPES]))
+    .groupBy(contentRevision.entityType, contentRevision.entityUid, contentRevision.entityKey);
+  return Object.fromEntries(rows.flatMap((row) => (row.at === null ? [] : [[revisionKey(row.type, row.uid ?? row.key ?? ""), row.at.toISOString()] as const])));
+}
+
 // ───────────── the cached reads the pages call ─────────────
 
 type Read<R> = () => Promise<R>;
@@ -94,6 +107,9 @@ export const getFastPrint = once(() => cachedRead("fast-print", readTags({ type:
 
 /** The pictures of the gallery on /products. */
 export const getShowcase = once(() => cachedRead("showcase", readTags({ type: "showcase_item" }), () => loadShowcase(getDb())));
+
+/** The dates behind the sitemap: they move when a product, a category or a post is published. */
+export const getRevisionDates = once(() => cachedRead("revision-dates", readTags({ type: "product" }, { type: "category" }, { type: "post" }), () => loadRevisionDates(getDb())));
 
 const messageReads = new Map<LocaleCode, Read<Messages>>();
 

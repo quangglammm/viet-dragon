@@ -11,7 +11,7 @@ import { buildMenus } from "./menus";
 import { navigationOf, type Navigation } from "./navigation";
 import { categoryPageOf, glossaryOf, productPageOf, type ProductPageModel } from "./pages";
 import type { Catalog, MenuView, ProductView } from "./types";
-import { resolveUrl } from "./urls";
+import { canonicalCatalogHref, resolveUrl } from "./urls";
 
 // What each catalog page and the navigation say, built from a database seeded from the old static files, against what the old pages
 // computed from those files. The checks are in Vietnamese unless a test says otherwise (M1 compared every field in every language);
@@ -367,6 +367,20 @@ describe("the glossary", () => {
     for (const [key, source] of old) {
       expect(vi.find((trait) => trait.key === key)).toMatchObject({ label: source.labelVi, description: source.descriptionVi });
       expect(en.find((trait) => trait.key === key)).toMatchObject({ label: source.label, description: source.description });
+    }
+  });
+});
+
+describe("the home page's shop banners", () => {
+  it("link, in every language, to a page that exists — not to the catalog index a missing page falls back to", () => {
+    for (const locale of LOCALES) {
+      const banners = (JSON.parse(readFileSync(`messages/${locale}.json`, "utf8")) as { shopBanner: { banners: { href: string }[] } }).shopBanner.banners;
+      expect(banners, locale).toHaveLength(2);
+      for (const { href } of banners) {
+        const canonical = canonicalCatalogHref(catalog, locale, href);
+        expect(canonical, `${locale} ${href}`).not.toBe("/products");
+        expect(resolveUrl(catalog, locale, { category: canonical.split("/")[2], product: canonical.split("/")[3] }).status, `${locale} ${canonical}`).toBe("ok");
+      }
     }
   });
 });

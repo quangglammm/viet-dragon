@@ -3,7 +3,7 @@ import { catalogInput, categoryDocument } from "@/tests/fixtures/catalog";
 import { productDocument, slugsOf, UID } from "@/tests/fixtures/documents";
 import { LOCALES } from "../schemas";
 import { buildCatalog } from "./catalog";
-import { alternatePaths, categoryById, categoryPath, productByUid, productPath, resolveUrl, segmentPath } from "./urls";
+import { alternatePaths, canonicalCatalogHref, categoryById, categoryPath, productByUid, productPath, resolveUrl, segmentPath } from "./urls";
 
 const catalog = () => buildCatalog(catalogInput());
 const resolve = (locale: Parameters<typeof resolveUrl>[1], parts: Parameters<typeof resolveUrl>[2]) => resolveUrl(catalog(), locale, parts);
@@ -86,5 +86,31 @@ describe("reading a URL", () => {
       const path = productPath(c, locale, c.products[0]).split("/").slice(2);
       expect(resolveUrl(c, locale, { category: path[0], product: path[1] }).status, locale).toBe("ok");
     }
+  });
+});
+
+describe("a catalog link written as copy", () => {
+  const canonical = (locale: Parameters<typeof canonicalCatalogHref>[1], href: string) => canonicalCatalogHref(catalog(), locale, href);
+
+  it("keeps a link that is already the page's canonical address", () => {
+    expect(canonical("vi", "/products/tiep-thi/to-roi")).toBe("/products/tiep-thi/to-roi");
+    expect(canonical("en", "/products/marketing/flyers/a5-flyer")).toBe("/products/marketing/flyers/a5-flyer");
+    expect(canonical("vi", "/products/tiep-thi")).toBe("/products/tiep-thi");
+  });
+
+  it("follows an old slug and another language's slug to the page's own language, keeping a query and a hash", () => {
+    expect(canonical("vi", "/products/marketing/flyers")).toBe("/products/tiep-thi/to-roi");
+    expect(canonical("vi", "/products/tiep-thi/flyer")).toBe("/products/tiep-thi/to-roi");
+    expect(canonical("en", "/products/tiep-thi/to-roi/giay-loai-c")).toBe("/products/marketing/flyers/type-c-paper");
+    expect(canonical("vi", "/products/marketing/flyers?utm=1#cta")).toBe("/products/tiep-thi/to-roi?utm=1#cta");
+  });
+
+  it("falls back to the catalog index when the page is gone", () => {
+    expect(canonical("vi", "/products/khong-co")).toBe("/products");
+    expect(canonical("en", "/products/marketing/khong-co")).toBe("/products");
+  });
+
+  it("returns anything that is not a catalog page as written", () => {
+    for (const href of ["/", "/#cta", "/products", "/products/fast-print", "/blog/x", "https://example.org/products/a", "mailto:a@b.c", "products/a", "/products/a/b/c/d"]) expect(canonical("vi", href)).toBe(href);
   });
 });

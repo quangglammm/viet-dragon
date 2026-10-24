@@ -60,11 +60,13 @@
     "banners": [
       {
         "eyebrow": "ベストセラー",
-        "title": "製品カタログ・パンフレット"
+        "title": "製品カタログ・パンフレット",
+        "href": "/products/marketing/catalogue"
       },
       {
         "eyebrow": "ベストセラー",
-        "title": "高級紙袋"
+        "title": "高級紙袋",
+        "href": "/products/packaging/paper-bag"
       }
     ],
     "cta": "今すぐ見る"
@@ -510,5 +512,9 @@
   "siteMeta": {
     "title": "Viet Dragon – ベトナム・プロフェッショナル高品質印刷",
     "description": "Viet Dragon – ホーチミン市・ドンナイ・ブンタウ・ビンズオン省のプロフェッショナル印刷サービス。名刺、カタログ、化粧箱、シール印刷。無料相談・デザイン・サンプル校正・無料配送。"
+  },
+  "seo": {
+    "siteName": "Viet Dragon",
+    "defaultOgImage": "/images/hero/slide-1.jpg"
   }
 }

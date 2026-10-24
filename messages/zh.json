@@ -60,11 +60,13 @@
     "banners": [
       {
         "eyebrow": "热销爆款",
-        "title": "产品画册 / 宣传册"
+        "title": "产品画册 / 宣传册",
+        "href": "/products/marketing/catalogue"
       },
       {
         "eyebrow": "热销爆款",
-        "title": "高档纸袋"
+        "title": "高档纸袋",
+        "href": "/products/packaging/paper-bag"
       }
     ],
     "cta": "立即查看"
@@ -510,5 +512,9 @@
   "siteMeta": {
     "title": "Viet Dragon – 越南高端专业印刷服务商",
     "description": "Viet Dragon – 胡志明市、同奈、头顿与平阳省专业高品质印刷服务。商务名片、企业画册、精品礼盒、不干胶贴纸。免费咨询、设计、打样及配送。"
+  },
+  "seo": {
+    "siteName": "Viet Dragon",
+    "defaultOgImage": "/images/hero/slide-1.jpg"
   }
 }

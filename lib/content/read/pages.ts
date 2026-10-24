@@ -2,6 +2,7 @@ import type { LocaleCode } from "../schemas";
 import { cardOf, type CardView } from "./card";
 import { cardsOf, type ProductCard } from "./navigation";
 import { optionsForProduct, optionsForShape } from "./selectors";
+import { seoMeta, type Meta } from "./seo";
 import { pickText } from "./text";
 import type { Catalog, CategoryView, OptionView, ProductView, ShapeView } from "./types";
 import { anchorOf, categoryPath, productPath, segmentPath, type Anchor, type SegmentTarget } from "./urls";
@@ -10,11 +11,6 @@ import { anchorOf, categoryPath, productPath, segmentPath, type Anchor, type Seg
 // out. Pure — the same functions answer in the tests, where they are compared with what the old pages computed from the static files.
 
 const TITLE_SUFFIX = " | Viet Dragon";
-
-export interface Meta {
-  title: string;
-  description: string;
-}
 
 export interface Link {
   label: string;
@@ -40,7 +36,7 @@ export function categoryPageOf(catalog: Catalog, locale: LocaleCode, category: C
   const name = pickText(locale, category.name);
   const description = pickText(locale, category.description);
   return {
-    meta: { title: `${name}${TITLE_SUFFIX}`, description },
+    meta: seoMeta(locale, category.seo, { title: `${name}${TITLE_SUFFIX}`, description }, category.ogImage ?? category.cover),
     name,
     description,
     icon: category.icon,
@@ -153,7 +149,7 @@ export function productPageOf(catalog: Catalog, locale: LocaleCode, category: Ca
     const shapes = product.shapes;
     return {
       kind: "shape",
-      meta: { title: `${name} - ${context.title}${TITLE_SUFFIX}`, description: pickText(locale, shape.description) },
+      meta: seoMeta(locale, shape.seo, { title: `${name} - ${context.title}${TITLE_SUFFIX}`, description: pickText(locale, shape.description) }, shape.ogImage ?? shape.image ?? product.ogImage ?? product.cover),
       context,
       shape: { name, description: pickText(locale, shape.description), image: shape.image ?? product.cover },
       cards: cardsFor(catalog, locale, product, optionsForShape(product, shape.uid), shape.uid, (option) => `${name} - ${pickText(locale, option.name)}`),
@@ -166,14 +162,14 @@ export function productPageOf(catalog: Catalog, locale: LocaleCode, category: Ca
     const name = pickText(locale, option.name);
     return {
       kind: "material",
-      meta: { title: `${context.title} - ${name}${TITLE_SUFFIX}`, description: context.description },
+      meta: seoMeta(locale, option.seo, { title: `${context.title} - ${name}${TITLE_SUFFIX}`, description: context.description }, option.ogImage ?? product.ogImage ?? product.cover),
       context,
       material: { name, anchor: anchorOf(option.slugs, locale), uid: option.uid },
       cards: cardsFor(catalog, locale, product, optionsForProduct(product), null, (candidate) => `${context.title} - ${pickText(locale, candidate.name)}`),
     };
   }
 
-  const meta = { title: `${context.title}${TITLE_SUFFIX}`, description: context.description };
+  const meta = seoMeta(locale, product.seo, { title: `${context.title}${TITLE_SUFFIX}`, description: context.description }, product.ogImage ?? product.cover);
   if (product.shapes.length > 0) return { kind: "shapes", meta, context, shapes: product.shapes.map(shapeCard) };
 
   const siblings = catalog.products.filter((candidate) => candidate.category === product.category);

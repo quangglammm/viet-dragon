@@ -7,6 +7,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { WipeButton } from "@/components/ui/wipe-button";
 import { cn } from "@/lib/utils";
+import { alternateInternalPath } from "@/lib/locale-switch";
 import type { Locale } from "@/i18n/routing";
 import { NamedIcon } from "@/components/ui/named-icon";
 import { MegaMenuDesktop } from "@/components/sections/MegaMenuDesktop";
@@ -190,9 +191,10 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
+  // The page names its own address in the other language (lib/locale-switch.ts); without one, keep the path and let the resolver redirect.
   const switchLocale = (next: Locale) => {
     setMenuOpen(false);
-    router.replace(pathname, { locale: next });
+    router.replace(alternateInternalPath(next) ?? pathname, { locale: next });
   };
 
   // Clicking the logo while already on "/" is a no-op for Next's router (same

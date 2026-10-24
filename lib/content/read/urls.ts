@@ -150,3 +150,20 @@ export function resolveUrl(catalog: Catalog, locale: LocaleCode, parts: UrlParts
   const requested = [`/${PRODUCTS_SEGMENT}`, parts.category, parts.product, parts.segment].filter((part) => part !== undefined).join("/");
   return canonical === requested ? { status: "ok", category, product, target } : { status: "redirect", to: canonical };
 }
+
+// ───────────── links written as copy ─────────────
+
+/**
+ * A catalog link an editor typed into the site's text (`/products/<category>[/<product>[/<shape or option>]]`, in any language's slugs)
+ * as the canonical internal path of the page in `locale`. A former or foreign slug is followed to the page; a link to a page that
+ * no longer exists falls back to the catalog index rather than a 404. Anything that is not a catalog page — `/#cta`, `/blog/…`,
+ * Fast Print, an address on another site — is returned as written.
+ */
+export function canonicalCatalogHref(catalog: Catalog, locale: LocaleCode, href: string): string {
+  const [path, ...rest] = href.split(/(?=[?#])/);
+  const [, root, category, product, segment, ...extra] = path.split("/");
+  if (!href.startsWith("/") || root !== PRODUCTS_SEGMENT || category === undefined || category === "fast-print" || extra.length > 0) return href;
+  const resolved = resolveUrl(catalog, locale, { category, product, segment });
+  if (resolved.status === "notFound") return `/${PRODUCTS_SEGMENT}`;
+  return `${resolved.status === "ok" ? path : resolved.to}${rest.join("")}`;
+}

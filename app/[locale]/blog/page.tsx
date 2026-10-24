@@ -6,6 +6,9 @@ import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { getBlog } from "@/lib/content/read/load";
 import { blogIndexOf } from "@/lib/content/read/posts";
+import { breadcrumbLd, metadataFor } from "@/lib/content/read/page-seo";
+import { samePath } from "@/lib/content/read/seo";
+import { JsonLd } from "@/components/seo/json-ld";
 import { PostCategoryBadge } from "@/components/blog/post-category-badge";
 
 export async function generateMetadata({
@@ -15,7 +18,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "blogPage" });
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  return metadataFor({ locale, meta: { title: t("metaTitle"), description: t("metaDescription"), image: null }, paths: samePath("/blog") });
 }
 
 export default async function BlogPage({
@@ -29,6 +32,7 @@ export default async function BlogPage({
 
   return (
     <div className="bg-white">
+      <JsonLd data={breadcrumbLd(locale, [{ name: t("breadcrumbHome"), path: "/" }, { name: t("breadcrumbCurrent"), path: "/blog" }])} />
       {/* ── Page header ── */}
       <div className="max-w-7xl mx-auto px-6 pt-14 pb-10">
         <nav aria-label="breadcrumb" className="flex items-center gap-2 text-sm text-zinc-400 mb-10">
