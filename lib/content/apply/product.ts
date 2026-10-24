@@ -70,9 +70,9 @@ async function applyProduct(tx: Tx, doc: ProductDocument, context: ApplyContext)
     version = existing.version + 1;
     await tx.update(schema.product).set({ ...columns, version, updatedAt: sql`now()` }).where(eq(schema.product.id, productId));
   } else {
-    const [created] = await tx.insert(schema.product).values({ uid: doc.uid, ...columns }).returning({ id: schema.product.id, version: schema.product.version });
+    const [created] = await tx.insert(schema.product).values({ uid: doc.uid, ...columns, version: context.startVersion }).returning({ id: schema.product.id });
     productId = created.id;
-    version = created.version;
+    version = context.startVersion;
   }
 
   await writeProductSlugs(tx, productId, doc, existing !== undefined);

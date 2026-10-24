@@ -3,7 +3,7 @@ import * as schema from "@/lib/db/schema";
 import type { RevisionAction } from "@/lib/db/content/drafts";
 import type { Db, Tx } from "@/lib/db/types";
 import { applierFor } from "./apply";
-import { affectedBy } from "./cache-tags";
+import { affectedBy, type Affected } from "./cache-tags";
 import { composeEntity, type EntityRef } from "./compose";
 import { diffDocuments } from "./diff";
 import { lockDraft, type Draft } from "./drafts";
@@ -12,7 +12,7 @@ import { humanize } from "./humanize";
 import { identityOf } from "./identity";
 import { checkReferences, collectReferences } from "./references";
 import { restoredVersionOf } from "./restore";
-import { writeRevision } from "./revision";
+import { latestRevisionVersion, writeRevision } from "./revision";
 import { parseDocument } from "./schemas";
 
 // Publishing: the draft becomes the live entity, in ONE transaction. Lock order is draft → live row (→ categories, in a
@@ -32,7 +32,7 @@ export interface PublishResult {
   version: number;
   action: RevisionAction;
   /** Everything whose rendering changed: the entity itself, and for a product the menus it left and joined. */
-  affected: EntityRef[];
+  affected: Affected[];
 }
 
 /** The live version must be the one the draft started from, and a new entity must not exist yet. */
@@ -51,7 +51,7 @@ async function assertBase(tx: Tx, ref: EntityRef, draft: Draft, liveVersion: num
   );
 }
 
-const statusOf = (document: unknown): unknown => (typeof document === "object" && document !== null ? (document as { status?: unknown }).status : undefined);
+export const statusOf = (document: unknown): unknown => (typeof document === "object" && document !== null ? (document as { status?: unknown }).status : undefined);
 
 function actionFor(draft: Draft, before: unknown, after: unknown): RevisionAction {
   if (restoredVersionOf(draft.note) !== null) return "restore";
@@ -69,7 +69,6 @@ async function publishInTransaction(tx: Tx, ref: EntityRef, input: PublishInput)
   const parsed = parseDocument(ref.type, draft.snapshot);
   if (!parsed.success) throw new Invalid(zodIssues(parsed.error));
   const applier = applierFor(ref.type);
-  if (!applier) throw new Invalid([{ path: "", message: "Loại nội dung này chưa hỗ trợ xuất bản." }]);
 
   const liveVersion = await applier.lock(tx, ref.id);
   await assertBase(tx, ref, draft, liveVersion);
@@ -78,7 +77,8 @@ async function publishInTransaction(tx: Tx, ref: EntityRef, input: PublishInput)
   if (missing.length > 0) throw new Invalid(missing);
 
   const before = liveVersion === null ? null : (await composeEntity(tx, ref.type, ref.id))?.document;
-  const version = await applier.apply(tx, parsed.data, { author: input.author, baseVersion: draft.baseVersion });
+  const startVersion = draft.baseVersion === null ? (await latestRevisionVersion(tx, ref)) + 1 : 1;
+  const version = await applier.apply(tx, parsed.data, { author: input.author, baseVersion: draft.baseVersion, startVersion });
 
   // The revision records what was STORED (it includes the aliases a publish keeps automatically), not what was sent.
   const stored = await composeEntity(tx, ref.type, ref.id);

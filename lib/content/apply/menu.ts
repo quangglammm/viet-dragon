@@ -2,9 +2,8 @@ import { eq, inArray, sql } from "drizzle-orm";
 import * as schema from "@/lib/db/schema";
 import type { Tx } from "@/lib/db/types";
 import { Invalid, type Issue } from "../errors";
-import { collectReferences } from "../references";
 import type { MenuDocument } from "../schemas";
-import { loadMediaIds } from "./lookups";
+import { loadDocumentMedia } from "./lookups";
 import { localeEntries } from "./shared";
 import type { Applier, ApplyContext } from "./types";
 
@@ -61,7 +60,7 @@ async function writeGroup(tx: Tx, productId: number, place: { column: number; po
 
 async function applyMenu(tx: Tx, doc: MenuDocument, context: ApplyContext): Promise<number> {
   const products = await categoryProducts(tx, doc.category);
-  const media = await loadMediaIds(tx, collectReferences("menu", doc).filter((r) => r.kind === "media").map((r) => r.key));
+  const media = await loadDocumentMedia(tx, "menu", doc);
 
   const groupProductIds = doc.columns.flatMap((column) => column.groups.map((group) => products.get(group.product)));
   doc.columns.forEach((column, c) =>

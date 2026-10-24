@@ -34,6 +34,12 @@ describe("humanize", () => {
     expect(messageOf(result)).toMatch(pattern);
   });
 
+  it("explains a key that another record already uses (Fast Print, showcase, vocabulary)", () => {
+    for (const constraint of ["fast_print_item_key_unique", "showcase_item_key_unique", "material_slug_unique", "trait_pkey"]) {
+      expect(messageOf(humanize(databaseError("23505", constraint))), constraint).toMatch(/Khóa \(mã\)/);
+    }
+  });
+
   it("explains a uid that belongs to another record", () => {
     expect(messageOf(humanize(databaseError("23505", "shape_uid_unique")))).toMatch(/mã định danh/);
     expect(messageOf(humanize(databaseError("23505", "option_uid_key")))).toMatch(/mã định danh/);

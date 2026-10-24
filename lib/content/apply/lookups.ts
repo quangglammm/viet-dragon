@@ -1,7 +1,9 @@
 import { inArray, sql } from "drizzle-orm";
 import * as schema from "@/lib/db/schema";
+import type { DraftEntityType } from "@/lib/db/content/drafts";
 import type { DbExecutor } from "@/lib/db/types";
 import { Invalid } from "../errors";
+import { collectReferences } from "../references";
 
 // Documents refer to media and library records by key; the rows by id. Publish has already checked that every key exists
 // (`checkReferences`), so an unknown key here means the check was skipped — refuse instead of writing a wrong id.
@@ -28,6 +30,11 @@ export async function loadMediaIds(x: DbExecutor, keys: readonly (string | null)
   const wanted = distinct(keys);
   const rows = wanted.length === 0 ? [] : await x.select({ key: schema.media.storageKey, id: schema.media.id }).from(schema.media).where(inArray(schema.media.storageKey, wanted));
   return idMap("ảnh hoặc video", new Map(rows.map((row) => [row.key, row.id])));
+}
+
+/** Every media file a document points at. */
+export async function loadDocumentMedia(x: DbExecutor, type: DraftEntityType, document: unknown): Promise<IdMap> {
+  return loadMediaIds(x, collectReferences(type, document).filter((r) => r.kind === "media").map((r) => r.key));
 }
 
 export async function loadMaterialIds(x: DbExecutor, slugs: readonly string[]): Promise<IdMap> {

@@ -20,7 +20,11 @@ export type ConflictCode =
   /** The draft or the live entity it needs is gone (published, discarded, deleted). */
   | "GONE"
   /** There is already an open draft for the entity. */
-  | "DRAFT_EXISTS";
+  | "DRAFT_EXISTS"
+  /** Delete: something still uses the record (live rows or open drafts). */
+  | "IN_USE"
+  /** Delete: products, posts and Fast Print items must be archived first. */
+  | "NOT_ARCHIVED";
 
 export class Conflict extends Error {
   readonly status = 409;

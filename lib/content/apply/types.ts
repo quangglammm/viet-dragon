@@ -8,6 +8,11 @@ export interface ApplyContext {
   author: string | null;
   /** The live version the draft started from; null = a brand-new entity. */
   baseVersion: number | null;
+  /**
+   * The version a brand-new entity starts at: 1, or after a delete and re-create (or the restore of a deleted entity) the one that
+   * follows its last revision — revisions are unique per (entity, version), and they outlive the entity.
+   */
+  startVersion: number;
 }
 
 /**
@@ -21,4 +26,4 @@ export interface Applier<D> {
   apply(tx: Tx, document: D, context: ApplyContext): Promise<number>;
 }
 
-export type Appliers = { [T in DraftEntityType]?: Applier<DocumentFor<T>> };
+export type Appliers = { [T in DraftEntityType]: Applier<DocumentFor<T>> };

@@ -127,13 +127,6 @@ describe("draft → preview → publish", () => {
     expect(await thrown(createDraft(db(), "material", { snapshot: {} }, null))).toBeInstanceOf(Invalid); // a key entity needs a key
     expect(await thrown(createDraft(db(), "material", { key: "Not A Key", snapshot: {} }, null))).toBeInstanceOf(Invalid);
   });
-
-  it("an entity type without an applier yet answers with a clear refusal", async () => {
-    const draft = await createDraft(db(), "trait", { key: "thu-nghiem", snapshot: { icon: "Sparkles", i18n: { vi: { label: "Thử" }, en: { label: "Try" } } } }, null);
-    const refused = await thrown(publishDraft(db(), draft.ref, { expectDraftVersion: draft.draftVersion, author: null }));
-    expect(refused).toMatchObject({ issues: [{ message: "Loại nội dung này chưa hỗ trợ xuất bản." }] });
-    await discardDraft(db(), draft.ref);
-  });
 });
 
 describe("what an open draft refers to ('used by' sees drafts)", () => {
@@ -178,7 +171,7 @@ describe("what an open draft refers to ('used by' sees drafts)", () => {
     const found = await rows<{ tbl: string; col: string; ref: string }>(`
       select c.conrelid::regclass::text tbl, a.attname col, c.confrelid::regclass::text ref
         from pg_constraint c join pg_attribute a on a.attrelid = c.conrelid and a.attnum = any (c.conkey)
-       where c.contype = 'f' and c.confdeltype <> 'c' and c.confrelid::regclass::text in ('material', 'unit', 'trait', 'spec_item')
+       where c.contype = 'f' and c.confdeltype <> 'c' and c.confrelid::regclass::text in ('material', 'unit', 'trait', 'spec_item', 'post_category')
        order by 1, 2`);
     const registered = Object.entries(USAGES).flatMap(([type, usage]) => usage.columns.map(({ table, column }) => ({ tbl: table, col: column, ref: type })));
     const sort = <T extends { tbl: string; col: string }>(list: T[]) => [...list].sort((a, b) => `${a.tbl}.${a.col}`.localeCompare(`${b.tbl}.${b.col}`));

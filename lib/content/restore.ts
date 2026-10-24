@@ -5,7 +5,7 @@ import type { Db, DbExecutor } from "@/lib/db/types";
 import { composeEntity, type EntityRef } from "./compose";
 import { insertDraft, getDraft, type Draft, type Snapshot } from "./drafts";
 import { Conflict, Invalid, NotFound } from "./errors";
-import { identityOf } from "./identity";
+import { whereRevision } from "./revision";
 import { DOCUMENT_SCHEMA, isUidEntity } from "./schemas";
 
 // Every publish writes a revision: the document exactly as it was stored. Restoring one never touches live data directly —
@@ -32,11 +32,6 @@ const restoreNote = (version: number): string => `restore:${version}`;
 export function restoredVersionOf(note: string | null): number | null {
   const match = note === null ? null : RESTORE_NOTE.exec(note);
   return match ? Number(match[1]) : null;
-}
-
-function whereRevision(ref: EntityRef) {
-  const { entityUid, entityKey } = identityOf(ref);
-  return and(eq(schema.contentRevision.entityType, ref.type), entityUid === null ? eq(schema.contentRevision.entityKey, entityKey) : eq(schema.contentRevision.entityUid, entityUid));
 }
 
 /** Newest first. The documents themselves are fetched one at a time with `getRevision`. */

@@ -42,6 +42,7 @@ const RULES: readonly Rule[] = [
   { code: "23505", constraint: /^post_slug_locale_slug_pk$/, message: "Đường dẫn bài viết này (theo ngôn ngữ) đã được bài khác dùng, hoặc là đường dẫn cũ của bài khác." },
   { code: "23505", constraint: /^category_slug_locale_slug_pk$/, message: "Đường dẫn danh mục này (theo ngôn ngữ) đã được danh mục khác dùng." },
   { code: "23505", constraint: /_uid_(unique|key)$/, message: "Một mã định danh (uid) trong tài liệu đã thuộc về bản ghi khác." },
+  { code: "23505", constraint: /_(key|slug)_unique$|_pkey$/, message: "Khóa (mã) này đã được bản ghi khác sử dụng." },
   { code: "23503", constraint: /^menu_item_(shape|option)_fk$/, message: "Một hình dạng hoặc tùy chọn bị xóa vẫn còn được menu dùng — hãy gỡ nó khỏi menu trước." },
   { code: "23503", constraint: /_og_media_fk$|^option_image_media_fk$/, message: "Ô này chỉ nhận ảnh, không nhận video." },
   { code: "23503", constraint: /./, message: "Có tham chiếu trỏ tới một bản ghi không còn tồn tại, hoặc bản ghi này vẫn đang được nơi khác sử dụng." },

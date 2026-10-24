@@ -1,6 +1,9 @@
+import { and, eq, max } from "drizzle-orm";
 import * as schema from "@/lib/db/schema";
 import type { RevisionAction } from "@/lib/db/content/drafts";
 import type { DbExecutor } from "@/lib/db/types";
+import type { EntityRef } from "./compose";
+import { identityOf } from "./identity";
 import { DOCUMENT_SCHEMA, type DocumentIdentity } from "./schemas";
 
 export interface NewRevision {
@@ -29,4 +32,16 @@ export async function writeRevision(x: DbExecutor, revision: NewRevision): Promi
     comment: revision.comment ?? null,
     author: revision.author ?? null,
   });
+}
+
+/** The revisions of one entity. */
+export function whereRevision(ref: EntityRef) {
+  const { entityUid, entityKey } = identityOf(ref);
+  return and(eq(schema.contentRevision.entityType, ref.type), entityUid === null ? eq(schema.contentRevision.entityKey, entityKey) : eq(schema.contentRevision.entityUid, entityUid));
+}
+
+/** The newest revision number of an entity, 0 when it never had one. Revisions outlive the entity, so a re-created one continues from here. */
+export async function latestRevisionVersion(x: DbExecutor, ref: EntityRef): Promise<number> {
+  const [row] = await x.select({ latest: max(schema.contentRevision.version) }).from(schema.contentRevision).where(whereRevision(ref));
+  return row?.latest ?? 0;
 }
