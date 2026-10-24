@@ -22,6 +22,8 @@ export interface Summary {
   /** null = not published yet. */
   version: number | null;
   updatedAt: Date | null;
+  /** What the row is filed under in a list: a product's category. */
+  group: string | null;
   draft: DraftInfo | null;
 }
 
@@ -31,13 +33,14 @@ interface LiveRow {
   status: "published" | "archived" | null;
   version: number;
   updatedAt: Date;
+  group?: string | null;
 }
 
 const VI = "vi";
 
 async function products(x: DbExecutor): Promise<LiveRow[]> {
   return x
-    .select({ id: sql<string>`${schema.product.uid}::text`, label: schema.productI18n.title, status: schema.product.status, version: schema.product.version, updatedAt: schema.product.updatedAt })
+    .select({ id: sql<string>`${schema.product.uid}::text`, label: schema.productI18n.title, status: schema.product.status, version: schema.product.version, updatedAt: schema.product.updatedAt, group: schema.product.categoryId })
     .from(schema.product)
     .leftJoin(schema.productI18n, and(eq(schema.productI18n.productId, schema.product.id), eq(schema.productI18n.locale, VI)));
 }
@@ -138,6 +141,11 @@ function labelOfSnapshot(snapshot: unknown): string | null {
   return typeof document?.key === "string" ? document.key : null;
 }
 
+function groupOfSnapshot(type: DraftEntityType, snapshot: unknown): string | null {
+  const category = type === "product" ? (snapshot as { category?: unknown } | null)?.category : undefined;
+  return typeof category === "string" ? category : null;
+}
+
 export async function listSummaries(x: DbExecutor, type: DraftEntityType): Promise<Summary[]> {
   const live = await LIVE[type](x);
   const drafts = await x.select().from(schema.contentDraft).where(eq(schema.contentDraft.entityType, type));
@@ -147,10 +155,10 @@ export async function listSummaries(x: DbExecutor, type: DraftEntityType): Promi
     return d ? { draftVersion: d.draftVersion, baseVersion: d.baseVersion, updatedAt: d.updatedAt, updatedBy: d.updatedBy } : null;
   };
 
-  const summaries: Summary[] = live.map((row) => ({ ref: { type, id: row.id }, label: row.label, status: row.status, version: row.version, updatedAt: row.updatedAt, draft: info(row.id) }));
+  const summaries: Summary[] = live.map((row) => ({ ref: { type, id: row.id }, label: row.label, status: row.status, version: row.version, updatedAt: row.updatedAt, group: row.group ?? null, draft: info(row.id) }));
   const liveIds = new Set(live.map((row) => row.id));
   for (const [id, d] of draftOf) {
-    if (!liveIds.has(id)) summaries.push({ ref: { type, id }, label: labelOfSnapshot(d.snapshot), status: null, version: null, updatedAt: null, draft: info(id) });
+    if (!liveIds.has(id)) summaries.push({ ref: { type, id }, label: labelOfSnapshot(d.snapshot), status: null, version: null, updatedAt: null, group: groupOfSnapshot(type, d.snapshot), draft: info(id) });
   }
   return summaries;
 }

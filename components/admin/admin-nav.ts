@@ -45,6 +45,7 @@ const ACCOUNT_ITEMS: NavItem[] = [
 
 // The editors on the content database (Phase 3d). A type appears here as soon as its editor exists.
 const CONTENT_ITEM_LOOK: Partial<Record<DraftEntityType, { subtitle: string; icon: LucideIcon }>> = {
+  product: { subtitle: "Hình thức, chất liệu, giá, đường dẫn", icon: Package },
   material: { subtitle: "Giấy, màng, vật liệu in", icon: Gem },
   trait: { subtitle: "Biểu tượng & lời giải thích", icon: Sparkles },
   unit: { subtitle: "Hộp, tờ, cuốn…", icon: Ruler },

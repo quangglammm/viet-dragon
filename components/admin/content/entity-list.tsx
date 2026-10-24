@@ -6,6 +6,7 @@ import { Plus, Search } from "lucide-react";
 import { BUTTON_PRIMARY, INPUT_CLASS } from "@/components/admin/page-parts";
 import type { DraftEntityType } from "@/lib/content/entity-types";
 import type { SummaryRow } from "@/lib/content/editor/api";
+import type { VocabOption } from "@/lib/content/editor/vocabulary";
 import { ENTITY_META, editorUrl } from "@/lib/content/editor/entity-meta";
 import { encodeEntityId } from "@/lib/content/identity";
 import { formatAdminDate } from "@/lib/format-date";
@@ -14,14 +15,21 @@ import { CreateDialog } from "./create-dialog";
 
 // The rows of one entity type: live records and records that exist only as a draft, each with its open draft.
 
-type EntityListProps = { type: DraftEntityType; items: SummaryRow[]; creatable: boolean };
+type EntityListProps = {
+  type: DraftEntityType;
+  items: SummaryRow[];
+  creatable: boolean;
+  /** Names for the `group` column (a product's category), and the categories a new product can be created in. */
+  groups?: VocabOption[];
+};
 
-export function EntityList({ type, items, creatable }: Readonly<EntityListProps>) {
+export function EntityList({ type, items, creatable, groups }: Readonly<EntityListProps>) {
   const [filter, setFilter] = useState("");
   const [creating, setCreating] = useState(false);
   const meta = ENTITY_META[type];
   const needle = filter.trim().toLowerCase();
-  const rows = items.filter((row) => !needle || `${row.label ?? ""} ${row.ref.id}`.toLowerCase().includes(needle));
+  const groupLabel = (id: string | null) => groups?.find((group) => group.value === id)?.label ?? id ?? "—";
+  const rows = items.filter((row) => !needle || `${row.label ?? ""} ${row.ref.id} ${groupLabel(row.group)}`.toLowerCase().includes(needle));
 
   return (
     <>
@@ -45,6 +53,7 @@ export function EntityList({ type, items, creatable }: Readonly<EntityListProps>
           <thead className="bg-slate-50 text-[10px] font-black uppercase tracking-wider text-slate-500">
             <tr>
               <th className="px-4 py-3">Tên</th>
+              {groups && <th className="hidden px-4 py-3 sm:table-cell">Danh mục</th>}
               <th className="hidden px-4 py-3 sm:table-cell">Mã</th>
               <th className="px-4 py-3">Trạng thái</th>
               <th className="hidden px-4 py-3 md:table-cell">Cập nhật</th>
@@ -58,6 +67,7 @@ export function EntityList({ type, items, creatable }: Readonly<EntityListProps>
                     {row.label ?? row.ref.id}
                   </Link>
                 </td>
+                {groups && <td className="hidden px-4 py-3 text-slate-600 sm:table-cell">{groupLabel(row.group)}</td>}
                 <td className="hidden max-w-48 truncate px-4 py-3 font-mono text-[11px] text-slate-500 sm:table-cell">{row.ref.id}</td>
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-1.5">
@@ -71,13 +81,13 @@ export function EntityList({ type, items, creatable }: Readonly<EntityListProps>
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-4 py-10 text-center font-semibold text-slate-400">Không có {meta.singular} nào.</td>
+                <td colSpan={5} className="px-4 py-10 text-center font-semibold text-slate-400">Không có {meta.singular} nào.</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
-      {creating && <CreateDialog type={type} onClose={() => setCreating(false)} />}
+      {creating && <CreateDialog type={type} categories={groups} onClose={() => setCreating(false)} />}
     </>
   );
 }

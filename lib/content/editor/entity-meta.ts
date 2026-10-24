@@ -18,7 +18,7 @@ export interface EntityMeta {
 }
 
 export const ENTITY_META: Record<DraftEntityType, EntityMeta> = {
-  product: { label: "Sản phẩm", singular: "sản phẩm", editable: false, hasStatus: true, vocab: ["category", "material", "trait", "unit", "spec_item"] },
+  product: { label: "Sản phẩm", singular: "sản phẩm", editable: true, hasStatus: true, vocab: ["category", "material", "trait", "unit", "spec_item"] },
   menu: { label: "Menu", singular: "menu", editable: false, hasStatus: false, vocab: ["product"] },
   category: { label: "Danh mục", singular: "danh mục", editable: false, hasStatus: false, vocab: [] },
   post: { label: "Bài viết", singular: "bài viết", editable: false, hasStatus: true, vocab: ["post_category"] },

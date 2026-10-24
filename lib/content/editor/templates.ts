@@ -1,13 +1,14 @@
 import type { DraftEntityType } from "../entity-types";
 import { isEntityId } from "../identity";
-import { SPEC_KIND_VALUES } from "../schemas";
+import { LOCALES, SPEC_KIND_VALUES } from "../schemas";
 import type { Document } from "./api";
 import type { Json } from "./paths";
+import { suggestSlugs } from "./slugs";
 
 // What "Tạo mới" sends: the smallest document that is a start, not a finished record. Everything else is filled in the editor, where
 // the advice says what is still missing. Names are typed in the dialog because they are what the list shows and the key is built from.
 
-export const CREATABLE_TYPES: readonly DraftEntityType[] = ["material", "trait", "unit", "spec_item", "post_category", "fast_print_item", "showcase_item"];
+export const CREATABLE_TYPES: readonly DraftEntityType[] = ["product", "material", "trait", "unit", "spec_item", "post_category", "fast_print_item", "showcase_item"];
 
 export interface CreateForm {
   nameVi: string;
@@ -16,6 +17,8 @@ export interface CreateForm {
   key: string;
   /** Spec items only. */
   specKind?: (typeof SPEC_KIND_VALUES)[number];
+  /** Products only: the category the product is listed in. */
+  category?: string;
 }
 
 export type CreateRequest = { ok: true; key?: string; snapshot: Document } | { ok: false; message: string };
@@ -27,8 +30,31 @@ const texts = (field: string, form: CreateForm): { [language: string]: Json } =>
 
 const BAD_KEY = "Mã chỉ gồm chữ thường không dấu (a-z), số và dấu gạch ngang, ví dụ: giay-kraft.";
 
+function productRequest(form: CreateForm): CreateRequest {
+  if (!form.category) return { ok: false, message: "Hãy chọn danh mục." };
+  const slugs = suggestSlugs({ vi: form.nameVi, en: form.nameEn });
+  return {
+    ok: true,
+    snapshot: {
+      category: form.category,
+      slugs: Object.fromEntries(LOCALES.map((locale) => [locale, { slug: slugs[locale], aliases: [] }])),
+      status: "published",
+      position: 0,
+      cover: null,
+      ogImage: null,
+      i18n: texts("title", form),
+      shapes: [],
+      options: [],
+      sizes: [],
+      specs: [],
+    },
+  };
+}
+
 export function buildCreateRequest(type: DraftEntityType, form: CreateForm): CreateRequest {
   if (!form.nameVi.trim()) return { ok: false, message: "Hãy nhập tên tiếng Việt." };
+  // A product is identified by a generated uid and its URLs are built from its names: there is no key to type.
+  if (type === "product") return productRequest(form);
   const key = form.key.trim();
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(key)) return { ok: false, message: BAD_KEY };
 

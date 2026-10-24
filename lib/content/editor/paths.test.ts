@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatPath, getIn, parsePath, removeIn, setIn, setText, updateIn } from "./paths";
+import { formatPath, getIn, isWithin, listIndexOf, parsePath, removeIn, setIn, setText, updateIn } from "./paths";
 
 describe("parsePath / formatPath", () => {
   it("splits properties and list indexes, and joins them back", () => {
@@ -84,5 +84,26 @@ describe("setText", () => {
     const doc = { i18n: { zh: { title: "z", description: "d" } }, prices: { base: 1 } };
     expect(setText(doc, "i18n.zh.title", "")).toEqual({ i18n: { zh: { description: "d" } }, prices: { base: 1 } });
     expect(setText({ prices: { only: "x" } }, "prices.only", "")).toEqual({ prices: {} });
+  });
+});
+
+describe("isWithin", () => {
+  it("accepts the path itself and anything inside it, but not a neighbour that shares the characters", () => {
+    expect(isWithin("shapes[1]", "shapes[1]")).toBe(true);
+    expect(isWithin("shapes[1].image", "shapes[1]")).toBe(true);
+    expect(isWithin("i18n.en.title", "i18n.en")).toBe(true);
+    expect(isWithin("shapes[10].image", "shapes[1]")).toBe(false);
+    expect(isWithin("i18n.english", "i18n.en")).toBe(false);
+    expect(isWithin("shapes", "shapes[1]")).toBe(false);
+  });
+});
+
+describe("listIndexOf", () => {
+  it("finds the element of a list a path points into", () => {
+    expect(listIndexOf("shapes[3].i18n.en", "shapes")).toBe(3);
+    expect(listIndexOf("options[12]", "options")).toBe(12);
+    expect(listIndexOf("options[1].shape", "shapes")).toBeNull();
+    expect(listIndexOf("sizes[0].shape", "shapes")).toBeNull();
+    expect(listIndexOf("category", "shapes")).toBeNull();
   });
 });

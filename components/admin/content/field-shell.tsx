@@ -18,11 +18,12 @@ export interface FieldProps {
   className?: string;
 }
 
-export function useFieldFrame({ path, label, required }: Pick<FieldProps, "path" | "label" | "required">) {
+export function useFieldFrame({ path, label, required, list = false }: Pick<FieldProps, "path" | "label" | "required"> & { list?: boolean }) {
   const editor = useEditor();
   const id = useId();
   const concrete = editor.resolve(path);
-  const registryPath = registryPathOf(concrete);
+  // A list of plain values (a gallery of images) is registered by its element: `options[].images.default[]`.
+  const registryPath = registryPathOf(concrete) + (list ? "[]" : "");
   const registered = FIELD_REGISTRY[editor.type].find((field) => field.path === registryPath);
   return {
     editor,

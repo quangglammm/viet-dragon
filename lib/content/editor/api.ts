@@ -46,6 +46,7 @@ export interface SummaryRow {
   status: "published" | "archived" | null;
   version: number | null;
   updatedAt: string | null;
+  group: string | null;
   draft: { draftVersion: number; baseVersion: number | null; updatedAt: string; updatedBy: string | null } | null;
 }
 

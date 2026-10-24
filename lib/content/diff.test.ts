@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { diffDocuments } from "./diff";
+import { diffDocuments, publishChanges } from "./diff";
 
 describe("diffDocuments", () => {
   it("finds nothing between equal documents", () => {
@@ -60,5 +60,27 @@ describe("diffDocuments", () => {
 
   it("reports a brand-new entity as one addition of the whole document", () => {
     expect(diffDocuments(null, { uid: "x" })).toEqual([{ path: "", kind: "added", after: { uid: "x" } }]);
+  });
+});
+
+describe("publishChanges", () => {
+  const product = (aliases: { category: string; slug: string }[]) => ({ slugs: { vi: { slug: "to-roi", aliases } } });
+  const kept = { category: "tet", slug: "flyers" };
+
+  it("does not list an old URL missing from the draft: a publish keeps it", () => {
+    expect(diffDocuments(product([kept]), product([]))).toHaveLength(1);
+    expect(publishChanges(product([kept]), product([]))).toEqual([]);
+  });
+
+  it("still lists a URL the draft adds, and every other change", () => {
+    const changes = publishChanges({ ...product([]), status: "published" }, { ...product([kept]), status: "archived" });
+    expect(changes.map((change) => [change.path, change.kind])).toEqual([
+      ["slugs.vi.aliases[tet/flyers]", "added"],
+      ["status", "changed"],
+    ]);
+  });
+
+  it("treats a brand-new entity like diffDocuments does", () => {
+    expect(publishChanges(null, { a: 1 })).toEqual([{ path: "", kind: "added", after: { a: 1 } }]);
   });
 });

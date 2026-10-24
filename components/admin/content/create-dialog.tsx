@@ -8,6 +8,7 @@ import { Notice } from "@/components/admin/notice";
 import { BUTTON_PRIMARY, BUTTON_SECONDARY, INPUT_CLASS } from "@/components/admin/page-parts";
 import type { DraftEntityType } from "@/lib/content/entity-types";
 import { createContentApi } from "@/lib/content/editor/api";
+import type { VocabOption } from "@/lib/content/editor/vocabulary";
 import { ENTITY_META, editorUrl } from "@/lib/content/editor/entity-meta";
 import { buildCreateRequest } from "@/lib/content/editor/templates";
 import { encodeEntityId } from "@/lib/content/identity";
@@ -18,13 +19,14 @@ import { slugify } from "@/lib/content/slugify";
 
 const SPEC_KIND_LABELS: Record<(typeof SPEC_KIND_VALUES)[number], string> = { technique: "Kỹ thuật in", finishing: "Hoàn thiện", material_hint: "Chất liệu phổ biến" };
 
-export function CreateDialog({ type, onClose }: Readonly<{ type: DraftEntityType; onClose: () => void }>) {
+export function CreateDialog({ type, categories, onClose }: Readonly<{ type: DraftEntityType; categories?: VocabOption[]; onClose: () => void }>) {
   const router = useRouter();
   const api = useMemo(() => createContentApi(), []);
   const meta = ENTITY_META[type];
   const [nameVi, setNameVi] = useState("");
   const [nameEn, setNameEn] = useState("");
   const [typedKey, setTypedKey] = useState<string | null>(null);
+  const [category, setCategory] = useState(categories?.[0]?.value ?? "");
   const [specKind, setSpecKind] = useState<(typeof SPEC_KIND_VALUES)[number]>("technique");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -32,7 +34,7 @@ export function CreateDialog({ type, onClose }: Readonly<{ type: DraftEntityType
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const request = buildCreateRequest(type, { nameVi, nameEn, key, specKind });
+    const request = buildCreateRequest(type, { nameVi, nameEn, key, specKind, category });
     if (!request.ok) return setMessage(request.message);
     setBusy(true);
     setMessage(null);
@@ -49,6 +51,16 @@ export function CreateDialog({ type, onClose }: Readonly<{ type: DraftEntityType
     <Modal title={`Tạo ${meta.singular} mới`} description="Điền tên rồi bấm Tạo; bạn sẽ bổ sung phần còn lại trong trình soạn. Bản nháp chưa hiển thị trên website." locked={busy} onClose={onClose}>
       <form onSubmit={(event) => void submit(event)} className="space-y-4">
         {message && <Notice tone="error">{message}</Notice>}
+        {type === "product" && (
+          <label className="block text-xs font-bold text-slate-700">
+            Danh mục
+            <select value={category} onChange={(event) => setCategory(event.target.value)} className={`${INPUT_CLASS} mt-1.5`}>
+              {(categories ?? []).map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </label>
+        )}
         {type === "spec_item" && (
           <label className="block text-xs font-bold text-slate-700">
             Loại thông số
@@ -68,11 +80,13 @@ export function CreateDialog({ type, onClose }: Readonly<{ type: DraftEntityType
           <input value={nameEn} onChange={(event) => setNameEn(event.target.value)} className={`${INPUT_CLASS} mt-1.5`} />
           <span className="mt-1 block text-[11px] font-normal text-slate-500">Cần có trước khi xuất bản; có thể bổ sung sau.</span>
         </label>
-        <label className="block text-xs font-bold text-slate-700">
-          Mã
-          <input value={key} onChange={(event) => setTypedKey(event.target.value)} className={`${INPUT_CLASS} mt-1.5 font-mono`} />
-          <span className="mt-1 block text-[11px] font-normal text-slate-500">Chữ thường không dấu, số và dấu gạch ngang. Mã không đổi được sau khi tạo.</span>
-        </label>
+        {type !== "product" && (
+          <label className="block text-xs font-bold text-slate-700">
+            Mã
+            <input value={key} onChange={(event) => setTypedKey(event.target.value)} className={`${INPUT_CLASS} mt-1.5 font-mono`} />
+            <span className="mt-1 block text-[11px] font-normal text-slate-500">Chữ thường không dấu, số và dấu gạch ngang. Mã không đổi được sau khi tạo.</span>
+          </label>
+        )}
         <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
           <button type="button" onClick={onClose} disabled={busy} className={BUTTON_SECONDARY}>Hủy</button>
           <button type="submit" disabled={busy} className={BUTTON_PRIMARY}>

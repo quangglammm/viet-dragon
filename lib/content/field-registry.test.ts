@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { DRAFT_ENTITY_TYPES } from "@/lib/db/content/drafts";
-import { FIELD_REGISTRY, SYSTEM_PATHS, fieldLabel, registryPathOf } from "./field-registry";
+import { FIELD_REGISTRY, LIST_ELEMENT_NOUNS, SYSTEM_PATHS, fieldLabel, registryPathOf } from "./field-registry";
 import { documentLeafPaths } from "./schema-paths";
 import { DOCUMENT_SCHEMAS } from "./schemas";
 
@@ -49,5 +49,27 @@ describe("registryPathOf and fieldLabel", () => {
     expect(fieldLabel("product", "i18n.en.title")).toBe("Tên sản phẩm (en)");
     expect(fieldLabel("product", "options[u1].prices.base")).toBe("Giá cơ bản (đ)");
     expect(fieldLabel("product", "no.such.field")).toBe("no.such.field");
+  });
+
+  it("says which row a problem is in when the path counts rows by position", () => {
+    expect(fieldLabel("product", "options[2].prices.base")).toBe("Giá cơ bản (đ) · chất liệu 3");
+    expect(fieldLabel("product", "options[0].bullets[3].i18n.vi")).toMatch(/ · chất liệu 1 · dòng nội dung 4$/);
+  });
+
+  it("names a container by its first field, so «shapes[3].i18n.en» reads as a field the editor knows", () => {
+    expect(fieldLabel("product", "shapes[3].i18n.en")).toBe("Tên hình thức (en) · hình thức 4");
+    expect(fieldLabel("product", "i18n.zh")).toBe("Tên sản phẩm (zh)");
+  });
+
+  it("names a whole row by what it is: a row added to or removed from a list, or one the document complains about", () => {
+    expect(fieldLabel("product", "options[3f2a].bullets[feature:3]")).toBe("Dòng nội dung");
+    expect(fieldLabel("product", "shapes[3]")).toBe("Hình thức 4");
+    expect(fieldLabel("product", "options[1].bullets[2]")).toBe("Dòng nội dung 3 · chất liệu 2");
+    expect(fieldLabel("product", "sizes[0]")).toBe("Kích thước 1");
+  });
+
+  it("knows what every list in the registry calls its rows", () => {
+    const lists = new Set(Object.values(FIELD_REGISTRY).flatMap((fields) => fields.flatMap((field) => [...field.path.matchAll(/([A-Za-z_]+)\[\]/g)].map((match) => match[1]))));
+    expect([...lists].filter((list) => !(list in LIST_ELEMENT_NOUNS))).toEqual([]);
   });
 });

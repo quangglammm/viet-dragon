@@ -103,3 +103,14 @@ export function diffDocuments(before: unknown, after: unknown): Change[] {
   diffValues(before, after, "", changes);
   return changes;
 }
+
+const ALIAS_ROW = /\.aliases\[[^\]]*\]$/;
+
+/**
+ * What PUBLISHING `draft` over `live` would change. Like `diffDocuments`, except an old URL missing from the draft is not a change:
+ * a publish keeps every alias it already holds (only «Gỡ đường dẫn cũ» lets one go), so listing it as removed would promise
+ * something that does not happen (a restored old version, for one, lacks the aliases created since).
+ */
+export function publishChanges(live: unknown, draft: unknown): Change[] {
+  return diffDocuments(live, draft).filter((change) => !(change.kind === "removed" && ALIAS_ROW.test(change.path)));
+}

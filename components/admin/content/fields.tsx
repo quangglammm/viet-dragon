@@ -13,9 +13,16 @@ import type { VocabOption, Vocabulary } from "@/lib/content/editor/vocabulary";
 const MASTER_LANGUAGES: readonly string[] = ["vi", "en"];
 const NOT_CHOSEN = "";
 
-type TextFieldProps = FieldProps & { multiline?: boolean; rows?: number; maxLength?: number; placeholder?: string };
+type TextFieldProps = FieldProps & {
+  multiline?: boolean;
+  rows?: number;
+  maxLength?: number;
+  placeholder?: string;
+  /** Handles the typed text itself (a name that also feeds the slug) instead of the plain "set this path". */
+  onText?: (text: string) => void;
+};
 
-export function TextField({ multiline = false, rows = 3, maxLength, placeholder, hint, className, ...frameProps }: Readonly<TextFieldProps>) {
+export function TextField({ multiline = false, rows = 3, maxLength, placeholder, onText, hint, className, ...frameProps }: Readonly<TextFieldProps>) {
   const frame = useFieldFrame(frameProps);
   const { editor } = frame;
   const value = (editor.read(frameProps.path) as string | undefined) ?? "";
@@ -46,7 +53,7 @@ export function TextField({ multiline = false, rows = 3, maxLength, placeholder,
         rows={multiline ? rows : undefined}
         placeholder={placeholder ?? fallback}
         aria-invalid={frame.issues.length > 0}
-        onChange={(event) => editor.changeText(frameProps.path, event.target.value)}
+        onChange={(event) => (onText ? onText(event.target.value) : editor.changeText(frameProps.path, event.target.value))}
         className={cn(INPUT_CLASS, multiline && "resize-y leading-relaxed", frame.issues.length > 0 && "border-rose-300")}
       />
     </FieldShell>
@@ -121,9 +128,11 @@ type SelectFieldProps = FieldProps & {
   /** Offer "none" as an answer (stored as null). */
   nullable?: boolean;
   nullLabel?: string;
+  /** Handles the choice itself (changing a category or a scope has side effects) instead of the plain "set this path". */
+  onValue?: (value: string | null) => void;
 };
 
-export function SelectField({ options, nullable = false, nullLabel = "— Không chọn —", hint, className, ...frameProps }: Readonly<SelectFieldProps>) {
+export function SelectField({ options, nullable = false, nullLabel = "— Không chọn —", onValue, hint, className, ...frameProps }: Readonly<SelectFieldProps>) {
   const frame = useFieldFrame(frameProps);
   const { editor } = frame;
   const choices = typeof options === "string" ? (editor.vocab[options] ?? []) : options;
@@ -138,7 +147,11 @@ export function SelectField({ options, nullable = false, nullLabel = "— Không
         value={current}
         disabled={editor.readOnly}
         aria-invalid={frame.issues.length > 0}
-        onChange={(event) => editor.change(frameProps.path, event.target.value === NOT_CHOSEN ? (nullable ? null : undefined) : event.target.value)}
+        onChange={(event) => {
+          const chosen = event.target.value === NOT_CHOSEN ? null : event.target.value;
+          if (onValue) onValue(chosen);
+          else editor.change(frameProps.path, chosen === null && !nullable ? undefined : chosen);
+        }}
         className={cn(INPUT_CLASS, frame.issues.length > 0 && "border-rose-300")}
       >
         {(nullable || current === NOT_CHOSEN) && <option value={NOT_CHOSEN}>{nullLabel}</option>}

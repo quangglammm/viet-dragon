@@ -8,6 +8,7 @@ import { Notice } from "@/components/admin/notice";
 import { BUTTON_PRIMARY, BUTTON_SECONDARY, PageHeader } from "@/components/admin/page-parts";
 import { completeness } from "@/lib/content/editor/completeness";
 import { createContentApi, type Document, type DraftPayload, type Ref } from "@/lib/content/editor/api";
+import { isWithin } from "@/lib/content/editor/paths";
 import { ENTITY_META, listUrl } from "@/lib/content/editor/entity-meta";
 import { canPublish as isPublishable, describeSave } from "@/lib/content/editor/session";
 import type { Vocabulary } from "@/lib/content/editor/vocabulary";
@@ -16,7 +17,7 @@ import type { LocaleCode } from "@/lib/content/schemas";
 import { formatAdminTime } from "@/lib/format-date";
 import { cn } from "@/lib/utils";
 import { DangerCard } from "./danger-card";
-import { EditorProvider } from "./editor-context";
+import { EditorProvider, type FocusRequest, type ReleasableAlias } from "./editor-context";
 import { FORMS } from "./forms";
 import { HistoryPanel } from "./history-panel";
 import { IssueList, languageOfPath } from "./issue-list";
@@ -42,9 +43,11 @@ export function EntityEditor({ entity, label, live, initialDraft, vocab, authors
   const api = useMemo(() => createContentApi(), []);
   const { session, problem, edit, adopt, closeDraft, startEditing, reload, overwrite } = useDraftSession({ entity, live: live?.document ?? null, initialDraft });
   const [language, setLanguage] = useState<LocaleCode>("vi");
+  const [focus, setFocus] = useState<FocusRequest | null>(null);
   const [publishing, setPublishing] = useState(false);
   const [discarding, setDiscarding] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [releasing, setReleasing] = useState<{ language: LocaleCode; alias: ReleasableAlias } | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const meta = ENTITY_META[entity.type];
   const Form = FORMS[entity.type];
@@ -55,13 +58,14 @@ export function EntityEditor({ entity, label, live, initialDraft, vocab, authors
   const goToIssue = (issue: Issue) => {
     const issueLanguage = languageOfPath(issue.path);
     if (issueLanguage) setLanguage(issueLanguage);
-    // The field of another language is drawn after the tab changes.
+    setFocus((previous) => ({ path: issue.path, nonce: (previous?.nonce ?? 0) + 1 }));
+    // The field of another language, or in another tab of the form, is drawn after the change.
     setTimeout(() => {
-      // An issue about a whole language row (`i18n.en`) lands on that row's first field.
-      const target = [...document.querySelectorAll<HTMLElement>("[data-path]")].find((node) => node.dataset.path?.startsWith(issue.path));
+      // An issue about a whole language row (`i18n.en`) lands on that row's first field; `shapes[1]` does not match `shapes[10]`.
+      const target = [...document.querySelectorAll<HTMLElement>("[data-path]")].find((node) => node.dataset.path !== undefined && isWithin(node.dataset.path, issue.path));
       target?.scrollIntoView({ block: "center", behavior: "smooth" });
       target?.querySelector<HTMLElement>("input, textarea, select, button")?.focus({ preventScroll: true });
-    }, 0);
+    }, 80);
   };
 
   const finish = (outcome: "published" | "discarded") => {
@@ -85,7 +89,19 @@ export function EntityEditor({ entity, label, live, initialDraft, vocab, authors
     else setMessage(result.problem.message);
   };
 
+  const release = async () => {
+    if (!releasing) return;
+    setBusy(true);
+    const result = await api.releaseAlias(entity, { locale: releasing.language, slug: releasing.alias.slug, ...(releasing.alias.category ? { category: releasing.alias.category } : {}) });
+    setBusy(false);
+    setReleasing(null);
+    if (result.ok) router.refresh();
+    else setMessage(result.problem.message);
+  };
+
   const status = (session.document.status as string | undefined) ?? "published";
+  // Letting an old URL go is its own publish: only from the live view (no open draft to go stale), and only for those who may publish.
+  const canRelease = entity.type === "product" && !session.editing && canPublish;
   const publishable = canPublish && isPublishable(session);
   const saveText = describeSave(session, formatAdminTime);
 
@@ -149,7 +165,7 @@ export function EntityEditor({ entity, label, live, initialDraft, vocab, authors
         <LanguageTabs active={language} completeness={coverage} onChange={setLanguage} />
       </div>
 
-      <EditorProvider type={entity.type} document={session.document} language={language} readOnly={!session.editing} issues={session.issues} vocab={vocab} onChange={edit}>
+      <EditorProvider type={entity.type} document={session.document} baseline={live?.document ?? null} focus={focus} onReleaseAlias={canRelease ? (aliasLanguage, alias) => setReleasing({ language: aliasLanguage, alias }) : undefined} language={language} readOnly={!session.editing} issues={session.issues} vocab={vocab} onChange={edit}>
         <div className="space-y-5">
           {session.editing && <IssueList type={entity.type} issues={session.issues} onGo={goToIssue} />}
           <Form />
@@ -160,6 +176,19 @@ export function EntityEditor({ entity, label, live, initialDraft, vocab, authors
 
       {publishing && session.draftVersion !== null && (
         <PublishDialog entity={entity} draftVersion={session.draftVersion} issueCount={session.issues.length} onClose={() => setPublishing(false)} onDone={finish} onReload={() => { setPublishing(false); void reload(); }} />
+      )}
+      {releasing && (
+        <Modal title="Gỡ đường dẫn cũ?" description="Địa chỉ này sẽ không còn mở được nữa: các liên kết đã chia sẻ hoặc đã được Google lưu sẽ báo lỗi 404." locked={busy} onClose={() => setReleasing(null)}>
+          <p className="mb-4 break-all rounded-xl bg-slate-50 px-3 py-2 font-mono text-xs text-slate-700">
+            ({releasing.language}) {releasing.alias.category ? `${releasing.alias.category}/` : ""}{releasing.alias.slug}
+          </p>
+          <div className="flex justify-end gap-2">
+            <button type="button" onClick={() => setReleasing(null)} disabled={busy} className={BUTTON_SECONDARY}>Giữ lại</button>
+            <button type="button" onClick={() => void release()} disabled={busy} className={BUTTON_PRIMARY}>
+              {busy && <Loader2 size={14} className="animate-spin" aria-hidden />} Gỡ đường dẫn
+            </button>
+          </div>
+        </Modal>
       )}
       {discarding && (
         <Modal title="Hủy bản nháp?" description="Mọi thay đổi chưa xuất bản trong bản nháp sẽ mất. Nội dung đang hiển thị trên website không bị ảnh hưởng." locked={busy} onClose={() => setDiscarding(false)}>

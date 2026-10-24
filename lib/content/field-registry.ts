@@ -168,10 +168,48 @@ export function registryPathOf(concretePath: string): string {
   return concretePath.replace(/\[[^\]]*\]/g, "[]").replace(LOCALE_SEGMENT, ".*");
 }
 
-/** The editor's label for a concrete path, with the language when the path names one: «Tên sản phẩm (en)». */
+/** What one element of each list is called: for a change or a problem about a whole row (added, removed, or named by its index). */
+export const LIST_ELEMENT_NOUNS: Record<string, string> = {
+  aliases: "Đường dẫn cũ",
+  bullets: "Dòng nội dung",
+  columns: "Cột menu",
+  default: "Ảnh mẫu",
+  groups: "Nhóm menu",
+  items: "Mục menu",
+  options: "Chất liệu",
+  pure: "Ảnh nền trắng",
+  shapes: "Hình thức",
+  sizes: "Kích thước",
+  specs: "Thông số",
+};
+
+const LANGUAGE_OF_PATH = new RegExp(`\\.(${LOCALES.join("|")})(?=\\.|$)`);
+const LIST_SEGMENT = /([A-Za-z_]+)\[(\d+)\]/g;
+const WHOLE_ROW = /([A-Za-z_]+)\[\]$/;
+
+/** Where a field is when the document is edited by position: «hình thức 4 · dòng nội dung 2». Empty for paths that name rows by id. */
+function whereIn(concretePath: string): string {
+  const rows = [...concretePath.matchAll(LIST_SEGMENT)].map(([, list, index]) => `${(LIST_ELEMENT_NOUNS[list] ?? list).toLowerCase()} ${Number(index) + 1}`);
+  return rows.length > 0 ? ` · ${rows.join(" · ")}` : "";
+}
+
+/**
+ * The editor's label for a concrete path: «Tên sản phẩm (en)». A whole row is named by what it is («Chất liệu»), a container
+ * (`shapes[3].i18n.en`) by its first field, and a position-based path says which row it is in. Anything unknown stays as the path.
+ */
 export function fieldLabel(type: DraftEntityType, concretePath: string): string {
-  const field = FIELD_REGISTRY[type].find((candidate) => candidate.path === registryPathOf(concretePath));
-  if (!field) return concretePath;
-  const language = new RegExp(`\\.(${LOCALES.join("|")})(?=\\.|$)`).exec(concretePath)?.[1];
-  return language ? `${field.label} (${language})` : field.label;
+  const registryPath = registryPathOf(concretePath);
+  const fields = FIELD_REGISTRY[type];
+  const language = LANGUAGE_OF_PATH.exec(concretePath)?.[1];
+  const named = (field: FieldDef) => `${field.label}${language ? ` (${language})` : ""}${whereIn(concretePath)}`;
+
+  const exact = fields.find((candidate) => candidate.path === registryPath);
+  if (exact) return named(exact);
+  const row = WHOLE_ROW.exec(registryPath)?.[1];
+  if (row && LIST_ELEMENT_NOUNS[row]) {
+    const index = /\[(\d+)\]$/.exec(concretePath)?.[1];
+    return `${LIST_ELEMENT_NOUNS[row]}${index === undefined ? "" : ` ${Number(index) + 1}`}${whereIn(concretePath.replace(/\[[^\]]*\]$/, ""))}`;
+  }
+  const inside = fields.find((candidate) => candidate.path.startsWith(`${registryPath}.`) || candidate.path.startsWith(`${registryPath}[`));
+  return inside ? named(inside) : concretePath;
 }

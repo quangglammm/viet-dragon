@@ -5,7 +5,7 @@ import type { Db, Tx } from "@/lib/db/types";
 import { applierFor } from "./apply";
 import { affectedBy, type Affected } from "./cache-tags";
 import { composeEntity, type EntityRef } from "./compose";
-import { diffDocuments } from "./diff";
+import { publishChanges } from "./diff";
 import { lockDraft, type Draft } from "./drafts";
 import { Conflict, Invalid, zodIssues } from "./errors";
 import { humanize } from "./humanize";
@@ -47,7 +47,7 @@ async function assertBase(tx: Tx, ref: EntityRef, draft: Draft, liveVersion: num
   throw new Conflict(
     "STALE_BASE",
     `Nội dung đã được người khác sửa (phiên bản ${liveVersion}) sau khi bản nháp bắt đầu từ phiên bản ${draft.baseVersion}.`,
-    diffDocuments(live?.document ?? null, draft.snapshot),
+    publishChanges(live?.document ?? null, draft.snapshot),
   );
 }
 

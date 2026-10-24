@@ -285,6 +285,17 @@ describe("the lists", () => {
     await discardDraft(db(), { type: "unit", id: live.key });
   });
 
+  it("name the category of a product, live or still a draft (the product list groups by it), and of nothing else", async () => {
+    const [live] = await rows<{ uid: string; category_id: string }>(`select uid::text as uid, category_id from product limit 1`);
+    const fresh = await createDraft(db(), "product", { snapshot: { category: "tet", i18n: { vi: { title: "Sản phẩm mới" } } } }, null);
+
+    const products = await listSummaries(db(), "product");
+    expect(products.find((s) => s.ref.id === live.uid)?.group).toBe(live.category_id);
+    expect(products.find((s) => s.ref.id === fresh.ref.id)).toMatchObject({ group: "tet", version: null });
+    expect((await listSummaries(db(), "unit")).every((s) => s.group === null)).toBe(true);
+    await discardDraft(db(), fresh.ref);
+  });
+
   it("list every entity of every type", async () => {
     const refs = await listEntities(db());
     const total = (await Promise.all([...new Set(refs.map((r) => r.type))].map((type) => listSummaries(db(), type)))).flat();

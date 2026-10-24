@@ -91,3 +91,14 @@ export function setText<D>(document: D, path: string, text: string): D {
   }
   return result;
 }
+
+/** `path` is `prefix` itself or something inside it: `shapes[1]` holds `shapes[1].image`, but not `shapes[10]`. */
+export function isWithin(path: string, prefix: string): boolean {
+  return path === prefix || (path.startsWith(prefix) && /^[.[]/.test(path.slice(prefix.length)));
+}
+
+/** The position of the list element a path points into: `listIndexOf("shapes[3].i18n.en", "shapes")` is 3; null when it is elsewhere. */
+export function listIndexOf(path: string, list: string): number | null {
+  const match = new RegExp(`^${list}\\[(\\d+)\\]`).exec(path);
+  return match ? Number(match[1]) : null;
+}

@@ -321,7 +321,7 @@ languages**, and edits are **drafts until published** (draft → preview → pub
 restorable revision). The relational schema (validated against the real data), the draft/publish
 design, the seed rules and the owner-review list are in `docs/data-model.md` (+ `docs/data-model.sql`).
 
-### Content model (Phase 3a schema + 3b seed + localized URLs + 3c draft / publish / delete services and the `/api/admin/content` API landed; the public site and the admin UI do not use it yet)
+### Content model (Phase 3a schema + 3b seed + localized URLs + 3c draft / publish / delete services and the `/api/admin/content` API landed; the editors (3d) use it, the public site does not yet)
 The full design is `docs/data-model.md` (local); this is what the code now guarantees.
 - **Tables:** `lib/db/content/*.ts` (foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog,
   site-message, drafts; shared builders in `columns.ts`, SEO/Open Graph columns in `seo.ts`), re-exported by `lib/db/schema.ts`.
@@ -431,8 +431,8 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   alias_released`; autosave is not audited); a failure there is logged, never thrown. **Caddy still blocks all of `/api/admin/*` in
   production**: 3d adds the paths together with the editors. Entity types in URLs are kebab-case (`spec-item`), a spec item's key
   `technique/offset` is `technique.offset` in a path.
-- **Editors (Phase 3d-1: foundation + material, trait, unit, spec item, blog category, Fast Print, showcase; the product editor is
-  3d-2; posts, categories, menus and UI copy 3d-3).** `app/admin/(console)/content/[type]/page.tsx` lists a type
+- **Editors (Phase 3d-1: foundation + material, trait, unit, spec item, blog category, Fast Print, showcase; 3d-2: the product editor;
+  posts, categories, menus and UI copy are 3d-3).** `app/admin/(console)/content/[type]/page.tsx` lists a type
   (`listSummaries`), `…/[id]/page.tsx` loads the live document, the open draft, the vocabularies and the author names and renders the
   client `components/admin/content/entity-editor.tsx` (remounted by a `key` of `live version : draft?` after a publish; a discard
   resets the session locally because the server props do not change when the draft was opened in the browser). **Everything an editor
@@ -455,6 +455,21 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   Phase 4 (the public pages cannot render a draft yet): the publish dialog's field-level diff is the feedback. There is no DOM test
   library: interaction is covered by the reducers' tests and a browser smoke (see docs/verification), rendering by server-side
   rendering in tests.
+  **The product editor (3d-2)** is one draft edited in six tabs (`components/admin/content/forms/product/`: general, URLs & SEO, shapes,
+  options, sizes, specs; only the open tab is drawn, a tab shows its problem count, and "go to this problem" opens the tab, the language
+  and the card that hold the field — `use-open-cards.ts`; a card the editor just added opens itself). List edits are pure functions on the
+  typed document (`lib/content/editor/product-ops.ts`: add / remove / move / scope for shapes, options, bullets, sizes, specs; `lists.ts`
+  renumbers `position` by array order per group; an option that changes scope goes to the END of the array so it ends its new group).
+  URLs: `slugs.ts` suggests a slug per language (vi from the Vietnamese name, en from English, zh/ja/ko copy English), a NEW shape/option
+  slug follows its name while it is the placeholder or the old name's slug (a published URL never changes by itself), typed slugs are
+  cleaned as typed; **moving a product to another category drops the alias that would equal the new canonical URL in the same edit**
+  (`moveToCategory`); old URLs are listed read-only and released («Gỡ») only from the live view with no draft open. The create dialog asks
+  for category + vi/en name (`templates.ts`), and the product list shows a «Danh mục» column (`Summary.group`, also for never-published
+  drafts). `fieldLabel` names a container or a whole row in words («Tên hình thức (en) · hình thức 4», «Dòng nội dung»;
+  `LIST_ELEMENT_NOUNS`, a test requires every list in the registry to have one). **The publish diff is `publishChanges`, not
+  `diffDocuments`:** an old URL missing from a draft (a restored old version lacks the aliases made since) is not listed as removed,
+  because a publish keeps every alias it holds. Browser-smoke findings kept in mind: restoring an old version after a category move
+  and publishing it keeps every URL (19 rows for one product, none lost).
 - **Tests:** `app/api/admin/content/content-api.int.test.ts` (who may call what, preconditions, error shapes, cache tags, audit rows —
   with the app's own database pointed at a seeded scratch one by setting `DATABASE_URL` before the first `getDb()`),
   `lib/content/http.test.ts`; `lib/content/entities.int.test.ts` (all 198 seeded entities publish unchanged; each of the nine creatable types is created,
@@ -672,7 +687,7 @@ lib/
   content/drafts.ts, publish.ts, restore.ts, aliases.ts, used-by.ts   the write side (3c): drafts, publish, revisions + restore, releasing old URLs, "used by"
   content/validate.ts, references.ts, diff.ts, humanize.ts, identity.ts, errors.ts, cache-tags.ts   advice + checks, what a document points at, field-level diff, DB error → Vietnamese, URL type names / ids, Conflict / Invalid / NotFound, cache tags
   content/delete.ts, summaries.ts   delete / archive-first rules (+ the "delete" revision) · admin list rows
-  content/editor/           the editors' client-safe logic: paths, session reducer, API client, completeness, create templates, entity meta, vocabulary (no server imports — client-bundle.test.ts)
+  content/editor/           the editors' client-safe logic: paths, session reducer, API client, completeness, create templates, entity meta, vocabulary, product ops / lists / slugs / sections / uid (no server imports — client-bundle.test.ts)
   content/field-registry.ts, entity-types.ts, slugify.ts, media-library.ts, authors.ts, vocabulary.ts   every editable leaf → label + control · the 12 entity types (database-free) · URL slugs · media picker data · account names for the history · picker lists
   content/http.ts, requests.ts, effects.ts   the HTTP layer of app/api/admin/content: URL / If-Match / capped JSON body / error mapping · zod request bodies · cache tags + audit after commit
   content/apply/            one applier per entity type (all twelve): document → live rows, plus the per-language slug planning (`planSegments` also serves posts and categories)
@@ -707,7 +722,7 @@ components/
     SmoothScroll.tsx        Lenis init (desktop only, ≥1024px) — no GSAP, no pinning
     quote-modal-provider.tsx  Context that opens the QuoteModal from anywhere
   admin/                    admin-shell (+ admin-nav.ts role-filtered sidebar, admin-theme.tsx), auth-card-shell, password-field, notice, failure-notice, modal, page-parts (PageHeader, AdminCard, button/input classes)
-    content/                the content editors: entity-editor, entity-list, create-dialog, editor-context, field primitives (fields, media-field, icon-field, field-shell), language-tabs, publish-dialog, history-panel, danger-card, diff-view, issue-list, use-draft-session; forms/ = one form per entity type + forms.test.ts (coverage)
+    content/                the content editors: entity-editor, entity-list, create-dialog, editor-context, field primitives (fields, media-field, icon-field, field-shell), language-tabs, publish-dialog, history-panel, danger-card, diff-view, issue-list, use-draft-session; forms/ = one form per entity type (forms/product/ = the six-tab product editor) + forms.test.ts (coverage); list-card, slug-field, alias-list, media-list-field = the product editor's building blocks
     account/, users/, audit/   sessions panel · users manager (cards, create / confirm / one-time-password dialogs, user-actions.ts) · audit filter form + table
     donut-chart, media-card, media-delete-modal, media-picker-modal   legacy editors' pieces
   sections/                 all "use client"; landing page order = page.tsx import order

@@ -14,10 +14,18 @@ const KIND: Record<Change["kind"], { label: string; tone: string }> = {
 const MAX_SHOWN = 140;
 const UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/g;
 
+/** A whole row that was added or removed, in a word an editor knows: its Vietnamese text (a bullet), else its Vietnamese name (a shape, an option). */
+function nameOfRow(value: unknown): string | null {
+  const vi = (value as { i18n?: { vi?: unknown } } | null)?.i18n?.vi;
+  if (typeof vi === "string") return vi;
+  const name = typeof vi === "object" && vi !== null ? Object.values(vi).find((text) => typeof text === "string" && text !== "") : undefined;
+  return typeof name === "string" ? name : null;
+}
+
 function show(value: unknown): string {
   if (value === undefined) return "";
   if (value === null || value === "") return "(trống)";
-  const text = typeof value === "string" ? value : JSON.stringify(value);
+  const text = typeof value === "string" ? value : (nameOfRow(value) ?? JSON.stringify(value));
   return text.length > MAX_SHOWN ? `${text.slice(0, MAX_SHOWN - 1)}…` : text;
 }
 

@@ -4,7 +4,7 @@ import * as schema from "@/lib/db/schema";
 import type { DraftEntityType } from "@/lib/db/content/drafts";
 import type { Db, DbExecutor, Tx } from "@/lib/db/types";
 import { composeEntity, type EntityRef } from "./compose";
-import { diffDocuments, type Change } from "./diff";
+import { publishChanges, type Change } from "./diff";
 import { Conflict, Invalid, NotFound } from "./errors";
 import { identityOf, isEntityId } from "./identity";
 import { draftReferenceRows } from "./references";
@@ -218,5 +218,5 @@ export async function draftChanges(x: DbExecutor, ref: EntityRef): Promise<Chang
   const draft = await getDraft(x, ref);
   if (!draft) throw new NotFound("Không có bản nháp.");
   const live = await composeEntity(x, ref.type, ref.id);
-  return diffDocuments(live?.document ?? null, draft.snapshot);
+  return publishChanges(live?.document ?? null, draft.snapshot);
 }

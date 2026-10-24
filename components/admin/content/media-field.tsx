@@ -16,7 +16,7 @@ import { FieldShell, useFieldFrame, type FieldProps } from "./field-shell";
 
 export const mediaUrl = (key: string): string => `/${key}`;
 
-function Thumbnail({ mediaKey, kind, size }: Readonly<{ mediaKey: string; kind?: MediaRow["kind"]; size: number }>) {
+export function Thumbnail({ mediaKey, kind, size }: Readonly<{ mediaKey: string; kind?: MediaRow["kind"]; size: number }>) {
   if (kind === "video" || /\.(mp4|webm|mov)$/i.test(mediaKey)) {
     return (
       <div style={{ width: size, height: size }} className="flex items-center justify-center rounded-xl bg-slate-100 text-slate-400">

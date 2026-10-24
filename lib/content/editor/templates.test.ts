@@ -7,7 +7,7 @@ const form = (overrides: Partial<CreateForm> = {}): CreateForm => ({ nameVi: "Gi
 describe("buildCreateRequest", () => {
   it("builds a starting document for each creatable type that becomes valid once completed", () => {
     for (const type of CREATABLE_TYPES) {
-      const request = buildCreateRequest(type, form({ specKind: "technique" }));
+      const request = buildCreateRequest(type, form({ specKind: "technique", category: "marketing" }));
       expect(request.ok, type).toBe(true);
       if (!request.ok) continue;
       // What the API adds on creation, so the document can be judged: identity fields and the schema number.
@@ -30,6 +30,20 @@ describe("buildCreateRequest", () => {
     const request = buildCreateRequest("unit", form({ nameEn: "  " }));
     expect(request).toMatchObject({ ok: true, snapshot: { i18n: { vi: { label: "Giấy kraft" } } } });
     expect(request.ok && request.snapshot.i18n).not.toHaveProperty("en");
+  });
+
+  it("builds a product from its names: a category, a slug per language (zh/ja/ko = English), nothing else yet", () => {
+    const request = buildCreateRequest("product", form({ nameVi: "Tờ rơi", nameEn: "Flyers", key: "", category: "marketing" }));
+    expect(request).toMatchObject({ ok: true, snapshot: { category: "marketing", status: "published", shapes: [], options: [], sizes: [], specs: [], i18n: { vi: { title: "Tờ rơi" }, en: { title: "Flyers" } } } });
+    expect(request.ok && request.key).toBeUndefined();
+    if (request.ok) {
+      const slugs = request.snapshot.slugs as Record<string, { slug: string; aliases: string[] }>;
+      expect(Object.entries(slugs).map(([locale, entry]) => [locale, entry.slug])).toEqual([["vi", "to-roi"], ["en", "flyers"], ["zh", "flyers"], ["ja", "flyers"], ["ko", "flyers"]]);
+    }
+  });
+
+  it("asks a product for a category, not for a key", () => {
+    expect(buildCreateRequest("product", form({ key: "", category: "" }))).toEqual({ ok: false, message: "Hãy chọn danh mục." });
   });
 
   it("explains what is wrong in Vietnamese", () => {
