@@ -42,6 +42,33 @@ function step(schema: z.ZodType, segment: string): z.ZodType[] {
   });
 }
 
+const join = (prefix: string, segment: string): string => (prefix === "" ? segment : `${prefix}.${segment}`);
+
+function collectLeaves(schema: z.ZodType, prefix: string, out: Set<string>): void {
+  for (const node of candidates(schema)) {
+    const def = defOf(node);
+    if (def.type === "object" && def.shape) {
+      for (const [name, child] of Object.entries(def.shape)) collectLeaves(child, join(prefix, name), out);
+    } else if (def.type === "array" && def.element) {
+      collectLeaves(def.element, `${prefix}[]`, out);
+    } else if (def.type === "record" && def.valueType) {
+      collectLeaves(def.valueType, join(prefix, "*"), out);
+    } else {
+      out.add(prefix);
+    }
+  }
+}
+
+/**
+ * Every leaf of a document schema, in the path syntax above: the values an editor can actually type, pick or toggle.
+ * A union contributes the leaves of each of its branches (a menu item targets `target.shape` or `target.option`).
+ */
+export function documentLeafPaths(schema: z.ZodType): string[] {
+  const leaves = new Set<string>();
+  collectLeaves(schema, "", leaves);
+  return [...leaves];
+}
+
 /** True when `path` leads somewhere in `schema`. An empty path is the schema itself. */
 export function schemaHasPath(schema: z.ZodType, path: string): boolean {
   let nodes: z.ZodType[] = [schema];

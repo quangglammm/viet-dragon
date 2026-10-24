@@ -1,0 +1,176 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { FilePen, Loader2, Rocket, Trash2 } from "lucide-react";
+import { Modal } from "@/components/admin/modal";
+import { Notice } from "@/components/admin/notice";
+import { BUTTON_PRIMARY, BUTTON_SECONDARY, PageHeader } from "@/components/admin/page-parts";
+import { completeness } from "@/lib/content/editor/completeness";
+import { createContentApi, type Document, type DraftPayload, type Ref } from "@/lib/content/editor/api";
+import { ENTITY_META, listUrl } from "@/lib/content/editor/entity-meta";
+import { canPublish as isPublishable, describeSave } from "@/lib/content/editor/session";
+import type { Vocabulary } from "@/lib/content/editor/vocabulary";
+import type { Issue } from "@/lib/content/errors";
+import type { LocaleCode } from "@/lib/content/schemas";
+import { formatAdminTime } from "@/lib/format-date";
+import { cn } from "@/lib/utils";
+import { DangerCard } from "./danger-card";
+import { EditorProvider } from "./editor-context";
+import { FORMS } from "./forms";
+import { HistoryPanel } from "./history-panel";
+import { IssueList, languageOfPath } from "./issue-list";
+import { LanguageTabs } from "./language-tabs";
+import { PublishDialog } from "./publish-dialog";
+import { useDraftSession } from "./use-draft-session";
+
+type EntityEditorProps = {
+  entity: Ref;
+  label: string;
+  /** null = never published: the entity exists only as this draft. */
+  live: { version: number; document: Document } | null;
+  initialDraft: DraftPayload | null;
+  vocab: Vocabulary;
+  /** Account id → name, for the history. */
+  authors: Record<string, string>;
+  canPublish: boolean;
+  canDelete: boolean;
+};
+
+export function EntityEditor({ entity, label, live, initialDraft, vocab, authors, canPublish, canDelete }: Readonly<EntityEditorProps>) {
+  const router = useRouter();
+  const api = useMemo(() => createContentApi(), []);
+  const { session, problem, edit, adopt, closeDraft, startEditing, reload, overwrite } = useDraftSession({ entity, live: live?.document ?? null, initialDraft });
+  const [language, setLanguage] = useState<LocaleCode>("vi");
+  const [publishing, setPublishing] = useState(false);
+  const [discarding, setDiscarding] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const meta = ENTITY_META[entity.type];
+  const Form = FORMS[entity.type];
+  const coverage = useMemo(() => completeness(session.document), [session.document]);
+
+  if (!Form) return null;
+
+  const goToIssue = (issue: Issue) => {
+    const issueLanguage = languageOfPath(issue.path);
+    if (issueLanguage) setLanguage(issueLanguage);
+    // The field of another language is drawn after the tab changes.
+    setTimeout(() => {
+      // An issue about a whole language row (`i18n.en`) lands on that row's first field.
+      const target = [...document.querySelectorAll<HTMLElement>("[data-path]")].find((node) => node.dataset.path?.startsWith(issue.path));
+      target?.scrollIntoView({ block: "center", behavior: "smooth" });
+      target?.querySelector<HTMLElement>("input, textarea, select, button")?.focus({ preventScroll: true });
+    }, 0);
+  };
+
+  const finish = (outcome: "published" | "discarded") => {
+    setPublishing(false);
+    setDiscarding(false);
+    // A draft that was never published leaves nothing behind once discarded: back to the list.
+    if (outcome === "discarded" && !live) router.push(listUrl(entity.type));
+    else {
+      // A discard changes nothing the page's server data shows when the draft was opened here, so the session is reset locally;
+      // a publish moves the version, which remounts the editor with fresh data.
+      if (outcome === "discarded" && live) closeDraft(live.document);
+      router.refresh();
+    }
+  };
+
+  const discard = async () => {
+    setBusy(true);
+    const result = await api.discardDraft(entity);
+    setBusy(false);
+    if (result.ok) finish("discarded");
+    else setMessage(result.problem.message);
+  };
+
+  const status = (session.document.status as string | undefined) ?? "published";
+  const publishable = canPublish && isPublishable(session);
+  const saveText = describeSave(session, formatAdminTime);
+
+  return (
+    <>
+      <PageHeader
+        icon={<FilePen size={15} />}
+        eyebrow={meta.label}
+        title={label}
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            {!session.editing && (
+              <button type="button" onClick={() => void startEditing()} className={BUTTON_PRIMARY}>
+                <FilePen size={14} aria-hidden /> Chỉnh sửa
+              </button>
+            )}
+            {session.editing && (
+              <>
+                <button type="button" onClick={() => setDiscarding(true)} className={BUTTON_SECONDARY}>
+                  <Trash2 size={14} aria-hidden /> Hủy bản nháp
+                </button>
+                <button
+                  type="button"
+                  disabled={!publishable}
+                  title={canPublish ? (publishable ? undefined : "Cần lưu xong và bổ sung đủ nội dung trước khi xuất bản.") : "Bạn không có quyền xuất bản."}
+                  onClick={() => setPublishing(true)}
+                  className={BUTTON_PRIMARY}
+                >
+                  <Rocket size={14} aria-hidden /> Xuất bản…
+                </button>
+              </>
+            )}
+          </div>
+        }
+      />
+
+      <div className="mb-4 flex flex-wrap items-center gap-2 text-[11px] font-bold">
+        <span className={cn("rounded-lg px-2 py-1", live ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-800")}>{live ? `Đã xuất bản · phiên bản ${live.version}` : "Chưa xuất bản"}</span>
+        {session.editing && <span className="rounded-lg bg-purple-100 px-2 py-1 text-purple-700">Đang có bản nháp</span>}
+        {status === "archived" && <span className="rounded-lg bg-slate-200 px-2 py-1 text-slate-700">Đã lưu trữ</span>}
+        {session.restoredFrom !== null && <span className="rounded-lg bg-sky-100 px-2 py-1 text-sky-700">Khôi phục từ phiên bản {session.restoredFrom}</span>}
+        <span role="status" aria-live="polite" className="text-slate-500">{saveText}</span>
+        {session.save === "saving" && <Loader2 size={12} className="animate-spin text-slate-400" aria-hidden />}
+      </div>
+
+      {!session.editing && !problem && <Notice tone="info" className="mb-4">Đang xem nội dung đã xuất bản. Bấm «Chỉnh sửa» để tạo bản nháp; website không đổi cho đến khi bạn xuất bản.</Notice>}
+      {(problem || message) && <Notice tone="error" className="mb-4">{problem?.message ?? message}</Notice>}
+      {session.save === "error" && session.problem && <Notice tone="error" className="mb-4">{session.problem.message}</Notice>}
+      {session.save === "conflict" && (
+        <Notice tone="warning" className="mb-4">
+          <p className="font-black">Người khác vừa lưu bản nháp này, hoặc bản nháp không còn nữa.</p>
+          <p className="mt-1 font-normal">Các thay đổi của bạn chưa được lưu. Hãy tải bản nháp mới nhất (bạn sẽ mất phần vừa gõ), hoặc giữ bản của bạn và ghi đè lên bản kia.</p>
+          <div className="mt-2 flex gap-2">
+            <button type="button" onClick={() => void reload()} className={BUTTON_SECONDARY}>Tải bản nháp mới nhất</button>
+            <button type="button" onClick={() => void overwrite()} className={BUTTON_SECONDARY}>Giữ bản của tôi, ghi đè</button>
+          </div>
+        </Notice>
+      )}
+
+      <div className="sticky top-0 z-10 -mx-1 mb-4 bg-[#f4f6fb]/95 px-1 py-2 backdrop-blur-xs dark:bg-[#080526]/95">
+        <LanguageTabs active={language} completeness={coverage} onChange={setLanguage} />
+      </div>
+
+      <EditorProvider type={entity.type} document={session.document} language={language} readOnly={!session.editing} issues={session.issues} vocab={vocab} onChange={edit}>
+        <div className="space-y-5">
+          {session.editing && <IssueList type={entity.type} issues={session.issues} onGo={goToIssue} />}
+          <Form />
+          <HistoryPanel entity={entity} authors={authors} current={session.document} hasOpenDraft={session.editing} onRestored={adopt} />
+          {live && <DangerCard entity={entity} label={label} canDelete={canDelete} />}
+        </div>
+      </EditorProvider>
+
+      {publishing && session.draftVersion !== null && (
+        <PublishDialog entity={entity} draftVersion={session.draftVersion} issueCount={session.issues.length} onClose={() => setPublishing(false)} onDone={finish} onReload={() => { setPublishing(false); void reload(); }} />
+      )}
+      {discarding && (
+        <Modal title="Hủy bản nháp?" description="Mọi thay đổi chưa xuất bản trong bản nháp sẽ mất. Nội dung đang hiển thị trên website không bị ảnh hưởng." locked={busy} onClose={() => setDiscarding(false)}>
+          <div className="flex justify-end gap-2">
+            <button type="button" onClick={() => setDiscarding(false)} disabled={busy} className={BUTTON_SECONDARY}>Giữ bản nháp</button>
+            <button type="button" onClick={() => void discard()} disabled={busy} className={BUTTON_PRIMARY}>
+              {busy && <Loader2 size={14} className="animate-spin" aria-hidden />} Hủy bản nháp
+            </button>
+          </div>
+        </Modal>
+      )}
+    </>
+  );
+}

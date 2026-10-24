@@ -9,6 +9,12 @@ import { routing } from "@/i18n/routing";
 // Messages are Vietnamese because they are shown to editors (the admin is Vietnamese-only).
 
 export const DOCUMENT_SCHEMA = 2;
+
+/**
+ * Passed to `safeParse` so zod's own messages ("Invalid input: expected string…") reach the editor in Vietnamese. Per parse, not
+ * `z.config`, so nothing else in the process (env validation, Better Auth) changes language. Messages written in our schemas win.
+ */
+export const parseOptions = { error: z.locales.vi().localeError };
 export const LOCALES = routing.locales;
 
 /**

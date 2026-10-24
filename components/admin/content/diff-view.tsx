@@ -1,0 +1,48 @@
+import type { Change } from "@/lib/content/diff";
+import type { DraftEntityType } from "@/lib/content/entity-types";
+import { fieldLabel } from "@/lib/content/field-registry";
+import { cn } from "@/lib/utils";
+
+// A list of field-level changes, in the editor's own words: «Tên sản phẩm (en): "Flyers" → "Leaflets"».
+
+const KIND: Record<Change["kind"], { label: string; tone: string }> = {
+  added: { label: "Thêm", tone: "bg-emerald-100 text-emerald-700" },
+  removed: { label: "Xóa", tone: "bg-rose-100 text-rose-700" },
+  changed: { label: "Sửa", tone: "bg-amber-100 text-amber-800" },
+};
+
+const MAX_SHOWN = 140;
+const UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/g;
+
+function show(value: unknown): string {
+  if (value === undefined) return "";
+  if (value === null || value === "") return "(trống)";
+  const text = typeof value === "string" ? value : JSON.stringify(value);
+  return text.length > MAX_SHOWN ? `${text.slice(0, MAX_SHOWN - 1)}…` : text;
+}
+
+/** `options[3f2a1c9e-…].prices.base` → `options[#3f2a1c9e].prices.base`: enough to tell the rows apart without the noise. */
+const shortPath = (path: string): string => path.replace(UUID, (id) => `#${id.slice(0, 8)}`);
+
+type DiffViewProps = { type: DraftEntityType; changes: readonly Change[]; empty?: string };
+
+export function DiffView({ type, changes, empty = "Không có thay đổi." }: Readonly<DiffViewProps>) {
+  if (changes.length === 0) return <p className="text-xs font-semibold text-slate-500">{empty}</p>;
+  return (
+    <ul className="space-y-2">
+      {changes.map((change) => (
+        <li key={`${change.kind}:${change.path}`} className="rounded-2xl border border-slate-200 bg-white p-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={cn("rounded-md px-1.5 py-0.5 text-[10px] font-black", KIND[change.kind].tone)}>{KIND[change.kind].label}</span>
+            <span className="text-xs font-bold text-slate-800">{change.path === "" ? "Toàn bộ nội dung" : fieldLabel(type, change.path)}</span>
+            <span className="truncate font-mono text-[10px] text-slate-400">{shortPath(change.path)}</span>
+          </div>
+          <div className="mt-1.5 grid gap-1 text-xs sm:grid-cols-2">
+            {change.kind !== "added" && <p className="break-words rounded-lg bg-rose-50 px-2 py-1 text-rose-800 line-through decoration-rose-300">{show(change.before)}</p>}
+            {change.kind !== "removed" && <p className="break-words rounded-lg bg-emerald-50 px-2 py-1 text-emerald-800">{show(change.after)}</p>}
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}

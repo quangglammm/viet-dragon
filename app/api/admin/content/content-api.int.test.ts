@@ -18,6 +18,7 @@ import * as revisionsRoute from "@/app/api/admin/content/[type]/[id]/revisions/r
 import * as entityRoute from "@/app/api/admin/content/[type]/[id]/route";
 import * as usedByRoute from "@/app/api/admin/content/[type]/[id]/used-by/route";
 import * as listRoute from "@/app/api/admin/content/[type]/route";
+import * as mediaRoute from "@/app/api/admin/content/media/route";
 import { getPool } from "@/lib/db";
 import { MAX_BODY_BYTES, type EntityContext, type RevisionContext, type TypeContext } from "@/lib/content/http";
 import { auditRows, createUser, login, ORIGIN, uniqueEmail } from "@/tests/helpers/auth";
@@ -110,6 +111,7 @@ const ROUTES: Array<[string, boolean, (init: CallInit) => Promise<Response>]> = 
   ["restore POST", true, (i) => call(restoreRoute.POST, entityCtx("product", UID), "POST", { body: { version: 1 }, ...i })],
   ["used-by GET", false, (i) => call(usedByRoute.GET, entityCtx("material", "giay-loai-c"), "GET", i)],
   ["release-alias POST", true, (i) => call(releaseRoute.POST, entityCtx("product", UID), "POST", { body: { locale: "en", slug: "x" }, ...i })],
+  ["media GET", false, (i) => call(mediaRoute.GET, undefined, "GET", i)],
 ];
 
 describe("authentication", () => {
@@ -421,5 +423,47 @@ describe("releasing an old URL", () => {
     expect(notProduct.status).toBe(404);
     const badBody = await call(releaseRoute.POST, entityCtx("product", uid), "POST", { cookie: editor.cookie, body: { locale: "xx", slug: "x" } });
     expect(badBody.status).toBe(422);
+  });
+});
+
+describe("the media library", () => {
+  type MediaBody = { items: { key: string; kind: string; mime: string }[]; hasMore: boolean; folders: { folder: string; count: number }[] };
+  const get = async (query = "") => {
+    const response = await mediaRoute.GET(new Request(`${ORIGIN}/api/admin/content/media${query}`, { headers: { cookie: editor.cookie } }));
+    return { response, body: (await response.json()) as MediaBody };
+  };
+
+  it("pages through the files, with the folders to filter by", async () => {
+    const { response, body } = await get();
+    expect(response.status).toBe(200);
+    expect(body.items).toHaveLength(60);
+    expect(body.hasMore).toBe(true);
+    expect(body.folders.map((f) => f.folder)).toContain("images/product");
+    const second = await get("?offset=60");
+    expect(second.body.items[0].key).not.toBe(body.items[0].key);
+    expect(second.body.items.map((i) => i.key)).not.toEqual(expect.arrayContaining([body.items[0].key]));
+  });
+
+  it("filters by kind, folder and a literal piece of the path", async () => {
+    const videos = (await get("?kind=video")).body;
+    expect(videos.items.length).toBeGreaterThan(0);
+    expect(videos.items.every((item) => item.kind === "video")).toBe(true);
+
+    const folder = (await get("?folder=images/product&limit=100")).body;
+    expect(folder.items.every((item) => item.key.startsWith("images/product/"))).toBe(true);
+
+    const search = (await get("?q=PRODUCT&limit=100")).body; // case-insensitive
+    expect(search.items.length).toBeGreaterThan(0);
+    expect(search.items.every((item) => item.key.toLowerCase().includes("product"))).toBe(true);
+    // % and _ are literal characters of a path, not wildcards.
+    expect((await get("?q=%25")).body.items).toEqual([]);
+    expect((await get("?q=_")).body.items.every((item) => item.key.includes("_"))).toBe(true);
+  });
+
+  it("refuses a malformed query (422) and a page size over the limit", async () => {
+    for (const query of ["?kind=audio", "?limit=1000", "?offset=-1", "?folder=../etc", "?nope=1"]) {
+      const { response } = await get(query);
+      expect(response.status, query).toBe(422);
+    }
   });
 });

@@ -11,6 +11,7 @@ import {
   traitDocumentSchema,
   unitDocumentSchema,
 } from "./library";
+import { parseOptions } from "./common";
 import { menuDocumentSchema } from "./menu";
 import { postDocumentSchema } from "./post";
 import { productDocumentSchema } from "./product";
@@ -49,7 +50,7 @@ export function isUidEntity(type: DraftEntityType): type is UidEntityType {
 
 export function parseDocument<T extends DraftEntityType>(type: T, input: unknown): z.ZodSafeParseResult<DocumentFor<T>> {
   // The map is indexed by a generic key, so TypeScript can only see the union of all schemas here.
-  return DOCUMENT_SCHEMAS[type].safeParse(input) as z.ZodSafeParseResult<DocumentFor<T>>;
+  return DOCUMENT_SCHEMAS[type].safeParse(input, parseOptions) as z.ZodSafeParseResult<DocumentFor<T>>;
 }
 
 /** The identity a draft or revision of this document is filed under: exactly one of `entityUid` / `entityKey` (the database re-checks it against the snapshot). */

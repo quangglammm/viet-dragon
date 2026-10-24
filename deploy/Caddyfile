@@ -8,14 +8,14 @@
 		max_size 2MB
 	}
 
-	# Fail closed: under /admin only the Better Auth console (sign-in, account, users, audit) is public.
-	# The pre-Phase-3 editors (/admin/site-content, products, blog, media, translations) and the
-	# /api/admin/* routes behind them write into the source tree, so they stay 404 until Phase 3 rebuilds
-	# them on the database — add each rebuilt page's path to the `not` list then. /api/auth/* is not
-	# matched here, so sign-in works.
+	# Fail closed: under /admin only the Better Auth console (sign-in, account, users, audit) and the content
+	# editors on the database (/admin/content, and the API behind them, /api/admin/content) are public.
+	# The pre-Phase-3 editors (/admin/site-content, products, blog, media, translations) and the legacy
+	# /api/admin/* routes behind them write into the source tree, so they stay 404 until Phase 4 deletes
+	# them. /api/auth/* is not matched here, so sign-in works.
 	@admin_not_ready {
 		path /admin /admin/* /api/admin/*
-		not path /admin /admin/login /admin/login/* /admin/account /admin/account/* /admin/users /admin/users/* /admin/audit /admin/audit/*
+		not path /admin /admin/login /admin/login/* /admin/account /admin/account/* /admin/users /admin/users/* /admin/audit /admin/audit/* /admin/content /admin/content/* /api/admin/content /api/admin/content/*
 	}
 	respond @admin_not_ready 404
 

@@ -100,7 +100,7 @@ Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
 
 | Route | Notes |
 |---|---|
-| `/admin/*` | CMS UI — own root layout, Vietnamese only. See **Admin CMS** |
+| `/admin/*` | CMS UI — own root layout, Vietnamese only. `/admin/content/[type]` (list) and `/admin/content/[type]/[id]` (editor) are the editors on the content database (Phase 3d). See **Admin CMS** |
 | `/api/admin/*` | CMS API — legacy `blog`, `media`, `products`, `translations`, `translate` (Phase 3d replaces them) and the new `content/**` (drafts, publish, revisions, delete — see **Content model**). Every handler starts with `requireApiUser` (a test enforces it) |
 | `/api/auth/*` | Better Auth (`app/api/auth/[...all]/route.ts`): sign-in/out, session, password change, admin-plugin user management. Sign-in must use this HTTP surface — only HTTP requests are rate limited, not `auth.api.*` calls |
 | `/api/consult` | Public. Receives quote/consult leads from `QuoteModal` / `ConsultBottomSheet`, emails them |
@@ -291,7 +291,8 @@ target — until a phase lands, the "current state" below is the truth.
   **outside** `app/[locale]` and outside next-intl. `app/admin/login` and `app/admin/account/password`
   (the forced change) are standalone dark-card pages (`AuthCardShell`); everything else lives in the
   route group `app/admin/(console)/`, whose server layout calls `requireUser()` and renders
-  `components/admin/admin-shell.tsx`. Console pages: `account`, `users` and `audit` (new, Phase 2) plus
+  `components/admin/admin-shell.tsx`. Console pages: `account`, `users` and `audit` (Phase 2), the **content
+  editors** `content/[type]` + `content/[type]/[id]` (Phase 3d — see **Content model → Editors**), plus
   the five legacy editors `site-content`, `products`, `blog`, `media`, `translations` (client components,
   no longer wrapping themselves in the shell; hidden from the sidebar when `NODE_ENV=production`).
 - API: `app/api/admin/{blog,media,products,translations,translate}`. Persistence is
@@ -430,6 +431,30 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   alias_released`; autosave is not audited); a failure there is logged, never thrown. **Caddy still blocks all of `/api/admin/*` in
   production**: 3d adds the paths together with the editors. Entity types in URLs are kebab-case (`spec-item`), a spec item's key
   `technique/offset` is `technique.offset` in a path.
+- **Editors (Phase 3d-1: foundation + material, trait, unit, spec item, blog category, Fast Print, showcase; the product editor is
+  3d-2; posts, categories, menus and UI copy 3d-3).** `app/admin/(console)/content/[type]/page.tsx` lists a type
+  (`listSummaries`), `…/[id]/page.tsx` loads the live document, the open draft, the vocabularies and the author names and renders the
+  client `components/admin/content/entity-editor.tsx` (remounted by a `key` of `live version : draft?` after a publish; a discard
+  resets the session locally because the server props do not change when the draft was opened in the browser). **Everything an editor
+  does is the `/api/admin/content` API** (`lib/content/editor/api.ts`, never throws). Pure, unit-tested logic lives in
+  `lib/content/editor/`: `paths.ts` (immutable get/set by `a.b[2].c`; `setText` turns blank into "not provided" and drops a language
+  row left empty so it falls back to English), `session.ts` (the draft state machine — saves never overlap; typing during a save is
+  not lost; `DRAFT_CHANGED`/`GONE` = conflict), `completeness.ts` (texts vi/en have that a language lacks), `templates.ts` (the
+  "Tạo mới" request), `entity-meta.ts` (labels, `editable`, vocabularies), `vocabulary.ts`. `use-draft-session.ts` runs the effects
+  (1.2 s debounced autosave, retry after 5 s, `beforeunload` guard). Controls are bound to a PATH through `EditorContext`
+  (`TextField`, `NumberField`, `SwitchField`, `SelectField`, `MediaField`, `IconField`; a `*` in a path = the language tab being
+  edited) and draw `data-field` (registry path) / `data-path` (concrete path).
+  **The field registry** (`lib/content/field-registry.ts`) gives every editable leaf of every document schema a Vietnamese label and a
+  control; `field-registry.test.ts` ties it to the zod schemas (`documentLeafPaths`) and `components/admin/content/forms/forms.test.ts`
+  renders each editor on a full document and requires a `data-field` for every registered path — **a field cannot exist without
+  an editor control**. To add an editor: a form in `components/admin/content/forms/`, register it in `FORMS`, set
+  `ENTITY_META[type].editable`, add a sample document to `forms.test.ts`, give it a nav look in `admin-nav.ts`.
+  `client-bundle.test.ts` fails if the browser code reaches a server-only module through its imports. Media: `GET
+  /api/admin/content/media` (read-only; uploads are Phase 5, files are served at `/<storage_key>`). zod messages reach the editor in
+  Vietnamese (`parseOptions`, passed per parse — never `z.config`, which would change env validation too). No Preview button until
+  Phase 4 (the public pages cannot render a draft yet): the publish dialog's field-level diff is the feedback. There is no DOM test
+  library: interaction is covered by the reducers' tests and a browser smoke (see docs/verification), rendering by server-side
+  rendering in tests.
 - **Tests:** `app/api/admin/content/content-api.int.test.ts` (who may call what, preconditions, error shapes, cache tags, audit rows —
   with the app's own database pointed at a seeded scratch one by setting `DATABASE_URL` before the first `getDb()`),
   `lib/content/http.test.ts`; `lib/content/entities.int.test.ts` (all 198 seeded entities publish unchanged; each of the nine creatable types is created,
@@ -559,9 +584,10 @@ Runbook and rationale: `docs/deployment.md`.
 - App container: non-root, read-only root FS (writable: `/tmp` and the `.next/cache` volume),
   `cap_drop: ALL`, no published ports. `db` sits on an `internal` network. **One app instance only.**
 - Building needs internet (`next/font/google`) and `--build-arg SITE_URL=…` — nothing else.
-- `deploy/Caddyfile` is fail-closed for the admin: under `/admin` only `login`, `account`, `users` and `audit`
-  are reachable; every other `/admin*` path and all of `/api/admin/*` (the pre-Phase-3 editors, which write to the
-  source tree) 404 — **add a rebuilt page's path to the `not path` list when Phase 3 ships it**. `/api/auth/*` is
+- `deploy/Caddyfile` is fail-closed for the admin: under `/admin` only `login`, `account`, `users`, `audit` and
+  `content` are reachable, and under `/api/admin` only `content`; every other `/admin*` path and `/api/admin/*` route (the
+  legacy editors and their API, which write to the source tree) 404 until Phase 4 deletes them — **a new admin page or API
+  path must be added to the `not path` list**. `/api/auth/*` is
   open (sign-in). It also 404s `/api/health` (internal healthcheck only) and overwrites `X-Real-IP` with the TCP peer.
 - `output: "standalone"` does not copy `public/` or `.next/static`; the runner stage does.
   `next.config.ts` still carries the Vercel-era `outputFileTracingExcludes` workaround for `public/`,
@@ -646,6 +672,8 @@ lib/
   content/drafts.ts, publish.ts, restore.ts, aliases.ts, used-by.ts   the write side (3c): drafts, publish, revisions + restore, releasing old URLs, "used by"
   content/validate.ts, references.ts, diff.ts, humanize.ts, identity.ts, errors.ts, cache-tags.ts   advice + checks, what a document points at, field-level diff, DB error → Vietnamese, URL type names / ids, Conflict / Invalid / NotFound, cache tags
   content/delete.ts, summaries.ts   delete / archive-first rules (+ the "delete" revision) · admin list rows
+  content/editor/           the editors' client-safe logic: paths, session reducer, API client, completeness, create templates, entity meta, vocabulary (no server imports — client-bundle.test.ts)
+  content/field-registry.ts, entity-types.ts, slugify.ts, media-library.ts, authors.ts, vocabulary.ts   every editable leaf → label + control · the 12 entity types (database-free) · URL slugs · media picker data · account names for the history · picker lists
   content/http.ts, requests.ts, effects.ts   the HTTP layer of app/api/admin/content: URL / If-Match / capped JSON body / error mapping · zod request bodies · cache tags + audit after commit
   content/apply/            one applier per entity type (all twelve): document → live rows, plus the per-language slug planning (`planSegments` also serves posts and categories)
   db/content/*.ts           the CMS content model: foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog, site-message, drafts (+ columns.ts, seo.ts builders)
@@ -679,6 +707,7 @@ components/
     SmoothScroll.tsx        Lenis init (desktop only, ≥1024px) — no GSAP, no pinning
     quote-modal-provider.tsx  Context that opens the QuoteModal from anywhere
   admin/                    admin-shell (+ admin-nav.ts role-filtered sidebar, admin-theme.tsx), auth-card-shell, password-field, notice, failure-notice, modal, page-parts (PageHeader, AdminCard, button/input classes)
+    content/                the content editors: entity-editor, entity-list, create-dialog, editor-context, field primitives (fields, media-field, icon-field, field-shell), language-tabs, publish-dialog, history-panel, danger-card, diff-view, issue-list, use-draft-session; forms/ = one form per entity type + forms.test.ts (coverage)
     account/, users/, audit/   sessions panel · users manager (cards, create / confirm / one-time-password dialogs, user-actions.ts) · audit filter form + table
     donut-chart, media-card, media-delete-modal, media-picker-modal   legacy editors' pieces
   sections/                 all "use client"; landing page order = page.tsx import order

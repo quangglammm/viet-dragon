@@ -21,6 +21,13 @@ const dateFormat = new Intl.DateTimeFormat(ADMIN_LOCALE, {
   year: "numeric",
 });
 
+const timeFormat = new Intl.DateTimeFormat(ADMIN_LOCALE, { timeZone: ADMIN_TIME_ZONE, hour: "2-digit", minute: "2-digit", hour12: false });
+
+/** `14:05`: for «Đã lưu lúc …». */
+export function formatAdminTime(value: Date | string | number): string {
+  return timeFormat.format(new Date(value));
+}
+
 export function formatAdminDateTime(value: Date | string | number): string {
   return dateTimeFormat.format(new Date(value));
 }

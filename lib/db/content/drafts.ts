@@ -7,21 +7,11 @@ import { oneOfCheck } from "./columns";
 // other records by uid (editable-slug entities) or by immutable key (vocabulary). Publish validates it and applies
 // it in one transaction, bumps `version`, writes a revision and deletes the draft (docs/data-model.md §9).
 
-export const DRAFT_ENTITY_TYPES = [
-  "product",
-  "post",
-  "category",
-  "material",
-  "trait",
-  "unit",
-  "spec_item",
-  "fast_print_item",
-  "showcase_item",
-  "post_category",
-  "site_message",
-  "menu",
-] as const;
-export type DraftEntityType = (typeof DRAFT_ENTITY_TYPES)[number];
+// Relative on purpose: drizzle-kit loads this file outside Next, where `@/` does not resolve.
+import { DRAFT_ENTITY_TYPES, type DraftEntityType } from "../../content/entity-types";
+
+export { DRAFT_ENTITY_TYPES };
+export type { DraftEntityType };
 
 /** The document format version stored in `snapshot_schema` (lib/content/schemas). */
 export const SNAPSHOT_SCHEMA = 2;

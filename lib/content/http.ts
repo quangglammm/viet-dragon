@@ -5,6 +5,7 @@ import type { Draft } from "./drafts";
 import { Conflict, Invalid, NotFound, zodIssues, type Issue } from "./errors";
 import { decodeEntityId, entityTypeFromUrl } from "./identity";
 import { restoredVersionOf } from "./restore";
+import { parseOptions } from "./schemas";
 import type { DraftEntityType } from "@/lib/db/content/drafts";
 
 // What every /api/admin/content/* handler shares: reading the URL, the body and the preconditions, and answering errors in the
@@ -113,7 +114,7 @@ export async function readJson<S extends z.ZodType>(request: Request, schema: S,
   } else if (!optional) {
     throw new HttpError(400, "EMPTY_BODY", "Thiếu nội dung JSON.");
   }
-  const parsed = schema.safeParse(value);
+  const parsed = schema.safeParse(value, parseOptions);
   if (!parsed.success) throw new Invalid(zodIssues(parsed.error));
   return parsed.data;
 }

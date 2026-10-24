@@ -2,18 +2,21 @@
 
 import { useEffect, useId } from "react";
 import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type ModalProps = {
   title: string;
   description?: string;
   /** Blocks closing (Esc, backdrop, ✕): while a request is in flight, or until a one-time secret is acknowledged. */
   locked?: boolean;
+  /** `lg` for pickers and diffs that need room. */
+  size?: "md" | "lg";
   onClose: () => void;
   children: React.ReactNode;
 };
 
 /** The admin's dialog shell — same look as media-delete-modal (backdrop, rounded card, header row). */
-export function Modal({ title, description, locked = false, onClose, children }: Readonly<ModalProps>) {
+export function Modal({ title, description, locked = false, size = "md", onClose, children }: Readonly<ModalProps>) {
   const titleId = useId();
 
   useEffect(() => {
@@ -35,7 +38,7 @@ export function Modal({ title, description, locked = false, onClose, children }:
         aria-modal="true"
         aria-labelledby={titleId}
         onClick={(event) => event.stopPropagation()}
-        className="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
+        className={cn("relative flex max-h-[90vh] w-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl", size === "lg" ? "max-w-4xl" : "max-w-lg")}
       >
         <div className="flex items-start justify-between gap-3 border-b border-slate-100 bg-slate-50/80 px-6 py-4">
           <div>

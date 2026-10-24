@@ -10,17 +10,7 @@ export const isBlankText = (value: string | null | undefined): boolean => value 
 /** The text, or null when it is blank — what an optional column should receive. */
 export const orNull = (value: string | null | undefined): string | null => (isBlankText(value) ? null : (value as string));
 
-/** Lowercase ASCII kebab-case: strips diacritics, maps đ to d. */
-export function slugify(text: string): string {
-  const slug = text
-    .normalize("NFD")
-    .replace(/\p{M}/gu, "")
-    .replace(/đ/gi, "d")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-  return slug || "x";
-}
+export { slugify } from "@/lib/content/slugify";
 
 /** `base`, or `base-2`, `base-3`… when taken; the result is added to `taken`. */
 export function uniqueSlug(base: string, taken: Set<string>): string {

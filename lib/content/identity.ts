@@ -1,4 +1,4 @@
-import { DRAFT_ENTITY_TYPES, type DraftEntityType } from "@/lib/db/content/drafts";
+import { DRAFT_ENTITY_TYPES, type DraftEntityType } from "./entity-types";
 import type { EntityRef } from "./compose";
 import { SITE_MESSAGE_NAMESPACE_PATTERN, SPEC_ITEM_KEY_PATTERN, isUidEntity, slugSchema, uidSchema, type DocumentIdentity } from "./schemas";
 
