@@ -59,17 +59,19 @@ export const post = pgTable(
   ],
 );
 
-/** Owns the blog slug namespace: the canonical URL and every old one. */
+/** Owns the blog slug namespace per language: the canonical URL and every old one. One canonical slug per post in every language. */
 export const postSlug = pgTable(
   "post_slug",
   {
-    slug: text("slug").primaryKey(),
+    locale: localeRef(),
+    slug: text("slug").notNull(),
     postId: bigint("post_id", { mode: "number" }).notNull().references(() => post.id, { onDelete: "cascade" }),
     isCanonical: boolean("is_canonical").notNull().default(false),
   },
   (t) => [
+    primaryKey({ columns: [t.locale, t.slug] }),
     kebabCheck("post_slug_slug_format", t.slug),
-    uniqueIndex("post_slug_one_canonical").on(t.postId).where(sql`${t.isCanonical}`),
+    uniqueIndex("post_slug_one_canonical").on(t.postId, t.locale).where(sql`${t.isCanonical}`),
     index("post_slug_post_idx").on(t.postId),
   ],
 );

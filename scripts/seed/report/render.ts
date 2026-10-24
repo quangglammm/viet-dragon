@@ -1,15 +1,18 @@
-import { NOTE_KINDS, type NoteKind } from "../notes";
 import { LOCALES } from "../localized";
-import type { ReportData } from "./collect";
-import { renderDecisions } from "./decisions";
+import { NOTE_KINDS, type NoteKind } from "../notes";
+import type { ReportData, UrlRow } from "./collect";
+import { renderMasterDecisions } from "./decisions";
 import { counted, n, table } from "./format";
+import { renderOtherLanguages, renderSuggestionTables } from "./other-languages";
 
 // The seed report, in Vietnamese, for the owner. Plain markdown; every number is computed from the run.
+// Order of the report = order of priority: Vietnamese and English first (they must be complete and reviewed),
+// Chinese / Japanese / Korean follow English.
 
 const LANGUAGE_NAME: Record<(typeof LOCALES)[number], string> = { vi: "Tiếng Việt", en: "English", zh: "中文", ja: "日本語", ko: "한국어" };
 
-/** Note kinds that a numbered decision already explains. Any other kind with entries is listed under "Ghi chú khác". */
-const EXPLAINED_BY_DECISIONS: readonly NoteKind[] = [
+/** Note kinds that a numbered decision, an information item or an appendix already explains. */
+const EXPLAINED_ELSEWHERE: readonly NoteKind[] = [
   "material-name-conflict", "shared-translation-key", "title-precedence-differs", "spec-same-vi-different-translation", "bullet-count-differs-by-locale",
   "option-slug-collision", "media-stray", "fastprint-price-wording",
 ];
@@ -46,12 +49,12 @@ const NOTE_DESCRIPTIONS: Record<NoteKind, string> = {
   "message-namespace-not-object": "Khối văn bản giao diện không đúng dạng; bị bỏ qua",
 };
 
-function introduction(data: ReportData): string {
+function introduction(data: ReportData, decisions: number): string {
   return [
     `# Báo cáo nhập dữ liệu gốc của website Việt Dragon`,
     `Ngày tạo: ${data.generatedOn}. Báo cáo này được tạo tự động từ dữ liệu hiện có của website (sản phẩm, menu, bài viết, bản dịch…).`,
     `**Chưa có gì thay đổi trên website.** Đây là bản sao đưa vào cơ sở dữ liệu mới để quản trị viên chỉnh sửa về sau. Website vẫn đọc dữ liệu cũ cho đến khi bước chuyển đổi được thực hiện và kiểm tra xong.`,
-    `Phần 2 liệt kê ${n(11)} chỗ dữ liệu hiện tại **không nhất quán** nên cần chủ shop chọn. Mỗi mục đã có đề xuất; chỉ cần đánh dấu «Đồng ý» hoặc ghi cách khác. Phần 1 cho biết đã nhập những gì, phần 3 là ghi chú kỹ thuật không cần quyết định.`,
+    `**Thứ tự ưu tiên: tiếng Việt và English hoàn chỉnh trước, các ngôn ngữ còn lại sao chép từ English.** Phần 2 liệt kê ${n(decisions)} chỗ cần chủ shop quyết định cho tiếng Việt và English (quan trọng nhất là hệ thống đường dẫn theo từng ngôn ngữ). Mỗi mục đã có đề xuất; chỉ cần đánh dấu «Đồng ý» hoặc ghi cách khác. Phần 3 là tiếng Trung / Nhật / Hàn — chưa cần quyết định, chỉ cần biết. Phần 1 cho biết đã nhập những gì, phần 4 là ghi chú kỹ thuật.`,
   ].join("\n\n");
 }
 
@@ -64,8 +67,8 @@ function imported(data: ReportData): string {
   return [
     `## 1. Đã nhập những gì`,
     table(["Mục", "Số lượng"], countRows),
-    `### Bản dịch theo ngôn ngữ`,
-    `Số bản dịch đã có cho từng ngôn ngữ; «thiếu» là so với số bản tiếng Việt. Chỗ thiếu sẽ hiện bản tiếng Anh (hoặc tiếng Việt) cho đến khi được dịch.`,
+    `### Mức đầy đủ theo ngôn ngữ`,
+    `Số bản dịch đã có cho từng ngôn ngữ; «thiếu» là so với số bản tiếng Việt. Tiếng Việt và English phải đầy đủ trước. Tiếng Trung / Nhật / Hàn đã được bổ sung các chỗ còn trống bằng bản dịch đề xuất (phần 3). Chỗ nào còn thiếu sẽ hiện bản English (rồi tiếng Việt).`,
     table(["Nội dung", ...LOCALES.map((l) => LANGUAGE_NAME[l])], gaps),
   ].join("\n\n");
 }
@@ -73,31 +76,55 @@ function imported(data: ReportData): string {
 function technicalNotes(data: ReportData): string {
   const { notes } = data.outcome;
   const wording = [...new Set(notes.get("fastprint-price-wording"))];
-  const others = NOTE_KINDS.filter((kind) => !EXPLAINED_BY_DECISIONS.includes(kind) && notes.count(kind) > 0);
-  const parts = [
-    `## 3. Ghi chú kỹ thuật (không cần quyết định)`,
+  const others = NOTE_KINDS.filter((kind) => !EXPLAINED_ELSEWHERE.includes(kind) && notes.count(kind) > 0);
+  return [
+    `## 4. Ghi chú kỹ thuật (không cần quyết định)`,
     counted(`Cách diễn đạt giá «In nhanh» (chữ «Chỉ từ», «From», «〜»…) không phải dữ liệu, sẽ chuyển vào bản dịch giao diện:`, wording, 12),
     others.length
       ? [`### Ghi chú khác`, ...others.map((kind) => counted(`**${NOTE_DESCRIPTIONS[kind]}** — ${n(notes.count(kind))}:`, notes.get(kind), 5))].join("\n\n")
       : "- Không còn ghi chú nào khác.",
-  ];
-  return parts.join("\n\n");
+  ].join("\n\n");
 }
+
+const urlRows = (rows: readonly UrlRow[]): string[][] => rows.map((row) => [row.scope, `\`${row.vi}\``, `\`${row.en}\``]);
 
 function appendix(data: ReportData): string {
   const { notes, stats } = data.outcome;
+  const { urls } = data;
   const section = (title: string, items: readonly string[]) => [`### ${title} (${n(items.length)})`, items.length ? items.map((item) => `- ${item}`).join("\n") : "- Không có."].join("\n\n");
   return [
     `## Phụ lục — danh sách đầy đủ`,
-    section("Loại giấy có tên dịch khác nhau (quyết định 2)", notes.get("material-name-conflict")),
-    section("Đường dẫn đoán giữa các danh mục không còn hoạt động (quyết định 9)", stats.droppedCrossCategoryAliases),
-    section("Khóa dịch mồ côi (quyết định 10)", Object.entries(stats.unusedTranslationKeys).flatMap(([table, keys]) => keys.map((key) => `${table}: ${key}`))),
-    section("Tệp tạm không đăng ký (quyết định 10)", notes.get("media-stray")),
-    section("Ảnh/video đã đăng ký nhưng chưa trang nào dùng (quyết định 10)", data.unreferencedMedia),
+    [
+      `### Phụ lục A — đường dẫn mới của hình thức, lựa chọn chất liệu và bài viết (quyết định 1)`,
+      `Đường dẫn tiếng Trung / Nhật / Hàn giống English. Ghi cách sửa bên cạnh dòng nào chưa vừa ý.`,
+      `**Hình thức** (${n(urls.shapes.length)}):`,
+      table(["Sản phẩm", "Tiếng Việt", "English"], urlRows(urls.shapes)),
+      `**Lựa chọn chất liệu** (${n(urls.options.length)}):`,
+      table(["Sản phẩm", "Tiếng Việt", "English"], urlRows(urls.options)),
+      `**Bài viết** (${n(urls.posts.length)}):`,
+      table(["Hiện nay (tiếng Việt)", "Tiếng Việt (mới)", "English (mới)"], urls.posts.map((p) => [`\`/blog/${p.today}\``, `\`${p.vi}\``, `\`${p.en}\``])),
+    ].join("\n\n"),
+    [
+      `### Phụ lục B — dữ liệu thừa (quyết định 6 và 7)`,
+      section("Đường dẫn đoán giữa các danh mục không còn hoạt động", stats.droppedCrossCategoryAliases),
+      section("Khóa dịch mồ côi", Object.entries(stats.unusedTranslationKeys).flatMap(([table, keys]) => keys.map((key) => `${table}: ${key}`))),
+      section("Tệp tạm không đăng ký", notes.get("media-stray")),
+      section("Ảnh/video đã đăng ký nhưng chưa thấy nơi nào nhắc tới", data.unreferencedMedia),
+    ].join("\n\n"),
+    [`### Phụ lục C — tiếng Trung / Nhật / Hàn`, section("Loại giấy có tên dịch khác nhau", notes.get("material-name-conflict"))].join("\n\n"),
+    renderSuggestionTables(data),
   ].join("\n\n");
 }
 
 export function renderReport(data: ReportData): string {
-  return [introduction(data), imported(data), `## 2. Những điều cần quyết định`, renderDecisions(data), technicalNotes(data), appendix(data)].join("\n\n") + "\n";
+  const decisions = renderMasterDecisions(data);
+  return [
+    introduction(data, decisions.count),
+    imported(data),
+    `## 2. Tiếng Việt và English — cần chủ shop quyết định`,
+    decisions.text,
+    renderOtherLanguages(data),
+    technicalNotes(data),
+    appendix(data),
+  ].join("\n\n") + "\n";
 }
-

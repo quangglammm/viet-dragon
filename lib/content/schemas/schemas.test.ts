@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { z } from "zod";
-import { menuDocument, postDocument, productDocument, UID } from "@/tests/fixtures/documents";
+import { menuDocument, postDocument, productDocument, slugsOf, UID } from "@/tests/fixtures/documents";
 import { DRAFT_ENTITY_TYPES } from "@/lib/db/content/drafts";
 import {
   DOCUMENT_SCHEMAS,
@@ -21,6 +21,9 @@ function refuses(document: unknown, schema: z.ZodType, path: string) {
   if (!result.success) expect(result.error.issues.map((issue) => issue.path.join("."))).toContain(path);
 }
 
+/** A copy of `record` without `key`. */
+const omit = <T extends object>(record: T, key: keyof T): Partial<T> => Object.fromEntries(Object.entries(record).filter(([name]) => name !== key)) as Partial<T>;
+
 const edit = (change: (doc: ProductDocument) => void): ProductDocument => {
   const doc = productDocument();
   change(doc);
@@ -33,10 +36,18 @@ describe("product document", () => {
     expect(JSON.parse(JSON.stringify(parsed))).toEqual(productDocument());
   });
 
-  it("requires the default (Vietnamese) language", () => {
+  it("requires BOTH master languages, Vietnamese and English", () => {
     refuses(edit((d) => { delete d.i18n.vi; }), productDocumentSchema, "i18n.vi");
+    refuses(edit((d) => { delete d.i18n.en; }), productDocumentSchema, "i18n.en");
     refuses(edit((d) => { delete d.shapes[0].i18n.vi; }), productDocumentSchema, "shapes.0.i18n.vi");
+    refuses(edit((d) => { delete d.shapes[1].i18n.en; }), productDocumentSchema, "shapes.1.i18n.en");
     refuses(edit((d) => { delete d.options[0].i18n.vi?.name; }), productDocumentSchema, "options.0.i18n.vi.name");
+    refuses(edit((d) => { delete d.options[0].i18n.en?.name; }), productDocumentSchema, "options.0.i18n.en.name");
+  });
+
+  it("does not require zh/ja/ko text: those languages fall back to English until translated", () => {
+    expect(productDocumentSchema.safeParse(productDocument()).success).toBe(true);
+    expect(Object.keys(productDocument().i18n)).toEqual(["vi", "en"]);
   });
 
   it("rejects blank text in any script, unknown languages and unknown fields", () => {
@@ -46,20 +57,35 @@ describe("product document", () => {
     refuses(edit((d) => { d.shapes[0].i18n.vi = { name: "A5", description: "" }; }), productDocumentSchema, "shapes.0.i18n.vi.description");
   });
 
-  it("rejects slugs that are not lowercase kebab-case, and icon names with punctuation", () => {
-    refuses(edit((d) => { d.slug = "To Roi"; }), productDocumentSchema, "slug");
+  it("rejects slugs that are not lowercase Latin kebab-case (in any language), and icon names with punctuation", () => {
+    refuses(edit((d) => { d.slugs.vi.slug = "To Roi"; }), productDocumentSchema, "slugs.vi.slug");
+    refuses(edit((d) => { d.slugs.zh.slug = "海报"; }), productDocumentSchema, "slugs.zh.slug");
+    refuses(edit((d) => { d.shapes[0].slugs.ja.slug = "ポスター"; }), productDocumentSchema, "shapes.0.slugs.ja.slug");
     refuses(edit((d) => { d.options[0].icon = "Layers!"; }), productDocumentSchema, "options.0.icon");
   });
 
-  it("keeps ONE URL-segment namespace for shapes, options and their aliases", () => {
-    refuses(edit((d) => { d.options[0].slug = "a5"; }), productDocumentSchema, "options.0.slug");
-    refuses(edit((d) => { d.options[1].aliases = ["kho-a4"]; }), productDocumentSchema, "options.1.aliases.0");
+  it("needs a slug in EVERY language, and no language the site does not have", () => {
+    refuses(edit((d) => { delete (d.slugs as Partial<typeof d.slugs>).ko; }), productDocumentSchema, "slugs.ko");
+    refuses(edit((d) => { delete (d.options[0].slugs as Partial<(typeof d.options)[number]["slugs"]>).en; }), productDocumentSchema, "options.0.slugs.en");
+    refuses({ ...productDocument(), slugs: { ...productDocument().slugs, xx: { slug: "x", aliases: [] } } }, productDocumentSchema, "slugs");
   });
 
-  it("rejects duplicate uids and an alias equal to the canonical URL or to another alias", () => {
+  it("keeps ONE URL-segment namespace per language for shapes, options and their aliases", () => {
+    refuses(edit((d) => { d.options[0].slugs.vi.slug = "a5"; }), productDocumentSchema, "options.0.slugs.vi.slug");
+    refuses(edit((d) => { d.options[1].slugs.vi.aliases = ["kho-a4"]; }), productDocumentSchema, "options.1.slugs.vi.aliases.0");
+    refuses(edit((d) => { d.options[0].slugs.en.slug = "a5-flyer"; }), productDocumentSchema, "options.0.slugs.en.slug");
+  });
+
+  it("lets the same slug text exist in two languages, and one slug per language differ", () => {
+    // 'a5' is the Vietnamese slug of a shape; the same text as an ENGLISH option slug is a different namespace.
+    expect(productDocumentSchema.safeParse(edit((d) => { d.options[0].slugs.en.slug = "a5"; })).success).toBe(true);
+    expect(productDocumentSchema.safeParse(productDocument()).data?.slugs.vi.slug).not.toBe(productDocument().slugs.en.slug);
+  });
+
+  it("rejects duplicate uids and an alias equal to the canonical URL or to another alias, per language", () => {
     refuses(edit((d) => { d.options[0].uid = d.shapes[0].uid; }), productDocumentSchema, "uid");
-    refuses(edit((d) => { d.aliases = [{ category: "marketing", slug: "to-roi" }]; }), productDocumentSchema, "aliases");
-    refuses(edit((d) => { d.aliases = [{ category: "tet", slug: "x" }, { category: "tet", slug: "x" }]; }), productDocumentSchema, "aliases");
+    refuses(edit((d) => { d.slugs.vi.aliases = [{ category: "marketing", slug: "to-roi" }]; }), productDocumentSchema, "slugs.vi.aliases");
+    refuses(edit((d) => { d.slugs.en.aliases = [{ category: "tet", slug: "x" }, { category: "tet", slug: "x" }]; }), productDocumentSchema, "slugs.en.aliases");
   });
 
   it("rejects children that point at a shape the document does not contain", () => {
@@ -136,37 +162,54 @@ describe("post document", () => {
   it("accepts a complete document", () => {
     expect(postDocumentSchema.safeParse(postDocument()).success).toBe(true);
   });
-  it("requires Vietnamese, a real date and a distinct alias", () => {
+  it("requires Vietnamese and English, a real date, a slug per language and a distinct alias", () => {
     refuses({ ...postDocument(), i18n: { en: { title: "x", content: "y" } } }, postDocumentSchema, "i18n.vi");
+    refuses({ ...postDocument(), i18n: { vi: { title: "x", content: "y" } } }, postDocumentSchema, "i18n.en");
     refuses({ ...postDocument(), publishedOn: "15/01/2026" }, postDocumentSchema, "publishedOn");
-    refuses({ ...postDocument(), aliases: ["huong-dan-in-an"] }, postDocumentSchema, "aliases");
+    const doc = postDocument();
+    refuses({ ...doc, slugs: { ...doc.slugs, vi: { slug: "huong-dan-in-an", aliases: ["huong-dan-in-an"] } } }, postDocumentSchema, "slugs.vi.aliases");
+    refuses({ ...doc, slugs: omit(doc.slugs, "ko") }, postDocumentSchema, "slugs.ko");
   });
 });
 
 describe("library documents", () => {
   it("identifies a spec item by kind and key", () => {
-    const doc = { schema: 2, key: "technique/offset", isDefault: false, i18n: { vi: { label: "Offset" } } };
+    const doc = { schema: 2, key: "technique/offset", isDefault: false, i18n: { vi: { label: "Offset" }, en: { label: "Offset" } } };
     expect(specItemDocumentSchema.safeParse(doc).success).toBe(true);
     refuses({ ...doc, key: "offset" }, specItemDocumentSchema, "key");
     refuses({ ...doc, key: "unknown/offset" }, specItemDocumentSchema, "key");
   });
   it.each([
-    ["material", { schema: 2, key: "giay-kraft", icon: null, i18n: { en: { name: "Kraft" } } }],
-    ["trait", { schema: 2, key: "glossy-coat", icon: "Sparkles", i18n: {} }],
-    ["unit", { schema: 2, key: "box", i18n: { en: { label: "Box" } } }],
-    ["post_category", { schema: 2, key: "tips", i18n: { zh: { label: "提示" } } }],
-  ] as const)("requires the Vietnamese row on a %s", (type, doc) => {
-    expect(parseDocument(type, doc).success).toBe(false);
+    ["material", { schema: 2, key: "giay-kraft", icon: null }, { name: "Kraft" }],
+    ["trait", { schema: 2, key: "glossy-coat", icon: "Sparkles" }, { label: "Glossy" }],
+    ["unit", { schema: 2, key: "box" }, { label: "Box" }],
+    ["post_category", { schema: 2, key: "tips" }, { label: "Tips" }],
+  ] as const)("requires Vietnamese AND English on a %s (other languages are optional)", (type, base, text) => {
+    const doc = (languages: readonly string[]) => ({ ...base, i18n: Object.fromEntries(languages.map((l) => [l, text])) });
+    expect(parseDocument(type, doc(["vi", "en"])).success).toBe(true);
+    expect(parseDocument(type, doc(["vi", "en", "zh"])).success).toBe(true);
+    expect(parseDocument(type, doc(["en"])).success).toBe(false);
+    expect(parseDocument(type, doc(["vi"])).success).toBe(false);
+    expect(parseDocument(type, doc(["zh"])).success).toBe(false);
+  });
+  it("accepts a category with a slug in every language, and refuses one without", () => {
+    const category = {
+      schema: 2, key: "tet", slugs: slugsOf("an-pham-tet", "tet-publications", { vi: ["tet"] }), icon: "Gift", cover: null, ogImage: null, position: 3,
+      i18n: { vi: { name: "Ấn phẩm Tết" }, en: { name: "Tet Publications" } },
+    };
+    expect(parseDocument("category", category).success).toBe(true);
+    expect(parseDocument("category", { ...category, slugs: omit(category.slugs, "zh") }).success).toBe(false);
+    expect(parseDocument("category", { ...category, slugs: slugsOf("Ấn phẩm", "tet-publications") }).success).toBe(false);
   });
   it("accepts a Fast Print item and a showcase item", () => {
     expect(
       parseDocument("fast_print_item", {
         schema: 2, uid: UID.product, key: "name-card", image: null, icon: "Zap", turnaroundHours: 2, fromPrice: 120000, unit: "box",
-        position: 0, status: "published", i18n: { vi: { name: "Danh thiếp", tag: "2 giờ" } },
+        position: 0, status: "published", i18n: { vi: { name: "Danh thiếp", tag: "2 giờ" }, en: { name: "Business cards", tag: "2 hours" } },
       }).success,
     ).toBe(true);
     expect(
-      parseDocument("showcase_item", { schema: 2, uid: UID.post, key: "s1", media: "images/a.webp", aspect: "tall", position: 0, i18n: { vi: { label: "Ảnh" } } }).success,
+      parseDocument("showcase_item", { schema: 2, uid: UID.post, key: "s1", media: "images/a.webp", aspect: "tall", position: 0, i18n: { vi: { label: "Ảnh" }, en: { label: "Photo" } } }).success,
     ).toBe(true);
   });
   it("holds a UI-copy namespace for every language side by side", () => {

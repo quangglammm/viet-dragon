@@ -34,8 +34,8 @@ export function table(header: readonly string[], rows: readonly (readonly string
   return [line(header), line(header.map(() => "---")), ...rows.map(line)].join("\n");
 }
 
-export interface Decision {
-  number: number;
+/** What a decision says; its number is given when the report is assembled. */
+export interface DecisionContent {
   title: string;
   today: string;
   after: string;
@@ -43,6 +43,24 @@ export interface Decision {
   facts?: string;
   recommendation: string;
 }
+
+export interface Decision extends DecisionContent {
+  number: number;
+}
+
+/** Information the owner does not need to act on now (the Chinese / Japanese / Korean items). */
+export interface Info {
+  title: string;
+  today: string;
+  facts?: string;
+  /** What happens next, and when. */
+  next: string;
+}
+
+export function renderInfo(info: Info): string {
+  return [`### ${info.title}`, info.today, info.facts ? `**Số liệu:**\n${info.facts}` : "", `**Tiếp theo:** ${info.next}`].filter(Boolean).join("\n\n");
+}
+
 
 export function renderDecision(decision: Decision): string {
   return [

@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import * as schema from "@/lib/db/schema";
 import type { DbExecutor } from "@/lib/db/types";
 import { DOCUMENT_SCHEMA, type PostDocument } from "../schemas";
-import { byText, coverMedia, i18nMap, ogMedia, optional, seoOf, type Composed } from "./shared";
+import { byText, coverMedia, everyLocale, i18nMap, ogMedia, optional, seoOf, type Composed } from "./shared";
 
 export async function composePost(x: DbExecutor, uid: string): Promise<Composed<PostDocument> | null> {
   const [head] = await x
@@ -27,8 +27,10 @@ export async function composePost(x: DbExecutor, uid: string): Promise<Composed<
   const document: PostDocument = {
     schema: DOCUMENT_SCHEMA,
     uid,
-    slug: slugs.find((s) => s.isCanonical)?.slug ?? "",
-    aliases: slugs.filter((s) => !s.isCanonical).map((s) => s.slug).sort(byText),
+    slugs: everyLocale((locale) => {
+      const inLanguage = slugs.filter((s) => s.locale === locale);
+      return { slug: inLanguage.find((s) => s.isCanonical)?.slug ?? "", aliases: inLanguage.filter((s) => !s.isCanonical).map((s) => s.slug).sort(byText) };
+    }),
     category: head.category,
     publishedOn: head.publishedOn,
     readTimeMin: head.readTimeMin,

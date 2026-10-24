@@ -1,13 +1,17 @@
 import { z } from "zod";
 import {
   DOCUMENT_SCHEMA,
+  LOCALES,
+  MASTER_LANGUAGE_NAME,
+  MASTER_LOCALES,
   iconSchema,
+  localizedSlugs,
   mediaKeySchema,
   nonblankText,
   nonNegativeInt,
   perLocale,
   positionSchema,
-  requireDefaultLocale,
+  requireMasterLocales,
   seoFields,
   slugSchema,
   uidSchema,
@@ -22,13 +26,10 @@ export const BULLET_KIND_VALUES = ["feature", "best_for"] as const;
 export const SIZE_TIER_VALUES = ["large", "medium", "small"] as const;
 export const SPEC_KIND_VALUES = ["technique", "finishing", "material_hint"] as const;
 
-const aliasSlugs = z.array(slugSchema);
-
 export const shapeDocumentSchema = z.strictObject({
   uid: uidSchema,
-  slug: slugSchema,
-  /** Old URL segments / `#hash` anchors that still resolve (never dropped by a publish). */
-  aliases: aliasSlugs,
+  /** The URL segment / `#hash` anchor in each language, and the old ones that still resolve (never dropped by a publish). */
+  slugs: localizedSlugs(slugSchema),
   position: positionSchema,
   image: mediaKeySchema.nullable(),
   ogImage: mediaKeySchema.nullable(),
@@ -70,8 +71,7 @@ const prices = z.strictObject({
 
 export const optionDocumentSchema = z.strictObject({
   uid: uidSchema,
-  slug: slugSchema,
-  aliases: aliasSlugs,
+  slugs: localizedSlugs(slugSchema),
   /** Shape uid when the offer is only for that shape; null = offered by the whole product. */
   shape: uidSchema.nullable(),
   /** Material (stock) key. */
@@ -125,9 +125,8 @@ const productBase = z.strictObject({
   schema: z.literal(DOCUMENT_SCHEMA),
   uid: uidSchema,
   category: slugSchema,
-  slug: slugSchema,
-  /** Old (category, slug) URLs that still resolve — in any category. */
-  aliases: z.array(productAlias),
+  /** The product's slug in each language (always in its own category), and the old (category, slug) URLs that still resolve — in any category. */
+  slugs: localizedSlugs(productAlias),
   status: z.enum(PRODUCT_STATUSES),
   position: positionSchema,
   cover: mediaKeySchema.nullable(),
@@ -153,22 +152,26 @@ function duplicates<T>(values: readonly T[], keyOf: (value: T) => string): Set<s
   return repeated;
 }
 
-/** Shapes, options and their aliases share ONE URL-segment namespace per product. */
+/** Shapes, options and their aliases share ONE URL-segment namespace per product — separately in each language. */
 function checkSegmentNamespace(product: ProductBase, ctx: z.RefinementCtx): void {
-  const owner = new Map<string, string>();
-  const claim = (slug: string, what: string, path: Path) => {
-    const taken = owner.get(slug);
-    if (taken) ctx.addIssue({ code: "custom", message: `Đường dẫn «${slug}» đang bị dùng hai lần (${taken} và ${what}).`, path });
-    else owner.set(slug, what);
-  };
-  product.shapes.forEach((shape, i) => {
-    claim(shape.slug, `hình dạng ${i + 1}`, ["shapes", i, "slug"]);
-    shape.aliases.forEach((alias, a) => claim(alias, `bí danh của hình dạng ${i + 1}`, ["shapes", i, "aliases", a]));
-  });
-  product.options.forEach((option, i) => {
-    claim(option.slug, `tùy chọn ${i + 1}`, ["options", i, "slug"]);
-    option.aliases.forEach((alias, a) => claim(alias, `bí danh của tùy chọn ${i + 1}`, ["options", i, "aliases", a]));
-  });
+  for (const locale of LOCALES) {
+    const owner = new Map<string, string>();
+    const claim = (slug: string, what: string, path: Path) => {
+      const taken = owner.get(slug);
+      if (taken) ctx.addIssue({ code: "custom", message: `Đường dẫn «${slug}» (${locale}) đang bị dùng hai lần (${taken} và ${what}).`, path });
+      else owner.set(slug, what);
+    };
+    product.shapes.forEach((shape, i) => {
+      const entry = shape.slugs[locale];
+      claim(entry.slug, `hình dạng ${i + 1}`, ["shapes", i, "slugs", locale, "slug"]);
+      entry.aliases.forEach((alias, a) => claim(alias, `bí danh của hình dạng ${i + 1}`, ["shapes", i, "slugs", locale, "aliases", a]));
+    });
+    product.options.forEach((option, i) => {
+      const entry = option.slugs[locale];
+      claim(entry.slug, `tùy chọn ${i + 1}`, ["options", i, "slugs", locale, "slug"]);
+      entry.aliases.forEach((alias, a) => claim(alias, `bí danh của tùy chọn ${i + 1}`, ["options", i, "slugs", locale, "aliases", a]));
+    });
+  }
 }
 
 function checkIdentity(product: ProductBase, ctx: z.RefinementCtx): void {
@@ -176,23 +179,29 @@ function checkIdentity(product: ProductBase, ctx: z.RefinementCtx): void {
   for (const uid of duplicates(uids, (value) => value)) {
     ctx.addIssue({ code: "custom", message: `Mã định danh ${uid} bị trùng trong sản phẩm.`, path: ["uid"] });
   }
-  const own = `${product.category}/${product.slug}`;
-  const aliasKeys = product.aliases.map((a) => `${a.category}/${a.slug}`);
-  if (aliasKeys.includes(own)) ctx.addIssue({ code: "custom", message: "Đường dẫn chính không thể đồng thời là bí danh.", path: ["aliases"] });
-  for (const key of duplicates(aliasKeys, (value) => value)) {
-    ctx.addIssue({ code: "custom", message: `Bí danh «${key}» bị trùng.`, path: ["aliases"] });
+  for (const locale of LOCALES) {
+    const { slug, aliases } = product.slugs[locale];
+    const aliasKeys = aliases.map((a) => `${a.category}/${a.slug}`);
+    if (aliasKeys.includes(`${product.category}/${slug}`)) {
+      ctx.addIssue({ code: "custom", message: `Đường dẫn chính (${locale}) không thể đồng thời là bí danh.`, path: ["slugs", locale, "aliases"] });
+    }
+    for (const key of duplicates(aliasKeys, (value) => value)) {
+      ctx.addIssue({ code: "custom", message: `Bí danh «${key}» (${locale}) bị trùng.`, path: ["slugs", locale, "aliases"] });
+    }
   }
 }
 
 function checkChildren(product: ProductBase, ctx: z.RefinementCtx): void {
   const shapeUids = new Set(product.shapes.map((s) => s.uid));
-  product.shapes.forEach((shape, i) => requireDefaultLocale(shape.i18n, ctx, ["shapes", i]));
+  product.shapes.forEach((shape, i) => requireMasterLocales(shape.i18n, ctx, ["shapes", i]));
   for (const position of duplicates(product.shapes, (s) => String(s.position))) {
     ctx.addIssue({ code: "custom", message: `Vị trí hình dạng ${position} bị trùng.`, path: ["shapes"] });
   }
   product.options.forEach((option, i) => {
-    if (option.i18n.vi?.name === undefined) {
-      ctx.addIssue({ code: "custom", message: "Tùy chọn cần có tên tiếng Việt.", path: ["options", i, "i18n", "vi", "name"] });
+    for (const locale of MASTER_LOCALES) {
+      if (option.i18n[locale]?.name === undefined) {
+        ctx.addIssue({ code: "custom", message: `Tùy chọn cần có tên ${MASTER_LANGUAGE_NAME[locale]}.`, path: ["options", i, "i18n", locale, "name"] });
+      }
     }
     if (option.shape !== null && !shapeUids.has(option.shape)) {
       ctx.addIssue({ code: "custom", message: "Tùy chọn trỏ tới hình dạng không có trong sản phẩm.", path: ["options", i, "shape"] });
@@ -222,7 +231,7 @@ function checkChildren(product: ProductBase, ctx: z.RefinementCtx): void {
 
 /** Rules that span fields. The database repeats the hard ones as constraints; these give field-level messages first. */
 export const productDocumentSchema = productBase.superRefine((product, ctx) => {
-  requireDefaultLocale(product.i18n, ctx, []);
+  requireMasterLocales(product.i18n, ctx, []);
   checkIdentity(product, ctx);
   checkSegmentNamespace(product, ctx);
   checkChildren(product, ctx);

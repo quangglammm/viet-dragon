@@ -5,7 +5,7 @@ import { routing } from "@/i18n/routing";
 // Helpers for turning rows into documents (lib/content/schemas). `compose` and `apply` are inverses: whatever an
 // editor saves must come back out of the rows unchanged, so everything here is deterministic.
 
-type LocaleCode = (typeof routing.locales)[number];
+export type LocaleCode = (typeof routing.locales)[number];
 
 /** A document and the `version` of the live rows it was composed from (the optimistic-lock token). */
 export interface Composed<T> {
@@ -26,6 +26,11 @@ export function i18nMap<R extends { locale: string }, T>(rows: readonly R[], bui
     if (row) map[locale] = build(row);
   }
   return map;
+}
+
+/** A value for every language, built by `build(locale)` — for slugs, which exist in all of them. */
+export function everyLocale<T>(build: (locale: LocaleCode) => T): Record<LocaleCode, T> {
+  return Object.fromEntries(routing.locales.map((locale) => [locale, build(locale)])) as Record<LocaleCode, T>;
 }
 
 /** `{ [key]: value }`, or nothing when the value is null — optional document fields are absent, never null. */

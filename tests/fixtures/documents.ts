@@ -1,4 +1,4 @@
-import type { MenuDocument, PostDocument, ProductDocument } from "@/lib/content/schemas";
+import { LOCALES, type LocaleCode, type MenuDocument, type PostDocument, type ProductDocument } from "@/lib/content/schemas";
 
 // Small, valid documents for the schema tests. Builders return fresh objects, so a test may mutate its copy.
 
@@ -11,13 +11,20 @@ export const UID = {
   post: "66666666-6666-4666-8666-666666666666",
 } as const;
 
+/**
+ * The slugs of one entity in every language: Vietnamese and English differ, zh/ja/ko copy English (Latin letters only),
+ * and `extra` adds old URLs to chosen languages.
+ */
+export function slugsOf<A = string>(vi: string, en: string, extra: Partial<Record<LocaleCode, A[]>> = {}): Record<LocaleCode, { slug: string; aliases: A[] }> {
+  return Object.fromEntries(LOCALES.map((locale) => [locale, { slug: locale === "vi" ? vi : en, aliases: extra[locale] ?? [] }])) as Record<LocaleCode, { slug: string; aliases: A[] }>;
+}
+
 export function productDocument(): ProductDocument {
   return {
     schema: 2,
     uid: UID.product,
     category: "marketing",
-    slug: "to-roi",
-    aliases: [{ category: "marketing", slug: "flyer" }],
+    slugs: slugsOf("to-roi", "flyers", { vi: [{ category: "marketing", slug: "flyer" }], en: [{ category: "marketing", slug: "to-roi" }] }),
     status: "published",
     position: 0,
     cover: "images/product/to-roi.webp",
@@ -29,8 +36,7 @@ export function productDocument(): ProductDocument {
     shapes: [
       {
         uid: UID.shapeA5,
-        slug: "a5",
-        aliases: [],
+        slugs: slugsOf("a5", "a5-flyer"),
         position: 0,
         image: null,
         ogImage: null,
@@ -38,19 +44,17 @@ export function productDocument(): ProductDocument {
       },
       {
         uid: UID.shapeA4,
-        slug: "a4",
-        aliases: ["kho-a4"],
+        slugs: slugsOf("a4", "a4-flyer", { vi: ["kho-a4"] }),
         position: 1,
         image: null,
         ogImage: null,
-        i18n: { vi: { name: "A4" } },
+        i18n: { vi: { name: "A4" }, en: { name: "A4 flyer" } },
       },
     ],
     options: [
       {
         uid: UID.option,
-        slug: "giay-loai-c",
-        aliases: [],
+        slugs: slugsOf("giay-loai-c", "type-c-paper"),
         shape: null,
         material: "giay-loai-c",
         position: 0,
@@ -69,8 +73,7 @@ export function productDocument(): ProductDocument {
       },
       {
         uid: UID.optionForShape,
-        slug: "giay-loai-c-a5",
-        aliases: [],
+        slugs: slugsOf("giay-loai-c-a5", "type-c-paper-a5"),
         shape: UID.shapeA5,
         material: "giay-loai-c",
         position: 1,
@@ -80,7 +83,7 @@ export function productDocument(): ProductDocument {
         prices: { base: 1000, doubleSided: null, foil: null, foil2: null },
         unit: null,
         ogImage: null,
-        i18n: { vi: { name: "Giấy loại C khổ A5" } },
+        i18n: { vi: { name: "Giấy loại C khổ A5" }, en: { name: "Type C paper, A5" } },
         bullets: [],
         images: { default: [], pure: [] },
       },
@@ -124,8 +127,7 @@ export function postDocument(): PostDocument {
   return {
     schema: 2,
     uid: UID.post,
-    slug: "huong-dan-in-an",
-    aliases: ["in-an-co-ban"],
+    slugs: slugsOf("huong-dan-in-an", "printing-guide", { vi: ["in-an-co-ban"] }),
     category: "tips",
     publishedOn: "2026-01-15",
     readTimeMin: 4,

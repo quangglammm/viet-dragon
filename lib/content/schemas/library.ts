@@ -7,7 +7,8 @@ import {
   nonNegativeInt,
   perLocale,
   positionSchema,
-  requireDefaultLocale,
+  localizedSlugs,
+  requireMasterLocales,
   seoFields,
   slugSchema,
   uidSchema,
@@ -17,20 +18,20 @@ import { PRODUCT_STATUSES, SPEC_KIND_VALUES } from "./product";
 
 // Documents for everything that is not a product, menu or post (docs/data-model.md §4). Vocabulary records are
 // identified by an IMMUTABLE `key`; Fast Print and showcase items by `uid` (their `key` is an editable attribute).
-// Each carries `schema` like every document and has the default-language rule.
+// Each carries `schema` like every document and has the master-language rule (Vietnamese and English).
 
 const schema = z.literal(DOCUMENT_SCHEMA);
 const label = perLocale(z.strictObject({ label: nonblankText }));
 
-function withDefaultLanguage<T extends z.ZodType<{ i18n: Partial<Record<string, unknown>> }>>(document: T) {
-  return document.superRefine((value, ctx) => requireDefaultLocale(value.i18n, ctx, []));
+function withMasterLanguages<T extends z.ZodType<{ i18n: Partial<Record<string, unknown>> }>>(document: T) {
+  return document.superRefine((value, ctx) => requireMasterLocales(value.i18n, ctx, []));
 }
 
-export const materialDocumentSchema = withDefaultLanguage(
+export const materialDocumentSchema = withMasterLanguages(
   z.strictObject({ schema, key: slugSchema, icon: iconSchema.nullable(), i18n: perLocale(z.strictObject({ name: nonblankText })) }),
 );
 
-export const traitDocumentSchema = withDefaultLanguage(
+export const traitDocumentSchema = withMasterLanguages(
   z.strictObject({
     schema,
     key: slugSchema,
@@ -39,13 +40,13 @@ export const traitDocumentSchema = withDefaultLanguage(
   }),
 );
 
-export const unitDocumentSchema = withDefaultLanguage(z.strictObject({ schema, key: slugSchema, i18n: label }));
+export const unitDocumentSchema = withMasterLanguages(z.strictObject({ schema, key: slugSchema, i18n: label }));
 
-export const postCategoryDocumentSchema = withDefaultLanguage(z.strictObject({ schema, key: slugSchema, i18n: label }));
+export const postCategoryDocumentSchema = withMasterLanguages(z.strictObject({ schema, key: slugSchema, i18n: label }));
 
 /** `key` is `<kind>/<item key>` (the pair is the immutable identity), e.g. `technique/offset`. */
 const SPEC_ITEM_KEY = new RegExp(`^(${SPEC_KIND_VALUES.join("|")})/[a-z0-9]+(-[a-z0-9]+)*$`);
-export const specItemDocumentSchema = withDefaultLanguage(
+export const specItemDocumentSchema = withMasterLanguages(
   z.strictObject({
     schema,
     key: z.string().regex(SPEC_ITEM_KEY, "Khóa phải có dạng loại/mã, ví dụ technique/offset."),
@@ -54,10 +55,12 @@ export const specItemDocumentSchema = withDefaultLanguage(
   }),
 );
 
-export const categoryDocumentSchema = withDefaultLanguage(
+export const categoryDocumentSchema = withMasterLanguages(
   z.strictObject({
     schema,
     key: slugSchema,
+    /** The category segment of every URL in each language (`tiep-thi`, `tet-publications`), and the old ones that still resolve. */
+    slugs: localizedSlugs(slugSchema),
     icon: iconSchema,
     cover: mediaKeySchema.nullable(),
     ogImage: mediaKeySchema.nullable(),
@@ -66,7 +69,7 @@ export const categoryDocumentSchema = withDefaultLanguage(
   }),
 );
 
-export const fastPrintItemDocumentSchema = withDefaultLanguage(
+export const fastPrintItemDocumentSchema = withMasterLanguages(
   z.strictObject({
     schema,
     uid: uidSchema,
@@ -84,7 +87,7 @@ export const fastPrintItemDocumentSchema = withDefaultLanguage(
 );
 
 export const SHOWCASE_ASPECT_VALUES = ["tall", "square", "wide"] as const;
-export const showcaseItemDocumentSchema = withDefaultLanguage(
+export const showcaseItemDocumentSchema = withMasterLanguages(
   z.strictObject({
     schema,
     uid: uidSchema,

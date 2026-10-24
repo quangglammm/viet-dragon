@@ -58,10 +58,31 @@ describe("the owner report", () => {
     report = renderReport(seeded.inspection);
   });
 
-  it("is written in Vietnamese and lists all eleven decisions, each with a place to answer", () => {
-    for (let number = 1; number <= 11; number += 1) expect(report).toContain(`### Quyết định ${number} — `);
-    expect(report.match(/\*\*Quyết định:\*\* ☐ Đồng ý/g)).toHaveLength(11);
+  it("puts Vietnamese and English first: eight decisions, the URL system leading, each with a place to answer", () => {
+    for (let number = 1; number <= 8; number += 1) expect(report).toContain(`### Quyết định ${number} — `);
+    expect(report).not.toContain("### Quyết định 9 — ");
+    expect(report.match(/\*\*Quyết định:\*\* ☐ Đồng ý/g)).toHaveLength(8);
+    expect(report).toContain("### Quyết định 1 — Hệ thống đường dẫn (URL) theo từng ngôn ngữ");
     expect(report).toContain("Chưa có gì thay đổi trên website");
+    expect(report.indexOf("## 2. Tiếng Việt và English")).toBeLessThan(report.indexOf("## 3. Tiếng Trung, tiếng Nhật, tiếng Hàn"));
+    expect(report.indexOf("## 3. ")).toBeLessThan(report.indexOf("## 4. Ghi chú kỹ thuật"));
+  });
+
+  it("proposes the localized URLs: fixed words, categories and every product in Vietnamese and English", () => {
+    for (const expected of [
+      "| Sản phẩm | /san-pham | /products |", "| Blog | /bai-viet | /blog |", "| `tet` | /an-pham-tet | /tet-publications |",
+      "`/products/marketing/to-roi` | `/san-pham/tiep-thi/to-roi` | `/en/products/marketing/flyers-leaflets`",
+      "toàn bộ đường dẫn tiếng Việt sẽ đổi",
+    ]) expect(report).toContain(expected);
+    expect(report.match(/\| `\/products\/[a-z]+\/[a-z0-9-]+` \| `\/san-pham\//g)).toHaveLength(25);
+  });
+
+  it("makes clear that Chinese, Japanese and Korean need no decision now, and lists every suggested text for review", () => {
+    expect(report).toContain("Không cần chủ shop quyết định các mục này bây giờ");
+    expect(report).toContain("### Phụ lục D — bản dịch đề xuất bằng AI (99 đoạn)");
+    for (const sample of ["`glossy-coat` — tên", "亮面涂层", "グロスコート", "유광 코팅", "Giấy loại C 250-300gsm (dòng 3)"]) expect(report).toContain(sample);
+    expect(report.match(/\| ☐ \|/g)).toHaveLength(24 + 9);
+    for (const appendix of ["Phụ lục A", "Phụ lục B", "Phụ lục C", "Phụ lục D"]) expect(report).toContain(`### ${appendix}`);
   });
 
   it("states figures taken from the run, in Vietnamese number format", () => {

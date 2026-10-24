@@ -1,18 +1,61 @@
+import { LOCALES } from "../localized";
 import type { SeedStats } from "../context";
 import type { Notes } from "../notes";
 import type { ReportData } from "./collect";
-import { counted, lines, n, percent, renderDecision, type Decision } from "./format";
+import { counted, lines, n, percent, renderDecision, table, type DecisionContent } from "./format";
+import { FIXED_WORDS } from "./url-proposal";
 
-// The eleven places where today's data is inconsistent and the owner must choose (docs/data-model.md §8).
-// Each states what visitors see today, what the import did, and a recommendation — every figure comes from the run.
+// Part 2 of the report: what the owner decides for Vietnamese and English (the two languages that must be complete and
+// reviewed first). Each states what visitors see today, what the import did, and a recommendation — every figure
+// comes from the run. The Chinese / Japanese / Korean items are Part 3 (other-languages.ts): information, not decisions.
 
 const sum = (values: readonly number[]): number => values.reduce((total, value) => total + value, 0);
 
-function sizesAndSpecs(data: ReportData): Decision {
+function urlSystem(data: ReportData): DecisionContent {
+  const { urls } = data;
+  const fixedWords = table(
+    ["Trang", "Tiếng Việt", "English (中文 / 日本語 / 한국어 theo English)"],
+    [
+      ["Sản phẩm", `/${FIXED_WORDS.products.vi}`, `/${FIXED_WORDS.products.en}`],
+      ["In nhanh lấy liền", `/${FIXED_WORDS.products.vi}/${FIXED_WORDS.fastPrint.vi}`, `/${FIXED_WORDS.products.en}/${FIXED_WORDS.fastPrint.en}`],
+      ["Blog", `/${FIXED_WORDS.blog.vi}`, `/${FIXED_WORDS.blog.en}`],
+    ],
+  );
+  const categories = table(["Danh mục (mã nội bộ)", "Tiếng Việt", "English"], urls.categories.map((c) => [`\`${c.key}\``, `/${c.vi}`, `/${c.en}`]));
+  const products = table(["Đường dẫn hiện nay (mọi ngôn ngữ)", "Tiếng Việt (mới)", "English (mới)"], urls.products.map((p) => [`\`/products/${p.key}\``, `\`${p.vi}\``, `\`${p.en}\``]));
+  const kept = LOCALES.map((l) => `${l}: ${n(urls.oldUrlsKept[l])}`).join(", ");
+  return {
+    title: "Hệ thống đường dẫn (URL) theo từng ngôn ngữ",
+    today:
+      "Mọi ngôn ngữ đang dùng chung một đường dẫn gốc tiếng Việt, chỉ khác phần đầu: `/products/marketing/to-roi`, `/en/products/marketing/to-roi`, `/zh/products/marketing/to-roi`… Các từ cố định (`products`, `blog`, `fast-print`) và tên danh mục cũng đều là tiếng Anh.",
+    facts: [
+      lines([
+        "Đề xuất: **mỗi ngôn ngữ có đường dẫn riêng** — từ cố định, danh mục, sản phẩm, hình thức, chất liệu và bài viết. Chỉ dùng chữ Latin không dấu (a-z, 0-9, gạch nối) ở mọi ngôn ngữ, nên tiếng Trung / Nhật / Hàn dùng lại đường dẫn của English.",
+        "Tiếng Việt vẫn là ngôn ngữ mặc định (không có tiền tố `/vi`); các ngôn ngữ khác có tiền tố (`/en`, `/zh`, `/ja`, `/ko`).",
+      ]),
+      "**Từ cố định** (áp dụng khi website chuyển sang đọc từ cơ sở dữ liệu):",
+      fixedWords,
+      "**Danh mục:**",
+      categories,
+      `**${n(urls.products.length)} sản phẩm** (đường dẫn đầy đủ):`,
+      products,
+      lines([
+        `Còn ${n(urls.shapes.length)} hình thức, ${n(urls.options.length)} lựa chọn chất liệu và ${n(urls.posts.length)} bài viết có đường dẫn riêng — danh sách đầy đủ ở Phụ lục A.`,
+        "Tiếng Anh do máy tạo từ tên tiếng Anh (ví dụ «Flyers & Leaflets» → `flyers-leaflets`); có thể chưa đẹp ở một vài chỗ — ghi cách sửa vào Phụ lục A.",
+        `**Đường dẫn cũ vẫn mở được:** mọi đường dẫn đang chạy hiện nay sẽ tự chuyển hướng (mã 308) sang đường dẫn mới của đúng ngôn ngữ. Số đường dẫn cũ được giữ theo ngôn ngữ: ${kept}.`,
+        "**Rủi ro cần biết:** tiếng Việt là ngôn ngữ chính và đã được Google lập chỉ mục; toàn bộ đường dẫn tiếng Việt sẽ đổi (ví dụ `/products/marketing/to-roi` → `/san-pham/tiep-thi/to-roi`). Chuyển hướng 308 giữ lại gần như toàn bộ giá trị tìm kiếm, nhưng thứ hạng có thể dao động vài tuần.",
+      ]),
+    ].join("\n\n"),
+    after: "Cơ sở dữ liệu đã có sẵn đường dẫn riêng cho từng ngôn ngữ (tiếng Việt giữ đường dẫn hiện nay; English tạo mới; tiếng Trung/Nhật/Hàn sao chép English) và giữ đường dẫn cũ làm đường dẫn chuyển hướng. Website chưa đổi gì.",
+    recommendation:
+      "Đồng ý. Đổi **một lần duy nhất** khi đưa hệ thống mới vào chạy (không đổi từng phần), giữ chuyển hướng 308 lâu dài, và gửi sơ đồ trang (sitemap) mới cùng thẻ hreflang cho từng ngôn ngữ để Google hiểu các phiên bản tương ứng.",
+  };
+}
+
+function sizesAndSpecs(data: ReportData): DecisionContent {
   const { replay } = data;
   const { stats } = data.outcome;
   return {
-    number: 1,
     title: "Kích thước và thông số in thay đổi theo ngôn ngữ và theo chất liệu",
     today:
       "Trang sản phẩm tự suy ra danh sách kích thước, công nghệ hoàn thiện và chất liệu gợi ý từ *tên* sản phẩm — mà tên lại đổi theo ngôn ngữ đang xem. Vì thế cùng một sản phẩm có thể hiện danh sách khác nhau tùy ngôn ngữ hoặc tùy chất liệu đang chọn.",
@@ -26,51 +69,9 @@ function sizesAndSpecs(data: ReportData): Decision {
   };
 }
 
-function materialNames(notes: Notes): Decision {
-  const conflicts = notes.get("material-name-conflict");
-  return {
-    number: 2,
-    title: "Cùng một loại giấy nhưng tên khác nhau giữa các sản phẩm (tiếng Trung / Nhật / Hàn)",
-    today: "Một loại giấy dùng chung ở nhiều sản phẩm đang được dịch bằng những cách gọi khác nhau.",
-    facts: counted(`${n(conflicts.length)} cặp (loại giấy × ngôn ngữ) bị lệch.`, conflicts),
-    after: "Tên được dùng nhiều nhất trở thành tên chung của loại giấy. Tên riêng của từng sản phẩm vẫn được giữ làm tiêu đề thẻ, nên website hiển thị y như cũ.",
-    recommendation: "Giữ nguyên lúc này; muốn thống nhất thì sửa một lần trong thư viện chất liệu khi trang quản trị hoàn thành.",
-  };
-}
-
-function sharedTranslations(data: ReportData): Decision {
-  const { stats } = data.outcome;
-  const shared = Object.entries(stats.sharedListings);
-  const conflicts = data.outcome.notes.get("title-precedence-differs");
-  return {
-    number: 3,
-    title: "Sản phẩm xuất hiện ở hai danh mục dùng chung một bản dịch; tiêu đề có hai nguồn khác nhau",
-    today: "Một số sản phẩm (ví dụ tờ rơi, lịch) có ở cả danh mục thường và danh mục Tết nhưng chỉ có một bản dịch tiếng Trung/Nhật/Hàn cho cả hai. Ngoài ra tiêu đề zh/ja/ko có hai nơi lưu và hai trang lấy theo thứ tự khác nhau.",
-    facts: lines([
-      `${n(shared.length)} sản phẩm nằm ở nhiều danh mục: ${shared.map(([id, categories]) => `${id} (${categories.join(", ")})`).join("; ")}.`,
-      `${n(conflicts.length)} trường hợp (sản phẩm × ngôn ngữ) có tiêu đề ở hai nơi khác nhau.`,
-    ]),
-    after: "Cả hai bản dùng chung bản dịch hiện có; khi tiêu đề có hai nguồn, nguồn nằm trong chính sản phẩm được ưu tiên (đúng như trang chi tiết đang làm).",
-    recommendation: "Viết nội dung riêng cho phiên bản Tết khi có thời gian, và chọn một tiêu đề đúng cho các trường hợp bị lệch.",
-  };
-}
-
-function specPhrases(notes: Notes): Decision {
-  const dup = notes.get("spec-same-vi-different-translation");
-  return {
-    number: 4,
-    title: "Cùng một cụm tiếng Việt nhưng bản dịch tiếng Nhật/Hàn khác nhau",
-    today: "Một số cụm thông số tiếng Việt giống hệt nhau ở các danh sách khác nhau nhưng được dịch khác nhau sang tiếng Nhật hoặc tiếng Hàn.",
-    facts: counted(`${n(dup.length)} cụm.`, dup),
-    after: "Mỗi bản dịch là một mục thông số riêng, nên website hiển thị y như cũ.",
-    recommendation: "Gộp thành một bản dịch khi có thời gian.",
-  };
-}
-
-function menuDifferences(stats: SeedStats): Decision {
+function menuDifferences(stats: SeedStats): DecisionContent {
   const { menu } = stats;
   return {
-    number: 5,
     title: "Menu khác với danh mục sản phẩm",
     today: "Menu lớn không chỉ lấy tên và ảnh từ sản phẩm: nhiều mục có tên, ảnh hoặc nhãn «In nhanh» riêng.",
     facts: lines([
@@ -83,24 +84,11 @@ function menuDifferences(stats: SeedStats): Decision {
   };
 }
 
-function summarizingBullets(notes: Notes): Decision {
-  const diffs = notes.get("bullet-count-differs-by-locale");
-  return {
-    number: 6,
-    title: "Gạch đầu dòng tiếng Trung/Nhật/Hàn ít hơn hoặc gộp lại so với tiếng Việt",
-    today: "Một số lựa chọn có ít gạch đầu dòng hơn trong tiếng Trung/Nhật/Hàn; có chỗ một dòng tóm tắt cả ba ý của bản tiếng Việt.",
-    facts: counted(`${n(diffs.length)} danh sách bị lệch số dòng giữa các ngôn ngữ.`, diffs),
-    after: "Mỗi ngôn ngữ giữ đúng các dòng nó có. Với dòng thiếu, website tạm hiện bản tiếng Anh cho đến khi được viết lại.",
-    recommendation: "Viết lại các dòng còn thiếu hoặc gộp lại cho khớp tiếng Việt.",
-  };
-}
-
-function icons(data: ReportData): Decision {
+function icons(data: ReportData): DecisionContent {
   const missing = data.icons.filter((icon) => !icon.cardCanDraw);
   const affected = sum(missing.map((icon) => icon.options));
   const total = sum(data.icons.map((icon) => icon.options));
   return {
-    number: 7,
     title: "Biểu tượng mà thẻ chất liệu hiện chưa vẽ được",
     today: "Dữ liệu dùng nhiều biểu tượng hơn số mà thẻ chất liệu biết vẽ; những lựa chọn còn lại hiện chỉ hiện một biểu tượng chung.",
     facts: lines([
@@ -112,10 +100,9 @@ function icons(data: ReportData): Decision {
   };
 }
 
-function duplicateUrls(notes: Notes): Decision {
+function duplicateUrls(notes: Notes): DecisionContent {
   const collisions = notes.get("option-slug-collision");
   return {
-    number: 8,
     title: "Hai lựa chọn có cùng đường dẫn",
     today: "Trong cùng một sản phẩm, có lựa chọn trùng đường dẫn nên chỉ một trong hai truy cập được.",
     facts: counted(`${n(collisions.length)} trường hợp.`, collisions),
@@ -124,26 +111,27 @@ function duplicateUrls(notes: Notes): Decision {
   };
 }
 
-function droppedUrls(stats: SeedStats): Decision {
+function droppedUrls(stats: SeedStats): DecisionContent {
   return {
-    number: 9,
     title: "Đường dẫn «tự suy ra» giữa các danh mục sẽ không còn hoạt động",
-    today: "Mã website hiện cố gắng đoán sản phẩm cho mọi tổ hợp danh mục + tên (ví dụ /products/office/lich-tet hiện ra sản phẩm của danh mục Tết). Không có liên kết nào trên website trỏ tới các đường dẫn đoán này.",
+    today:
+      "Mã website hiện cố gắng đoán sản phẩm cho mọi tổ hợp danh mục + tên (ví dụ /products/office/lich-tet hiện ra sản phẩm của danh mục Tết). Không có liên kết nào trên website trỏ tới các đường dẫn đoán này.",
     facts: [
-      `- Giữ lại ${n(stats.productAliasRows)} đường dẫn cũ/đường dẫn khác của sản phẩm trong đúng danh mục của nó, và ${n(stats.segmentAliasRows)} đường dẫn cũ của hình thức/chất liệu — các liên kết hiện có (kể cả banner trang chủ) đều vẫn hoạt động.`,
+      lines([
+        `Giữ lại các đường dẫn cũ/đường dẫn khác của sản phẩm trong đúng danh mục của nó (${n(stats.productAliasRows)} dòng cho cả 5 ngôn ngữ) và đường dẫn cũ của hình thức/chất liệu (${n(stats.segmentAliasRows)} dòng) — các liên kết hiện có (kể cả banner trang chủ) đều vẫn hoạt động ở mọi ngôn ngữ.`,
+      ]),
       counted(`Không nhập ${n(stats.droppedCrossCategoryAliases.length)} đường dẫn đoán giữa các danh mục; chúng sẽ trả về «không tìm thấy».`, stats.droppedCrossCategoryAliases, 4),
     ].join("\n"),
     after: "Các đường dẫn đoán này không còn hoạt động.",
-    recommendation: "Đồng ý. Chỉ cần giữ lại nếu bạn biết có website khác hoặc kết quả Google đang trỏ tới một đường dẫn trong danh sách (xem Phụ lục).",
+    recommendation: "Đồng ý. Chỉ cần giữ lại nếu bạn biết có website khác hoặc kết quả Google đang trỏ tới một đường dẫn trong danh sách (xem Phụ lục B).",
   };
 }
 
-function leftovers(data: ReportData): Decision {
+function leftovers(data: ReportData): DecisionContent {
   const { notes, stats } = data.outcome;
   const orphans = sum(Object.values(stats.unusedTranslationKeys).map((keys) => keys.length));
   const strays = notes.get("media-stray");
   return {
-    number: 10,
     title: "Dữ liệu thừa: khóa dịch mồ côi, tệp tạm, ảnh không dùng",
     today: "Trong mã và thư mục ảnh còn sót những thứ không được trang nào dùng.",
     facts: [
@@ -158,10 +146,9 @@ function leftovers(data: ReportData): Decision {
   };
 }
 
-function dormantFields(data: ReportData): Decision {
+function dormantFields(data: ReportData): DecisionContent {
   const { dormant } = data;
   return {
-    number: 11,
     title: "Giá, công tắc «ép kim / hai mặt» và huy hiệu: có hiển thị trên website không?",
     today: "Mã website có chỗ cho giá, công tắc ẩn ép kim/in hai mặt và huy hiệu của hình thức, nhưng không trang nào hiển thị chúng.",
     facts: lines([
@@ -173,12 +160,9 @@ function dormantFields(data: ReportData): Decision {
   };
 }
 
-export function renderDecisions(data: ReportData): string {
+/** The decisions for Vietnamese and English, numbered in the order they are asked. */
+export function renderMasterDecisions(data: ReportData): { text: string; count: number } {
   const { notes, stats } = data.outcome;
-  return [
-    sizesAndSpecs(data), materialNames(notes), sharedTranslations(data), specPhrases(notes), menuDifferences(stats), summarizingBullets(notes),
-    icons(data), duplicateUrls(notes), droppedUrls(stats), leftovers(data), dormantFields(data),
-  ]
-    .map(renderDecision)
-    .join("\n\n---\n\n");
+  const decisions = [urlSystem(data), sizesAndSpecs(data), menuDifferences(stats), icons(data), duplicateUrls(notes), droppedUrls(stats), leftovers(data), dormantFields(data)];
+  return { text: decisions.map((content, index) => renderDecision({ number: index + 1, ...content })).join("\n\n---\n\n"), count: decisions.length };
 }

@@ -8,6 +8,7 @@ import { seedMaterials } from "./steps/materials";
 import { seedOptions } from "./steps/options";
 import { seedProducts } from "./steps/catalog";
 import { seedRevisions } from "./steps/revisions";
+import { seedSuggestedTranslations } from "./steps/suggestions";
 import { seedBlog } from "./steps/blog";
 import { seedLegacy } from "./steps/legacy";
 import { seedFastPrint, seedShowcase } from "./steps/merchandising";
@@ -23,7 +24,10 @@ export interface SeedOutcome {
   materials: Map<string, MaterialRecord>;
   optionModels: OptionModel[];
   products: Map<string, ProductRecord>;
+  /** Revision 1 of every entity (the original data). */
   revisions: number;
+  /** Entities that got a revision 2 with AI-suggested zh/ja/ko text. */
+  suggestionRevisions: number;
 }
 
 /** Writes the whole content model from the site's sources. Call inside ONE transaction. */
@@ -47,5 +51,6 @@ export async function runSeed(tx: Tx, src: Sources): Promise<SeedOutcome> {
   await seedMessages(ctx);
   await seedLegacy(ctx);
   const revisions = await seedRevisions(ctx);
-  return { notes: ctx.notes, stats: ctx.stats, media, traitKeys, materials, optionModels: models, products, revisions };
+  const suggestionRevisions = await seedSuggestedTranslations(ctx, products);
+  return { notes: ctx.notes, stats: ctx.stats, media, traitKeys, materials, optionModels: models, products, revisions, suggestionRevisions };
 }

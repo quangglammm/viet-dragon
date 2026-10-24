@@ -5,6 +5,7 @@ import { ICON_NAMES, ICONS, isIconName } from "@/lib/icons";
 import type { MediaRegistry, SeedContext } from "../context";
 import { LOCALES, TRANSLATED_LOCALES, localizedText, translated, type Locale } from "../localized";
 import { parsePrice } from "../parse";
+import { claimSlugs, emptyTaken } from "../slugs";
 import { bump, isBlankText, majority, orNull, slugify, storageKeyOf } from "../util";
 
 // Files, categories, the trait glossary and the units.
@@ -64,7 +65,13 @@ export async function seedMedia({ tx, src, notes }: SeedContext): Promise<MediaR
   };
 }
 
-export async function seedCategories({ tx, src, notes }: SeedContext, media: MediaRegistry): Promise<void> {
+/**
+ * Categories, and the category segment of every URL in each language (`tiep-thi` / `tet-publications`). The category key
+ * (`tet`) stays the internal id; where it differs from a language's slug it is kept as an alias so old URLs resolve.
+ */
+export async function seedCategories({ tx, src, notes, stats }: SeedContext, media: MediaRegistry): Promise<void> {
+  const taken = emptyTaken();
+  const canonical = new Map<string, Record<Locale, string>>();
   for (const [index, c] of src.categories.entries()) {
     if (!isIconName(c.icon)) throw new Error(`Category ${c.id} uses the icon "${c.icon}", which is not in lib/icons.ts`);
     if (c.description !== c.descriptionEn) notes.add("category-description-differs", c.id);
@@ -77,7 +84,21 @@ export async function seedCategories({ tx, src, notes }: SeedContext, media: Med
         return name ? [{ categoryId: c.id, locale, name, description: orNull(translated(src.translations.CATEGORY_DESCS, c.id, locale)) }] : [];
       }),
     ]);
+    const slugs = claimSlugs(taken, slugify(c.nameVi), slugify(c.nameEn));
+    canonical.set(c.id, slugs);
+    await tx.insert(schema.categorySlug).values(LOCALES.map((locale) => ({ locale, slug: slugs[locale], categoryId: c.id, isCanonical: true })));
   }
+  // Once every category has its own slugs: the old key is an alias wherever it is free.
+  const aliases: (typeof schema.categorySlug.$inferInsert)[] = [];
+  for (const c of src.categories) {
+    for (const locale of LOCALES) {
+      if (taken[locale].has(c.id)) continue;
+      taken[locale].add(c.id);
+      aliases.push({ locale, slug: c.id, categoryId: c.id, isCanonical: false });
+    }
+  }
+  if (aliases.length > 0) await tx.insert(schema.categorySlug).values(aliases);
+  stats.categoryAliasRows = aliases.length;
 }
 
 /** The trait glossary. The icon is stored as a registry name, found by looking the lucide component up in lib/icons.ts. */

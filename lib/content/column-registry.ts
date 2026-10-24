@@ -21,8 +21,9 @@ const SEO_TEXT = { seo_title: "i18n.*.seoTitle", seo_description: "i18n.*.seoDes
 const SHAPE_SEO = { seo_title: "shapes[].i18n.*.seoTitle", seo_description: "shapes[].i18n.*.seoDescription" } as const;
 const OPTION_SEO = { seo_title: "options[].i18n.*.seoTitle", seo_description: "options[].i18n.*.seoDescription" } as const;
 
-const SHAPE_SLUGS = ["shapes[].slug", "shapes[].aliases[]"] as const;
-const OPTION_SLUGS = ["options[].slug", "options[].aliases[]"] as const;
+const SHAPE_SLUGS = ["shapes[].slugs.*.slug", "shapes[].slugs.*.aliases[]"] as const;
+const OPTION_SLUGS = ["options[].slugs.*.slug", "options[].slugs.*.aliases[]"] as const;
+const OWN_SLUGS = ["slugs.*.slug", "slugs.*.aliases[]"] as const;
 const GROUP = "columns[].groups[]";
 const ITEM = `${GROUP}.items[]`;
 
@@ -38,7 +39,7 @@ export const COLUMN_REGISTRY: Record<string, TableRegistration> = {
   product_i18n: { document: "product", columns: { product_id: SYSTEM, locale: "i18n", title: "i18n.*.title", description: "i18n.*.description", ...SEO_TEXT } },
   product_slug: {
     document: "product",
-    columns: { category_id: ["category", "aliases[].category"], slug: ["slug", "aliases[].slug"], product_id: SYSTEM, is_canonical: SYSTEM },
+    columns: { locale: "slugs", category_id: ["category", "slugs.*.aliases[].category"], slug: ["slugs.*.slug", "slugs.*.aliases[].slug"], product_id: SYSTEM, is_canonical: SYSTEM },
   },
   shape: {
     document: "product",
@@ -78,7 +79,7 @@ export const COLUMN_REGISTRY: Record<string, TableRegistration> = {
   },
   product_segment: {
     document: "product",
-    columns: { product_id: SYSTEM, slug: [...SHAPE_SLUGS, ...OPTION_SLUGS], shape_id: SHAPE_SLUGS, option_id: OPTION_SLUGS, is_canonical: SYSTEM },
+    columns: { product_id: SYSTEM, locale: ["shapes[].slugs", "options[].slugs"], slug: [...SHAPE_SLUGS, ...OPTION_SLUGS], shape_id: SHAPE_SLUGS, option_id: OPTION_SLUGS, is_canonical: SYSTEM },
   },
   size_option: {
     document: "product",
@@ -110,7 +111,7 @@ export const COLUMN_REGISTRY: Record<string, TableRegistration> = {
       content_format: "contentFormat", status: "status", ...VERSIONING, og_media_id: "ogImage", ...OG_KIND,
     },
   },
-  post_slug: { document: "post", columns: { slug: ["slug", "aliases[]"], post_id: SYSTEM, is_canonical: SYSTEM } },
+  post_slug: { document: "post", columns: { locale: "slugs", slug: OWN_SLUGS, post_id: SYSTEM, is_canonical: SYSTEM } },
   post_i18n: { document: "post", columns: { post_id: SYSTEM, locale: "i18n", title: "i18n.*.title", excerpt: "i18n.*.excerpt", content: "i18n.*.content", ...SEO_TEXT } },
   post_category: { document: "post_category", columns: { key: "key", ...VERSIONING } },
   post_category_i18n: { document: "post_category", columns: { category_key: SYSTEM, locale: "i18n", label: "i18n.*.label" } },
@@ -120,6 +121,7 @@ export const COLUMN_REGISTRY: Record<string, TableRegistration> = {
     document: "category",
     columns: { id: "key", icon: "icon", cover_media_id: "cover", position: "position", version: SYSTEM, updated_at: SYSTEM, menu_version: SYSTEM, updated_by: SYSTEM, og_media_id: "ogImage", ...OG_KIND },
   },
+  category_slug: { document: "category", columns: { locale: "slugs", slug: OWN_SLUGS, category_id: SYSTEM, is_canonical: SYSTEM } },
   category_i18n: { document: "category", columns: { category_id: SYSTEM, locale: "i18n", name: "i18n.*.name", description: "i18n.*.description", ...SEO_TEXT } },
   material: { document: "material", columns: { id: SYSTEM, slug: "key", icon: "icon", ...VERSIONING } },
   material_i18n: { document: "material", columns: { material_id: SYSTEM, locale: "i18n", name: "i18n.*.name" } },

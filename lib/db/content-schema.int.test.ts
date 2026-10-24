@@ -27,49 +27,94 @@ const itRejects = (cases: readonly Rejection[]) =>
 const NEW_PRODUCT_TITLE = `insert into product_i18n values ((select max(id) from product),'vi','Sản phẩm mới',null)`;
 const NEW_SHAPE_NAME = `insert into shape_i18n values ((select max(id) from shape),'vi','Hình mới',null,null)`;
 
-describe("URL namespaces: one table owns every slug", () => {
+/** A canonical slug in every language for a new product / post / category, so only the rule under test can refuse it. */
+const everyLanguage = (table: string, columns: string, values: string) => `insert into ${table} (locale,${columns}) select code,${values} from locale`;
+
+describe("URL namespaces: one table owns every slug, per language", () => {
   itRejects([
-    ["a duplicate (category, slug) between two products", `insert into product (category_id,position) values ('marketing',9); insert into product_slug values ('marketing','to-roi',(select max(id) from product),true)`, "23505", "product_slug_category_id_slug_pk"],
-    ["a product alias shadowing another product's live slug", `insert into product_slug values ('marketing','poster',1,false)`, "23505", "product_slug_category_id_slug_pk"],
-    ["an alias in a non-existent category", `insert into product_slug values ('nope','x',1,false)`, "23503", "product_slug_category_id_category_id_fk"],
-    ["a SHAPE slug equal to an existing OPTION slug of the same product (the tet/to-roi bug)", `insert into shape (product_id,position) values (1,9); insert into product_segment (product_id,slug,shape_id,is_canonical) values (1,'giay-kraft',(select max(id) from shape),true)`, "23505", "product_segment_product_id_slug_pk"],
-    ["an alias equal to a live shape slug", `insert into product_segment (product_id,slug,shape_id) values (1,'a5',2)`, "23505", "product_segment_product_id_slug_pk"],
-    ["a segment naming BOTH a shape and an option", `insert into product_segment (product_id,slug,shape_id,option_id) values (1,'both',1,1)`, "23514", "product_segment_one_target"],
-    ["a segment naming neither", `insert into product_segment (product_id,slug) values (1,'none')`, "23514", "product_segment_one_target"],
-    ["a segment pointing at a shape of ANOTHER product", `insert into product_segment (product_id,slug,shape_id) values (3,'zzz',1)`, "23503", "product_segment_shape_fk"],
-    ["a second canonical slug for one shape", `insert into product_segment (product_id,slug,shape_id,is_canonical) values (1,'a5-again',1,true)`, "23505", "product_segment_one_canonical_shape"],
+    ["a duplicate (language, category, slug) between two products", `insert into product (category_id,position) values ('marketing',9); insert into product_slug (locale,category_id,slug,product_id,is_canonical) values ('vi','marketing','to-roi',(select max(id) from product),true)`, "23505", "product_slug_locale_category_id_slug_pk"],
+    ["a product alias shadowing another product's live slug", `insert into product_slug (locale,category_id,slug,product_id,is_canonical) values ('vi','marketing','poster',1,false)`, "23505", "product_slug_locale_category_id_slug_pk"],
+    ["an alias in a non-existent category", `insert into product_slug (locale,category_id,slug,product_id,is_canonical) values ('vi','nope','x',1,false)`, "23503", "product_slug_category_id_category_id_fk"],
+    ["a slug in a language the site does not have", `insert into product_slug (locale,category_id,slug,product_id,is_canonical) values ('xx','marketing','x',1,false)`, "23503", "product_slug_locale_locale_code_fk"],
+    ["a slug with non-Latin characters (Latin letters, digits and dashes only, in every language)", `insert into product_slug (locale,category_id,slug,product_id,is_canonical) values ('zh','marketing','海报',1,false)`, "23514", "product_slug_slug_format"],
+    ["a SHAPE slug equal to an existing OPTION slug of the same product in the same language (the tet/to-roi bug)", `insert into shape (product_id,position) values (1,9); insert into product_segment (product_id,locale,slug,shape_id,is_canonical) values (1,'vi','giay-kraft',(select max(id) from shape),true)`, "23505", "product_segment_product_id_locale_slug_pk"],
+    ["an alias equal to a live shape slug", `insert into product_segment (product_id,locale,slug,shape_id) values (1,'vi','a5',2)`, "23505", "product_segment_product_id_locale_slug_pk"],
+    ["a segment naming BOTH a shape and an option", `insert into product_segment (product_id,locale,slug,shape_id,option_id) values (1,'vi','both',1,1)`, "23514", "product_segment_one_target"],
+    ["a segment naming neither", `insert into product_segment (product_id,locale,slug) values (1,'vi','none')`, "23514", "product_segment_one_target"],
+    ["a segment pointing at a shape of ANOTHER product", `insert into product_segment (product_id,locale,slug,shape_id) values (3,'vi','zzz',1)`, "23503", "product_segment_shape_fk"],
+    ["a second canonical slug for one shape in one language", `insert into product_segment (product_id,locale,slug,shape_id,is_canonical) values (1,'vi','a5-again',1,true)`, "23505", "product_segment_one_canonical_shape"],
+    ["a second canonical slug for one product in one language", `insert into product_slug (locale,category_id,slug,product_id,is_canonical) values ('en','marketing','to-roi-2',1,true)`, "23505", "product_slug_one_canonical"],
+    ["a second canonical slug for one post in one language", `insert into post_slug (locale,slug,post_id,is_canonical) values ('ko','bai-1-moi',1,true)`, "23505", "post_slug_one_canonical"],
+    ["a post alias shadowing another post's live slug in the same language", `insert into post (category_key,published_on) values ('tips','2026-04-04'); insert into post_slug (locale,slug,post_id,is_canonical) values ('vi','bai-1',(select max(id) from post),false)`, "23505", "post_slug_locale_slug_pk"],
+    ["a category slug used by two categories in one language", `insert into category_slug (locale,slug,category_id,is_canonical) values ('vi','marketing','tet',false)`, "23505", "category_slug_locale_slug_pk"],
+    ["a second canonical slug for one category in one language", `insert into category_slug (locale,slug,category_id,is_canonical) values ('en','marketing-moi','marketing',true)`, "23505", "category_slug_one_canonical"],
   ]);
 
+  it("lets the same slug text exist in every language (the fixture has 'poster' in all five)", async () => {
+    const rows = await db.rows<{ locale: string }>(`select locale from product_slug where slug = 'poster' and is_canonical order by locale`);
+    expect(rows.map((r) => r.locale).sort()).toEqual(["en", "ja", "ko", "vi", "zh"]);
+  });
   it("allows the same slug in a different category", async () => {
-    expect(await db.rows(`select 1 from product_slug where slug = 'to-roi'`)).toHaveLength(2);
+    expect(await db.rows(`select 1 from product_slug where slug = 'to-roi' and locale = 'vi'`)).toHaveLength(2);
   });
   it("allows an old slug to be kept as an alias, even in another category", async () => {
-    await db.accepts(`insert into product_slug values ('tet','to-roi-cu',1,false)`);
+    await db.accepts(`insert into product_slug (locale,category_id,slug,product_id,is_canonical) values ('vi','tet','to-roi-cu',1,false)`);
+  });
+  it("allows a different canonical slug per language", async () => {
+    await db.accepts(
+      `update product_slug set is_canonical=false where product_id=3 and locale='en'; insert into product_slug (locale,category_id,slug,product_id,is_canonical) values ('en','marketing','posters',3,true)`,
+    );
   });
   it("allows the same material to be offered several times in one product under different slugs", async () => {
-    await db.accepts(`insert into option (product_id,material_id,position) values (1,1,9); insert into product_segment (product_id,slug,option_id,is_canonical) values (1,'giay-couche-300gsm',(select max(id) from option),true)`);
+    await db.accepts(`insert into option (product_id,material_id,position) values (1,1,9); ${everyLanguage("product_segment", "product_id,slug,option_id,is_canonical", "1,'giay-couche-300gsm',(select max(id) from option),true")}`);
   });
 });
 
 describe("invariants checked at COMMIT", () => {
   itRejects([
     ["a product without a canonical slug", `insert into product (category_id,position) values ('marketing',8); ${NEW_PRODUCT_TITLE}`, "23514", "has no canonical slug in category"],
+    ["a product with a canonical slug in only some languages", `insert into product (category_id,position) values ('marketing',8); ${NEW_PRODUCT_TITLE}; insert into product_slug (locale,category_id,slug,product_id,is_canonical) values ('vi','marketing','chi-tieng-viet',(select max(id) from product),true)`, "23514", "for language en"],
     ["deleting the canonical slug of a live product", `delete from product_slug where category_id='marketing' and slug='poster'`, "23514", "has no canonical slug in category"],
+    ["deleting the canonical slug of a live product in ONE language", `delete from product_slug where category_id='marketing' and slug='poster' and locale='ja'`, "23514", "for language ja"],
     ["moving a product to another category without moving its canonical slug", `update product set category_id='tet' where id=3`, "23514", "has no canonical slug in category"],
     ["a shape without a canonical segment", `insert into shape (product_id,position) values (1,7); ${NEW_SHAPE_NAME}`, "23514", "shape "],
+    ["a shape with a canonical segment in only one language", `insert into shape (product_id,position) values (1,7); ${NEW_SHAPE_NAME}; insert into product_segment (product_id,locale,slug,shape_id,is_canonical) values (1,'vi','a6',(select max(id) from shape),true)`, "23514", "for language en"],
     ["an option without a canonical segment", `insert into option (product_id,material_id,position) values (1,2,7)`, "23514", "option "],
     ["demoting the canonical segment of a live shape", `update product_segment set is_canonical=false where product_id=1 and slug='a5'`, "23514", "shape "],
+    ["demoting the canonical segment of a live shape in ONE language", `update product_segment set is_canonical=false where product_id=1 and slug='a5' and locale='ko'`, "23514", "for language ko"],
     ["a post without a canonical slug", `insert into post (category_key,published_on) values ('tips','2026-02-02'); insert into post_i18n values ((select max(id) from post),'vi','Tiêu đề',null,'Nội dung')`, "23514", "has no canonical slug"],
+    ["a post with a canonical slug in only some languages", `insert into post (category_key,published_on) values ('tips','2026-02-02'); insert into post_i18n values ((select max(id) from post),'vi','Tiêu đề',null,'Nội dung'); insert into post_slug (locale,slug,post_id,is_canonical) values ('vi','bai-ba',(select max(id) from post),true)`, "23514", "for language en"],
+    ["a category without a canonical slug", `insert into category (id,icon,position) values ('khac','Layers',9); insert into category_i18n values ('khac','vi','Khác',null)`, "23514", "category khac has no canonical slug"],
+    ["deleting a category's canonical slug in one language", `delete from category_slug where category_id='tet' and locale='zh'`, "23514", "for language zh"],
   ]);
 
-  it("allows moving a product AND its canonical slug together (the old URL stays as an alias)", async () => {
-    await db.accepts(`update product set category_id='tet' where id=3; update product_slug set is_canonical=false where category_id='marketing' and slug='poster'; insert into product_slug values ('tet','poster',3,true)`);
+  it("allows moving a product AND its canonical slugs together (the old URLs stay as aliases)", async () => {
+    await db.accepts(
+      `update product set category_id='tet' where id=3; update product_slug set is_canonical=false where category_id='marketing' and slug='poster'; ${everyLanguage("product_slug", "category_id,slug,product_id,is_canonical", "'tet','poster',3,true")}`,
+    );
   });
   it("allows the move to be reversed the same way (as the next transaction)", async () => {
     await db.accepts([
-      `update product set category_id='tet' where id=3; update product_slug set is_canonical=false where category_id='marketing' and slug='poster'; insert into product_slug values ('tet','poster',3,true)`,
+      `update product set category_id='tet' where id=3; update product_slug set is_canonical=false where category_id='marketing' and slug='poster'; ${everyLanguage("product_slug", "category_id,slug,product_id,is_canonical", "'tet','poster',3,true")}`,
       `update product set category_id='marketing' where id=3; update product_slug set is_canonical=false where category_id='tet' and slug='poster'; update product_slug set is_canonical=true where category_id='marketing' and slug='poster'`,
     ]);
+  });
+});
+
+describe("a language is added together with its slugs", () => {
+  const BACKFILL = `
+    insert into category_slug (locale,slug,category_id,is_canonical) select 'zh-Hant',slug,category_id,is_canonical from category_slug where locale='en';
+    insert into product_slug (locale,category_id,slug,product_id,is_canonical) select 'zh-Hant',category_id,slug,product_id,is_canonical from product_slug where locale='en';
+    insert into product_segment (product_id,locale,slug,shape_id,option_id,is_canonical) select product_id,'zh-Hant',slug,shape_id,option_id,is_canonical from product_segment where locale='en';
+    insert into post_slug (locale,slug,post_id,is_canonical) select 'zh-Hant',slug,post_id,is_canonical from post_slug where locale='en'`;
+  it("refuses a new language while some entity has no slug in it", async () => {
+    await db.rejects(`insert into locale values ('zh-Hant',false,5)`, "23514", "language zh-Hant has no canonical slug for some categories");
+  });
+  it("accepts it when the slugs are cloned from English in the same transaction", async () => {
+    await db.accepts(`insert into locale values ('zh-Hant',false,5); ${BACKFILL}`);
+  });
+  it("refuses a language whose slugs are cloned for everything but the posts", async () => {
+    await db.rejects(`insert into locale values ('zh-Hant',false,5); ${BACKFILL.replace(/insert into post_slug[\s\S]*$/, "select 1")}`, "23514", "for some posts");
   });
 });
 
@@ -90,6 +135,10 @@ describe("identity is immutable", () => {
     ["changing a media file's storage key", `update media set storage_key='images/z.webp' where id=1`, "23514", "is immutable"],
     ["changing a Fast Print item's uid", `${NEW_FAST_PRINT}; update fast_print_item set uid = gen_random_uuid() where key='hop'`, "23514", "is immutable"],
     ["changing a showcase item's uid", `${NEW_SHOWCASE}; update showcase_item set uid = gen_random_uuid() where key='s1'`, "23514", "is immutable"],
+    ["moving a product slug to another language", `update product_slug set locale='zh' where locale='ja' and slug='poster'`, "23514", "product_slug.locale is immutable"],
+    ["moving a segment to another language", `update product_segment set locale='zh' where locale='ja' and slug='a5' and product_id=1`, "23514", "product_segment.locale is immutable"],
+    ["moving a post slug to another language", `update post_slug set locale='zh' where locale='ja' and slug='bai-1'`, "23514", "post_slug.locale is immutable"],
+    ["moving a category slug to another language or category", `update category_slug set locale='zh' where locale='ja' and slug='tet'`, "23514", "category_slug.locale is immutable"],
   ]);
 
   it("keeps the display text of a library item editable", async () => {
@@ -127,9 +176,6 @@ describe("text rules are Unicode-aware", () => {
     ["a media row with a negative size", `insert into media (source,storage_key,kind,mime,bytes) values ('static','images/neg.webp','image','image/webp',-1)`, "23514", "media_bytes_nonneg"],
   ]);
 
-  it("accepts a regional locale code like zh-Hant", async () => {
-    await db.accepts(`insert into locale values ('zh-Hant',false,5)`);
-  });
 });
 
 describe("the migration seeded the language list", () => {

@@ -320,28 +320,44 @@ languages**, and edits are **drafts until published** (draft → preview → pub
 restorable revision). The relational schema (validated against the real data), the draft/publish
 design, the seed rules and the owner-review list are in `docs/data-model.md` (+ `docs/data-model.sql`).
 
-### Content model (Phase 3a schema + 3b seed landed; the public site and the admin do not read or write it yet)
+### Content model (Phase 3a schema + 3b seed + localized URLs landed; the public site and the admin do not read or write it yet)
 The full design is `docs/data-model.md` (local); this is what the code now guarantees.
 - **Tables:** `lib/db/content/*.ts` (foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog,
   site-message, drafts; shared builders in `columns.ts`, SEO/Open Graph columns in `seo.ts`), re-exported by `lib/db/schema.ts`.
-  Relative imports only (drizzle-kit loads them outside Next). 45 tables; products are the aggregate root; every
+  Relative imports only (drizzle-kit loads them outside Next). 46 tables; products are the aggregate root; every
   translated entity has an `*_i18n` table keyed `(owner, locale)`.
 - **Migrations:** `0002_content_tables` is drizzle-kit output plus ONE hand-added function at the top (`nonblank()`, which
   the table CHECKs call); `0003_content_integrity` is hand-written: immutable-key/uid triggers, frozen slug owners,
   TRUNCATE guards, the commit-time (deferred) checks, the deferrable `menu_item` foreign keys and the 5 `locale` rows. Add
   future columns with `pnpm db:generate`; put triggers/functions in a `--custom` migration. Trap: `drizzle-kit generate --custom`
   snapshots the WHOLE current schema, so a custom migration needs to come AFTER the table migration it depends on (generating
-  it first leaves the next `generate` with nothing to do).
+  it first leaves the next `generate` with nothing to do). `0004_localized_slugs` (table changes, hand-reordered; it refuses to run if the
+  content tables hold data — reset the database instead) and `0005_localized_slug_integrity` (custom) made every slug per language.
 - **Identity:** anything an editor may rename (product, shape, option, post, Fast Print / showcase item) has an immutable
   `uid`; vocabulary (material, trait, unit, spec item, category, post category, UI-copy namespace, media) an immutable key.
-  Slugs are attributes owned by `product_slug` / `product_segment` / `post_slug` (canonical + aliases, one namespace each).
+  Slugs are attributes owned by `product_slug` / `product_segment` / `post_slug` / `category_slug` (canonical + aliases), **one
+  namespace per language**: PKs include `locale`; the same text may exist in two languages, never twice in one.
+- **Localized URLs (decided 2026-10-24):** every product, shape, option, post and category has a slug in EACH language; slugs are
+  Latin letters, digits and dashes only, in every language, forever (the CHECK stays ASCII kebab-case). Vietnamese keeps today's
+  slugs, English is generated from the English name, zh/ja/ko start as a copy of English; today's shared slug stays valid in every
+  language as a 308 alias. The fixed words (`products`, `blog`, `fast-print`) and the category segment are localized too
+  (proposed: vi `san-pham` / `bai-viet` / `in-nhanh`, en as today, zh/ja/ko = English) — put in `i18n/routing.ts` `pathnames` in
+  **Phase 4**, together with a redirect rule for every old Vietnamese URL and a language switcher that maps to the other
+  language's URL. Switch all URLs in ONE step at cutover: the Vietnamese move is the largest SEO risk of the project.
+- **Master languages:** Vietnamese AND English must be complete (document schemas require both; the database requires only `vi`).
+  zh/ja/ko follow English: slugs are copies, text that exists is kept, and the gaps are filled with AI-suggested translations
+  (`scripts/seed/suggested-translations.ts`, applied as revision 2 with the comment «Bản dịch đề xuất (AI) — cần người bản ngữ duyệt»;
+  revision 1 keeps the original) that need a native reader.
 - **Rules that live in the database, not in code:** non-blank Unicode-aware text, one canonical slug per product / shape /
-  option / post and a default-language (`vi`) translation for every translated entity (both checked at COMMIT), frozen
-  slug owners, `TRUNCATE` refused on the namespace/revision tables, photo slots accept images only. Never `TRUNCATE` them in
+  option / post / category **in every language of the `locale` table** (a new language is refused until its slugs exist, in the same
+  transaction) and a default-language (`vi`) translation for every translated entity (all checked at COMMIT), frozen
+  slug owners (and languages), `TRUNCATE` refused on the namespace/revision tables, photo slots accept images only. Never `TRUNCATE` them in
   code; a migration that must disables the guard trigger explicitly. The app role has no TRUNCATE or DDL anyway.
 - **Documents** (`lib/content/schemas/`): zod schemas for the whole-entity documents that drafts, revisions and publishes carry
-  (`snapshot_schema` = `DOCUMENT_SCHEMA` = 2): product, menu (one per category), post, category, material, trait, unit, spec
-  item, Fast Print / showcase item, post category, site message. Strict objects, Vietnamese messages for editors.
+  (`snapshot_schema` = `DOCUMENT_SCHEMA` = 2, unchanged by the move to per-language `slugs` because no document was ever stored
+  outside throwaway databases): product, menu (one per category), post, category, material, trait, unit, spec
+  item, Fast Print / showcase item, post category, site message. Strict objects, Vietnamese messages for editors; slugs are
+  `slugs: { vi, en, zh, ja, ko }` (all five required).
   `DOCUMENT_SCHEMAS`, `parseDocument()` and `documentIdentity()` are the entry points.
 - **Column registry** (`lib/content/column-registry.ts`): every content column is either carried by a document path or
   system-owned. `lib/db/column-registry.int.test.ts` fails when the database and the registry disagree, and
@@ -359,13 +375,14 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   second run does nothing (advisory lock; two at once seed once). Re-seeding means dropping the database and migrating.
   The seed only READS the site's sources; Phase 4 deletes some of them (`lib/product-sizes.ts`, `lib/product-specs.ts`, the
   menus…), so the seed is a pre-Phase-4 tool — production gets the owner-approved content by restoring a full `pg_dump` of a
-  seeded database at cutover (decided; nothing is built for it). Pitfalls found while porting it: 13 `ProductOption` objects
+  seeded database at cutover (decided; nothing is built for it). After seeding it applies the suggested zh/ja/ko translations (revision 2
+  of 12 traits and the Tet flyer product). Pitfalls found while porting it: 13 `ProductOption` objects
   are shared between products, so option lookups are per product (`optionRecordFor`), never a global identity map; `pg`
   returns `bigint` as a string in raw SQL, so test code must `Number()` ids before using them as map keys.
 - **Compose** (`lib/content/compose/`): rows → the zod documents (`composeEntity(db, type, id)`, `listEntities`); the read side
   that revision 1, 3c's publish and Phase 4's queries share. `lib/content/revision.ts` writes a `content_revision` row.
   `lib/db/types.ts` has `Db` / `Tx` / `DbExecutor` — code that only reads and writes rows takes `DbExecutor`.
-- **Tests:** `lib/db/content-schema*.int.test.ts` (150 constraint cases, each naming the rule that must fire),
+- **Tests:** `lib/db/content-schema*.int.test.ts` (173 constraint cases, each naming the rule that must fire),
   `tests/helpers/content-db.ts` (one fixture; every test rolls back after `SET CONSTRAINTS ALL IMMEDIATE`, which runs the
   COMMIT-time checks) and `tests/helpers/db.ts` (`createScratchDatabase`, for suites that need their own database). On
   PostgreSQL a RESTRICT violation reports SQLSTATE 23503 like any foreign key (23001 only on the PGlite prototype), so the

@@ -168,27 +168,29 @@ export const optionImage = pgTable(
 );
 
 /**
- * Owns the third URL segment / `#hash` namespace of one product: every shape and option slug AND every alias.
- * PK (product_id, slug) makes "a shape and an option with the same slug" or "an alias shadowing a live slug"
- * impossible. Every shape and option has one canonical row (commit-time trigger); the target columns are frozen.
+ * Owns the third URL segment / `#hash` namespace of one product, per language: every shape and option slug AND every
+ * alias. PK (product_id, locale, slug) makes "a shape and an option with the same slug" or "an alias shadowing a live
+ * slug" impossible within a language. Every shape and option has one canonical row in EVERY language (commit-time
+ * trigger); the target columns and the language are frozen.
  */
 export const productSegment = pgTable(
   "product_segment",
   {
     productId: bigint("product_id", { mode: "number" }).notNull().references(() => product.id, { onDelete: "cascade" }),
+    locale: localeRef(),
     slug: text("slug").notNull(),
     shapeId: bigint("shape_id", { mode: "number" }),
     optionId: bigint("option_id", { mode: "number" }),
     isCanonical: boolean("is_canonical").notNull().default(false),
   },
   (t) => [
-    primaryKey({ columns: [t.productId, t.slug] }),
+    primaryKey({ columns: [t.productId, t.locale, t.slug] }),
     kebabCheck("product_segment_slug_format", t.slug),
     check("product_segment_one_target", sql`(${t.shapeId} is not null) <> (${t.optionId} is not null)`),
     foreignKey({ name: "product_segment_shape_fk", columns: [t.shapeId, t.productId], foreignColumns: [shape.id, shape.productId] }).onDelete("cascade"),
     foreignKey({ name: "product_segment_option_fk", columns: [t.optionId, t.productId], foreignColumns: [option.id, option.productId] }).onDelete("cascade"),
-    uniqueIndex("product_segment_one_canonical_shape").on(t.shapeId).where(sql`${t.isCanonical} and ${t.shapeId} is not null`),
-    uniqueIndex("product_segment_one_canonical_option").on(t.optionId).where(sql`${t.isCanonical} and ${t.optionId} is not null`),
+    uniqueIndex("product_segment_one_canonical_shape").on(t.shapeId, t.locale).where(sql`${t.isCanonical} and ${t.shapeId} is not null`),
+    uniqueIndex("product_segment_one_canonical_option").on(t.optionId, t.locale).where(sql`${t.isCanonical} and ${t.optionId} is not null`),
     index("product_segment_shape_idx").on(t.shapeId),
     index("product_segment_option_idx").on(t.optionId),
   ],

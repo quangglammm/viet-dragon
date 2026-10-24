@@ -52,8 +52,8 @@ async function seedItem(ctx: SeedContext, media: MediaRegistry, product: Product
     notes.add("menu-unresolved", `${item.kind ?? "item"} ${item.href}`);
     return;
   }
-  const shape: ShapeRecord | undefined = resolution.kind === "shape" ? product.shapes.find((s) => s.slug === resolution.slug) : undefined;
-  const option: OptionRecord | undefined = resolution.kind === "option" ? product.options.find((o) => o.slug === resolution.slug) : undefined;
+  const shape: ShapeRecord | undefined = resolution.kind === "shape" ? resolution.shape : undefined;
+  const option: OptionRecord | undefined = resolution.kind === "option" ? resolution.option : undefined;
   const derivedImage = shape ? shape.source.image : product.source.coverImage;
   const image = item.image !== derivedImage ? media.idOf(item.image) : null;
   if (image) stats.menu.itemImageOverrides += 1;

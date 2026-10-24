@@ -19,6 +19,9 @@ const itRejects = (cases: readonly Rejection[]) =>
     await db.rejects(sql, code, reason);
   });
 
+/** Inserts the same row in every language: `table (locale, columns) select code, values from locale`. */
+const everyLanguage = (table: string, columns: string, values: string) => `insert into ${table} (locale,${columns}) select code,${values} from locale`;
+
 describe("referential integrity", () => {
   itRejects([
     ["an option scoped to a shape of ANOTHER product", `insert into option (product_id,shape_id,material_id,position) values (3,1,2,0)`, "23503", "option_shape_product_fk"],
@@ -96,7 +99,7 @@ describe("drafts and revisions: identity by uid / immutable key", () => {
       `insert into content_revision (entity_type,entity_uid,version,snapshot) select 'product',uid,1,jsonb_build_object('uid',uid::text) from product where id=2;
        delete from product where id=2;
        insert into product (category_id,position) values ('tet',0);
-       insert into product_slug values ('tet','to-roi',(select max(id) from product),true);
+       ${everyLanguage("product_slug", "category_id,slug,product_id,is_canonical", "'tet','to-roi',(select max(id) from product),true")};
        insert into product_i18n values ((select max(id) from product),'vi','Mới',null);
        insert into content_revision (entity_type,entity_uid,version,snapshot) select 'product',uid,1,jsonb_build_object('uid',uid::text) from product order by id desc limit 1`,
     );
@@ -122,35 +125,37 @@ describe("drafts and revisions: identity by uid / immutable key", () => {
 describe("the integrity triggers cannot be bypassed", () => {
   itRejects([
     ["UPDATE product_slug: hand a canonical URL to another product (would orphan the first)", `update product_slug set product_id=3, is_canonical=false where product_id=1 and is_canonical`, "23514", "product_slug.product_id is immutable"],
-    ["INSERT … ON CONFLICT DO UPDATE SET product_id (steal a URL)", `insert into product_slug (category_id,slug,product_id,is_canonical) values ('marketing','poster',1,false) on conflict (category_id,slug) do update set product_id=excluded.product_id`, "23514", "product_slug.product_id is immutable"],
+    ["INSERT … ON CONFLICT DO UPDATE SET product_id (steal a URL)", `insert into product_slug (locale,category_id,slug,product_id,is_canonical) values ('vi','marketing','poster',1,false) on conflict (locale,category_id,slug) do update set product_id=excluded.product_id`, "23514", "product_slug.product_id is immutable"],
     ["UPDATE product_segment: retarget a canonical shape segment onto an option", `update product_segment set shape_id=null, option_id=3 where shape_id=1 and is_canonical`, "23514", "product_segment.shape_id is immutable"],
     ["UPDATE product_segment: move an option's canonical segment to another option", `update product_segment set option_id=3 where option_id=1 and is_canonical`, "23514", "product_segment.option_id is immutable"],
-    ["UPDATE post_slug: move a post's slug to another post", [`insert into post (category_key,published_on) values ('tips','2026-03-03'); insert into post_i18n values ((select max(id) from post),'vi','T',null,'C'); insert into post_slug values ('bai-2',(select max(id) from post),true)`, `update post_slug set post_id=(select min(id) from post) where slug='bai-2'`], "23514", "post_slug.post_id is immutable"],
+    ["UPDATE post_slug: move a post's slug to another post", [`insert into post (category_key,published_on) values ('tips','2026-03-03'); insert into post_i18n values ((select max(id) from post),'vi','T',null,'C'); ${everyLanguage("post_slug", "slug,post_id,is_canonical", "'bai-2',(select max(id) from post),true")}`, `update post_slug set post_id=(select min(id) from post) where slug='bai-2'`], "23514", "post_slug.post_id is immutable"],
     ["TRUNCATE product_slug", `truncate product_slug`, "42501", "TRUNCATE of product_slug is not allowed"],
     ["TRUNCATE product CASCADE (it reaches product_slug and product_segment)", `truncate product cascade`, "42501", "is not allowed"],
+    ["TRUNCATE category_slug", `truncate category_slug`, "42501", "TRUNCATE of category_slug is not allowed"],
     ["TRUNCATE content_revision", `truncate content_revision`, "42501", "TRUNCATE of content_revision is not allowed"],
     ["TRUNCATE legacy_import", `truncate legacy_import`, "42501", "TRUNCATE of legacy_import is not allowed"],
   ]);
 
+  const FLIP = `update product_slug set is_canonical=false where category_id='marketing' and slug='poster'; ${everyLanguage("product_slug", "category_id,slug,product_id,is_canonical", "'marketing','poster-moi',3,true")}`;
   it("still allows flipping which of ONE product's slugs is canonical", async () => {
-    await db.accepts(`update product_slug set is_canonical=false where category_id='marketing' and slug='poster'; insert into product_slug values ('marketing','poster-moi',3,true)`);
+    await db.accepts(FLIP);
   });
   it("still allows ON CONFLICT DO UPDATE that leaves the owner unchanged", async () => {
     await db.accepts([
-      `update product_slug set is_canonical=false where category_id='marketing' and slug='poster'; insert into product_slug values ('marketing','poster-moi',3,true)`,
-      `insert into product_slug (category_id,slug,product_id,is_canonical) values ('marketing','poster-moi',3,true) on conflict (category_id,slug) do update set is_canonical=excluded.is_canonical`,
+      FLIP,
+      `insert into product_slug (locale,category_id,slug,product_id,is_canonical) select code,'marketing','poster-moi',3,true from locale on conflict (locale,category_id,slug) do update set is_canonical=excluded.is_canonical`,
     ]);
   });
 });
 
 describe("the default language is required (checked at COMMIT)", () => {
   itRejects([
-    ["a product with no Vietnamese translation", `insert into product (category_id,position) values ('marketing',40); insert into product_slug values ('marketing','khong-vi',(select max(id) from product),true); insert into product_i18n values ((select max(id) from product),'en','English only',null)`, "23514", `has no "vi" (default language) translation`],
-    ["a product with no translation at all", `insert into product (category_id,position) values ('marketing',41); insert into product_slug values ('marketing','khong-ten',(select max(id) from product),true)`, "23514", `has no "vi" (default language) translation`],
+    ["a product with no Vietnamese translation", `insert into product (category_id,position) values ('marketing',40); ${everyLanguage("product_slug", "category_id,slug,product_id,is_canonical", "'marketing','khong-vi',(select max(id) from product),true")}; insert into product_i18n values ((select max(id) from product),'en','English only',null)`, "23514", `has no "vi" (default language) translation`],
+    ["a product with no translation at all", `insert into product (category_id,position) values ('marketing',41); ${everyLanguage("product_slug", "category_id,slug,product_id,is_canonical", "'marketing','khong-ten',(select max(id) from product),true")}`, "23514", `has no "vi" (default language) translation`],
     ["deleting the only Vietnamese row of a product", `delete from product_i18n where product_id=1 and locale='vi'`, "23514", `has no "vi" (default language) translation`],
     ["re-labelling the Vietnamese row as another language", `update product_i18n set locale='ja' where product_id=1 and locale='vi'`, "23514", `has no "vi" (default language) translation`],
     ["a material without a Vietnamese name", `insert into material (slug) values ('chi-en'); insert into material_i18n select id,'en','English' from material where slug='chi-en'`, "23514", `has no "vi" (default language) translation`],
-    ["a category without a Vietnamese name", `insert into category (id,icon,position) values ('khac','Layers',9); insert into category_i18n values ('khac','en','Other',null)`, "23514", `has no "vi" (default language) translation`],
+    ["a category without a Vietnamese name", `insert into category (id,icon,position) values ('khac','Layers',9); ${everyLanguage("category_slug", "slug,category_id,is_canonical", "'khac','khac',true")}; insert into category_i18n values ('khac','en','Other',null)`, "23514", `has no "vi" (default language) translation`],
     ["a unit without a Vietnamese label", `insert into unit (key) values ('pack'); insert into unit_i18n values ('pack','en','Pack')`, "23514", `has no "vi" (default language) translation`],
     ["a Fast Print item without a Vietnamese name", `insert into fast_print_item (key,icon,position) values ('hop','Zap',0)`, "23514", `has no "vi" (default language) translation`],
     ["a post category without a Vietnamese label", `insert into post_category (key) values ('news')`, "23514", `has no "vi" (default language) translation`],
@@ -182,11 +187,11 @@ describe("cascades", () => {
 describe("the read path", () => {
   it("falls back ja → en → vi per row", async () => {
     const rows = await db.withRollback(async (c) => {
-      await c.query(`insert into product (category_id,position) values ('marketing',5); insert into product_slug values ('marketing','poster2',(select max(id) from product),true); insert into product_i18n values ((select max(id) from product),'vi','Chỉ tiếng Việt',null),((select max(id) from product),'en','English only',null)`);
+      await c.query(`insert into product (category_id,position) values ('marketing',5); ${everyLanguage("product_slug", "category_id,slug,product_id,is_canonical", "'marketing','poster2',(select max(id) from product),true")}; insert into product_i18n values ((select max(id) from product),'vi','Chỉ tiếng Việt',null),((select max(id) from product),'en','English only',null)`);
       await c.query(`insert into product_i18n values (3,'en','Poster EN',null)`);
       return (
         await c.query(
-          `select ps.slug, coalesce(l.title, e.title, v.title) title from product p join product_slug ps on ps.product_id=p.id and ps.is_canonical left join product_i18n l on l.product_id=p.id and l.locale='ja' left join product_i18n e on e.product_id=p.id and e.locale='en' left join product_i18n v on v.product_id=p.id and v.locale='vi' where ps.slug in ('poster','poster2') order by ps.slug`,
+          `select ps.slug, coalesce(l.title, e.title, v.title) title from product p join product_slug ps on ps.product_id=p.id and ps.is_canonical and ps.locale='vi' left join product_i18n l on l.product_id=p.id and l.locale='ja' left join product_i18n e on e.product_id=p.id and e.locale='en' left join product_i18n v on v.product_id=p.id and v.locale='vi' where ps.slug in ('poster','poster2') order by ps.slug`,
         )
       ).rows;
     });

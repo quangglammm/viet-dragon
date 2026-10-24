@@ -12,7 +12,7 @@ import {
   type TraitDocument,
   type UnitDocument,
 } from "../schemas";
-import { coverMedia, i18nMap, imageMedia, ogMedia, optional, seoOf, type Composed } from "./shared";
+import { byText, coverMedia, everyLocale, i18nMap, imageMedia, ogMedia, optional, seoOf, type Composed } from "./shared";
 
 // Rows → the documents of categories and the library (materials, traits, units, spec items), Fast Print, showcase
 // and blog categories. Vocabulary is identified by its immutable key; Fast Print and showcase items by uid.
@@ -30,10 +30,15 @@ export async function composeCategory(x: DbExecutor, id: string): Promise<Compos
   );
   if (!head) return null;
   const texts = await x.select().from(schema.categoryI18n).where(eq(schema.categoryI18n.categoryId, id));
+  const slugs = await x.select().from(schema.categorySlug).where(eq(schema.categorySlug.categoryId, id));
   return {
     document: {
       schema: DOCUMENT_SCHEMA,
       key: head.id,
+      slugs: everyLocale((locale) => {
+        const inLanguage = slugs.filter((s) => s.locale === locale);
+        return { slug: inLanguage.find((s) => s.isCanonical)?.slug ?? "", aliases: inLanguage.filter((s) => !s.isCanonical).map((s) => s.slug).sort(byText) };
+      }),
       icon: head.icon,
       cover: head.cover,
       ogImage: head.ogImage,

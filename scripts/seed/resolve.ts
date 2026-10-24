@@ -1,15 +1,11 @@
-import { optionRecordFor, type ProductRecord } from "./context";
+import { optionRecordFor, type OptionRecord, type ProductRecord, type ShapeRecord } from "./context";
 import type { Sources } from "./sources";
 
 // The product pages resolve the third URL segment (`/products/<category>/<product>/<segment>`) with their own logic:
 // a shape id (through SHAPE_ALIASES), else a material by its Vietnamese or English slug. This is that logic, verbatim,
 // pointed at the rows the seed wrote — so every segment the old pages accepted keeps resolving to the same target.
 
-export interface Resolution {
-  kind: "shape" | "option";
-  /** The canonical slug of the shape / option row it lands on. */
-  slug: string;
-}
+export type Resolution = { kind: "shape"; shape: ShapeRecord } | { kind: "option"; option: OptionRecord };
 
 export function resolveSegment(src: Sources, product: ProductRecord, segment: string): Resolution | null {
   const sub = product.source;
@@ -17,7 +13,7 @@ export function resolveSegment(src: Sources, product: ProductRecord, segment: st
   const shape = sub.shapes.find((candidate) => candidate.id === segment || candidate.id === resolvedId);
   if (shape) {
     const record = product.shapes.find((s) => s.source === shape);
-    return record ? { kind: "shape", slug: record.slug } : null;
+    return record ? { kind: "shape", shape: record } : null;
   }
   const materials = [...(sub.materials ?? []), ...sub.shapes.flatMap((s) => s.materials ?? [])];
   const material = materials.find((m) => {
@@ -26,7 +22,7 @@ export function resolveSegment(src: Sources, product: ProductRecord, segment: st
     return vi === segment || vi === resolvedId || en === segment || en === resolvedId || src.shapeAliases[vi] === segment || src.shapeAliases[vi] === resolvedId;
   });
   const record = material ? optionRecordFor(product, material) : undefined;
-  return record ? { kind: "option", slug: record.slug } : null;
+  return record ? { kind: "option", option: record } : null;
 }
 
 /** The segment of a menu link: `/products/tet/to-roi/giay-c` → `giay-c`, `/products/tet/nhan-dan#decal` → `decal`. */

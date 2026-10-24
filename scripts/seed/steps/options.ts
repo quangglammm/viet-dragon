@@ -4,7 +4,8 @@ import { isIconName } from "@/lib/icons";
 import type { MaterialRecord, MediaRegistry, OptionModel, OptionRecord, ProductRecord, SeedContext } from "../context";
 import { LOCALES, localizedList, localizedText, type Locale } from "../localized";
 import { formatMaterialDisplayName } from "../material-name";
-import { KEBAB_SLUG, isBlankText, orNull, slugify, uniqueSlug } from "../util";
+import { claimSlugs, type SlugsByLocale } from "../slugs";
+import { KEBAB_SLUG, isBlankText, orNull, slugify } from "../util";
 
 // One option row = one offer of a stock by a product, optionally only for one shape. Its name is kept exactly as
 // authored (the page title, breadcrumb, alt text and lead message use it); `card_title` is stored only where the
@@ -19,15 +20,18 @@ interface BulletPlan {
   texts: Partial<Record<Locale, string>>;
 }
 
-function optionSlug(source: ProductOption, product: ProductRecord, ctx: SeedContext): string {
-  let base = ctx.src.toSlug(source.nameVi || source.name || "option");
-  if (!KEBAB_SLUG.test(base)) {
-    ctx.notes.add("slug-invalid", `option ${source.nameVi} → ${base}`);
-    base = slugify(base);
+/** Vietnamese keeps today's slug (`toSlug` of the Vietnamese name); English is generated from the English name. */
+function optionSlugs(source: ProductOption, product: ProductRecord, ctx: SeedContext): SlugsByLocale {
+  let vi = ctx.src.toSlug(source.nameVi || source.name || "option");
+  if (!KEBAB_SLUG.test(vi)) {
+    ctx.notes.add("slug-invalid", `option ${source.nameVi} → ${vi}`);
+    vi = slugify(vi);
   }
-  const slug = uniqueSlug(base, product.takenSegments);
-  if (slug !== base) ctx.notes.add("option-slug-collision", `${product.key}: ${base} → ${slug}`);
-  return slug;
+  const en = slugify(source.name || source.nameVi || "option");
+  const slugs = claimSlugs(product.takenSegments, vi, en);
+  if (slugs.vi !== vi) ctx.notes.add("option-slug-collision", `${product.key}: ${vi} → ${slugs.vi}`);
+  if (slugs.en !== en) ctx.notes.add("option-slug-collision", `${product.key} (en): ${en} → ${slugs.en}`);
+  return slugs;
 }
 
 function optionTranslations(source: ProductOption, material: MaterialRecord): { rows: Omit<OptionI18nRow, "optionId">[]; raw: Record<Locale, string | null>; shown: Record<Locale, string | null> } {
@@ -107,7 +111,7 @@ export async function seedOptions(
     const material = materials.get(model.materialKey)!;
     const { source } = model;
     const shapeRecord = model.shape ? (product.shapes.find((s) => s.source === model.shape) ?? null) : null;
-    const slug = optionSlug(source, product, ctx);
+    const slugs = optionSlugs(source, product, ctx);
     if ([source.unitVi, source.unitEn, source.unitZh, source.unitJa, source.unitKo].some((u) => !isBlankText(u))) notes.add("option-unit-ignored", `${product.key} ${source.nameVi}`);
 
     let icon = source.icon && source.icon !== material.icon ? source.icon : null;
@@ -131,12 +135,12 @@ export async function seedOptions(
         foil2Price: source.foil2SidesPrice ?? null,
       })
       .returning({ id: schema.option.id, uid: schema.option.uid });
-    await tx.insert(schema.productSegment).values({ productId: product.id, slug, optionId: row.id, isCanonical: true });
+    await tx.insert(schema.productSegment).values(LOCALES.map((locale) => ({ productId: product.id, locale, slug: slugs[locale], optionId: row.id, isCanonical: true })));
 
     const translations = optionTranslations(source, material);
     await tx.insert(schema.optionI18n).values(translations.rows.map((r) => ({ ...r, optionId: row.id })));
     await insertBullets(ctx, row.id, bulletPlans(source, product, ctx, traitKeys));
     await insertImages(ctx, row.id, source, media);
-    product.options.push({ ...model, id: row.id, uid: row.uid, slug, rawName: translations.raw, shownName: translations.shown, shapeRecord } satisfies OptionRecord);
+    product.options.push({ ...model, id: row.id, uid: row.uid, slugs, rawName: translations.raw, shownName: translations.shown, shapeRecord } satisfies OptionRecord);
   }
 }

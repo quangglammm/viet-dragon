@@ -30,12 +30,15 @@ describe("column registry ⇄ document schemas", () => {
 describe("schemaHasPath", () => {
   const schema = DOCUMENT_SCHEMAS.product;
   it("follows properties, array elements and language maps", () => {
-    expect(schemaHasPath(schema, "slug")).toBe(true);
+    expect(schemaHasPath(schema, "slugs.*.slug")).toBe(true);
+    expect(schemaHasPath(schema, "slugs.*.aliases[].category")).toBe(true);
+    expect(schemaHasPath(schema, "shapes[].slugs.*.aliases[]")).toBe(true);
     expect(schemaHasPath(schema, "options[].bullets[].i18n.*")).toBe(true);
     expect(schemaHasPath(schema, "shapes[].i18n.*.badge")).toBe(true);
   });
   it("rejects paths that are not in the document", () => {
     expect(schemaHasPath(schema, "slugg")).toBe(false);
+    expect(schemaHasPath(schema, "slug")).toBe(false); // the single slug became one per language
     expect(schemaHasPath(schema, "slug[]")).toBe(false);
     expect(schemaHasPath(schema, "shapes.name")).toBe(false);
     expect(schemaHasPath(schema, "i18n.*.nope")).toBe(false);

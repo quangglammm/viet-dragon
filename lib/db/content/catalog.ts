@@ -99,22 +99,44 @@ export const productI18n = pgTable(
 );
 
 /**
- * Owns the (category, slug) namespace: the canonical URL AND every old one. A slug can never be both a live
- * product and an alias. A product always has one canonical slug in its own category (commit-time trigger), and
- * `product_id` is frozen (trigger) so that check cannot be sidestepped.
+ * Owns the (language, category, slug) namespace: the canonical URL AND every old one, in each language. A slug can
+ * never be both a live product and an alias within one language; the same text may be used in two languages. A
+ * product always has one canonical slug in its own category in EVERY language (commit-time trigger), and
+ * `product_id` / `locale` are frozen (trigger) so that check cannot be sidestepped.
  */
 export const productSlug = pgTable(
   "product_slug",
   {
+    locale: localeRef(),
     categoryId: text("category_id").notNull().references(() => category.id, { onDelete: "restrict" }),
     slug: text("slug").notNull(),
     productId: bigint("product_id", { mode: "number" }).notNull().references(() => product.id, { onDelete: "cascade" }),
     isCanonical: boolean("is_canonical").notNull().default(false),
   },
   (t) => [
-    primaryKey({ columns: [t.categoryId, t.slug] }),
+    primaryKey({ columns: [t.locale, t.categoryId, t.slug] }),
     kebabCheck("product_slug_slug_format", t.slug),
-    uniqueIndex("product_slug_one_canonical").on(t.productId).where(sql`${t.isCanonical}`),
+    uniqueIndex("product_slug_one_canonical").on(t.productId, t.locale).where(sql`${t.isCanonical}`),
     index("product_slug_product_idx").on(t.productId),
+  ],
+);
+
+/**
+ * The category segment of every URL, per language (`tiep-thi` in Vietnamese, `tet-publications` in English). The
+ * category `id` stays the immutable internal key; the old keys (`tet`) are kept as aliases. Latin letters only.
+ */
+export const categorySlug = pgTable(
+  "category_slug",
+  {
+    locale: localeRef(),
+    slug: text("slug").notNull(),
+    categoryId: text("category_id").notNull().references(() => category.id, { onDelete: "cascade" }),
+    isCanonical: boolean("is_canonical").notNull().default(false),
+  },
+  (t) => [
+    primaryKey({ columns: [t.locale, t.slug] }),
+    kebabCheck("category_slug_slug_format", t.slug),
+    uniqueIndex("category_slug_one_canonical").on(t.categoryId, t.locale).where(sql`${t.isCanonical}`),
+    index("category_slug_category_idx").on(t.categoryId),
   ],
 );

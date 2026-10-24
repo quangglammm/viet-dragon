@@ -3,6 +3,7 @@ import type { ShapeItem, SubgroupCategory } from "@/data/subgroups-catalog";
 import type { Tx } from "@/lib/db/types";
 import type { Locale } from "./localized";
 import type { Notes } from "./notes";
+import type { SlugsByLocale, TakenSlugs } from "./slugs";
 import type { Sources } from "./sources";
 
 // What the seed steps share: the transaction, the loaded sources, the notes, and the ids of the rows written so far.
@@ -22,6 +23,7 @@ export interface SeedStats {
   /** Products listed in more than one category (they share one zh/ja/ko translation): product id → categories. */
   sharedListings: Record<string, string[]>;
   productAliasRows: number;
+  categoryAliasRows: number;
   /** Cross-category URLs the old `getSubgroupById` fallback resolved that nothing links to; they will 404. */
   droppedCrossCategoryAliases: string[];
   segmentAliasRows: number;
@@ -52,6 +54,7 @@ export function emptyStats(): SeedStats {
     translationKeyTotals: {},
     sharedListings: {},
     productAliasRows: 0,
+    categoryAliasRows: 0,
     droppedCrossCategoryAliases: [],
     segmentAliasRows: 0,
     menu: { groups: 0, items: 0, groupLabelOverrides: 0, groupDescriptionOverrides: 0, groupImageOverrides: 0, itemLabelOverrides: 0, itemImageOverrides: 0, fastItems: 0 },
@@ -94,13 +97,14 @@ export interface ShapeRecord {
   source: ShapeItem;
   id: number;
   uid: string;
-  slug: string;
+  /** The URL segment / anchor in each language. */
+  slugs: SlugsByLocale;
 }
 
 export interface OptionRecord extends OptionModel {
   id: number;
   uid: string;
-  slug: string;
+  slugs: SlugsByLocale;
   /** The offer's own name per language, exactly as authored (null when the source has none). */
   rawName: Record<Locale, string | null>;
   /** The card heading the site shows today (the raw name after the display-name rewrite). */
@@ -113,10 +117,12 @@ export interface ProductRecord {
   id: number;
   uid: string;
   source: SubgroupCategory;
+  /** The product's slug in each language (in its own category). */
+  slugs: SlugsByLocale;
   shapes: ShapeRecord[];
   options: OptionRecord[];
-  /** Every slug already used in this product's URL-segment namespace (shapes, options, aliases). */
-  takenSegments: Set<string>;
+  /** Every slug already used in this product's URL-segment namespace (shapes, options, aliases), per language. */
+  takenSegments: TakenSlugs;
 }
 
 export interface Catalog {

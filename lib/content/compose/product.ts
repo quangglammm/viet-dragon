@@ -2,7 +2,7 @@ import { asc, eq } from "drizzle-orm";
 import type { DbExecutor } from "@/lib/db/types";
 import * as schema from "@/lib/db/schema";
 import { DOCUMENT_SCHEMA, type ProductDocument } from "../schemas";
-import { byText, coverMedia, groupByKey, i18nMap, imageMedia, ogMedia, optional, seoOf, type Composed } from "./shared";
+import { byText, coverMedia, everyLocale, groupByKey, i18nMap, imageMedia, ogMedia, optional, seoOf, type Composed, type LocaleCode } from "./shared";
 
 // Rows → the product document: the product with its shapes, options (bullets, photos), sizes and specs.
 // Own children refer to each other by uid, library records and media by immutable key.
@@ -10,19 +10,22 @@ import { byText, coverMedia, groupByKey, i18nMap, imageMedia, ogMedia, optional,
 const TIER_ORDER = { large: 0, medium: 1, small: 2 } as const;
 const BULLET_ORDER = { feature: 0, best_for: 1 } as const;
 
-type SegmentRow = { slug: string; isCanonical: boolean; shapeUid: string | null; optionUid: string | null };
+type SegmentRow = { locale: string; slug: string; isCanonical: boolean; shapeUid: string | null; optionUid: string | null };
+type Slugs<A> = Record<LocaleCode, { slug: string; aliases: A[] }>;
 
-/** The canonical URL segment and the aliases of each shape / option, by uid. */
-function segmentsByUid(rows: readonly SegmentRow[], key: "shapeUid" | "optionUid"): Map<string, { slug: string; aliases: string[] }> {
-  const result = new Map<string, { slug: string; aliases: string[] }>();
+/** The canonical URL segment and the aliases of each shape / option in each language, by uid. */
+function segmentsByUid(rows: readonly SegmentRow[], key: "shapeUid" | "optionUid"): Map<string, Slugs<string>> {
+  const result = new Map<string, Slugs<string>>();
   for (const [uid, group] of groupByKey(rows.filter((r) => r[key] !== null), (r) => r[key] as string)) {
-    result.set(uid, {
-      slug: group.find((r) => r.isCanonical)?.slug ?? "",
-      aliases: group.filter((r) => !r.isCanonical).map((r) => r.slug).sort(byText),
-    });
+    result.set(uid, everyLocale((locale) => {
+      const inLanguage = group.filter((r) => r.locale === locale);
+      return { slug: inLanguage.find((r) => r.isCanonical)?.slug ?? "", aliases: inLanguage.filter((r) => !r.isCanonical).map((r) => r.slug).sort(byText) };
+    }));
   }
   return result;
 }
+
+const MISSING_SLUGS = everyLocale(() => ({ slug: "", aliases: [] as string[] }));
 
 export async function composeProduct(x: DbExecutor, uid: string): Promise<Composed<ProductDocument> | null> {
   const [head] = await x
@@ -45,7 +48,7 @@ export async function composeProduct(x: DbExecutor, uid: string): Promise<Compos
   const slugs = await x.select().from(schema.productSlug).where(eq(schema.productSlug.productId, productId));
   const productTexts = await x.select().from(schema.productI18n).where(eq(schema.productI18n.productId, productId));
   const segmentRows = await x
-    .select({ slug: schema.productSegment.slug, isCanonical: schema.productSegment.isCanonical, shapeUid: schema.shape.uid, optionUid: schema.option.uid })
+    .select({ locale: schema.productSegment.locale, slug: schema.productSegment.slug, isCanonical: schema.productSegment.isCanonical, shapeUid: schema.shape.uid, optionUid: schema.option.uid })
     .from(schema.productSegment)
     .leftJoin(schema.shape, eq(schema.shape.id, schema.productSegment.shapeId))
     .leftJoin(schema.option, eq(schema.option.id, schema.productSegment.optionId))
@@ -106,7 +109,6 @@ export async function composeProduct(x: DbExecutor, uid: string): Promise<Compos
     .innerJoin(schema.specItem, eq(schema.specItem.id, schema.productSpec.specItemId))
     .where(eq(schema.productSpec.productId, productId));
 
-  const canonical = slugs.find((s) => s.isCanonical);
   const shapeSegments = segmentsByUid(segmentRows, "shapeUid");
   const optionSegments = segmentsByUid(segmentRows, "optionUid");
   const shapeUidById = new Map(shapeRows.map((s) => [s.id, s.uid]));
@@ -117,14 +119,13 @@ export async function composeProduct(x: DbExecutor, uid: string): Promise<Compos
   const shapes = shapeRows
     .map((s) => ({
       uid: s.uid,
-      slug: shapeSegments.get(s.uid)?.slug ?? "",
-      aliases: shapeSegments.get(s.uid)?.aliases ?? [],
+      slugs: shapeSegments.get(s.uid) ?? MISSING_SLUGS,
       position: s.position,
       image: s.image,
       ogImage: s.ogImage,
       i18n: i18nMap(shapeTextsById.get(s.id) ?? [], (t) => ({ name: t.name, ...optional("description", t.description), ...optional("badge", t.badge), ...seoOf(t) })),
     }))
-    .sort((a, b) => a.position - b.position || byText(a.slug, b.slug));
+    .sort((a, b) => a.position - b.position || byText(a.slugs.vi.slug, b.slugs.vi.slug));
 
   const optionTextsById = groupByKey(optionTexts, (t) => t.optionId);
   const bulletsByOption = groupByKey(bulletRows, (b) => b.optionId);
@@ -133,8 +134,7 @@ export async function composeProduct(x: DbExecutor, uid: string): Promise<Compos
   const options = optionRows
     .map((o) => ({
       uid: o.uid,
-      slug: optionSegments.get(o.uid)?.slug ?? "",
-      aliases: optionSegments.get(o.uid)?.aliases ?? [],
+      slugs: optionSegments.get(o.uid) ?? MISSING_SLUGS,
       shape: o.shapeId === null ? null : (shapeUidById.get(o.shapeId) ?? null),
       material: o.material,
       position: o.position,
@@ -153,7 +153,7 @@ export async function composeProduct(x: DbExecutor, uid: string): Promise<Compos
         pure: (imagesByOption.get(o.id) ?? []).filter((i) => i.variant === "pure").map((i) => i.key),
       },
     }))
-    .sort((a, b) => scopeRank(a.shape) - scopeRank(b.shape) || a.position - b.position || byText(a.slug, b.slug));
+    .sort((a, b) => scopeRank(a.shape) - scopeRank(b.shape) || a.position - b.position || byText(a.slugs.vi.slug, b.slugs.vi.slug));
 
   const sizeTextsById = groupByKey(sizeTexts, (t) => t.sizeOptionId);
   const sizes = sizeRows
@@ -175,9 +175,14 @@ export async function composeProduct(x: DbExecutor, uid: string): Promise<Compos
   const document: ProductDocument = {
     schema: DOCUMENT_SCHEMA,
     uid,
-    category: canonical?.categoryId ?? head.categoryId,
-    slug: canonical?.slug ?? "",
-    aliases: slugs.filter((s) => !s.isCanonical).map((s) => ({ category: s.categoryId, slug: s.slug })).sort((a, b) => byText(a.category, b.category) || byText(a.slug, b.slug)),
+    category: head.categoryId,
+    slugs: everyLocale((locale) => {
+      const inLanguage = slugs.filter((s) => s.locale === locale);
+      return {
+        slug: inLanguage.find((s) => s.isCanonical)?.slug ?? "",
+        aliases: inLanguage.filter((s) => !s.isCanonical).map((s) => ({ category: s.categoryId, slug: s.slug })).sort((a, b) => byText(a.category, b.category) || byText(a.slug, b.slug)),
+      };
+    }),
     status: head.status,
     position: head.position,
     cover: head.cover,

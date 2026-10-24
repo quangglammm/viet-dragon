@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DOCUMENT_SCHEMA, mediaKeySchema, nonblankText, perLocale, requireDefaultLocale, seoFields, slugSchema, uidSchema } from "./common";
+import { DOCUMENT_SCHEMA, LOCALES, localizedSlugs, mediaKeySchema, nonblankText, perLocale, requireMasterLocales, seoFields, slugSchema, uidSchema } from "./common";
 
 // A blog post (docs/data-model.md §4 "Blog"). Slugs follow the product rule: the canonical one plus old URLs as aliases.
 
@@ -12,8 +12,8 @@ export const postDocumentSchema = z
   .strictObject({
     schema: z.literal(DOCUMENT_SCHEMA),
     uid: uidSchema,
-    slug: slugSchema,
-    aliases: z.array(slugSchema),
+    /** The post's slug in each language, and the old ones that still resolve. */
+    slugs: localizedSlugs(slugSchema),
     /** Post category key. */
     category: slugSchema,
     publishedOn: isoDate,
@@ -27,9 +27,12 @@ export const postDocumentSchema = z
     ),
   })
   .superRefine((post, ctx) => {
-    requireDefaultLocale(post.i18n, ctx, []);
-    if (post.aliases.includes(post.slug)) ctx.addIssue({ code: "custom", message: "Đường dẫn chính không thể đồng thời là bí danh.", path: ["aliases"] });
-    if (new Set(post.aliases).size !== post.aliases.length) ctx.addIssue({ code: "custom", message: "Có bí danh bị trùng.", path: ["aliases"] });
+    requireMasterLocales(post.i18n, ctx, []);
+    for (const locale of LOCALES) {
+      const { slug, aliases } = post.slugs[locale];
+      if (aliases.includes(slug)) ctx.addIssue({ code: "custom", message: `Đường dẫn chính (${locale}) không thể đồng thời là bí danh.`, path: ["slugs", locale, "aliases"] });
+      if (new Set(aliases).size !== aliases.length) ctx.addIssue({ code: "custom", message: `Có bí danh bị trùng (${locale}).`, path: ["slugs", locale, "aliases"] });
+    }
   });
 
 export type PostDocument = z.infer<typeof postDocumentSchema>;

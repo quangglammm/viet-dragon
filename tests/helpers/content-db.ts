@@ -9,20 +9,24 @@ import { createScratchDatabase } from "./db";
 // A rolled-back transaction never reaches COMMIT, so each attempt ends with SET CONSTRAINTS ALL IMMEDIATE,
 // which runs exactly the checks COMMIT would have run.
 
-/** Ids below are the fixture's: three products (1,2 = "to-roi" in marketing/tet, 3 = poster), shapes 1-3, options 1-4, media 1-2 images + 3 a video. */
+/**
+ * Ids below are the fixture's: three products (1,2 = "to-roi" in marketing/tet, 3 = poster), shapes 1-3, options 1-4, media 1-2
+ * images + 3 a video. Every slug exists in each of the five languages (the same text in each: the namespaces are per language).
+ * Insert slug rows with explicit column lists: `locale` is the LAST physical column of the tables that gained it.
+ */
 const FIXTURE = `
 insert into app_user (id, name, email) values ('u1', 'Fixture User', 'u1@example.test');
 insert into media (source,storage_key,kind,mime,bytes) values ('static','images/a.webp','image','image/webp',10),('static','images/b.webp','image','image/webp',10),('static','videos/v.mp4','video','video/mp4',10);
 insert into category (id,icon,cover_media_id,position,updated_by) values ('marketing','Briefcase',1,0,'u1'),('tet','Gift',1,1,'u1');
 insert into product (category_id,cover_media_id,position) values ('marketing',1,0),('tet',1,0),('marketing',2,1);
-insert into product_slug values ('marketing','to-roi',1,true),('tet','to-roi',2,true),('marketing','poster',3,true);
+insert into product_slug (locale,category_id,slug,product_id,is_canonical) select l.code,v.category_id,v.slug,v.product_id,true from locale l cross join (values ('marketing','to-roi',1),('tet','to-roi',2),('marketing','poster',3)) v(category_id,slug,product_id);
 insert into shape (product_id,image_media_id,position) values (1,1,0),(1,1,1),(2,1,0);
-insert into product_segment (product_id,slug,shape_id,is_canonical) values (1,'a5',1,true),(1,'a4',2,true),(2,'a5',3,true);
+insert into product_segment (product_id,locale,slug,shape_id,is_canonical) select v.product_id,l.code,v.slug,v.shape_id,true from locale l cross join (values (1,'a5',1),(1,'a4',2),(2,'a5',3)) v(product_id,slug,shape_id);
 insert into material (slug) values ('giay-loai-c'),('giay-kraft');
 insert into unit (key) values ('box');
 insert into trait (key,icon) values ('glossy-coat','Sparkles');
 insert into option (product_id,shape_id,material_id,position,unit_key) values (1,null,1,0,'box'),(1,1,1,1,null),(1,null,2,2,null),(3,null,1,0,null);
-insert into product_segment (product_id,slug,option_id,is_canonical) values (1,'giay-loai-c',1,true),(1,'giay-loai-c-a5',2,true),(1,'giay-kraft',3,true),(3,'giay-loai-c',4,true);
+insert into product_segment (product_id,locale,slug,option_id,is_canonical) select v.product_id,l.code,v.slug,v.option_id,true from locale l cross join (values (1,'giay-loai-c',1),(1,'giay-loai-c-a5',2),(1,'giay-kraft',3),(3,'giay-loai-c',4)) v(product_id,slug,option_id);
 insert into option_i18n values (1,'vi','Giấy loại C',null,'Tagline vi'),(1,'en','Type C paper','Type C',null);
 insert into option_bullet (option_id,kind,position,trait_key) values (1,'feature',0,'glossy-coat'),(1,'best_for',0,null);
 insert into option_bullet_i18n values (1,'vi','Bóng'),(1,'en','Glossy'),(2,'vi','Sự kiện');
@@ -37,6 +41,7 @@ insert into menu_group (product_id,menu_column,position) values (1,1,0);
 insert into menu_item (product_id,position,shape_id,is_fast) values (1,0,1,true);
 insert into menu_item (product_id,position,option_id) values (1,1,1);
 insert into category_i18n values ('marketing','vi','Tiếp thị',null),('tet','vi','Tết',null);
+insert into category_slug (locale,slug,category_id,is_canonical) select l.code,c.id,c.id,true from locale l cross join category c;
 insert into material_i18n values (1,'vi','Giấy loại C'),(2,'vi','Giấy kraft');
 insert into unit_i18n values ('box','vi','Hộp');
 insert into trait_i18n values ('glossy-coat','vi','Bóng',null);
@@ -45,7 +50,7 @@ insert into shape_i18n values (2,'vi','A4',null,null),(3,'vi','A5 Tết',null,nu
 insert into post_category (key) values ('tips');
 insert into post_category_i18n values ('tips','vi','Mẹo');
 insert into post (category_key,published_on) values ('tips','2026-01-01');
-insert into post_slug values ('bai-1',1,true);
+insert into post_slug (locale,slug,post_id,is_canonical) select code,'bai-1',1,true from locale;
 insert into post_i18n values (1,'vi','Tiêu đề',null,'Nội dung');
 `;
 

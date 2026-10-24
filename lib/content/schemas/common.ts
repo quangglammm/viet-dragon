@@ -10,13 +10,19 @@ import { routing } from "@/i18n/routing";
 
 export const DOCUMENT_SCHEMA = 2;
 export const LOCALES = routing.locales;
-export const DEFAULT_LOCALE = routing.defaultLocale;
+
+/**
+ * The master languages: complete and owner-reviewed first. Every other language starts as a copy of English and keeps
+ * falling back to it until translated. (The database only requires the default language; publishing requires both.)
+ */
+export const MASTER_LOCALES = ["vi", "en"] as const satisfies readonly LocaleCode[];
+export const MASTER_LANGUAGE_NAME: Record<(typeof MASTER_LOCALES)[number], string> = { vi: "tiếng Việt", en: "tiếng Anh" };
 
 export const MESSAGES = {
   blank: "Không được để trống.",
-  slug: "Đường dẫn chỉ gồm chữ thường không dấu, số và dấu gạch ngang (ví dụ: to-roi-a5).",
+  slug: "Đường dẫn chỉ gồm chữ thường không dấu (a-z), số và dấu gạch ngang (ví dụ: to-roi-a5).",
   icon: "Tên biểu tượng chỉ gồm chữ cái và số.",
-  defaultLanguageRequired: "Bắt buộc có nội dung tiếng Việt.",
+  masterLanguageRequired: (locale: (typeof MASTER_LOCALES)[number]) => `Bắt buộc có nội dung ${MASTER_LANGUAGE_NAME[locale]}.`,
 } as const;
 
 /** Mirrors the database's `nonblank()` (docs: Unicode-aware): whitespace, NBSP, U+3000, zero-width, BOM… */
@@ -38,8 +44,17 @@ export const localeSchema = z.enum(LOCALES);
 export type LocaleCode = z.infer<typeof localeSchema>;
 
 /**
+ * A value for EVERY language (zod's enum-keyed `record` is exhaustive, and rejects unknown languages). Used for slugs: a URL must
+ * exist in every language, so a missing one is an error, unlike translated text where a missing language falls back.
+ */
+export const everyLocale = <T extends z.ZodType>(value: T) => z.record(localeSchema, value);
+
+/** The slugs of one entity in each language: the canonical slug and the old ones that still resolve (never dropped by a publish). */
+export const localizedSlugs = <A extends z.ZodType>(aliasSchema: A) => everyLocale(z.strictObject({ slug: slugSchema, aliases: z.array(aliasSchema) }));
+
+/**
  * One value per language; a missing language is a missing key (never an empty string). Unknown languages are
- * rejected, and the default language is required by `requireDefaultLocale` where the entity has translations.
+ * rejected, and the master languages are required by `requireMasterLocales` where the entity has translations.
  */
 export const perLocale = <T extends z.ZodType>(value: T) => z.partialRecord(localeSchema, value);
 
@@ -49,16 +64,12 @@ export const seoFields = {
 };
 
 /**
- * Adds an issue when the `i18n` map of the entity at `path` lacks the default language (the database checks the
- * same rule at COMMIT, so this only gives the editor an earlier, field-level message).
+ * Adds an issue for each master language (Vietnamese, English) the `i18n` map of the entity at `path` lacks. The database
+ * checks the default language at COMMIT; this gives the editor an earlier, field-level message, and also requires English.
  */
-export function requireDefaultLocale(
-  i18n: Partial<Record<string, unknown>>,
-  ctx: z.RefinementCtx,
-  path: (string | number)[],
-): void {
-  if (i18n[DEFAULT_LOCALE] === undefined) {
-    ctx.addIssue({ code: "custom", message: MESSAGES.defaultLanguageRequired, path: [...path, "i18n", DEFAULT_LOCALE] });
+export function requireMasterLocales(i18n: Partial<Record<string, unknown>>, ctx: z.RefinementCtx, path: (string | number)[]): void {
+  for (const locale of MASTER_LOCALES) {
+    if (i18n[locale] === undefined) ctx.addIssue({ code: "custom", message: MESSAGES.masterLanguageRequired(locale), path: [...path, "i18n", locale] });
   }
 }
 

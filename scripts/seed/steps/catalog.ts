@@ -1,8 +1,9 @@
 import type { ShapeItem, SubgroupCategory } from "@/data/subgroups-catalog";
 import * as schema from "@/lib/db/schema";
 import type { MediaRegistry, ProductRecord, SeedContext, ShapeRecord } from "../context";
-import { TRANSLATED_LOCALES, localizedText, translated } from "../localized";
-import { KEBAB_SLUG, bump, isBlankText, orNull, uniqueSlug } from "../util";
+import { LOCALES, TRANSLATED_LOCALES, localizedText, translated } from "../localized";
+import { claimSlugs, emptyTaken, type TakenSlugs } from "../slugs";
+import { KEBAB_SLUG, bump, isBlankText, orNull, slugify } from "../util";
 
 // Products (the aggregate root) and their shapes. A product's identity is its `uid`; its category/slug live in
 // product_slug, and each shape's URL segment in product_segment (every shape has exactly one canonical one).
@@ -64,15 +65,16 @@ async function seedShapes(ctx: SeedContext, product: ProductRecord, media: Media
   const { tx, notes } = ctx;
   for (const [position, source] of product.source.shapes.entries()) {
     if (!KEBAB_SLUG.test(source.id)) notes.add("slug-invalid", `shape ${source.id}`);
-    const slug = uniqueSlug(source.id, product.takenSegments);
-    if (slug !== source.id) notes.add("shape-slug-duplicate", `${product.key}: ${source.id}`);
+    const slugs = claimSlugs(product.takenSegments, source.id, slugify(source.nameEn));
+    if (slugs.vi !== source.id) notes.add("shape-slug-duplicate", `${product.key}: ${source.id}`);
+    if (slugs.en !== slugify(source.nameEn)) notes.add("shape-slug-duplicate", `${product.key} (en): ${source.nameEn}`);
     const [row] = await tx
       .insert(schema.shape)
       .values({ productId: product.id, imageMediaId: media.idOf(source.image), position })
       .returning({ id: schema.shape.id, uid: schema.shape.uid });
-    await tx.insert(schema.productSegment).values({ productId: product.id, slug, shapeId: row.id, isCanonical: true });
+    await tx.insert(schema.productSegment).values(LOCALES.map((locale) => ({ productId: product.id, locale, slug: slugs[locale], shapeId: row.id, isCanonical: true })));
     await tx.insert(schema.shapeI18n).values(shapeTranslations(source, ctx, uses).map((r) => ({ ...r, shapeId: row.id })));
-    product.shapes.push({ source, id: row.id, uid: row.uid, slug } satisfies ShapeRecord);
+    product.shapes.push({ source, id: row.id, uid: row.uid, slugs } satisfies ShapeRecord);
   }
 }
 
@@ -83,6 +85,7 @@ export async function seedProducts(ctx: SeedContext, media: MediaRegistry): Prom
   const listings = new Map<string, number>();
   for (const sub of src.subgroups) bump(listings, sub.id);
   const nextPosition = new Map<string, number>();
+  const takenInCategory = new Map<string, TakenSlugs>();
 
   for (const sub of src.subgroups) {
     const key = `${sub.categoryId}/${sub.id}`;
@@ -92,14 +95,16 @@ export async function seedProducts(ctx: SeedContext, media: MediaRegistry): Prom
       .insert(schema.product)
       .values({ categoryId: sub.categoryId, coverMediaId: media.idOf(sub.coverImage), position, status: "published" })
       .returning({ id: schema.product.id, uid: schema.product.uid });
-    await tx.insert(schema.productSlug).values({ categoryId: sub.categoryId, slug: sub.id, productId: row.id, isCanonical: true });
+    const taken = takenInCategory.get(sub.categoryId) ?? takenInCategory.set(sub.categoryId, emptyTaken()).get(sub.categoryId)!;
+    const slugs = claimSlugs(taken, sub.id, slugify(sub.titleEn));
+    await tx.insert(schema.productSlug).values(LOCALES.map((locale) => ({ locale, categoryId: sub.categoryId, slug: slugs[locale], productId: row.id, isCanonical: true })));
     await tx.insert(schema.productI18n).values(productTranslations(ctx, sub, key, uses).map((r) => ({ ...r, productId: row.id })));
     if ((listings.get(sub.id) ?? 0) > 1) {
       notes.add("shared-translation-key", `${key}: one zh/ja/ko text for ${listings.get(sub.id)} listings`);
       (stats.sharedListings[sub.id] ??= []).push(sub.categoryId);
     }
 
-    const product: ProductRecord = { key, id: row.id, uid: row.uid, source: sub, shapes: [], options: [], takenSegments: new Set() };
+    const product: ProductRecord = { key, id: row.id, uid: row.uid, source: sub, slugs, shapes: [], options: [], takenSegments: emptyTaken() };
     products.set(key, product);
     await seedShapes(ctx, product, media, uses);
   }
