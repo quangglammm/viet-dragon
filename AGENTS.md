@@ -101,7 +101,7 @@ Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
 | Route | Notes |
 |---|---|
 | `/admin/*` | CMS UI — own root layout, Vietnamese only. See **Admin CMS** |
-| `/api/admin/*` | CMS API (blog, media, products, translations, translate) — every handler starts with `requireApiUser` (a test enforces it) |
+| `/api/admin/*` | CMS API — legacy `blog`, `media`, `products`, `translations`, `translate` (Phase 3d replaces them) and the new `content/**` (drafts, publish, revisions, delete — see **Content model**). Every handler starts with `requireApiUser` (a test enforces it) |
 | `/api/auth/*` | Better Auth (`app/api/auth/[...all]/route.ts`): sign-in/out, session, password change, admin-plugin user management. Sign-in must use this HTTP surface — only HTTP requests are rate limited, not `auth.api.*` calls |
 | `/api/consult` | Public. Receives quote/consult leads from `QuoteModal` / `ConsultBottomSheet`, emails them |
 | `/zalo-reply` | Client page that copies a prepared reply message and opens Zalo (`noindex`) |
@@ -320,7 +320,7 @@ languages**, and edits are **drafts until published** (draft → preview → pub
 restorable revision). The relational schema (validated against the real data), the draft/publish
 design, the seed rules and the owner-review list are in `docs/data-model.md` (+ `docs/data-model.sql`).
 
-### Content model (Phase 3a schema + 3b seed + localized URLs + 3c-1/3c-2 draft, publish and delete services landed; the HTTP API is 3c-3; the public site and the admin do not read or write it yet)
+### Content model (Phase 3a schema + 3b seed + localized URLs + 3c draft / publish / delete services and the `/api/admin/content` API landed; the public site and the admin UI do not use it yet)
 The full design is `docs/data-model.md` (local); this is what the code now guarantees.
 - **Tables:** `lib/db/content/*.ts` (foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog,
   site-message, drafts; shared builders in `columns.ts`, SEO/Open Graph columns in `seo.ts`), re-exported by `lib/db/schema.ts`.
@@ -382,7 +382,7 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
 - **Compose** (`lib/content/compose/`): rows → the zod documents (`composeEntity(db, type, id)`, `listEntities`); the read side
   that revision 1, 3c's publish and Phase 4's queries share. `lib/content/revision.ts` writes a `content_revision` row.
   `lib/db/types.ts` has `Db` / `Tx` / `DbExecutor` — code that only reads and writes rows takes `DbExecutor`.
-- **Drafts, publish, restore, delete (Phase 3c-1 + 3c-2: all twelve entity types; the HTTP API is 3c-3).** A live entity
+- **Drafts, publish, restore, delete (Phase 3c: all twelve entity types).** A live entity
   changes ONLY by publishing a draft: a whole-entity document in `content_draft`, saved as often as the editor likes and however
   incomplete (`GET` advice comes from `validateSnapshot`: zod + references; publish enforces it). Services in `lib/content/` take a
   `Db` and throw `Conflict` (409, with a `code`: `STALE_BASE` carries a field-level `changes` diff live → draft, `DRAFT_CHANGED`,
@@ -420,7 +420,19 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
     (`draft_reference`, rewritten on every autosave by the tolerant `collectReferences`): the foreign keys cannot see drafts.
   - Database errors are mapped to editor-readable `Invalid` by `humanize` (it unwraps Drizzle's `cause`; deferred constraints fail at
     COMMIT, so wrap the whole transaction). Unmapped errors pass through untouched.
-- **Tests:** `lib/content/entities.int.test.ts` (all 198 seeded entities publish unchanged; each of the nine creatable types is created,
+- **HTTP API** (`app/api/admin/content/[type]/[id]/…`, contract in `docs/admin-api.md`, local): thin handlers — `requireApiUser` first,
+  then `handle(async () => …)` from `lib/content/http.ts`, which turns `NotFound` / `Invalid` / `Conflict` / `HttpError` into
+  404 / 422 / 409 / 4xx with the admin API's error shape `{ error: <Vietnamese message>, code, issues?, changes? }` and anything else into a
+  logged 500 without details. Bodies are read by `readJson(request, schema)` (zod, strict, capped at 2 MB → 413; `requests.ts`), never
+  `request.json() as T`. Saving and publishing REQUIRE `If-Match: "<draftVersion>"` (428 when missing). Permissions: `content:edit` for
+  drafts and reads, `content:publish` for publish / release-alias, new `content:delete` (admin only) for deleting. After a commit,
+  `effects.ts` revalidates `cacheTags(result.affected)` and writes the audit row (`content.published | restored | discarded | deleted |
+  alias_released`; autosave is not audited); a failure there is logged, never thrown. **Caddy still blocks all of `/api/admin/*` in
+  production**: 3d adds the paths together with the editors. Entity types in URLs are kebab-case (`spec-item`), a spec item's key
+  `technique/offset` is `technique.offset` in a path.
+- **Tests:** `app/api/admin/content/content-api.int.test.ts` (who may call what, preconditions, error shapes, cache tags, audit rows —
+  with the app's own database pointed at a seeded scratch one by setting `DATABASE_URL` before the first `getDb()`),
+  `lib/content/http.test.ts`; `lib/content/entities.int.test.ts` (all 198 seeded entities publish unchanged; each of the nine creatable types is created,
   edited, archived, deleted and brought back; URL renames; site-message versions; lists) and `delete.int.test.ts` (every refusal next to
   the deletions that must work); `lib/content/{product,draft,menu}-lifecycle.int.test.ts` run the prototype's lifecycle (docs/spike) through the shipped
   services on the seeded scratch database (all 25 products and 4 menus round-trip losslessly with every id preserved; renames, swaps,
@@ -634,6 +646,7 @@ lib/
   content/drafts.ts, publish.ts, restore.ts, aliases.ts, used-by.ts   the write side (3c): drafts, publish, revisions + restore, releasing old URLs, "used by"
   content/validate.ts, references.ts, diff.ts, humanize.ts, identity.ts, errors.ts, cache-tags.ts   advice + checks, what a document points at, field-level diff, DB error → Vietnamese, URL type names / ids, Conflict / Invalid / NotFound, cache tags
   content/delete.ts, summaries.ts   delete / archive-first rules (+ the "delete" revision) · admin list rows
+  content/http.ts, requests.ts, effects.ts   the HTTP layer of app/api/admin/content: URL / If-Match / capped JSON body / error mapping · zod request bodies · cache tags + audit after commit
   content/apply/            one applier per entity type (all twelve): document → live rows, plus the per-language slug planning (`planSegments` also serves posts and categories)
   db/content/*.ts           the CMS content model: foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog, site-message, drafts (+ columns.ts, seo.ts builders)
   content/schemas/          zod document schemas (product, menu, post, library entities) + DOCUMENT_SCHEMAS / parseDocument / documentIdentity

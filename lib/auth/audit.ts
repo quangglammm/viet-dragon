@@ -19,6 +19,11 @@ export const AUDIT_ACTIONS = [
   "user.password_reset",
   "user.sessions_revoked",
   "content.seeded",
+  "content.published",
+  "content.restored",
+  "content.discarded",
+  "content.deleted",
+  "content.alias_released",
 ] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 
@@ -36,6 +41,11 @@ export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
   "user.password_reset": "Đặt lại mật khẩu",
   "user.sessions_revoked": "Thu hồi phiên đăng nhập",
   "content.seeded": "Nhập dữ liệu gốc của website",
+  "content.published": "Xuất bản nội dung",
+  "content.restored": "Khôi phục phiên bản nội dung",
+  "content.discarded": "Hủy bản nháp",
+  "content.deleted": "Xóa nội dung",
+  "content.alias_released": "Gỡ đường dẫn cũ",
 };
 
 /** Who acted when there is no signed-in user: the CLI (`pnpm admin:create`) or an unauthenticated visitor. */

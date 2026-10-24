@@ -5,7 +5,8 @@ import { defaultStatements } from "better-auth/plugins/admin/access";
 // endpoints (user management); `can()` / `hasPermission()` let our DAL and UI ask the same question.
 const statements = {
   ...defaultStatements,
-  content: ["edit", "publish"],
+  // delete = remove a published record for good (products, posts, library records…): admin only.
+  content: ["edit", "publish", "delete"],
   media: ["upload", "delete"],
   audit: ["read"],
 } as const;
@@ -21,7 +22,7 @@ export const roles = {
   admin: ac.newRole({
     user: ["create", "list", "get", "set-role", "set-password", "ban"],
     session: ["list", "revoke"],
-    content: ["edit", "publish"],
+    content: ["edit", "publish", "delete"],
     media: ["upload", "delete"],
     audit: ["read"],
   }),

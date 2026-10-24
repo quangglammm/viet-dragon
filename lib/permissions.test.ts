@@ -13,6 +13,7 @@ describe("role matrix", () => {
     ["session", "revoke"],
     ["content", "edit"],
     ["content", "publish"],
+    ["content", "delete"],
     ["media", "upload"],
     ["media", "delete"],
     ["audit", "read"],
@@ -40,6 +41,7 @@ describe("role matrix", () => {
   });
 
   it.each([
+    ["content", "delete"],
     ["media", "delete"],
     ["audit", "read"],
     ["user", "list"],
