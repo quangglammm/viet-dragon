@@ -22,7 +22,7 @@ export interface Summary {
   /** null = not published yet. */
   version: number | null;
   updatedAt: Date | null;
-  /** What the row is filed under in a list: a product's category. */
+  /** What the row is filed under in a list: a product's category, a post's category. */
   group: string | null;
   draft: DraftInfo | null;
 }
@@ -47,7 +47,7 @@ async function products(x: DbExecutor): Promise<LiveRow[]> {
 
 async function posts(x: DbExecutor): Promise<LiveRow[]> {
   return x
-    .select({ id: sql<string>`${schema.post.uid}::text`, label: schema.postI18n.title, status: schema.post.status, version: schema.post.version, updatedAt: schema.post.updatedAt })
+    .select({ id: sql<string>`${schema.post.uid}::text`, label: schema.postI18n.title, status: schema.post.status, version: schema.post.version, updatedAt: schema.post.updatedAt, group: schema.post.categoryKey })
     .from(schema.post)
     .leftJoin(schema.postI18n, and(eq(schema.postI18n.postId, schema.post.id), eq(schema.postI18n.locale, VI)));
 }
@@ -142,7 +142,7 @@ function labelOfSnapshot(snapshot: unknown): string | null {
 }
 
 function groupOfSnapshot(type: DraftEntityType, snapshot: unknown): string | null {
-  const category = type === "product" ? (snapshot as { category?: unknown } | null)?.category : undefined;
+  const category = type === "product" || type === "post" ? (snapshot as { category?: unknown } | null)?.category : undefined;
   return typeof category === "string" ? category : null;
 }
 

@@ -31,9 +31,11 @@ type HistoryPanelProps = {
   /** A draft is open, so another cannot be started from a revision. */
   hasOpenDraft: boolean;
   onRestored: (payload: DraftPayload) => void;
+  /** Names for the ids in the comparison's paths. */
+  names?: ReadonlyMap<string, string>;
 };
 
-export function HistoryPanel({ entity, authors, current, hasOpenDraft, onRestored }: Readonly<HistoryPanelProps>) {
+export function HistoryPanel({ entity, authors, current, hasOpenDraft, onRestored, names }: Readonly<HistoryPanelProps>) {
   const api = useMemo(() => createContentApi(), []);
   const [rows, setRows] = useState<RevisionRow[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -111,7 +113,7 @@ export function HistoryPanel({ entity, authors, current, hasOpenDraft, onRestore
       )}
       {comparing && (
         <Modal title={`So sánh với phiên bản ${comparing.version}`} description="Từ phiên bản cũ sang nội dung đang mở." size="lg" onClose={() => setComparing(null)}>
-          <DiffView type={entity.type} changes={diffDocuments(comparing.document, current)} empty="Giống hệt nội dung đang mở." />
+          <DiffView type={entity.type} changes={diffDocuments(comparing.document, current)} empty="Giống hệt nội dung đang mở." names={names} />
         </Modal>
       )}
     </AdminCard>

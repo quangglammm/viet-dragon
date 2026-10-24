@@ -146,6 +146,12 @@ describe("menu document", () => {
     twoColumns.columns.push({ column: 1, groups: [] });
     refuses(twoColumns, menuDocumentSchema, "columns.1.column");
   });
+  it("refuses a column with no groups: a column is stored on its groups, so an empty one would vanish at publish", () => {
+    const doc = menuDocument();
+    doc.columns.push({ column: 2, groups: [] });
+    refuses(doc, menuDocumentSchema, "columns.1");
+    expect(menuDocumentSchema.safeParse({ ...doc, columns: [] }).success).toBe(true); // a menu with no column at all is fine
+  });
   it("needs exactly one target per item", () => {
     const doc = menuDocument();
     (doc.columns[0].groups[0].items[0] as { target: unknown }).target = { shape: UID.shapeA5, option: UID.option };
@@ -216,6 +222,40 @@ describe("library documents", () => {
     expect(parseDocument("site_message", { schema: 2, key: "hero", data: { vi: { title: "x" }, en: { title: "y" } } }).success).toBe(true);
     expect(parseDocument("site_message", { schema: 2, key: "hero.title", data: {} }).success).toBe(false);
   });
+
+  describe("the texts of a UI-copy namespace", () => {
+    const message = (data: Record<string, unknown>) => parseDocument("site_message", { schema: 2, key: "shopCategories", data });
+    const issuesOf = (data: Record<string, unknown>) => (message(data).error?.issues ?? []).map((issue) => [issue.path.join("."), issue.message]);
+    const base = { vi: { itemCount: "{count} sản phẩm", list: ["a", "b"] }, en: { itemCount: "{count} products", list: ["a", "b"] } };
+
+    it("accepts a translation that keeps the variables of the Vietnamese text, and one that leaves out a variable", () => {
+      expect(message({ ...base, zh: { itemCount: "{count} 个产品", list: ["甲", "乙"] } }).success).toBe(true);
+      expect(message({ ...base, ja: { itemCount: "商品", list: ["", ""] } }).success).toBe(true);
+    });
+
+    it("refuses a variable the Vietnamese text does not have, naming the text and the language", () => {
+      const issues = issuesOf({ ...base, zh: { itemCount: "{total} 个产品", list: ["甲", "乙"] } });
+      expect(issues).toHaveLength(1);
+      expect(issues[0][0]).toBe("data.zh.itemCount");
+      expect(issues[0][1]).toContain("{count}");
+      expect(issues[0][1]).toContain("{total}");
+    });
+
+    it("refuses braces that do not balance, in any language, Vietnamese included", () => {
+      expect(issuesOf({ vi: { itemCount: "{count sản phẩm" }, en: { itemCount: "x" } })[0][0]).toBe("data.vi.itemCount");
+      expect(issuesOf({ ...base, ko: { itemCount: "{count} 제품}", list: ["a", "b"] } })[0][0]).toBe("data.ko.itemCount");
+    });
+
+    it("lets only zh/ja/ko leave a text empty, and names a text in a list by its position", () => {
+      expect(message({ ...base, ko: { itemCount: "", list: ["", "b"] } }).success).toBe(true);
+      expect(issuesOf({ vi: { ...base.vi, list: ["a", " "] }, en: base.en })).toEqual([["data.vi.list.1", "Không được để trống."]]);
+      expect(issuesOf({ vi: base.vi, en: { ...base.en, itemCount: "" } })).toEqual([["data.en.itemCount", "Không được để trống."]]);
+    });
+
+    it("does not judge variables of a text the Vietnamese tree does not have", () => {
+      expect(message({ vi: { a: "x" }, en: { a: "x", extra: "{anything}" } }).success).toBe(true);
+    });
+  });
 });
 
 describe("dispatch", () => {
@@ -232,5 +272,14 @@ describe("dispatch", () => {
   it("dispatches by entity type", () => {
     expect(parseDocument("product", productDocument()).success).toBe(true);
     expect(parseDocument("menu", productDocument()).success).toBe(false);
+  });
+});
+
+describe("a required text that is missing", () => {
+  it("says it is required, in Vietnamese, instead of zod's 'expected string, received undefined'", () => {
+    const post = postDocument() as unknown as { i18n: { vi: Record<string, unknown> } };
+    delete post.i18n.vi.content;
+    const result = parseDocument("post", post);
+    expect(result.error?.issues.map((issue) => [issue.path.join("."), issue.message])).toEqual([["i18n.vi.content", "Bắt buộc phải nhập."]]);
   });
 });

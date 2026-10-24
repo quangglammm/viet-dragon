@@ -16,21 +16,23 @@ export interface FieldProps {
   hint?: string;
   required?: boolean;
   className?: string;
+  /** The registry path the control stands for, when it cannot be derived from `path` (a UI text sits at `data.vi.faq.items[2].a`, registered as `data.*.*`). */
+  registryPath?: string;
 }
 
-export function useFieldFrame({ path, label, required, list = false }: Pick<FieldProps, "path" | "label" | "required"> & { list?: boolean }) {
+export function useFieldFrame({ path, label, required, registryPath: registered, list = false }: Pick<FieldProps, "path" | "label" | "required" | "registryPath"> & { list?: boolean }) {
   const editor = useEditor();
   const id = useId();
   const concrete = editor.resolve(path);
   // A list of plain values (a gallery of images) is registered by its element: `options[].images.default[]`.
-  const registryPath = registryPathOf(concrete) + (list ? "[]" : "");
-  const registered = FIELD_REGISTRY[editor.type].find((field) => field.path === registryPath);
+  const registryPath = registered ?? registryPathOf(concrete) + (list ? "[]" : "");
+  const field = FIELD_REGISTRY[editor.type].find((candidate) => candidate.path === registryPath);
   return {
     editor,
     id,
     concrete,
     registryPath,
-    label: label ?? registered?.label ?? registryPath,
+    label: label ?? field?.label ?? registryPath,
     required: required ?? false,
     issues: editor.issues.filter((issue) => issue.path === concrete),
   };

@@ -187,28 +187,37 @@ const LANGUAGE_OF_PATH = new RegExp(`\\.(${LOCALES.join("|")})(?=\\.|$)`);
 const LIST_SEGMENT = /([A-Za-z_]+)\[(\d+)\]/g;
 const WHOLE_ROW = /([A-Za-z_]+)\[\]$/;
 
+/** A menu column is identified by its own number, so in a diff `columns[2]` IS column 2 (everywhere else a number is a position, counted from 0). */
+const NUMBERED_BY_KEY = "columns";
+
+const placeOf = (list: string, index: string, keyed: boolean): number => (keyed && list === NUMBERED_BY_KEY ? Number(index) : Number(index) + 1);
+
 /** Where a field is when the document is edited by position: «hình thức 4 · dòng nội dung 2». Empty for paths that name rows by id. */
-function whereIn(concretePath: string): string {
-  const rows = [...concretePath.matchAll(LIST_SEGMENT)].map(([, list, index]) => `${(LIST_ELEMENT_NOUNS[list] ?? list).toLowerCase()} ${Number(index) + 1}`);
+function whereIn(concretePath: string, keyed: boolean): string {
+  const rows = [...concretePath.matchAll(LIST_SEGMENT)].map(([, list, index]) => `${(LIST_ELEMENT_NOUNS[list] ?? list).toLowerCase()} ${placeOf(list, index, keyed)}`);
   return rows.length > 0 ? ` · ${rows.join(" · ")}` : "";
 }
 
 /**
  * The editor's label for a concrete path: «Tên sản phẩm (en)». A whole row is named by what it is («Chất liệu»), a container
  * (`shapes[3].i18n.en`) by its first field, and a position-based path says which row it is in. Anything unknown stays as the path.
+ * `keyed`: the path comes from a diff, where a menu column's number is its identity, not a position.
  */
-export function fieldLabel(type: DraftEntityType, concretePath: string): string {
+export function fieldLabel(type: DraftEntityType, concretePath: string, keyed = false): string {
   const registryPath = registryPathOf(concretePath);
   const fields = FIELD_REGISTRY[type];
   const language = LANGUAGE_OF_PATH.exec(concretePath)?.[1];
-  const named = (field: FieldDef) => `${field.label}${language ? ` (${language})` : ""}${whereIn(concretePath)}`;
+  const named = (field: FieldDef) => `${field.label}${language ? ` (${language})` : ""}${whereIn(concretePath, keyed)}`;
 
   const exact = fields.find((candidate) => candidate.path === registryPath);
   if (exact) return named(exact);
+  // A UI text anywhere in a language's tree (`data.zh.about.checklist[2]`) is registered once, as `data.*.*`.
+  const tree = fields.find((candidate) => candidate.control === "tree" && registryPath.startsWith(candidate.path.slice(0, -1)));
+  if (tree && language) return `${tree.label} (${language}) · ${concretePath.slice(tree.path.slice(0, -1).replace("*", language).length)}`;
   const row = WHOLE_ROW.exec(registryPath)?.[1];
   if (row && LIST_ELEMENT_NOUNS[row]) {
     const index = /\[(\d+)\]$/.exec(concretePath)?.[1];
-    return `${LIST_ELEMENT_NOUNS[row]}${index === undefined ? "" : ` ${Number(index) + 1}`}${whereIn(concretePath.replace(/\[[^\]]*\]$/, ""))}`;
+    return `${LIST_ELEMENT_NOUNS[row]}${index === undefined ? "" : ` ${placeOf(row, index, keyed)}`}${whereIn(concretePath.replace(/\[[^\]]*\]$/, ""), keyed)}`;
   }
   const inside = fields.find((candidate) => candidate.path.startsWith(`${registryPath}.`) || candidate.path.startsWith(`${registryPath}[`));
   return inside ? named(inside) : concretePath;

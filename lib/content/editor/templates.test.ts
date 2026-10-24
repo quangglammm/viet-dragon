@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { DOCUMENT_SCHEMAS, DOCUMENT_SCHEMA } from "../schemas";
-import { CREATABLE_TYPES, buildCreateRequest, type CreateForm } from "./templates";
+import { CREATABLE_TYPES, buildCreateRequest, vietnamToday, type CreateForm } from "./templates";
 
 const form = (overrides: Partial<CreateForm> = {}): CreateForm => ({ nameVi: "Giấy kraft", nameEn: "Kraft paper", key: "giay-kraft", ...overrides });
 
@@ -12,7 +12,15 @@ describe("buildCreateRequest", () => {
       if (!request.ok) continue;
       // What the API adds on creation, so the document can be judged: identity fields and the schema number.
       const identity = request.key === undefined ? { uid: "11111111-1111-4111-8111-111111111111" } : { key: request.key };
-      const completed = { schema: DOCUMENT_SCHEMA, ...identity, ...request.snapshot, ...(type === "showcase_item" ? { media: "images/a.webp" } : {}) };
+      const texts = request.snapshot.i18n as Record<string, Record<string, string>>;
+      // What the editor still has to add: a showcase's image, and the body text of a post (in both master languages).
+      const added =
+        type === "showcase_item"
+          ? { media: "images/a.webp" }
+          : type === "post"
+            ? { i18n: { vi: { ...texts.vi, content: "Nội dung." }, en: { ...texts.en, content: "Content." } } }
+            : {};
+      const completed = { schema: DOCUMENT_SCHEMA, ...identity, ...request.snapshot, ...added };
       const parsed = DOCUMENT_SCHEMAS[type].safeParse(completed);
       expect(parsed.success, `${type}: ${JSON.stringify(parsed.error?.issues)}`).toBe(true);
     }
@@ -44,6 +52,25 @@ describe("buildCreateRequest", () => {
 
   it("asks a product for a category, not for a key", () => {
     expect(buildCreateRequest("product", form({ key: "", category: "" }))).toEqual({ ok: false, message: "Hãy chọn danh mục." });
+  });
+
+  it("builds a post from its titles: a post category, a slug per language, today's date, plain text, no content yet", () => {
+    const request = buildCreateRequest("post", form({ nameVi: "Mẹo in nhanh", nameEn: "Quick printing tips", key: "", category: "meo-in" }), "2026-10-24");
+    expect(request).toMatchObject({
+      ok: true,
+      snapshot: { category: "meo-in", publishedOn: "2026-10-24", contentFormat: "plain", status: "published", readTimeMin: null, cover: null, i18n: { vi: { title: "Mẹo in nhanh" }, en: { title: "Quick printing tips" } } },
+    });
+    expect(request.ok && request.key).toBeUndefined();
+    if (request.ok) {
+      const slugs = request.snapshot.slugs as Record<string, { slug: string }>;
+      expect(Object.values(slugs).map((entry) => entry.slug)).toEqual(["meo-in-nhanh", "quick-printing-tips", "quick-printing-tips", "quick-printing-tips", "quick-printing-tips"]);
+      expect(request.snapshot.i18n).not.toHaveProperty("vi.content");
+    }
+  });
+
+  it("asks a post for a category, and dates it in Vietnam, not in the browser's zone", () => {
+    expect(buildCreateRequest("post", form({ key: "", category: "" }))).toEqual({ ok: false, message: "Hãy chọn chuyên mục." });
+    expect(vietnamToday()).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
   it("explains what is wrong in Vietnamese", () => {

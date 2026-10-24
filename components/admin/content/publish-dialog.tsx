@@ -22,11 +22,13 @@ type PublishDialogProps = {
   onDone: (outcome: "published" | "discarded") => void;
   /** The server's draft is not the one on screen: reload it. */
   onReload: () => void;
+  /** Names for the ids in the diff's paths. */
+  names?: ReadonlyMap<string, string>;
 };
 
 type Diff = { state: "loading" } | { state: "ready"; changes: Change[] } | { state: "failed"; message: string };
 
-export function PublishDialog({ entity, draftVersion, issueCount, onClose, onDone, onReload }: Readonly<PublishDialogProps>) {
+export function PublishDialog({ entity, draftVersion, issueCount, onClose, onDone, onReload, names }: Readonly<PublishDialogProps>) {
   const api = useMemo(() => createContentApi(), []);
   const [diff, setDiff] = useState<Diff>({ state: "loading" });
   const [comment, setComment] = useState("");
@@ -105,7 +107,7 @@ export function PublishDialog({ entity, draftVersion, issueCount, onClose, onDon
           <p className="mb-2 text-xs font-black text-slate-700">{stale ? "Khác biệt với bản đang hiển thị" : "Thay đổi sẽ được xuất bản"}</p>
           {diff.state === "loading" && <Loader2 className="animate-spin text-slate-400" size={18} aria-label="Đang tải" />}
           {diff.state === "failed" && <Notice tone="error">{diff.message}</Notice>}
-          {diff.state === "ready" && <DiffView type={entity.type} changes={stale && problem?.changes ? problem.changes : diff.changes} />}
+          {diff.state === "ready" && <DiffView type={entity.type} changes={stale && problem?.changes ? problem.changes : diff.changes} names={names} />}
         </div>
 
         {!stale && !changed && (

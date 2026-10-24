@@ -25,6 +25,8 @@ import { LanguageTabs } from "./language-tabs";
 import { PublishDialog } from "./publish-dialog";
 import { useDraftSession } from "./use-draft-session";
 
+const UUID_VALUE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
 type EntityEditorProps = {
   entity: Ref;
   label: string;
@@ -52,6 +54,8 @@ export function EntityEditor({ entity, label, live, initialDraft, vocab, authors
   const meta = ENTITY_META[entity.type];
   const Form = FORMS[entity.type];
   const coverage = useMemo(() => completeness(session.document), [session.document]);
+  // Records the editor already knows by id (a menu's products, shapes and options), so a diff can say «Tờ rơi» instead of «#4f9729d5».
+  const names = useMemo(() => new Map(Object.values(vocab).flatMap((options) => options.filter((option) => UUID_VALUE.test(option.value)).map((option) => [option.value, option.label] as const))), [vocab]);
 
   if (!Form) return null;
 
@@ -162,20 +166,20 @@ export function EntityEditor({ entity, label, live, initialDraft, vocab, authors
       )}
 
       <div className="sticky top-0 z-10 -mx-1 mb-4 bg-[#f4f6fb]/95 px-1 py-2 backdrop-blur-xs dark:bg-[#080526]/95">
-        <LanguageTabs active={language} completeness={coverage} onChange={setLanguage} />
+        <LanguageTabs active={language} completeness={meta.noCoverage ? undefined : coverage} onChange={setLanguage} />
       </div>
 
       <EditorProvider type={entity.type} document={session.document} baseline={live?.document ?? null} focus={focus} onReleaseAlias={canRelease ? (aliasLanguage, alias) => setReleasing({ language: aliasLanguage, alias }) : undefined} language={language} readOnly={!session.editing} issues={session.issues} vocab={vocab} onChange={edit}>
         <div className="space-y-5">
           {session.editing && <IssueList type={entity.type} issues={session.issues} onGo={goToIssue} />}
           <Form />
-          <HistoryPanel entity={entity} authors={authors} current={session.document} hasOpenDraft={session.editing} onRestored={adopt} />
-          {live && <DangerCard entity={entity} label={label} canDelete={canDelete} />}
+          <HistoryPanel entity={entity} authors={authors} current={session.document} hasOpenDraft={session.editing} onRestored={adopt} names={names} />
+          {live && meta.deletable && <DangerCard entity={entity} label={label} canDelete={canDelete} />}
         </div>
       </EditorProvider>
 
       {publishing && session.draftVersion !== null && (
-        <PublishDialog entity={entity} draftVersion={session.draftVersion} issueCount={session.issues.length} onClose={() => setPublishing(false)} onDone={finish} onReload={() => { setPublishing(false); void reload(); }} />
+        <PublishDialog entity={entity} draftVersion={session.draftVersion} issueCount={session.issues.length} onClose={() => setPublishing(false)} onDone={finish} onReload={() => { setPublishing(false); void reload(); }} names={names} />
       )}
       {releasing && (
         <Modal title="Gỡ đường dẫn cũ?" description="Địa chỉ này sẽ không còn mở được nữa: các liên kết đã chia sẻ hoặc đã được Google lưu sẽ báo lỗi 404." locked={busy} onClose={() => setReleasing(null)}>

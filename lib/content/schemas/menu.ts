@@ -43,6 +43,8 @@ export const menuDocumentSchema = z
     const seenColumns = new Set<number>();
     const seenProducts = new Set<string>();
     menu.columns.forEach((column, c) => {
+      // A column exists only through its groups (it is stored on them): an empty one would silently vanish at publish.
+      if (column.groups.length === 0) ctx.addIssue({ code: "custom", message: `Cột ${column.column} chưa có sản phẩm nào: hãy thêm sản phẩm hoặc xóa cột (cột trống không được lưu).`, path: ["columns", c] });
       if (seenColumns.has(column.column)) ctx.addIssue({ code: "custom", message: `Cột ${column.column} bị trùng.`, path: ["columns", c, "column"] });
       seenColumns.add(column.column);
       column.groups.forEach((group, g) => {

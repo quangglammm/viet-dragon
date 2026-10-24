@@ -10,7 +10,8 @@ import { LANGUAGE_NAMES } from "./fields";
 
 type LanguageTabsProps = {
   active: LocaleCode;
-  completeness: Record<LocaleCode, Completeness>;
+  /** Absent for a document whose texts are overrides (a menu): the tabs then show no percentage. */
+  completeness?: Record<LocaleCode, Completeness>;
   onChange: (language: LocaleCode) => void;
 };
 
@@ -18,7 +19,7 @@ export function LanguageTabs({ active, completeness, onChange }: Readonly<Langua
   return (
     <div role="tablist" aria-label="Ngôn ngữ đang sửa" className="flex flex-wrap gap-1.5">
       {LOCALES.map((language) => {
-        const percent = percentOf(completeness[language]);
+        const percent = completeness ? percentOf(completeness[language]) : null;
         const selected = language === active;
         return (
           <button
@@ -33,12 +34,14 @@ export function LanguageTabs({ active, completeness, onChange }: Readonly<Langua
             )}
           >
             <span>{LANGUAGE_NAMES[language]}</span>
-            <span
-              title={`${completeness[language].filled}/${completeness[language].expected} nội dung`}
-              className={cn("rounded-md px-1.5 py-0.5 text-[10px] font-black", selected ? "bg-white/25" : percent === 100 ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-800")}
-            >
-              {percent}%
-            </span>
+            {completeness && percent !== null && (
+              <span
+                title={`${completeness[language].filled}/${completeness[language].expected} nội dung`}
+                className={cn("rounded-md px-1.5 py-0.5 text-[10px] font-black", selected ? "bg-white/25" : percent === 100 ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-800")}
+              >
+                {percent}%
+              </span>
+            )}
           </button>
         );
       })}

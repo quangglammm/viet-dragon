@@ -68,6 +68,19 @@ describe("registryPathOf and fieldLabel", () => {
     expect(fieldLabel("product", "sizes[0]")).toBe("Kích thước 1");
   });
 
+  it("names a UI text by its language and its place in the namespace", () => {
+    expect(fieldLabel("site_message", "data.zh.about.checklist[2]")).toBe("Văn bản giao diện (zh) · about.checklist[2]");
+    expect(fieldLabel("site_message", "data.vi.title")).toBe("Văn bản giao diện (vi) · title");
+    expect(fieldLabel("site_message", "data")).toBe("Văn bản giao diện"); // the whole tree: named by its first field, like any container
+  });
+
+  it("reads a menu column's number as its identity in a diff, and as a position (from 0) in an issue", () => {
+    expect(fieldLabel("menu", "columns[1]")).toBe("Cột menu 2"); // an issue: the second column of the list
+    expect(fieldLabel("menu", "columns[4]", true)).toBe("Cột menu 4"); // a diff: column number 4
+    expect(fieldLabel("menu", "columns[2].groups[3f2a]", true)).toBe("Nhóm menu · cột menu 2");
+    expect(fieldLabel("product", "options[0].bullets[1]", true)).toBe("Dòng nội dung 2 · chất liệu 1"); // other lists stay positions
+  });
+
   it("knows what every list in the registry calls its rows", () => {
     const lists = new Set(Object.values(FIELD_REGISTRY).flatMap((fields) => fields.flatMap((field) => [...field.path.matchAll(/([A-Za-z_]+)\[\]/g)].map((match) => match[1]))));
     expect([...lists].filter((list) => !(list in LIST_ELEMENT_NOUNS))).toEqual([]);

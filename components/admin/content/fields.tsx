@@ -39,7 +39,7 @@ export function TextField({ multiline = false, rows = 3, maxLength, placeholder,
       className={className}
       aside={
         fallback && value === "" && !editor.readOnly ? (
-          <button type="button" onClick={() => editor.changeText(frameProps.path, fallback)} className="text-[11px] font-bold text-brand-primary hover:underline cursor-pointer">
+          <button type="button" onClick={() => (onText ? onText(fallback) : editor.changeText(frameProps.path, fallback))} className="text-[11px] font-bold text-brand-primary hover:underline cursor-pointer">
             Sao chép từ tiếng Anh
           </button>
         ) : undefined
@@ -60,9 +60,15 @@ export function TextField({ multiline = false, rows = 3, maxLength, placeholder,
   );
 }
 
-type NumberFieldProps = FieldProps & { nullable?: boolean; min?: number; suffix?: string };
+type NumberFieldProps = FieldProps & {
+  nullable?: boolean;
+  min?: number;
+  suffix?: string;
+  /** Shown but not editable (a number the editor works out itself, like a column's place). */
+  locked?: boolean;
+};
 
-export function NumberField({ nullable = false, min = 0, suffix, hint, className, ...frameProps }: Readonly<NumberFieldProps>) {
+export function NumberField({ nullable = false, min = 0, suffix, locked = false, hint, className, ...frameProps }: Readonly<NumberFieldProps>) {
   const frame = useFieldFrame(frameProps);
   const { editor } = frame;
   const stored = editor.read(frameProps.path) as number | null | undefined;
@@ -87,7 +93,7 @@ export function NumberField({ nullable = false, min = 0, suffix, hint, className
           id={frame.id}
           inputMode="numeric"
           value={shown}
-          disabled={editor.readOnly}
+          disabled={editor.readOnly || locked}
           aria-invalid={frame.issues.length > 0}
           onChange={(event) => commit(event.target.value)}
           onBlur={() => setTyped(null)}
@@ -95,6 +101,25 @@ export function NumberField({ nullable = false, min = 0, suffix, hint, className
         />
         {suffix && <span className="text-xs font-semibold text-slate-500">{suffix}</span>}
       </div>
+    </FieldShell>
+  );
+}
+
+/** A calendar date, stored as `YYYY-MM-DD`; clearing it removes the value (the document then says it is required). */
+export function DateField({ hint, className, ...frameProps }: Readonly<FieldProps>) {
+  const frame = useFieldFrame(frameProps);
+  const { editor } = frame;
+  return (
+    <FieldShell frame={frame} hint={hint} className={className}>
+      <input
+        id={frame.id}
+        type="date"
+        value={(editor.read(frameProps.path) as string | undefined) ?? ""}
+        disabled={editor.readOnly}
+        aria-invalid={frame.issues.length > 0}
+        onChange={(event) => editor.changeText(frameProps.path, event.target.value)}
+        className={cn(INPUT_CLASS, "max-w-48", frame.issues.length > 0 && "border-rose-300")}
+      />
     </FieldShell>
   );
 }
@@ -130,9 +155,11 @@ type SelectFieldProps = FieldProps & {
   nullLabel?: string;
   /** Handles the choice itself (changing a category or a scope has side effects) instead of the plain "set this path". */
   onValue?: (value: string | null) => void;
+  /** Shown but not editable (the product of a menu group: to change it, remove the group and add another). */
+  locked?: boolean;
 };
 
-export function SelectField({ options, nullable = false, nullLabel = "— Không chọn —", onValue, hint, className, ...frameProps }: Readonly<SelectFieldProps>) {
+export function SelectField({ options, nullable = false, nullLabel = "— Không chọn —", onValue, locked = false, hint, className, ...frameProps }: Readonly<SelectFieldProps>) {
   const frame = useFieldFrame(frameProps);
   const { editor } = frame;
   const choices = typeof options === "string" ? (editor.vocab[options] ?? []) : options;
@@ -145,7 +172,7 @@ export function SelectField({ options, nullable = false, nullLabel = "— Không
       <select
         id={frame.id}
         value={current}
-        disabled={editor.readOnly}
+        disabled={editor.readOnly || locked}
         aria-invalid={frame.issues.length > 0}
         onChange={(event) => {
           const chosen = event.target.value === NOT_CHOSEN ? null : event.target.value;

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { EntityEditor } from "@/components/admin/content/entity-editor";
 import type { Document, DraftPayload } from "@/lib/content/editor/api";
 import { ENTITY_META } from "@/lib/content/editor/entity-meta";
+import { siteMessageLabel } from "@/lib/content/editor/site-message-labels";
 import { listAuthorNames } from "@/lib/content/authors";
 import { composeEntity } from "@/lib/content/compose";
 import { getDraft } from "@/lib/content/drafts";
@@ -32,7 +33,7 @@ export default async function ContentEditorPage({ params }: Readonly<EditorPageP
   if (!live && !draft) notFound();
 
   const initialDraft = draft ? toWire<DraftPayload>({ draft: { ...draft, restoredFrom: restoredVersionOf(draft.note) }, issues: await validateSnapshot(db, type, draft.snapshot) }) : null;
-  const label = (await listSummaries(db, type)).find((row) => row.ref.id === id)?.label ?? id;
+  const label = type === "site_message" ? siteMessageLabel(id) : ((await listSummaries(db, type)).find((row) => row.ref.id === id)?.label ?? id);
 
   return (
     <EntityEditor
@@ -42,7 +43,8 @@ export default async function ContentEditorPage({ params }: Readonly<EditorPageP
       label={label}
       live={live ? toWire<{ version: number; document: Document }>({ version: live.version, document: live.document }) : null}
       initialDraft={initialDraft}
-      vocab={await loadVocabulary(db, ENTITY_META[type].vocab)}
+      // A menu belongs to one category (its id): it picks among that category's products, shapes and options.
+      vocab={await loadVocabulary(db, ENTITY_META[type].vocab, type === "menu" ? { category: id } : {})}
       authors={await listAuthorNames(db)}
       canPublish={hasPermission(user.role, ["content", "publish"])}
       canDelete={hasPermission(user.role, ["content", "delete"])}

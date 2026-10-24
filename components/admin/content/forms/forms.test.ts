@@ -9,7 +9,7 @@ import type { Issue } from "@/lib/content/errors";
 import { FIELD_REGISTRY } from "@/lib/content/field-registry";
 import { PRODUCT_SECTIONS, type ProductSection } from "@/lib/content/editor/product-sections";
 import { DOCUMENT_SCHEMAS, type LocaleCode } from "@/lib/content/schemas";
-import { UID as FIXTURE_UID, productDocument } from "@/tests/fixtures/documents";
+import { UID as FIXTURE_UID, menuDocument, postDocument, productDocument, slugsOf } from "@/tests/fixtures/documents";
 import { EditorProvider, type FocusRequest } from "../editor-context";
 import { FORMS } from ".";
 
@@ -61,12 +61,59 @@ function fullProduct(): Document {
   return product as unknown as Document;
 }
 
-const SAMPLES_WITH_PRODUCT: Partial<Record<DraftEntityType, Document>> = { ...SAMPLES, product: fullProduct() };
+/** The fixture post with every optional field filled (an excerpt and SEO texts in each master language, an og image). */
+function fullPost(): Document {
+  const post = postDocument();
+  post.ogImage = "images/blog/og.webp";
+  post.cover = "images/blog/a.webp";
+  post.i18n.vi = { title: "Hướng dẫn in ấn", excerpt: "Tóm tắt", content: "Nội dung bài viết.", seoTitle: "SEO", seoDescription: "Mô tả SEO" };
+  post.i18n.en = { title: "Printing guide", excerpt: "Short", content: "Body.", seoTitle: "SEO", seoDescription: "SEO text" };
+  return post as unknown as Document;
+}
+
+const SAMPLE_CATEGORY: Document = {
+  schema: 2,
+  key: "marketing",
+  slugs: slugsOf("tiep-thi", "marketing", { vi: ["marketing-cu"] }),
+  icon: "Megaphone",
+  cover: "images/category/a.webp",
+  ogImage: "images/category/og.webp",
+  position: 0,
+  i18n: { vi: { name: "Tiếp thị", description: "Ấn phẩm tiếp thị", seoTitle: "SEO", seoDescription: "Mô tả" }, en: { name: "Marketing", description: "Marketing prints" } },
+} as unknown as Document;
+
+/** A UI-copy namespace in three languages: a top-level text, a list of objects, a plain list, a text with a variable, and a gap in zh. */
+const SAMPLE_MESSAGE: Document = {
+  schema: 2,
+  key: "faq",
+  data: {
+    vi: { title: "Câu hỏi thường gặp", count: "{count} câu hỏi", items: [{ q: "In bao lâu?", a: "Từ 24 giờ." }], checklist: ["Miễn phí thiết kế"] },
+    en: { title: "FAQ", count: "{count} questions", items: [{ q: "How long?", a: "From 24 hours." }], checklist: ["Free design"] },
+    zh: { title: "常见问题", count: "{count} 个问题", items: [{ q: "多久?", a: "" }], checklist: [""] },
+  },
+};
+
+/** The fixture menu with every optional field filled: a label and description on the group, an image, a label on the first item. */
+function fullMenu(): Document {
+  const menu = menuDocument();
+  const group = menu.columns[0].groups[0];
+  group.image = "images/menu/group.webp";
+  group.i18n.vi = { label: "Tờ rơi & Flyers", description: "In tờ rơi nhanh" };
+  group.items[0].i18n = { vi: "Khổ A5" };
+  return menu as unknown as Document;
+}
+
+const SAMPLES_WITH_PRODUCT: Partial<Record<DraftEntityType, Document>> = { ...SAMPLES, product: fullProduct(), post: fullPost(), category: SAMPLE_CATEGORY, site_message: SAMPLE_MESSAGE, menu: fullMenu() };
 
 const VOCAB: Vocabulary = {
   unit: [{ value: "hop", label: "Hộp" }],
   material: [{ value: "giay-kraft", label: "Giấy kraft" }, { value: "giay-loai-c", label: "Giấy loại C" }],
   category: [{ value: "marketing", label: "Tiếp thị" }, { value: "tet", label: "Ấn phẩm Tết" }],
+  post_category: [{ value: "tips", label: "Mẹo in" }, { value: "news", label: "Tin tức" }],
+  // A menu picks among the products of its category and their shapes and options (the fixture's uids).
+  product: [{ value: FIXTURE_UID.product, label: "Tờ rơi" }, { value: "22222222-2222-4222-8222-222222222222", label: "Danh thiếp" }],
+  shape: [{ value: FIXTURE_UID.shapeA5, label: "A5", group: FIXTURE_UID.product }, { value: "s-other", label: "A4", group: FIXTURE_UID.product }, { value: "s-foreign", label: "Hộp", group: "22222222-2222-4222-8222-222222222222" }],
+  option: [{ value: FIXTURE_UID.option, label: "Giấy C", group: FIXTURE_UID.product }],
   trait: [{ value: "glossy-coat", label: "Bóng" }],
   spec_item: [{ value: "technique/offset", label: "Offset" }, { value: "finishing/matte-lamination", label: "Cán màng mờ" }],
 };
@@ -96,6 +143,7 @@ function render(type: DraftEntityType, options: RenderOptions = {}): string {
 
 /** Every part of a form: the product is drawn tab by tab, with all its cards open. */
 function renderEverything(type: DraftEntityType): string {
+  if (type === "menu") return render(type, { formProps: { expandAll: true } });
   if (type !== "product") return render(type);
   return PRODUCT_SECTIONS.map(({ id }) => render(type, { formProps: { section: id, expandAll: true } })).join("\n");
 }
@@ -227,5 +275,150 @@ describe("the product editor", () => {
 
   it("knows the fixture's uids (the sample is the shared fixture, not a copy)", () => {
     expect(JSON.stringify(fullProduct())).toContain(FIXTURE_UID.product);
+  });
+});
+
+describe("the post editor", () => {
+  const post = (overrides: Record<string, unknown> = {}, options: RenderOptions = {}) => render("post", { ...options, document: { ...fullPost(), ...overrides } as Document });
+
+  it("offers the text boxes of the language being edited, with the content box tall and the format choice beside it", () => {
+    const markup = post();
+    expect(markup).toContain('data-path="i18n.vi.content"');
+    expect(markup).toMatch(/<textarea[^>]*rows="18"/);
+    expect(markup).toContain("Markdown");
+  });
+
+  it("files the post under a post category and draws the publication date as a date box", () => {
+    const markup = post();
+    expect(markup).toContain("Mẹo in");
+    expect(markup).toMatch(/type="date"[^>]*value="2026-01-15"|value="2026-01-15"[^>]*type="date"/);
+  });
+
+  it("lists the old URLs of the language being edited, never offering to release one", () => {
+    expect(post()).toContain("in-an-co-ban");
+    expect(post({}, { onReleaseAlias: () => undefined })).not.toMatch(/>Gỡ</);
+  });
+
+  it("is read-only while the live post is shown", () => {
+    expect(post({}, { readOnly: true })).not.toMatch(/<input(?![^>]*disabled)[^>]*value="Hướng dẫn in ấn"/);
+  });
+});
+
+describe("the category editor", () => {
+  const category = (document: Document = SAMPLE_CATEGORY, options: RenderOptions = {}) => render("category", { ...options, document });
+  const renamed = { ...(SAMPLE_CATEGORY as Record<string, unknown>), slugs: slugsOf("tiep-thi-moi", "marketing") } as Document;
+
+  it("shows the code that cannot change", () => {
+    expect(category()).toContain("marketing");
+    expect(category()).toContain("không đổi được");
+  });
+
+  it("warns that a new slug moves the address of every product in the category — only when the slug was changed", () => {
+    expect(category(renamed, { baseline: SAMPLE_CATEGORY })).toContain("mọi sản phẩm trong danh mục");
+    expect(category(SAMPLE_CATEGORY, { baseline: SAMPLE_CATEGORY })).not.toContain("mọi sản phẩm trong danh mục");
+    expect(category(renamed)).not.toContain("mọi sản phẩm trong danh mục"); // a new category has no published address to move
+  });
+});
+
+describe("the UI-copy editor", () => {
+  const message = (options: RenderOptions = {}) => render("site_message", { ...options, document: options.document ?? SAMPLE_MESSAGE });
+
+  it("draws one box per text the namespace has, whatever the language — the structure is the site's", () => {
+    for (const language of ["vi", "zh"] as const) {
+      const markup = message({ language });
+      for (const path of ["title", "count", "items[0].q", "items[0].a", "checklist[0]"]) expect(markup, `${language} ${path}`).toContain(`data-path="data.${language}.${path}"`);
+    }
+  });
+
+  it("groups the boxes: top-level texts first, then each list", () => {
+    const markup = message();
+    expect(markup.indexOf("Nội dung chung")).toBeLessThan(markup.indexOf(">items<"));
+    expect(markup.indexOf(">items<")).toBeLessThan(markup.indexOf(">checklist<"));
+  });
+
+  it("shows the Vietnamese text to translate from on every other language, and the variables to keep", () => {
+    expect(message({ language: "zh" })).toContain("Tiếng Việt: Câu hỏi thường gặp");
+    expect(message({ language: "vi" })).not.toContain("Tiếng Việt: Câu hỏi thường gặp");
+    expect(message({ language: "zh" })).toContain("Giữ nguyên {count} trong câu.");
+  });
+
+  it("offers the English text as the fallback for a line a language has not translated yet", () => {
+    const markup = message({ language: "zh" });
+    expect(markup).toContain('placeholder="How long?"'); // items[0].q is translated; items[0].a is not
+    expect(markup).toContain('placeholder="From 24 hours."');
+    expect(markup).toContain("Sao chép từ tiếng Anh");
+  });
+
+  it("calls a line by its place, not by an internal name", () => {
+    const markup = message();
+    expect(markup).toContain("items › 1 › q");
+    expect(markup).toContain("checklist › 1");
+  });
+});
+
+describe("the menu editor", () => {
+  const menu = (options: RenderOptions = {}) => render("menu", { ...options, document: options.document ?? fullMenu() });
+  const open = { formProps: { expandAll: true } };
+
+  it("numbers the columns and names each group by its product", () => {
+    const markup = menu(open);
+    expect(markup).toContain("Cột 1");
+    expect(markup).toContain("Tờ rơi");
+    expect(markup).toContain("1 sản phẩm");
+  });
+
+  it("keeps the groups closed until opened: a menu has dozens of links", () => {
+    expect(menu()).not.toContain('data-field="columns[].groups[].image"');
+    expect(menu(open)).toContain('data-field="columns[].groups[].image"');
+  });
+
+  it("opens the group a problem points into", () => {
+    const markup = menu({ focus: { path: "columns[0].groups[0].items[1].image", nonce: 1 } });
+    expect(markup).toContain('data-field="columns[].groups[].items[].image"');
+  });
+
+  it("offers a link only to the shapes and options of the group's own product, shapes and options apart", () => {
+    const markup = menu(open);
+    expect(markup).toContain('<optgroup label="Hình thức">');
+    expect(markup).toContain('<optgroup label="Chất liệu">');
+    expect(markup).toContain(`value="shape:${FIXTURE_UID.shapeA5}"`);
+    expect(markup).toContain('value="shape:s-other"');
+    expect(markup).not.toContain("s-foreign"); // a shape of another product
+  });
+
+  it("says what a link points at, and tags the fast ones", () => {
+    const markup = menu(open);
+    expect(markup).toContain("Hình thức: A5");
+    expect(markup).toContain("Chất liệu: Giấy C");
+    expect(markup).toContain("In nhanh");
+  });
+
+  it("keeps a link whose target no longer exists visible instead of silently clearing it", () => {
+    const stale = fullMenu() as unknown as { columns: { groups: { items: { target: unknown }[] }[] }[] };
+    stale.columns[0].groups[0].items[0].target = { shape: "gone" };
+    expect(menu({ ...open, document: stale as unknown as Document })).toContain("(không còn tồn tại)");
+  });
+
+  it("shows the column number but does not let it be typed, and does not let a group's product be changed", () => {
+    const markup = menu(open);
+    expect(markup).toMatch(/<input[^>]*disabled=""[^>]*value="1"|<input[^>]*value="1"[^>]*disabled=""/);
+    expect(markup).toMatch(/<select[^>]*disabled=""[^>]*>[^]*?Tờ rơi/);
+  });
+
+  it("offers the products that have no group yet, and to move a group to another column", () => {
+    const two = fullMenu() as unknown as { columns: unknown[] };
+    two.columns.push({ column: 2, groups: [] });
+    const markup = menu({ ...open, document: two as unknown as Document });
+    expect(markup).toContain("Danh thiếp"); // not in the menu yet
+    expect(markup).toContain("Chuyển sang cột khác");
+    expect(markup).toContain("Cột 2");
+  });
+
+  it("is read-only while the live menu is shown: nothing to add, remove, move or reorder", () => {
+    const markup = menu({ ...open, readOnly: true });
+    expect(markup).not.toContain("Thêm cột");
+    expect(markup).not.toContain("Thêm mục");
+    expect(markup).not.toContain("Thêm sản phẩm vào cột này");
+    expect(markup).not.toContain('aria-label="Xóa cột"');
   });
 });

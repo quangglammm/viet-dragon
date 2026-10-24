@@ -1,0 +1,36 @@
+// What each namespace of the site's UI copy is, in an editor's words. A namespace this list does not know (a new one) is shown by its key.
+
+export const SITE_MESSAGE_LABELS: Record<string, string> = {
+  nav: "Thanh điều hướng",
+  hero: "Trang chủ — Banner đầu trang",
+  shopCategories: "Trang chủ — Thanh danh mục",
+  shopBanner: "Trang chủ — Banner khuyến mãi",
+  about: "Trang chủ — Giới thiệu",
+  services: "Trang chủ — Dịch vụ đi kèm",
+  shop: "Trang chủ — Sản phẩm nổi bật",
+  ctaBanner: "Trang chủ — Banner kêu gọi",
+  portfolio: "Trang chủ — Tác phẩm",
+  testimonials: "Trang chủ — Khách hàng nói gì",
+  faq: "Trang chủ — Câu hỏi thường gặp",
+  quality: "Trang chủ — Chất lượng",
+  process: "Trang chủ — Quy trình",
+  blogPreview: "Trang chủ — Bài viết mới",
+  brands: "Trang chủ — Ngành nghề phục vụ",
+  cta: "Trang chủ — Bắt đầu ngay",
+  partners: "Trang chủ — Đối tác",
+  footer: "Chân trang",
+  contact: "Thông tin liên hệ",
+  floatingContact: "Nút liên hệ nổi (Zalo, điện thoại)",
+  materialGlossary: "Chú giải chất liệu",
+  productsPage: "Trang Sản phẩm",
+  categoryPage: "Trang danh mục sản phẩm",
+  subgroupShapes: "Trang nhóm sản phẩm (hình thức)",
+  productDetailPage: "Trang chi tiết sản phẩm",
+  blogPage: "Trang danh sách bài viết",
+  blogPostPage: "Trang chi tiết bài viết",
+  consultModal: "Cửa sổ tư vấn sản phẩm",
+  quoteModal: "Cửa sổ tư vấn & báo giá nhanh",
+  notFound: "Trang không tìm thấy (404)",
+};
+
+export const siteMessageLabel = (namespace: string): string => SITE_MESSAGE_LABELS[namespace] ?? namespace;

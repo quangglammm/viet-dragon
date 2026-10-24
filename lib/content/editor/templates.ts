@@ -8,7 +8,7 @@ import { suggestSlugs } from "./slugs";
 // What "Tạo mới" sends: the smallest document that is a start, not a finished record. Everything else is filled in the editor, where
 // the advice says what is still missing. Names are typed in the dialog because they are what the list shows and the key is built from.
 
-export const CREATABLE_TYPES: readonly DraftEntityType[] = ["product", "material", "trait", "unit", "spec_item", "post_category", "fast_print_item", "showcase_item"];
+export const CREATABLE_TYPES: readonly DraftEntityType[] = ["product", "post", "material", "trait", "unit", "spec_item", "post_category", "fast_print_item", "showcase_item"];
 
 export interface CreateForm {
   nameVi: string;
@@ -17,7 +17,7 @@ export interface CreateForm {
   key: string;
   /** Spec items only. */
   specKind?: (typeof SPEC_KIND_VALUES)[number];
-  /** Products only: the category the product is listed in. */
+  /** Products and posts: the category the record is filed under (a product category, a post category). */
   category?: string;
 }
 
@@ -27,6 +27,9 @@ const texts = (field: string, form: CreateForm): { [language: string]: Json } =>
   ...(form.nameVi.trim() ? { vi: { [field]: form.nameVi.trim() } } : {}),
   ...(form.nameEn.trim() ? { en: { [field]: form.nameEn.trim() } } : {}),
 });
+
+/** Today in Vietnam as `YYYY-MM-DD` (the date a new post is published on; the browser's own zone would be wrong near midnight). */
+export const vietnamToday = (): string => new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Ho_Chi_Minh" }).format(new Date());
 
 const BAD_KEY = "Mã chỉ gồm chữ thường không dấu (a-z), số và dấu gạch ngang, ví dụ: giay-kraft.";
 
@@ -51,10 +54,31 @@ function productRequest(form: CreateForm): CreateRequest {
   };
 }
 
-export function buildCreateRequest(type: DraftEntityType, form: CreateForm): CreateRequest {
+/** A post: its URLs are built from its titles; the text itself is written in the editor (the advice says «Nội dung» is still missing). */
+function postRequest(form: CreateForm, today: string): CreateRequest {
+  if (!form.category) return { ok: false, message: "Hãy chọn chuyên mục." };
+  const slugs = suggestSlugs({ vi: form.nameVi, en: form.nameEn });
+  return {
+    ok: true,
+    snapshot: {
+      category: form.category,
+      slugs: Object.fromEntries(LOCALES.map((locale) => [locale, { slug: slugs[locale], aliases: [] }])),
+      publishedOn: today,
+      readTimeMin: null,
+      cover: null,
+      ogImage: null,
+      contentFormat: "plain",
+      status: "published",
+      i18n: texts("title", form),
+    },
+  };
+}
+
+export function buildCreateRequest(type: DraftEntityType, form: CreateForm, today: string = vietnamToday()): CreateRequest {
   if (!form.nameVi.trim()) return { ok: false, message: "Hãy nhập tên tiếng Việt." };
-  // A product is identified by a generated uid and its URLs are built from its names: there is no key to type.
+  // A product or a post is identified by a generated uid and its URLs are built from its names: there is no key to type.
   if (type === "product") return productRequest(form);
+  if (type === "post") return postRequest(form, today);
   const key = form.key.trim();
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(key)) return { ok: false, message: BAD_KEY };
 

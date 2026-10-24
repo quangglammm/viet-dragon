@@ -19,18 +19,19 @@ import { slugify } from "@/lib/content/slugify";
 
 const SPEC_KIND_LABELS: Record<(typeof SPEC_KIND_VALUES)[number], string> = { technique: "Kỹ thuật in", finishing: "Hoàn thiện", material_hint: "Chất liệu phổ biến" };
 
-export function CreateDialog({ type, categories, onClose }: Readonly<{ type: DraftEntityType; categories?: VocabOption[]; onClose: () => void }>) {
+export function CreateDialog({ type, groups, onClose }: Readonly<{ type: DraftEntityType; groups?: VocabOption[]; onClose: () => void }>) {
   const router = useRouter();
   const api = useMemo(() => createContentApi(), []);
   const meta = ENTITY_META[type];
   const [nameVi, setNameVi] = useState("");
   const [nameEn, setNameEn] = useState("");
   const [typedKey, setTypedKey] = useState<string | null>(null);
-  const [category, setCategory] = useState(categories?.[0]?.value ?? "");
+  const [category, setCategory] = useState(groups?.[0]?.value ?? "");
   const [specKind, setSpecKind] = useState<(typeof SPEC_KIND_VALUES)[number]>("technique");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const key = typedKey ?? (nameVi.trim() ? slugify(nameVi) : "");
+  const word = type === "post" ? "Tiêu đề" : "Tên";
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -51,11 +52,11 @@ export function CreateDialog({ type, categories, onClose }: Readonly<{ type: Dra
     <Modal title={`Tạo ${meta.singular} mới`} description="Điền tên rồi bấm Tạo; bạn sẽ bổ sung phần còn lại trong trình soạn. Bản nháp chưa hiển thị trên website." locked={busy} onClose={onClose}>
       <form onSubmit={(event) => void submit(event)} className="space-y-4">
         {message && <Notice tone="error">{message}</Notice>}
-        {type === "product" && (
+        {meta.group && (
           <label className="block text-xs font-bold text-slate-700">
-            Danh mục
+            {meta.group.label}
             <select value={category} onChange={(event) => setCategory(event.target.value)} className={`${INPUT_CLASS} mt-1.5`}>
-              {(categories ?? []).map((option) => (
+              {(groups ?? []).map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
               ))}
             </select>
@@ -72,15 +73,15 @@ export function CreateDialog({ type, categories, onClose }: Readonly<{ type: Dra
           </label>
         )}
         <label className="block text-xs font-bold text-slate-700">
-          Tên tiếng Việt <span className="text-rose-500">*</span>
+          {word} tiếng Việt <span className="text-rose-500">*</span>
           <input value={nameVi} onChange={(event) => setNameVi(event.target.value)} className={`${INPUT_CLASS} mt-1.5`} autoFocus />
         </label>
         <label className="block text-xs font-bold text-slate-700">
-          Tên tiếng Anh
+          {word} tiếng Anh
           <input value={nameEn} onChange={(event) => setNameEn(event.target.value)} className={`${INPUT_CLASS} mt-1.5`} />
           <span className="mt-1 block text-[11px] font-normal text-slate-500">Cần có trước khi xuất bản; có thể bổ sung sau.</span>
         </label>
-        {type !== "product" && (
+        {type !== "product" && type !== "post" && (
           <label className="block text-xs font-bold text-slate-700">
             Mã
             <input value={key} onChange={(event) => setTypedKey(event.target.value)} className={`${INPUT_CLASS} mt-1.5 font-mono`} />

@@ -58,7 +58,11 @@ describe("the menu of a category", () => {
     const [removed] = before.columns[0].groups;
     const shapesBefore = Number((await rows<{ n: number }>(`select count(*)::int n from shape`))[0].n);
     const productVersion = await liveVersion(db(), { type: "product", id: removed.product });
-    await editAndPublish(db(), menu("office"), (doc) => void (doc.columns[0].groups = doc.columns[0].groups.filter((g) => g.product !== removed.product)));
+    await editAndPublish(db(), menu("office"), (doc) => {
+      doc.columns[0].groups = doc.columns[0].groups.filter((g) => g.product !== removed.product);
+      // A column exists only through its groups (it is stored on them), so one left empty goes with its last group.
+      doc.columns = doc.columns.filter((column) => column.groups.length > 0);
+    });
     expect(JSON.stringify(await liveDocument(db(), menu("office")))).not.toContain(removed.product);
     expect(Number((await rows<{ n: number }>(`select count(*)::int n from shape`))[0].n)).toBe(shapesBefore);
     expect(await liveVersion(db(), { type: "product", id: removed.product })).toBe(productVersion);

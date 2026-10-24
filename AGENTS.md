@@ -431,8 +431,8 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   alias_released`; autosave is not audited); a failure there is logged, never thrown. **Caddy still blocks all of `/api/admin/*` in
   production**: 3d adds the paths together with the editors. Entity types in URLs are kebab-case (`spec-item`), a spec item's key
   `technique/offset` is `technique.offset` in a path.
-- **Editors (Phase 3d-1: foundation + material, trait, unit, spec item, blog category, Fast Print, showcase; 3d-2: the product editor;
-  posts, categories, menus and UI copy are 3d-3).** `app/admin/(console)/content/[type]/page.tsx` lists a type
+- **Editors (Phase 3d complete: an editor for all twelve entity types — 3d-1 foundation + the seven simple ones, 3d-2 the product,
+  3d-3 post, category, menu and UI copy).** `app/admin/(console)/content/[type]/page.tsx` lists a type
   (`listSummaries`), `…/[id]/page.tsx` loads the live document, the open draft, the vocabularies and the author names and renders the
   client `components/admin/content/entity-editor.tsx` (remounted by a `key` of `live version : draft?` after a publish; a discard
   resets the session locally because the server props do not change when the draft was opened in the browser). **Everything an editor
@@ -470,6 +470,31 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   `diffDocuments`:** an old URL missing from a draft (a restored old version lacks the aliases made since) is not listed as removed,
   because a publish keeps every alias it holds. Browser-smoke findings kept in mind: restoring an old version after a category move
   and publishing it keeps every URL (19 rows for one product, none lost).
+  **Post, category, menu and UI copy (3d-3).** A **post** (`forms/post-form.tsx`): text per language (the content box is tall; format
+  `plain` | `markdown`, no preview until Phase 4), category from the post categories, a `DateField`, read time, cover, slug + SEO. A post that was
+  never published follows its titles for its slugs (`slug-ops.ts`: `setRootSlug`, `followRootNames`, the same rules as a product's); a
+  published post's URL never changes by typing. The create dialog dates a new post in Vietnam (`vietnamToday`) and files it under a post
+  category (`ENTITY_META.group` drives the list column and the dialog's select for products and posts alike). A **category**
+  (`forms/category-form.tsx`): renaming a slug warns that it moves the address of every product in the category in that language (old
+  addresses keep working). **Structure is edited, never deleted:** `ENTITY_META.deletable` is false for category, menu and site_message
+  (no danger card). A **menu** (`forms/menu/`, pure ops in `lib/content/editor/menu-ops.ts`): columns → groups (one per product) → items
+  (a shape or an option); column numbers are the place in the list and are renumbered after every edit; a group's product is chosen among the
+  category's published products not already in the menu, an item's target among that product's **published** shapes and options (the server
+  resolves targets from live rows) — the pickers come from `loadVocabulary(db, kinds, { category })` (`VocabOption.group` = the product uid);
+  **a column with no group is refused by the schema** (a column is stored only on its groups, so it would silently vanish at publish). Group
+  cards open by identity (`use-open-keys.ts`, shared with the product cards), not by index, so reordering keeps them open; the language tabs of a
+  menu show no «% translated» (`ENTITY_META.noCoverage`: its texts are overrides). A diff reads a menu column's number as its identity
+  (`fieldLabel(type, path, keyed)`) and names products/shapes/options by id from the vocabulary (`DiffView names`). **UI copy**
+  (`forms/site-message-form.tsx`, pure parts in `lib/content/editor/message-tree.ts`): one box per text the namespace already has, drawn for
+  the language tab with the Vietnamese text and the `{variables}` to keep underneath; the structure is the site's (nothing added or
+  removed, `leafPaths` = the union over languages). **A blank text is stored as `""`, never by removing the key** (18 of the 297 texts are
+  plain list items; removing one would shift the list); `""` means «not translated, use English» and only zh/ja/ko may have it — an empty vi/en
+  text is an issue. **Schema rule (`siteMessageDocumentSchema`, `lib/content/icu.ts`):** braces must balance and a `{variable}` must exist in the
+  Vietnamese text of the same line (a wrong one makes next-intl throw at render time in Phase 4); no master-language *requirement* (a namespace
+  may hold one language, the site then falls back to `messages/*.json`). The 30 namespaces have Vietnamese names in
+  `site-message-labels.ts` (a test keeps them equal to the keys of `messages/vi.json`). A missing required text reads «Bắt buộc phải nhập.»
+  (`MESSAGES.required`), not zod's default. Known gaps: aliases of posts and categories are listed but cannot be released (the service only
+  releases product URLs); the reserved `seo` / `business` namespaces cannot be created from the UI (site_message is not creatable).
 - **Tests:** `app/api/admin/content/content-api.int.test.ts` (who may call what, preconditions, error shapes, cache tags, audit rows —
   with the app's own database pointed at a seeded scratch one by setting `DATABASE_URL` before the first `getDb()`),
   `lib/content/http.test.ts`; `lib/content/entities.int.test.ts` (all 198 seeded entities publish unchanged; each of the nine creatable types is created,
@@ -687,7 +712,7 @@ lib/
   content/drafts.ts, publish.ts, restore.ts, aliases.ts, used-by.ts   the write side (3c): drafts, publish, revisions + restore, releasing old URLs, "used by"
   content/validate.ts, references.ts, diff.ts, humanize.ts, identity.ts, errors.ts, cache-tags.ts   advice + checks, what a document points at, field-level diff, DB error → Vietnamese, URL type names / ids, Conflict / Invalid / NotFound, cache tags
   content/delete.ts, summaries.ts   delete / archive-first rules (+ the "delete" revision) · admin list rows
-  content/editor/           the editors' client-safe logic: paths, session reducer, API client, completeness, create templates, entity meta, vocabulary, product ops / lists / slugs / sections / uid (no server imports — client-bundle.test.ts)
+  content/editor/           the editors' client-safe logic: paths, session reducer, API client, completeness, create templates, entity meta, vocabulary, product ops / menu ops / lists / slugs / slug ops / message tree / sections / uid (no server imports — client-bundle.test.ts)
   content/field-registry.ts, entity-types.ts, slugify.ts, media-library.ts, authors.ts, vocabulary.ts   every editable leaf → label + control · the 12 entity types (database-free) · URL slugs · media picker data · account names for the history · picker lists
   content/http.ts, requests.ts, effects.ts   the HTTP layer of app/api/admin/content: URL / If-Match / capped JSON body / error mapping · zod request bodies · cache tags + audit after commit
   content/apply/            one applier per entity type (all twelve): document → live rows, plus the per-language slug planning (`planSegments` also serves posts and categories)
@@ -722,7 +747,7 @@ components/
     SmoothScroll.tsx        Lenis init (desktop only, ≥1024px) — no GSAP, no pinning
     quote-modal-provider.tsx  Context that opens the QuoteModal from anywhere
   admin/                    admin-shell (+ admin-nav.ts role-filtered sidebar, admin-theme.tsx), auth-card-shell, password-field, notice, failure-notice, modal, page-parts (PageHeader, AdminCard, button/input classes)
-    content/                the content editors: entity-editor, entity-list, create-dialog, editor-context, field primitives (fields, media-field, icon-field, field-shell), language-tabs, publish-dialog, history-panel, danger-card, diff-view, issue-list, use-draft-session; forms/ = one form per entity type (forms/product/ = the six-tab product editor) + forms.test.ts (coverage); list-card, slug-field, alias-list, media-list-field = the product editor's building blocks
+    content/                the content editors: entity-editor, entity-list, create-dialog, editor-context, field primitives (fields, media-field, icon-field, field-shell), language-tabs, publish-dialog, history-panel, danger-card, diff-view, issue-list, use-draft-session; forms/ = one form per entity type (forms/product/ = the six-tab product editor, forms/menu/ = the menu editor, post-form, category-form, site-message-form) + forms.test.ts (coverage of all twelve); list-card, slug-field, alias-list, media-list-field, use-open-keys = the building blocks of the nested editors
     account/, users/, audit/   sessions panel · users manager (cards, create / confirm / one-time-password dialogs, user-actions.ts) · audit filter form + table
     donut-chart, media-card, media-delete-modal, media-picker-modal   legacy editors' pieces
   sections/                 all "use client"; landing page order = page.tsx import order

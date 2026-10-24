@@ -19,7 +19,7 @@ type EntityListProps = {
   type: DraftEntityType;
   items: SummaryRow[];
   creatable: boolean;
-  /** Names for the `group` column (a product's category), and the categories a new product can be created in. */
+  /** Names for the `group` column (a product's category, a post's), and what a new one can be filed under. */
   groups?: VocabOption[];
 };
 
@@ -53,7 +53,7 @@ export function EntityList({ type, items, creatable, groups }: Readonly<EntityLi
           <thead className="bg-slate-50 text-[10px] font-black uppercase tracking-wider text-slate-500">
             <tr>
               <th className="px-4 py-3">Tên</th>
-              {groups && <th className="hidden px-4 py-3 sm:table-cell">Danh mục</th>}
+              {groups && <th className="hidden px-4 py-3 sm:table-cell">{meta.group?.label ?? "Nhóm"}</th>}
               <th className="hidden px-4 py-3 sm:table-cell">Mã</th>
               <th className="px-4 py-3">Trạng thái</th>
               <th className="hidden px-4 py-3 md:table-cell">Cập nhật</th>
@@ -87,7 +87,7 @@ export function EntityList({ type, items, creatable, groups }: Readonly<EntityLi
           </tbody>
         </table>
       </div>
-      {creating && <CreateDialog type={type} categories={groups} onClose={() => setCreating(false)} />}
+      {creating && <CreateDialog type={type} groups={groups} onClose={() => setCreating(false)} />}
     </>
   );
 }

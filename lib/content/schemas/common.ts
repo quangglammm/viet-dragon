@@ -26,6 +26,7 @@ export const MASTER_LANGUAGE_NAME: Record<(typeof MASTER_LOCALES)[number], strin
 
 export const MESSAGES = {
   blank: "Không được để trống.",
+  required: "Bắt buộc phải nhập.",
   slug: "Đường dẫn chỉ gồm chữ thường không dấu (a-z), số và dấu gạch ngang (ví dụ: to-roi-a5).",
   icon: "Tên biểu tượng chỉ gồm chữ cái và số.",
   masterLanguageRequired: (locale: (typeof MASTER_LOCALES)[number]) => `Bắt buộc có nội dung ${MASTER_LANGUAGE_NAME[locale]}.`,
@@ -41,7 +42,8 @@ const ICON = /^[A-Za-z0-9]+$/;
 export const uidSchema = z.uuid();
 export const slugSchema = z.string().regex(KEBAB, MESSAGES.slug);
 export const iconSchema = z.string().regex(ICON, MESSAGES.icon);
-export const nonblankText = z.string().refine((value) => !isBlank(value), MESSAGES.blank);
+/** A text that must be there and say something: a missing one reads «Bắt buộc phải nhập», not zod's "expected string, received undefined". */
+export const nonblankText = z.string({ error: (issue) => (issue.input === undefined ? MESSAGES.required : undefined) }).refine((value) => !isBlank(value), MESSAGES.blank);
 /** Media is referred to by its immutable storage key (`images/hero/a.webp`). */
 export const mediaKeySchema = z.string().min(1);
 export const positionSchema = z.int().min(0);

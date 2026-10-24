@@ -30,3 +30,25 @@ describe("DiffView", () => {
     expect(markup).toContain("Tờ rơi A5");
   });
 });
+
+describe("DiffView on a menu", () => {
+  const render = (changes: Change[], names?: Map<string, string>) => renderToStaticMarkup(createElement(DiffView, { type: "menu", changes, names }));
+  const group = "4f9729d5-6e95-4014-b423-617db5973e42";
+
+  it("calls a column by its own number and says what a group or column holds", () => {
+    const markup = render([
+      { kind: "removed", path: `columns[2].groups[${group}]`, before: { product: group, items: [{}, {}, {}], i18n: {} } },
+      { kind: "added", path: "columns[4]", after: { column: 4, groups: [{ product: group }] } },
+    ]);
+    expect(markup).toContain("Cột menu 4"); // the column NUMBER, not its position
+    expect(markup).toContain("Nhóm menu · cột menu 2");
+    expect(markup).toContain("3 mục");
+    expect(markup).toContain("1 nhóm sản phẩm");
+  });
+
+  it("names the product in the path when the editor knows it, and shortens the id when it does not", () => {
+    const changes: Change[] = [{ kind: "removed", path: `columns[2].groups[${group}]`, before: {} }];
+    expect(render(changes, new Map([[group, "Tờ rơi"]]))).toContain("«Tờ rơi»");
+    expect(render(changes)).toContain("#4f9729d5");
+  });
+});

@@ -1,5 +1,6 @@
 import {
   FileText,
+  FolderTree,
   Gem,
   Image as ImageIcon,
   Images,
@@ -7,6 +8,7 @@ import {
   LayoutTemplate,
   ListChecks,
   Package,
+  PanelTop,
   Ruler,
   ScrollText,
   Sparkles,
@@ -46,6 +48,9 @@ const ACCOUNT_ITEMS: NavItem[] = [
 // The editors on the content database (Phase 3d). A type appears here as soon as its editor exists.
 const CONTENT_ITEM_LOOK: Partial<Record<DraftEntityType, { subtitle: string; icon: LucideIcon }>> = {
   product: { subtitle: "Hình thức, chất liệu, giá, đường dẫn", icon: Package },
+  category: { subtitle: "Tên, ảnh và đường dẫn 4 danh mục", icon: FolderTree },
+  menu: { subtitle: "Menu lớn của từng danh mục", icon: PanelTop },
+  post: { subtitle: "Mẹo in ấn, case study, tin tức", icon: FileText },
   material: { subtitle: "Giấy, màng, vật liệu in", icon: Gem },
   trait: { subtitle: "Biểu tượng & lời giải thích", icon: Sparkles },
   unit: { subtitle: "Hộp, tờ, cuốn…", icon: Ruler },
@@ -53,6 +58,7 @@ const CONTENT_ITEM_LOOK: Partial<Record<DraftEntityType, { subtitle: string; ico
   post_category: { subtitle: "Nhóm bài viết", icon: Tags },
   fast_print_item: { subtitle: "Trang «In nhanh lấy liền»", icon: Zap },
   showcase_item: { subtitle: "Thư viện ảnh trang Sản phẩm", icon: Images },
+  site_message: { subtitle: "Chữ trên giao diện, 5 ngôn ngữ", icon: Languages },
 };
 
 const CONTENT_ITEMS: NavItem[] = EDITABLE_TYPES.map((type) => ({
