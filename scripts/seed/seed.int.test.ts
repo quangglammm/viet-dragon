@@ -24,7 +24,7 @@ describe("what the seed writes", () => {
   it.each([
     ["category", 4], ["product", 25], ["shape", 77], ["option", 110], ["material", 44], ["trait", 12], ["unit", 5],
     ["spec_item", 54], ["menu_group", 24], ["menu_item", 100], ["menu_item_i18n", 145], ["fast_print_item", 6], ["showcase_item", 5],
-    ["post", 6], ["post_category", 3], ["site_message", 150], ["legacy_import", 41], ["media", 1010],
+    ["post", 6], ["post_category", 3], ["site_message", 165], ["legacy_import", 41], ["media", 1010],
   ])("%s has %i rows", async (table, expected) => {
     expect(await seeded.count(table)).toBe(expected);
   });
@@ -89,8 +89,8 @@ describe("what the seed writes", () => {
 describe("revisions", () => {
   it("revision 1 of every entity is the original data; revision 2 only where zh/ja/ko text was suggested", async () => {
     const entities = await listEntities(seeded.db);
-    expect(entities).toHaveLength(198);
-    expect(seeded.outcome.revisions).toBe(198);
+    expect(entities).toHaveLength(201);
+    expect(seeded.outcome.revisions).toBe(201);
     expect(seeded.outcome.suggestionRevisions).toBe(13); // 12 traits + the Tet flyer product
     const { rows } = await seeded.scratch.pool.query<{ entity_type: string; action: string; version: number; comment: string; n: number }>(
       `select entity_type, action, version, comment, count(*)::int n from content_revision group by 1,2,3,4 order by 1,3`,
@@ -98,13 +98,13 @@ describe("revisions", () => {
     const imports = rows.filter((r) => r.version === 1);
     expect(imports.every((r) => r.action === "import" && r.comment === IMPORT_COMMENT)).toBe(true);
     expect(new Set(imports.map((r) => r.entity_type))).toEqual(new Set(DRAFT_ENTITY_TYPES));
-    expect(imports.reduce((total, r) => total + r.n, 0)).toBe(198);
+    expect(imports.reduce((total, r) => total + r.n, 0)).toBe(201);
     const suggested = rows.filter((r) => r.version === 2);
     expect(suggested.every((r) => r.action === "update" && r.comment === SUGGESTION_COMMENT)).toBe(true);
     expect(suggested.map((r) => `${r.entity_type}:${r.n}`).sort()).toEqual(["product:1", "trait:12"]);
   });
 
-  it("the latest revision of each entity equals the document composed from the rows now, and satisfies its schema, for all 198", async () => {
+  it("the latest revision of each entity equals the document composed from the rows now, and satisfies its schema, for all 201", async () => {
     const mismatches: string[] = [];
     for (const { type, id } of await listEntities(seeded.db)) {
       const composed = await composeEntity(seeded.db, type, id);

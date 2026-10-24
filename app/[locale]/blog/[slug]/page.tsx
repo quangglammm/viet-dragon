@@ -1,73 +1,42 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Clock, Calendar } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { blogPosts, categoryColors } from "@/data/posts";
+import { postPageOf } from "@/lib/content/read/posts";
+import { peekPost, resolvePost } from "@/lib/content/read/resolve-post";
+import { PostBody } from "@/components/blog/post-body";
+import { PostCategoryBadge } from "@/components/blog/post-category-badge";
 
-export function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
-}
+type PostParams = { locale: Locale; slug: string };
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: Locale; slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<PostParams> }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const post = blogPosts.find((p) => p.slug === slug);
-  if (!post) return {};
-  return {
-    title: `${pickLocale(locale, post.title, post.titleEn, post.titleZh, post.titleJa, post.titleKo)} | Viet Dragon Blog`,
-    description: pickLocale(locale, post.excerpt, post.excerptEn, post.excerptZh, post.excerptJa, post.excerptKo),
-  };
+  const found = await peekPost(locale, slug);
+  return found ? postPageOf(found.blog, locale, found.post).meta : {};
 }
 
-function formatDate(iso: string, locale: Locale) {
-  const code = locale === "vi" ? "vi-VN" : locale === "zh" ? "zh-CN" : locale === "ja" ? "ja-JP" : locale === "ko" ? "ko-KR" : "en-US";
-  return new Date(iso).toLocaleDateString(code, {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-}
-
-export default async function BlogPostPage({
-  params,
-}: Readonly<{
-  params: Promise<{ locale: Locale; slug: string }>;
-}>) {
+export default async function BlogPostPage({ params }: Readonly<{ params: Promise<PostParams> }>) {
   const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: "blogPostPage" });
-  const post = blogPosts.find((p) => p.slug === slug);
-  if (!post) notFound();
-
-  const title = pickLocale(locale, post.title, post.titleEn, post.titleZh, post.titleJa, post.titleKo);
-  const excerpt = pickLocale(locale, post.excerpt, post.excerptEn, post.excerptZh, post.excerptJa, post.excerptKo);
-  const category = pickLocale(locale, post.categoryVi, post.categoryEn, post.categoryZh, post.categoryJa, post.categoryKo);
-  const content = pickLocale(locale, post.content, post.contentEn, post.contentZh, post.contentJa, post.contentKo);
-
-  const idx = blogPosts.findIndex((p) => p.slug === slug);
-  const prev = idx > 0 ? blogPosts[idx - 1] : null;
-  const next = idx < blogPosts.length - 1 ? blogPosts[idx + 1] : null;
-
-  const paragraphs = content.split("\n\n").filter(Boolean);
+  const found = await resolvePost(locale, slug);
+  const { post, dateLong, blocks, prev, next } = postPageOf(found.blog, locale, found.post);
 
   return (
     <div className="bg-white">
       {/* ── Hero ── */}
       <div className="relative h-[380px] lg:h-[480px] w-full overflow-hidden">
-        <Image
-          src={post.coverImage}
-          alt={title}
-          fill
-          sizes="100vw"
-          className="object-cover"
-          preload
-        />
+        {post.cover && (
+          <Image
+            src={post.cover}
+            alt={post.title}
+            fill
+            sizes="100vw"
+            className="object-cover"
+            preload
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/95 via-zinc-950/65 to-zinc-950/20" />
         <div className="absolute inset-0 flex items-end">
           <div className="max-w-4xl mx-auto px-6 pb-12 w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
@@ -76,23 +45,23 @@ export default async function BlogPostPage({
               <span className="text-white/70">/</span>
               <Link href="/blog" className="hover:text-white transition-colors">{t("breadcrumbBlog")}</Link>
               <span className="text-white/70">/</span>
-              <span className="text-white font-bold line-clamp-1">{title}</span>
+              <span className="text-white font-bold line-clamp-1">{post.title}</span>
             </nav>
 
             <div className="flex flex-wrap items-center gap-3 mb-4 text-shadow-dark">
-              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${categoryColors[post.category].bg} ${categoryColors[post.category].text}`}>
-                {category}
-              </span>
+              <PostCategoryBadge category={post.category} className="px-3 py-1 text-xs" />
+              {post.readTimeMin !== null && (
+                <span className="text-white/80 text-xs flex items-center gap-1.5">
+                  <Clock size={12} /> {post.readTimeMin} {t("minuteRead")}
+                </span>
+              )}
               <span className="text-white/80 text-xs flex items-center gap-1.5">
-                <Clock size={12} /> {post.readTime} {t("minuteRead")}
-              </span>
-              <span className="text-white/80 text-xs flex items-center gap-1.5">
-                <Calendar size={12} /> {formatDate(post.date, locale)}
+                <Calendar size={12} /> {dateLong}
               </span>
             </div>
 
             <h1 className="text-3xl lg:text-4xl font-black text-white leading-tight text-shadow-dark-lg">
-              {title}
+              {post.title}
             </h1>
           </div>
         </div>
@@ -101,34 +70,10 @@ export default async function BlogPostPage({
       {/* ── Article body ── */}
       <div className="max-w-4xl mx-auto px-6 py-14">
         <p className="text-lg text-zinc-600 leading-relaxed mb-10 font-medium border-l-4 border-brand-primary pl-5">
-          {excerpt}
+          {post.excerpt}
         </p>
 
-        <div className="prose prose-zinc prose-base max-w-none">
-          {paragraphs.map((para) => {
-            if (para.startsWith("**") && para.endsWith("**")) {
-              return (
-                <h3 key={para} className="text-xl font-black text-zinc-900 mt-8 mb-3">
-                  {para.slice(2, -2)}
-                </h3>
-              );
-            }
-            const parts = para.split(/(\*\*[^*]+\*\*)/g);
-            return (
-              <p key={para} className="text-zinc-600 leading-relaxed mb-4">
-                {parts.map((part) =>
-                  part.startsWith("**") && part.endsWith("**") ? (
-                    <strong key={part} className="text-zinc-900 font-bold">
-                      {part.slice(2, -2)}
-                    </strong>
-                  ) : (
-                    part
-                  )
-                )}
-              </p>
-            );
-          })}
-        </div>
+        <PostBody blocks={blocks} />
 
         {/* CTA inline */}
         <div className="mt-14 p-8 rounded-2xl bg-zinc-50 border border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-6">
@@ -152,11 +97,11 @@ export default async function BlogPostPage({
         <div className="max-w-4xl mx-auto px-6 py-6 flex items-center justify-between gap-4">
           {prev ? (
             <Link
-              href={`/blog/${prev.slug}`}
+              href={prev.href}
               className="flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group max-w-xs"
             >
               <ArrowLeft size={16} className="shrink-0 group-hover:-translate-x-1 transition-transform" />
-              <span className="line-clamp-1">{pickLocale(locale, prev.title, prev.titleEn, prev.titleZh, prev.titleJa, prev.titleKo)}</span>
+              <span className="line-clamp-1">{prev.label}</span>
             </Link>
           ) : (
             <Link
@@ -174,10 +119,10 @@ export default async function BlogPostPage({
 
           {next ? (
             <Link
-              href={`/blog/${next.slug}`}
+              href={next.href}
               className="flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group max-w-xs text-right"
             >
-              <span className="line-clamp-1">{pickLocale(locale, next.title, next.titleEn, next.titleZh, next.titleJa, next.titleKo)}</span>
+              <span className="line-clamp-1">{next.label}</span>
               <ArrowRight size={16} className="shrink-0 group-hover:translate-x-1 transition-transform" />
             </Link>
           ) : (

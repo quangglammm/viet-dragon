@@ -4,53 +4,13 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeftRight, ImagePlus, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
-import { pickLocale } from "@/lib/locale";
+import { useTranslations } from "next-intl";
 import { NamedIcon } from "@/components/ui/named-icon";
-import type { CardView } from "@/lib/content/read/card";
+import type { CardSize, CardView } from "@/lib/content/read/card";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { ZaloIcon } from "@/components/ui/zalo-icon";
 import { ConsultBottomSheet } from "@/components/ui/consult-bottom-sheet";
-
-// The titles of the form under the card: interface wording (the lists they head come from the content database).
-const FORM_TITLES: Record<"sizes" | "printTech" | "material" | "finishing", Record<Locale, string>> = {
-  sizes: {
-    vi: "Kích thước phổ biến:",
-    en: "Popular sizes:",
-    zh: "常用尺寸:",
-    ja: "一般的なサイズ:",
-    ko: "자주 쓰이는 규격:",
-  },
-  printTech: {
-    vi: "Kỹ thuật in:",
-    en: "Printing technique:",
-    zh: "印刷工艺:",
-    ja: "印刷技術:",
-    ko: "인쇄 기법:",
-  },
-  material: {
-    vi: "Chất liệu:",
-    en: "Material:",
-    zh: "材质:",
-    ja: "素材:",
-    ko: "재질:",
-  },
-  finishing: {
-    vi: "Thành phẩm sau in:",
-    en: "Post-press finishing:",
-    zh: "印后加工:",
-    ja: "印刷後加工・仕上がり:",
-    ko: "인쇄 후가공 / 마감:",
-  },
-};
-
-const SLOT_LABEL: Record<string, { main: string; detail: string }> = {
-  vi: { main: "Ảnh chính", detail: "Ảnh chi tiết" },
-  en: { main: "Main photo", detail: "Detail photo" },
-  zh: { main: "主图", detail: "细节图" },
-  ja: { main: "メイン写真", detail: "詳細写真" },
-  ko: { main: "대표 사진", detail: "상세 사진" },
-};
 
 interface ImageSlotProps {
   src?: string;
@@ -58,7 +18,6 @@ interface ImageSlotProps {
   aspectClass: string;
   sizes: string;
   isMain?: boolean;
-  locale?: string;
   fitMode?: "cover" | "contain";
 }
 
@@ -68,11 +27,10 @@ function ImageSlot({
   aspectClass,
   sizes,
   isMain,
-  locale = "vi",
   fitMode = "cover",
 }: Readonly<ImageSlotProps>) {
   const [hasError, setHasError] = useState(false);
-  const labels = SLOT_LABEL[locale] ?? SLOT_LABEL.vi;
+  const t = useTranslations("materialCard");
 
   const showPlaceholder = !src || hasError;
 
@@ -85,7 +43,7 @@ function ImageSlot({
               <ImagePlus size={isMain ? 22 : 16} strokeWidth={1.5} className="text-zinc-400" />
             </div>
             <span className="text-[10px] font-medium tracking-wide text-zinc-400">
-              {isMain ? labels.main : labels.detail}
+              {isMain ? t("photoMain") : t("photoDetail")}
             </span>
           </div>
         </div>
@@ -130,14 +88,6 @@ function ImageSlot({
   );
 }
 
-const ZALO_BUTTON_LABEL: Record<string, string> = {
-  vi: "Tư vấn Zalo",
-  en: "Zalo Consultation",
-  zh: "Zalo 咨询",
-  ja: "Zalo 相談",
-  ko: "Zalo 상담",
-};
-
 interface MaterialFlashcardProps {
   card: CardView;
   locale: Locale;
@@ -166,6 +116,11 @@ export function MaterialFlashcard({
   const ignoreClickUntil = useRef<number>(0);
 
   const { heading: name, features, bestFor, sizes, consultName: productName } = card;
+  const t = useTranslations("materialCard");
+  const sizeLabel = (size: CardSize): string => {
+    const tier = t(`tier.${size.id}`);
+    return size.note ? t("sizeLabel", { tier, note: size.note }) : tier;
+  };
 
   const scrollContentRef = useRef<HTMLDivElement>(null);
   const [canScrollDown, setCanScrollDown] = useState(false);
@@ -347,7 +302,6 @@ export function MaterialFlashcard({
                 aspectClass="aspect-square"
                 sizes="(min-width: 1024px) 25vw, 50vw"
                 isMain
-                locale={locale}
               />
 
               <div className="grid grid-rows-2 gap-0.5 w-full h-full">
@@ -356,14 +310,12 @@ export function MaterialFlashcard({
                   alt={`${productName} — ${name} - 1`}
                   aspectClass="aspect-[2/1]"
                   sizes="(min-width: 1024px) 25vw, 50vw"
-                  locale={locale}
                 />
                 <ImageSlot
                   src={cardImages[2]}
                   alt={`${productName} — ${name} - 2`}
                   aspectClass="aspect-[2/1]"
                   sizes="(min-width: 1024px) 25vw, 50vw"
-                  locale={locale}
                 />
               </div>
             </div>
@@ -392,7 +344,6 @@ export function MaterialFlashcard({
                     sizes="100vw"
                     isMain={currentMobileIdx === 0}
                     fitMode={currentMobileIdx === 0 ? "cover" : "contain"}
-                    locale={locale}
                   />
                 </motion.div>
               </AnimatePresence>
@@ -402,7 +353,7 @@ export function MaterialFlashcard({
                 <>
                   <button
                     type="button"
-                    aria-label="Ảnh trước"
+                    aria-label={t("previousPhoto")}
                     onClick={handlePrevImage}
                     onTouchStart={(e) => e.stopPropagation()}
                     onTouchEnd={(e) => e.stopPropagation()}
@@ -412,7 +363,7 @@ export function MaterialFlashcard({
                   </button>
                   <button
                     type="button"
-                    aria-label="Ảnh tiếp theo"
+                    aria-label={t("nextPhoto")}
                     onClick={handleNextImage}
                     onTouchStart={(e) => e.stopPropagation()}
                     onTouchEnd={(e) => e.stopPropagation()}
@@ -524,7 +475,7 @@ export function MaterialFlashcard({
                 className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white via-white/85 to-transparent flex items-end justify-center pb-1.5 cursor-pointer z-10 select-none"
               >
                 <span className="text-[11px] font-semibold text-brand-primary bg-white/95 backdrop-blur-xs px-2.5 py-0.5 rounded-full shadow-2xs border border-brand-primary/20 flex items-center gap-1 hover:bg-brand-soft transition-colors">
-                  {pickLocale(locale, "Cuộn xem tiếp", "Scroll for more", "向下滚动查看更多", "スクロールして続きを見る", "아래로 스크롤하여 더보기")}
+                  {t("scrollMore")}
                   <ChevronDown size={12} className="animate-bounce" />
                 </span>
               </div>
@@ -541,7 +492,7 @@ export function MaterialFlashcard({
         {/* 1. Kích thước phổ biến (thu nhỏ vừa với chữ, click để nở ra ghi đè kích thước luôn bên trong ô, click lại hiện lại chữ) */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {FORM_TITLES.sizes[locale]}
+            {t("formSizes")}
           </span>
           <div className="flex flex-wrap items-center gap-2">
             {sizes.map((s) => {
@@ -581,7 +532,7 @@ export function MaterialFlashcard({
                         transition={{ duration: 0.15 }}
                         className="whitespace-nowrap font-bold"
                       >
-                        {s.label}
+                        {sizeLabel(s)}
                       </motion.span>
                     )}
                   </AnimatePresence>
@@ -594,7 +545,7 @@ export function MaterialFlashcard({
         {/* 2. Kỹ thuật in: in nhanh, offset, ép kim, dập nổi dập chìm */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {FORM_TITLES.printTech[locale]}
+            {t("formPrintTech")}
           </span>
           <div className="flex flex-wrap items-center gap-2">
             {printTechList.map((tech) => (
@@ -611,7 +562,7 @@ export function MaterialFlashcard({
         {/* 3. Chất liệu */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {FORM_TITLES.material[locale]}
+            {t("formMaterial")}
           </span>
           <div className="flex flex-wrap items-center gap-2">
             {materialList.map((mat) => {
@@ -639,7 +590,7 @@ export function MaterialFlashcard({
         {/* 4. Thành phẩm sau in (Bế, Dán, Cán màng... hiển thị ngang hàng và xuống hàng tự nhiên) */}
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {FORM_TITLES.finishing[locale]}
+            {t("formFinishing")}
           </span>
           {finishingList.map((item) => (
             <span
@@ -655,14 +606,14 @@ export function MaterialFlashcard({
         <div className="flex items-center justify-end pt-3 border-t border-zinc-100 gap-3">
           <motion.button
             type="button"
-            aria-label={ZALO_BUTTON_LABEL[locale] ?? ZALO_BUTTON_LABEL.vi}
+            aria-label={t("zalo")}
             onClick={() => setConsultOpen(true)}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.96 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0068ff] hover:bg-[#0057d6] text-white text-xs font-bold shadow-sm shadow-[#0068ff]/30 transition-all cursor-pointer"
           >
             <ZaloIcon className="size-4 shrink-0" />
-            <span>{ZALO_BUTTON_LABEL[locale] ?? ZALO_BUTTON_LABEL.vi}</span>
+            <span>{t("zalo")}</span>
           </motion.button>
         </div>
 
@@ -673,7 +624,7 @@ export function MaterialFlashcard({
         onClose={() => setConsultOpen(false)}
         productName={productName}
         materialName={name}
-        sizeLabel={selectedSizeItem?.label}
+        sizeLabel={selectedSizeItem ? sizeLabel(selectedSizeItem) : undefined}
         sizeDims={selectedSizeItem?.dims}
         locale={locale}
       />

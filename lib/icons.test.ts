@@ -1,8 +1,8 @@
-import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { Layers, Zap } from "lucide-react";
 import { MAIN_CATEGORIES, SUBGROUPS_CATALOG } from "@/data/subgroups-catalog";
 import { materialTraits } from "@/data/material-traits";
+import { PRINT_PRODUCTS } from "@/scripts/seed/legacy/fast-print";
 import { ICON_NAMES, ICONS, isIconName, resolveIcon } from "./icons";
 
 // The registry is checked against what the site actually uses today, so the Phase 3b seed can store every icon by name.
@@ -30,13 +30,10 @@ describe("icon registry", () => {
     expect(Object.entries(materialTraits).filter(([, trait]) => !registered.has(trait.icon)).map(([key]) => key)).toEqual([]);
   });
 
-  // Reads the component's source because its icon tables are not exported; removed when Phase 4 moves Fast Print to the database.
-  it("covers every icon of the Fast Print page", () => {
-    const source = readFileSync("app/[locale]/products/fast-print/FastPrintClient.tsx", "utf8");
-    const names = [...source.matchAll(/\bicon(?:El)?: (\w+),/g)].map((match) => match[1]);
-    expect(names.length).toBeGreaterThanOrEqual(10);
-    const registered = new Set(Object.keys(ICONS).map((name) => name.toLowerCase()));
-    expect(names.filter((name) => !registered.has(name.toLowerCase()))).toEqual([]);
+  it("covers every icon of the Fast Print items (the seed stores them by name)", () => {
+    const names = PRINT_PRODUCTS.map((item) => item.icon);
+    expect(names).toHaveLength(6);
+    expect(names.filter((name) => !isIconName(name))).toEqual([]);
   });
 
   it("resolves a stored name to its component and falls back safely", () => {

@@ -87,12 +87,12 @@ Public routes are nested under `app/[locale]/` — `locale` is `"vi"` (default, 
 |---|---|---|
 | `/[locale]` | Server | Navbar + 17 stacked sections (Hero → Footer, including `PartnerLogos`), no scroll pinning |
 | `/[locale]/products` | Server async | `await params`; showcase gallery + one card per category from the content database |
-| `/[locale]/products/fast-print` | Server + client | "In nhanh lấy liền" page; interactive part in `FastPrintClient.tsx` (static until the next milestone) |
+| `/[locale]/products/fast-print` | Server + client | "In nhanh lấy liền" page: the items are `fast_print_item` rows (`getFastPrint`), every word of the page is the `fastPrint` UI-copy namespace; markup in `FastPrintClient.tsx` |
 | `/[locale]/products/[category]` | Server async, **dynamic** | `await params`; `resolvePage` (`lib/content/read/resolve-page.ts`) → `categoryPageOf`; the segment is the category's slug in the page's language |
 | `/[locale]/products/[category]/[product]` | Server async, **dynamic** | a product's shapes grid (`SubgroupShapesView`) or, with no shapes, its materials (`ProductDetailView`) |
 | `/[locale]/products/[category]/[product]/[segment]` | Server async, **dynamic** | one shape of the product, or one of its materials scrolled to; both through `ProductDetailView` |
-| `/[locale]/blog` | Server async | `await params` for `{ locale }` |
-| `/[locale]/blog/[slug]` | Server async | `await params`; `generateStaticParams` pre-generates every post in `blogPosts` (6 today) |
+| `/[locale]/blog` | Server async | the published posts from the content database, newest first (`getBlog` → `blogIndexOf`) |
+| `/[locale]/blog/[slug]` | Server async, **dynamic** | `resolvePost` (`lib/content/read/resolve-post.ts`): canonical slug → the post (`postPageOf`, body by `PostBody`), an old / other-language slug → 308 to the canonical, unknown or archived → 404 |
 | `/[locale]/[...rest]` | Server | Catch-all that only calls `notFound()`, so unknown URLs (and every other `notFound()` under `[locale]`) render `[locale]/not-found.tsx` — a localized 404 (namespace `notFound`, Navbar + Footer). Without it `[locale]` as the top-level segment never reaches that file |
 
 Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
@@ -194,7 +194,7 @@ element inside the existing column/grid div instead of appending it as a row sib
 - `data/subgroups-catalog.ts` (≈9,200 lines) — **no longer read by the public site (since Phase 4 M2): it is the seed's input**
   (`pnpm seed`) and the legacy admin's; a test (`lib/content/read/legacy-sources.test.ts`) fails if public code imports it, the menus,
   `data/translations`, `data/categories` (values), `lib/product-sizes`, `lib/product-specs`, `lib/shape-aliases` or `lib/content-store`
-  (one listed leftover until M3: the showcase captions on `/products`). Phase 4 M5 moves them under `scripts/seed/legacy/`. What it holds: `MAIN_CATEGORIES` (4: Tiếp thị/Marketing, Văn phòng/Office, Bao bì/Packaging,
+  `data/posts`, `data/showcase` and `scripts/seed/legacy/fast-print.ts` (no leftovers since M3). Phase 4 M5 moves them under `scripts/seed/legacy/`. What it holds: `MAIN_CATEGORIES` (4: Tiếp thị/Marketing, Văn phòng/Office, Bao bì/Packaging,
   Ấn phẩm Tết/Tet Publications) and `SUBGROUPS_CATALOG` (25 subgroups — 7 marketing, 6 office,
   4 packaging, 8 tet — with 77 shapes and 101 materials in total); lookups via
   `getSubgroupById()` / `getSubgroupsByCategory()`.
@@ -203,15 +203,14 @@ element inside the existing column/grid div instead of appending it as a row sib
   (English) with optional `xZh`/`xJa`/`xKo` — read with `pickLocale()`, never several at once.
 - `data/translations.ts` — extra zh/ja/ko text kept **outside** the records
   (`SHOWCASE_LABELS`, `CATEGORY_NAMES`, `CATEGORY_DESCS`, `ITEM_NAMES`, `ITEM_DESCS`,
-  `SHAPE_DESCS`, keyed by id). The seed reads it; of the public site only `/products` still does (showcase captions).
+  `SHAPE_DESCS`, keyed by id). The seed reads it; the public site does not.
 - `data/posts.ts` — `BlogPost` type, `blogPosts` (6 posts, **imported from
-  `data/content/posts.json`** at build time) and `categoryColors`. Same `xVi`/`x` split,
-  including full article bodies (`content` / `contentEn` / `contentZh` / …).
+  `data/content/posts.json`** at build time) and `categoryColors`. **No longer read by the public site (since M3)**: the seed and the
+  legacy admin read it; the blog pages read the database. Same `xVi`/`x` split, including full article bodies.
 - `data/marketing-menu.ts`, `office-menu.ts`, `packaging-menu.ts`, `tet-menu.ts` — the old Navbar
   mega-menu definitions; the seed reads them, the Navbar now draws the menus from the database (`MegaMenuDesktop` / `MegaMenuMobile`).
 - `data/content/*.json` — files written by the current admin (`posts.json`, `products.json`,
-  `subgroups.json`). Only `posts.json` is read by the site (via `data/posts.ts`); `products.json`
-  and `subgroups.json` are **not read by any public page**.
+  `subgroups.json`). Only the legacy admin and the seed read them; **no public page does**.
 - `data/material-traits.ts` — the old icon glossary for `ProductOption.descriptionTraits` bullets; the seed reads it, the card and the
   glossary popover now read the traits from the database.
 - `coverImage` / `image` fields are real local paths (`/images/category/...`,
@@ -240,9 +239,14 @@ element inside the existing column/grid div instead of appending it as a row sib
   `messages/{vi,en,zh,ja,ko}.json`, namespaced per section (`about`, `shop`, `faq`, …).
   Read with `useTranslations("namespace")` (client components) or
   `getTranslations({ locale, namespace })` (server/async). **All five files must stay in
-  sync** — diff their flattened key sets after editing any one (a missing key throws at
-  runtime). `i18n/request.ts` loads them with a build-time dynamic `import()`, so editing
-  the JSON at runtime has no effect on a production build.
+  sync** — `i18n/messages.test.ts` fails when a key, an empty text or a `{variable}` the Vietnamese text lacks differs (a missing key
+  throws at runtime). **The files own the STRUCTURE, the content database the WORDING (Phase 4 M3):** `i18n/request.ts` returns
+  `getMessages(locale)` (`lib/content/read/load.ts`) = the file's tree with the published `site_message` texts laid over it
+  (`mergeMessages`: an empty text keeps the file's, a namespace or key the files lack is ignored), cached under the `site_message` tags, so a
+  UI-copy publish in the admin shows on the next request. One publish expires EVERY language's merged tree (the tag is per namespace, a document
+  holds all five languages); each is rebuilt on its next request. A new namespace needs a name in `lib/content/editor/site-message-labels.ts`
+  (a test checks) and a database seeded after it was added to be editable in the admin (the site works without: the files stand).
+  No per-language dictionary belongs in a component — add keys here.
 - **List content** (arrays of translated objects — FAQ items, process steps) — use
   `t.raw("key")`, which returns the JSON array/object unprocessed. Keep non-translatable
   metadata (icons, hrefs, image seeds, `highlighted` flags) in the component as a
@@ -313,9 +317,10 @@ target — until a phase lands, the "current state" below is the truth.
   replaced wholesale in Phase 3, so don't extend them.
 - **What the public site sees of admin edits (Phase 4 M2):** the catalog — products, categories, shapes, materials, traits, sizes and
   specs — and the whole navigation (mega-menus, footer, home shop strips) come from the content database, so a publish shows on the
-  next request, no rebuild. Still static until M3: blog posts (`data/posts.ts`, bundling `data/content/posts.json` at build time), UI
-  copy (`messages/*.json`, bundled by `i18n/request.ts`), Fast Print and the showcase gallery. `products.json` / `subgroups.json` are
-  never read at all.
+  next request, no rebuild; since M3 so do the blog (posts, categories, URLs), Fast Print (items, prices, units), the `/products` showcase
+  gallery and the UI copy (`messages/*.json` + the published `site_message` texts). What is still in code: the two product hrefs of
+  `ShopBanner` (they redirect through aliases; M4), the fixed path words and hreflang / sitemap / JSON-LD (M4). `products.json` /
+  `subgroups.json` are never read at all.
 - `/api/admin/translate` is a stub (returns the input unchanged unless it is one of six
   hardcoded nav labels).
 
@@ -328,7 +333,7 @@ languages**, and edits are **drafts until published** (draft → preview → pub
 restorable revision). The relational schema (validated against the real data), the draft/publish
 design, the seed rules and the owner-review list are in `docs/data-model.md` (+ `docs/data-model.sql`).
 
-### Content model (Phase 3a schema + 3b seed + localized URLs + 3c draft / publish / delete services and the `/api/admin/content` API landed; the editors (3d) use it; the public catalog pages and navigation read it since Phase 4 M2, blog / UI copy / Fast Print / showcase in M3)
+### Content model (Phase 3a schema + 3b seed + localized URLs + 3c draft / publish / delete services and the `/api/admin/content` API landed; the editors (3d) use it; the public catalog pages and navigation read it since Phase 4 M2, blog / UI copy / Fast Print / showcase since M3)
 The full design is `docs/data-model.md` (local); this is what the code now guarantees.
 - **Tables:** `lib/db/content/*.ts` (foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog,
   site-message, drafts; shared builders in `columns.ts`, SEO/Open Graph columns in `seo.ts`), re-exported by `lib/db/schema.ts`.
@@ -542,8 +547,21 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   every URL of `.parity/legacy.json` from a running server and classifies it: on the scratch database 1,865 pages = 361 identical + 1,491 that differ
   only in the cards' sizes / specs form (owner decision 1, measured) + 13 explained (Tet category cards worded as the products; the
   title-precedence pages; AI-suggested translations of one Tet option) + 0 unexplained. **Known small changes:** the glossary lists traits by key
-  (traits have no stored order; the old popover used the authored order); a size's tier names (Lớn / Vừa / Nhỏ …) and the form titles are interface
-  words kept in code until M3.
+  (traits have no stored order; the old popover used the authored order).
+  **M3 — blog, Fast Print, showcase, UI copy.** `posts.ts` (pure: `buildBlog` — published posts NEWEST FIRST, ties by the Vietnamese slug, because the old
+  file order was not date order and the database has no post position; `postPath` / `resolvePostUrl` = the catalog's rule for `/blog/<slug>`;
+  `blogIndexOf`, `blogPreviewOf`, `postPageOf` → cards with the title, excerpt, category label, date `10/06/2026` and cover already resolved;
+  `formatPostDate` is UTC so the day never depends on the server's zone), `markdown.ts` (a post's text → blocks: `plain` = today's rule, `markdown` = a safe
+  SUBSET — headings drawn h2–h4, paragraphs, bold / italic, links on an allow-list, lists, quotes; no raw HTML, an unsafe link keeps only its words),
+  `merchandising.ts` (`buildFastPrint` / `fastPrintCardsOf` — a card carries `price: { amount, unit }`, the page's `fastPrint.price` template
+  `{amount, number}…{unit}` writes the line in each language; `buildShowcase` / `showcaseSlotsOf` — the desktop gallery takes one tall, two square and two wide
+  pictures **by each item's aspect**), cached reads `getBlog` / `getFastPrint` / `getShowcase` / `getMessages`. `/blog/[slug]` is dynamic like the catalog
+  routes. The card's sizes carry the tier and the editor's note; `materialCard.tier.*` and `sizeLabel` (UI copy) word
+  them — a test keeps the tier names equal to the seed's `BASE_LABEL`. The Fast Print items the seed loads moved to `scripts/seed/legacy/fast-print.ts` (the
+  first resident of the M5 legacy folder; the seed scans it for media references). **Equivalence:** `blog.int.test.ts` (titles, excerpts, category labels, dates,
+  covers and bodies of the six posts in five languages, the old URLs), `merchandising.int.test.ts` (Fast Print items and every language's price line, the
+  showcase captions and slots, the UI copy merge on a seeded database); parity on the scratch database: 1,865 pages = 331 identical + 1,491
+  sizes-/specs-form-only + 43 explained (the 13 of M2 + 30 for the newest-first post order) + 0 unexplained.
 - **Tests:** `app/api/admin/content/content-api.int.test.ts` (who may call what, preconditions, error shapes, cache tags, audit rows —
   with the app's own database pointed at a seeded scratch one by setting `DATABASE_URL` before the first `getDb()`),
   `lib/content/http.test.ts`; `lib/content/entities.int.test.ts` (all 198 seeded entities publish unchanged; each of the nine creatable types is created,
@@ -733,7 +751,8 @@ Dockerfile, compose.yaml, compose.dev.yaml, .env.example, .dockerignore, deploy/
 i18n/
   routing.ts               defineRouting({ locales: [vi, en, zh, ja, ko], defaultLocale: vi })
   navigation.ts             Locale-aware Link/usePathname/useRouter/redirect/permanentRedirect — import from here, not next/*
-  request.ts                getRequestConfig — loads messages/<locale>.json (build-time dynamic import)
+  request.ts                getRequestConfig — messages = getMessages(locale): messages/<locale>.json + the published UI copy of the database (cached)
+  messages.test.ts          the five message files have the same texts, no empty one, only the Vietnamese text's {variables}
 messages/
   vi, en, zh, ja, ko .json  UI copy, namespaced per section — keep all five key sets in sync
 proxy.ts                    Next 16 "proxy" (not middleware.ts): `/admin/*` → optimistic session-cookie check (lib/admin-access.ts); everything else → next-intl createMiddleware; the intl matcher still skips api/admin/zalo-reply
@@ -762,7 +781,7 @@ lib/
   content/validate.ts, references.ts, diff.ts, humanize.ts, identity.ts, errors.ts, cache-tags.ts   advice + checks, what a document points at, field-level diff, DB error → Vietnamese, URL type names / ids, Conflict / Invalid / NotFound, cache tags
   content/delete.ts, summaries.ts   delete / archive-first rules (+ the "delete" revision) · admin list rows
   content/editor/           the editors' client-safe logic: paths, session reducer, API client, completeness, create templates, entity meta, vocabulary, product ops / menu ops / lists / slugs / slug ops / message tree / sections / uid (no server imports — client-bundle.test.ts)
-  content/read/             the PUBLIC site's reads (Phase 4): pure document → view-model builders (catalog, menus, selectors, urls, messages), language-resolved page models (navigation, card, pages), the loaders and cached reads (load.ts, cache.ts, site.ts) and resolve-page.ts — pages call the `get*` ones
+  content/read/             the PUBLIC site's reads (Phase 4): pure document → view-model builders (catalog, menus, selectors, urls, messages, posts, merchandising, markdown), language-resolved page models (navigation, card, pages, posts), the loaders and cached reads (load.ts, cache.ts, site.ts) and resolve-page.ts / resolve-post.ts — pages call the `get*` ones
   content/field-registry.ts, entity-types.ts, slugify.ts, media-library.ts, authors.ts, vocabulary.ts   every editable leaf → label + control · the 12 entity types (database-free) · URL slugs · media picker data · account names for the history · picker lists
   content/http.ts, requests.ts, effects.ts   the HTTP layer of app/api/admin/content: URL / If-Match / capped JSON body / error mapping · zod request bodies · cache tags + audit after commit
   content/apply/            one applier per entity type (all twelve): document → live rows, plus the per-language slug planning (`planSegments` also serves posts and categories)
@@ -783,9 +802,9 @@ lib/
 data/
   subgroups-catalog.ts      MAIN_CATEGORIES (4) + SUBGROUPS_CATALOG (25) — the seed's input (the public site reads the database)
   categories.ts             ProductCategory/ProductItem/ProductOption types (seed / legacy admin)
-  showcase.ts               showcaseImages (the /products gallery; moves to the database in M3)
-  translations.ts           zh/ja/ko text for showcase labels, categories, items, shapes (seed; /products showcase captions until M3)
-  posts.ts                  BlogPost type, blogPosts (from content/posts.json) + categoryColors
+  showcase.ts               showcaseImages (the old /products gallery — seed input)
+  translations.ts           zh/ja/ko text for showcase labels, categories, items, shapes (seed input)
+  posts.ts                  BlogPost type, blogPosts (from content/posts.json) + categoryColors (seed / legacy admin input)
   marketing-menu.ts, office-menu.ts, packaging-menu.ts, tet-menu.ts   the old mega-menu columns (seed input)
   material-traits.ts        the old MaterialTrait icon glossary (seed input)
   content/                  JSON written by the current admin (only posts.json is read by the site)
@@ -795,6 +814,7 @@ scripts/
   seed-cli.ts, seed/        `pnpm seed` — entry · index.ts (seed-if-empty, dry run) · run.ts (the order of the steps) · sources.ts · steps/* · measures.ts · report/* (Vietnamese owner report) · *.int.test.ts (counts, parity with the source, URLs, menus)
   optimize-images.mjs       sharp-based image optimization script (run by hand)
 components/
+  blog/                     post-body.tsx (a post's blocks in the article's classes), post-category-badge.tsx (category colors by key, neutral default)
   providers/
     SmoothScroll.tsx        Lenis init (desktop only, ≥1024px) — no GSAP, no pinning
     quote-modal-provider.tsx  Context that opens the QuoteModal from anywhere
@@ -805,7 +825,8 @@ components/
     donut-chart, media-card, media-delete-modal, media-picker-modal   legacy editors' pieces
   sections/                 all "use client"; landing page order = page.tsx import order
     Navbar.tsx              Fixed top nav, mobile hamburger drawer, 5-locale flag switcher (reads useSiteData)
-    MegaMenuDesktop.tsx, MegaMenuMobile.tsx, fast-print-tags.ts   the ONE mega-menu pair, driven by a category's NavMenu
+    MegaMenuDesktop.tsx, MegaMenuMobile.tsx   the ONE mega-menu pair, driven by a category's NavMenu
+    ShowcaseGallery.tsx     The /products editorial gallery (mobile grid + desktop slots by aspect)
     SubgroupShapesView.tsx  Shapes grid of a product (ShapesPageModel)
     ProductDetailView.tsx   Server component: product without shapes / one shape / one material page (DetailPageModel | ShapePageModel | MaterialPageModel)
     PartnerLogos.tsx        Partner logo strip (between CTA and Footer)

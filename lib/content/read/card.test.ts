@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { catalogInput } from "@/tests/fixtures/catalog";
 import { UID } from "@/tests/fixtures/documents";
 import { buildCatalog } from "./catalog";
-import { cardOf, sizeOf, TIER_LABELS } from "./card";
+import { cardOf, sizeOf } from "./card";
 import type { SizeView } from "./types";
 
 const catalog = () => buildCatalog(catalogInput());
@@ -20,16 +20,10 @@ describe("sizeOf", () => {
     expect(sizeOf(size({ w: null, h: null, text: "Size L - XL" }), "vi").dims).toBe("Size L - XL");
   });
 
-  it("names the tier in the page's language, with the note in brackets when the language has one", () => {
-    expect(sizeOf(size({ tier: "medium" }), "vi")).toMatchObject({ id: "medium", label: "Vừa" });
-    expect(sizeOf(size({ tier: "small" }), "en").label).toBe("Small");
-    expect(sizeOf(size({ tier: "large", note: { vi: "A4", en: "A4 sheet" } }), "en").label).toBe("Large (A4 sheet)");
-    expect(sizeOf(size({ tier: "large", note: { vi: "A4" } }), "ko").label).toBe("대"); // a note exists in Vietnamese only: not guessed in Korean
-  });
-
-  it("has a tier name for every language and tier", () => {
-    for (const labels of Object.values(TIER_LABELS)) expect(labels.every((label) => label.trim() !== "")).toBe(true);
-    expect(Object.keys(TIER_LABELS).sort()).toEqual(["en", "ja", "ko", "vi", "zh"]);
+  it("carries the tier and the editor's note of the page's language (the card words the tier and brackets the note)", () => {
+    expect(sizeOf(size({ tier: "medium" }), "vi")).toMatchObject({ id: "medium", note: null });
+    expect(sizeOf(size({ tier: "large", note: { vi: "A4", en: "A4 sheet" } }), "en")).toMatchObject({ id: "large", note: "A4 sheet" });
+    expect(sizeOf(size({ tier: "large", note: { vi: "A4" } }), "ko").note).toBeNull(); // a note exists in Vietnamese only: not guessed in Korean
   });
 });
 
@@ -60,12 +54,12 @@ describe("cardOf", () => {
   it("uses the product's sizes and spec lists, or the shape's where it has its own", () => {
     const product_ = product();
     const wide = cardOf(catalog(), "vi", product_, option(UID.option), null, "x");
-    expect(wide.sizes).toEqual([expect.objectContaining({ id: "large", dims: "21 x 29.7 cm" })]);
+    expect(wide.sizes).toEqual([{ id: "large", note: "Lớn", dims: "21 x 29.7 cm" }]);
     expect(wide.techniques).toEqual(["In offset"]);
     expect(wide.finishing).toEqual([]);
     expect(wide.materials).toEqual([]);
     const a5 = cardOf(catalog(), "en", product_, option(UID.optionForShape), UID.shapeA5, "x");
-    expect(a5.sizes).toEqual([{ id: "large", label: "Large", dims: "Size L - XL" }]);
+    expect(a5.sizes).toEqual([{ id: "large", note: null, dims: "Size L - XL" }]);
     expect(a5.techniques).toEqual(["Offset printing"]); // the shape has no technique rows: the product's
     expect(a5.finishing).toEqual(["Matte lamination"]);
   });

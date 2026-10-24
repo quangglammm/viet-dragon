@@ -19,6 +19,6 @@ export default async function ProductPage({ params }: Readonly<{ params: Promise
   const found = await resolvePage(locale, { category, product });
   if (!found.product) throw new Error("a product URL resolved without a product");
   const model = productPageOf(found.catalog, locale, found.category, found.product, null);
-  if (model.kind === "shapes") return <SubgroupShapesView locale={locale} model={model} />;
+  if (model.kind === "shapes") return <SubgroupShapesView model={model} />;
   return <ProductDetailView locale={locale} model={model} traits={glossaryOf(found.catalog, locale)} />;
 }

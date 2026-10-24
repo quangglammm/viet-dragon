@@ -3,9 +3,10 @@ import Image from "next/image";
 import { ArrowRight, Clock } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
-import { blogPosts, categoryColors } from "@/data/posts";
+import { getBlog } from "@/lib/content/read/load";
+import { blogIndexOf } from "@/lib/content/read/posts";
+import { PostCategoryBadge } from "@/components/blog/post-category-badge";
 
 export async function generateMetadata({
   params,
@@ -17,15 +18,6 @@ export async function generateMetadata({
   return { title: t("metaTitle"), description: t("metaDescription") };
 }
 
-function formatDate(iso: string, locale: Locale) {
-  const code = locale === "vi" ? "vi-VN" : locale === "zh" ? "zh-CN" : locale === "ja" ? "ja-JP" : locale === "ko" ? "ko-KR" : "en-US";
-  return new Date(iso).toLocaleDateString(code, {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-}
-
 export default async function BlogPage({
   params,
 }: Readonly<{
@@ -33,11 +25,7 @@ export default async function BlogPage({
 }>) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "blogPage" });
-  const [featured, ...rest] = blogPosts;
-  const title = (p: typeof featured) => pickLocale(locale, p.title, p.titleEn, p.titleZh, p.titleJa, p.titleKo);
-  const excerpt = (p: typeof featured) => pickLocale(locale, p.excerpt, p.excerptEn, p.excerptZh, p.excerptJa, p.excerptKo);
-  const category = (p: typeof featured) =>
-    pickLocale(locale, p.categoryVi, p.categoryEn, p.categoryZh, p.categoryJa, p.categoryKo);
+  const { featured, rest } = blogIndexOf(await getBlog(), locale);
 
   return (
     <div className="bg-white">
@@ -66,33 +54,36 @@ export default async function BlogPage({
       </div>
 
       {/* ── Featured post ── */}
+      {featured && (
       <div className="max-w-7xl mx-auto px-6 pb-16">
-        <Link href={`/blog/${featured.slug}`} className="group block">
+        <Link href={featured.href} className="group block">
           <div className="relative rounded-2xl overflow-hidden h-[420px] lg:h-[500px]">
-            <Image
-              src={featured.coverImage}
-              alt={title(featured)}
-              fill
-              sizes="100vw"
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
-              preload
-            />
+            {featured.cover && (
+              <Image
+                src={featured.cover}
+                alt={featured.title}
+                fill
+                sizes="100vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                preload
+              />
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/45 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
               <div className="flex items-center gap-3 mb-4 text-shadow-dark">
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${categoryColors[featured.category].bg} ${categoryColors[featured.category].text}`}>
-                  {category(featured)}
-                </span>
-                <span className="text-white/80 text-xs flex items-center gap-1">
-                  <Clock size={11} /> {featured.readTime} {t("minute")}
-                </span>
-                <span className="text-white/70 text-xs">{formatDate(featured.date, locale)}</span>
+                <PostCategoryBadge category={featured.category} className="px-3 py-1 text-xs" />
+                {featured.readTimeMin !== null && (
+                  <span className="text-white/80 text-xs flex items-center gap-1">
+                    <Clock size={11} /> {featured.readTimeMin} {t("minute")}
+                  </span>
+                )}
+                <span className="text-white/70 text-xs">{featured.date}</span>
               </div>
               <h2 className="text-2xl lg:text-3xl font-black text-white leading-tight mb-2 group-hover:text-brand-primary transition-colors text-shadow-dark-lg">
-                {title(featured)}
+                {featured.title}
               </h2>
               <p className="text-white/80 text-sm leading-relaxed max-w-2xl line-clamp-2 text-shadow-dark">
-                {excerpt(featured)}
+                {featured.excerpt}
               </p>
               <p className="mt-4 text-brand-primary text-sm font-semibold flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                 {t("readArticle")} <ArrowRight size={14} />
@@ -101,6 +92,7 @@ export default async function BlogPage({
           </div>
         </Link>
       </div>
+      )}
 
       {/* ── Post grid ── */}
       <div className="border-t border-zinc-100">
@@ -111,35 +103,35 @@ export default async function BlogPage({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {rest.map((post) => (
-              <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">
+              <Link key={post.uid} href={post.href} className="group block">
                 <div className="h-full flex flex-col rounded-2xl border border-zinc-100 overflow-hidden hover:border-zinc-300 hover:shadow-lg transition-all duration-300">
                   {/* Cover */}
                   <div className="relative h-48 overflow-hidden bg-zinc-100 shrink-0">
-                    <Image
-                      src={post.coverImage}
-                      alt={title(post)}
-                      fill
-                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+                    {post.cover && (
+                      <Image
+                        src={post.cover}
+                        alt={post.title}
+                        fill
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    )}
                     <div className="absolute top-3 left-3">
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-semibold ${categoryColors[post.category].bg} ${categoryColors[post.category].text}`}>
-                        {category(post)}
-                      </span>
+                      <PostCategoryBadge category={post.category} className="px-2.5 py-1 text-[11px]" />
                     </div>
                   </div>
 
                   {/* Body */}
                   <div className="flex flex-col gap-3 p-5 flex-1 bg-white">
                     <div className="flex items-center gap-3 text-xs text-zinc-400">
-                      <span className="flex items-center gap-1"><Clock size={11} /> {post.readTime} {t("minute")}</span>
-                      <span>{formatDate(post.date, locale)}</span>
+                      {post.readTimeMin !== null && <span className="flex items-center gap-1"><Clock size={11} /> {post.readTimeMin} {t("minute")}</span>}
+                      <span>{post.date}</span>
                     </div>
                     <h3 className="font-black text-zinc-900 text-base leading-snug group-hover:text-brand-primary transition-colors line-clamp-2">
-                      {title(post)}
+                      {post.title}
                     </h3>
                     <p className="text-zinc-500 text-sm leading-relaxed line-clamp-3 flex-1">
-                      {excerpt(post)}
+                      {post.excerpt}
                     </p>
                     <p className="text-brand-primary text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
                       {t("readMore")}

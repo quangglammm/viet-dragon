@@ -12,8 +12,7 @@ import {
 //
 // It is the union of what four places used to keep separately: the category `iconMap` (copied into five files),
 // `material-flashcard`'s map (which could draw 6 of the 16 icons the data uses), `material-traits`, and the Fast
-// Print page. The catalog pages, the navbar and the flashcard draw through it (components/ui/named-icon.tsx);
-// the Fast Print page switches in Phase 4 M3.
+// Print page. The catalog pages, the navbar, the flashcard and the Fast Print items draw through it (components/ui/named-icon.tsx).
 //
 // Explicit named imports (never `import * as icons`) so unused lucide icons stay out of the bundle. To offer a new
 // icon: import it here and add it to ICONS — nothing else changes.

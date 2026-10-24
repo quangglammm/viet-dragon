@@ -31,6 +31,9 @@ export const SITE_MESSAGE_LABELS: Record<string, string> = {
   consultModal: "Cửa sổ tư vấn sản phẩm",
   quoteModal: "Cửa sổ tư vấn & báo giá nhanh",
   notFound: "Trang không tìm thấy (404)",
+  materialCard: "Thẻ chất liệu (kích thước, kỹ thuật in, nút Zalo)",
+  fastPrint: "Trang In nhanh lấy liền",
+  siteMeta: "Tiêu đề & mô tả trang chủ (kết quả tìm kiếm)",
 };
 
 export const siteMessageLabel = (namespace: string): string => SITE_MESSAGE_LABELS[namespace] ?? namespace;

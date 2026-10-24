@@ -2,26 +2,25 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import type { Locale } from "@/i18n/routing";
 import type { NavMenu } from "@/lib/content/read/navigation";
 import { isSubmenuItemActive, isSubmenuGroupActive } from "@/lib/menu-active";
 import { useCurrentHash } from "@/hooks/use-current-hash";
 import { navigateToShapeHash } from "@/lib/hash-navigation";
-import { FAST_PRINT_TAGS } from "@/components/sections/fast-print-tags";
 
 export function MegaMenuDesktop({
   menu,
-  locale,
   isOpen,
   onItemClick,
 }: Readonly<{
   menu: NavMenu;
-  locale: Locale;
   isOpen: boolean;
   onItemClick?: () => void;
 }>) {
+  const t = useTranslations("nav");
+  const fastTag = t("fastPrintTag");
   const pathname = usePathname();
   const currentHash = useCurrentHash();
   const [bgImage, setBgImage] = useState<string | null>(menu.defaultImage);
@@ -121,7 +120,7 @@ export function MegaMenuDesktop({
                                   isActive ? "bg-brand-primary text-white" : "bg-amber-500 text-white"
                                 )}
                               >
-                                {FAST_PRINT_TAGS[locale]}
+                                {fastTag}
                               </span>
                             )}
                           </Link>

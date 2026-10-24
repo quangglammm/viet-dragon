@@ -14,6 +14,7 @@ import * as translations from "@/data/translations";
 import { getProductSizes } from "@/lib/product-sizes";
 import { PRINT_TECHNIQUES, getPostPressFinishing, getProductMaterials } from "@/lib/product-specs";
 import { SHAPE_ALIASES, toSlug } from "@/lib/shape-aliases";
+import { PRINT_PRODUCTS } from "./legacy/fast-print";
 import { LOCALES, type Locale } from "./localized";
 
 // Everything the seed reads, loaded once. The seed only READS the site's source modules and files — it never
@@ -73,7 +74,7 @@ export interface Sources {
   sizes: typeof getProductSizes;
   specs: { materials: typeof getProductMaterials; finishing: typeof getPostPressFinishing; techniques: Record<Locale, string[]> };
   menus: Record<ProductCategoryDef["id"], readonly MenuColumn[]>;
-  /** `PRINT_PRODUCTS` of FastPrintClient.tsx (not exported there). */
+  /** The Fast Print page's items as the site had them (scripts/seed/legacy/fast-print.ts). */
   fastPrint: readonly PrintProduct[];
   showcase: typeof showcaseImages;
   posts: readonly BlogPost[];
@@ -106,14 +107,7 @@ function loadSubgroupAliases(root: string): Record<string, string> {
   return z.record(z.string(), z.string()).parse(evaluateLiteral(literal));
 }
 
-function loadFastPrint(root: string): PrintProduct[] {
-  const file = path.join(root, "app/[locale]/products/fast-print/FastPrintClient.tsx");
-  const literal = liftLiteral(file, /const PRINT_PRODUCTS = (\[[\s\S]*?\n\]) as const;/, "PRINT_PRODUCTS");
-  // `icon: CreditCard,` is a lucide component in the source; the database stores its name.
-  return z.array(printProductSchema).parse(evaluateLiteral(literal.replace(/icon: (\w+),/g, 'icon: "$1",')));
-}
-
-const SCANNED_DIRECTORIES = ["app", "components", "data", "lib", "messages", "i18n", "hooks"];
+const SCANNED_DIRECTORIES = ["app", "components", "data", "lib", "messages", "i18n", "hooks", "scripts/seed/legacy"];
 const SCANNED_FILE = /\.(ts|tsx|json|css)$/;
 const ADMIN_PATH = /(^|\/)(admin|api\/admin)\//;
 const TEST_FILE = /\.(test|int\.test)\.ts$/;
@@ -175,7 +169,7 @@ export function loadSources(root: string = process.cwd()): Sources {
     sizes: getProductSizes,
     specs: { materials: getProductMaterials, finishing: getPostPressFinishing, techniques: PRINT_TECHNIQUES },
     menus: { marketing: MARKETING_SUBMENU_COLUMNS, office: OFFICE_SUBMENU_COLUMNS, packaging: PACKAGING_SUBMENU_COLUMNS, tet: TET_SUBMENU_COLUMNS },
-    fastPrint: loadFastPrint(root),
+    fastPrint: z.array(printProductSchema).parse(PRINT_PRODUCTS),
     showcase: showcaseImages,
     posts: blogPosts,
     messages: loadMessages(root),

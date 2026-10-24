@@ -6,33 +6,16 @@ import { ArrowRight, ImagePlus, Layers, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { pickLocale } from "@/lib/locale";
-import type { Locale } from "@/i18n/routing";
 import type { ShapesPageModel } from "@/lib/content/read/pages";
 import { findHashTarget, smoothScrollToElement } from "@/lib/hash-navigation";
 
-export function SubgroupShapesView({
-  locale,
-  model,
-}: Readonly<{
-  locale: Locale;
-  model: ShapesPageModel;
-}>) {
+export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel }>) {
   const router = useRouter();
   const t = useTranslations("subgroupShapes");
   const [highlightedShapeId, setHighlightedShapeId] = useState<string | null>(null);
 
   const { shapes } = model;
   const { title, description, cover, category } = model.context;
-
-  const bannerSubtitle = pickLocale(
-    locale,
-    "Đội ngũ kỹ thuật viên Viet Dragon hỗ trợ tính giá tối ưu, tư vấn kích thước và chất liệu trong 30 phút.",
-    "Viet Dragon specialists assist with size, material choice, and prompt quotation within 30 minutes.",
-    "Viet Dragon 专业团队协助提供最佳报价方案、材质与尺寸咨询，30分钟内极速响应。",
-    "Viet Dragon の専門スタッフが、サイズや素材の選定から最適なお見積もりまで30分以内にご案内します。",
-    "Viet Dragon 전문 기술팀이 사이즈, 소재 선택 및 최적의 견적 산출을 30분 내 신속히 안내해 드립니다."
-  );
 
   useEffect(() => {
     function detectAndHighlight() {
@@ -275,7 +258,7 @@ export function SubgroupShapesView({
                 {t("needCustomQuoteFor", { title })}
               </h3>
               <p className="text-white/60 text-sm mt-1 max-w-xl">
-                {bannerSubtitle}
+                {t("bannerSubtitle")}
               </p>
             </div>
             <Link

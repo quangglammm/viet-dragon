@@ -1,23 +1,22 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import type { Locale } from "@/i18n/routing";
 import type { NavMenu } from "@/lib/content/read/navigation";
 import { isSubmenuItemActive } from "@/lib/menu-active";
 import { useCurrentHash } from "@/hooks/use-current-hash";
 import { navigateToShapeHash } from "@/lib/hash-navigation";
 import { cn } from "@/lib/utils";
-import { FAST_PRINT_TAGS } from "@/components/sections/fast-print-tags";
 
 export function MegaMenuMobile({
   menu,
-  locale,
   onItemClick,
 }: Readonly<{
   menu: NavMenu;
-  locale: Locale;
   onItemClick?: () => void;
 }>) {
+  const t = useTranslations("nav");
+  const fastTag = t("fastPrintTag");
   const pathname = usePathname();
   const currentHash = useCurrentHash();
   const allGroups = menu.columns.flatMap((col) => col.groups);
@@ -56,7 +55,7 @@ export function MegaMenuMobile({
                     <span className="leading-snug">{item.label}</span>
                     {item.isFast && (
                       <span className="px-1.5 py-0.5 text-[9px] font-bold text-white bg-[#f5a623] rounded leading-none shrink-0 ml-1.5">
-                        {FAST_PRINT_TAGS[locale]}
+                        {fastTag}
                       </span>
                     )}
                   </Link>

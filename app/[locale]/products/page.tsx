@@ -4,11 +4,11 @@ import { ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { pickLocale } from "@/lib/locale";
 import { NamedIcon } from "@/components/ui/named-icon";
+import { getShowcase } from "@/lib/content/read/load";
+import { showcaseCardsOf } from "@/lib/content/read/merchandising";
 import { getNavigation } from "@/lib/content/read/site";
-import { showcaseImages } from "@/data/showcase";
-import { SHOWCASE_LABELS } from "@/data/translations";
+import { ShowcaseGallery } from "@/components/sections/ShowcaseGallery";
 
 export async function generateMetadata({
   params,
@@ -28,9 +28,7 @@ export default async function ProductsPage({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "productsPage" });
   const { categories } = await getNavigation(locale);
-  const [s1, s2, s3, s4, s5] = showcaseImages;
-  const showcaseLabel = (s: (typeof showcaseImages)[number]) =>
-    pickLocale(locale, s.label, s.labelEn, SHOWCASE_LABELS[s.seed]?.zh, SHOWCASE_LABELS[s.seed]?.ja, SHOWCASE_LABELS[s.seed]?.ko);
+  const showcase = showcaseCardsOf(await getShowcase(), locale);
 
   return (
     <div className="bg-white">
@@ -59,94 +57,7 @@ export default async function ProductsPage({
       </div>
 
       {/* ── Editorial showcase gallery ── */}
-      <div className="max-w-7xl mx-auto px-6 pb-16">
-
-        {/* Mobile grid (< lg): simple 2-column with fixed card heights */}
-        <div className="lg:hidden grid grid-cols-2 gap-3">
-          {showcaseImages.map((s, i) => (
-            <div
-              key={s.seed}
-              className={`relative rounded-2xl overflow-hidden group ${i === 0 ? "col-span-2 h-52" : "h-40"}`}
-            >
-              <Image
-                src={s.src}
-                alt={showcaseLabel(s)}
-                fill
-                sizes="50vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-3 left-3">
-                <p className="text-white font-black text-sm">{showcaseLabel(s)}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Desktop editorial layout (lg+) */}
-        <div className="hidden lg:block">
-          {/* Row 1: tall left + 2 squares right */}
-          <div className="grid grid-cols-3 gap-3 h-[480px]">
-            {/* Large portrait */}
-            <div className="col-span-1 relative rounded-2xl overflow-hidden group">
-              <Image
-                src={s1.src}
-                alt={showcaseLabel(s1)}
-                fill
-                sizes="33vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-5 left-5">
-                <p className="text-white font-black text-base">{showcaseLabel(s1)}</p>
-              </div>
-            </div>
-
-            {/* Right: 2 squares stacked */}
-            <div className="col-span-2 grid grid-rows-2 gap-3">
-              {[s2, s3].map((s) => (
-                <div key={s.seed} className="relative rounded-2xl overflow-hidden group">
-                  <Image
-                    src={s.src}
-                    alt={showcaseLabel(s)}
-                    fill
-                    sizes="66vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/10 to-transparent" />
-                  <div className="absolute bottom-4 left-5">
-                    <p className="text-white font-black text-sm">{showcaseLabel(s)}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Row 2: 2 wide side-by-side */}
-          <div className="grid grid-cols-2 gap-3 mt-3 h-[260px]">
-            {[s4, s5].map((s) => (
-              <div key={s.seed} className="relative rounded-2xl overflow-hidden group">
-                <Image
-                  src={s.src}
-                  alt={showcaseLabel(s)}
-                  fill
-                  sizes="50vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-5">
-                  <p className="text-white font-black text-sm">{showcaseLabel(s)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Gallery caption */}
-        <p className="text-center text-xs text-zinc-400 mt-4">
-          {t("galleryCaption")}
-        </p>
-      </div>
+      <ShowcaseGallery cards={showcase} caption={t("galleryCaption")} />
 
       {/* ── Category grid ── */}
       <div className="border-t border-zinc-100">
@@ -219,15 +130,7 @@ export default async function ProductsPage({
                           {t("viewDetail")}
                         </Link>
                         <span className="text-xs text-zinc-400 font-medium">
-                          {locale === "vi"
-                            ? `${subgroups.length} sản phẩm`
-                            : locale === "zh"
-                            ? `${subgroups.length} 款产品`
-                            : locale === "ja"
-                            ? `${subgroups.length} 製品`
-                            : locale === "ko"
-                            ? `${subgroups.length} 개 제품`
-                            : `${subgroups.length} products`}
+                          {t("productCount", { count: subgroups.length })}
                         </span>
                       </div>
                     </div>

@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import { Phone, Mail, MapPin } from "lucide-react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import type { Locale } from "@/i18n/routing";
 import { IconBadge } from "@/components/ui/icon-badge";
 import { useSiteData } from "@/components/providers/site-data-provider";
 import { cn } from "@/lib/utils";
@@ -49,19 +48,10 @@ const socialLinks = [
   { icon: YoutubeIcon, href: "https://youtube.com", name: "YouTube" },
 ];
 
-const ALL_PRODUCTS_LABEL: Record<Locale, string> = {
-  vi: "Tất cả sản phẩm",
-  en: "All Products",
-  zh: "全部产品",
-  ja: "全製品一覧",
-  ko: "전체 제품",
-};
-
 export default function Footer() {
   const t = useTranslations("footer");
   const tNav = useTranslations("nav");
   const tContact = useTranslations("contact");
-  const locale = useLocale() as Locale;
   const { categories } = useSiteData();
   const pathname = usePathname();
 
@@ -123,7 +113,7 @@ export default function Footer() {
                       : "text-brand-dark/70 hover:text-brand-primary hover:translate-x-1 font-medium"
                   )}
                 >
-                  {ALL_PRODUCTS_LABEL[locale] || "All Products"}
+                  {t("allProducts")}
                 </Link>
               </li>
               {categories.map((cat) => {

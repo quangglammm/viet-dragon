@@ -24,7 +24,10 @@
     },
     "quote": "お見積り依頼",
     "openMenu": "メニューを開く",
-    "closeMenu": "メニューを閉じる"
+    "closeMenu": "メニューを閉じる",
+    "fastPrintTag": "特急",
+    "chooseLanguage": "言語を選択",
+    "toggleSubmenu": "サブカテゴリを開閉"
   },
   "hero": {
     "slides": [
@@ -280,7 +283,8 @@
       "faq": "よくある質問"
     },
     "copyright": "© {year} Viet Dragon. 無断転載を禁じます。",
-    "premium": "プレミアム印刷サービス"
+    "premium": "プレミアム印刷サービス",
+    "allProducts": "全製品一覧"
   },
   "productsPage": {
     "metaTitle": "取扱製品一覧 | Viet Dragon – プロフェッショナル印刷",
@@ -297,7 +301,8 @@
     "ctaTitleLine1": "お探しの製品が",
     "ctaTitleHighlight": "見つかりませんか？",
     "ctaSubtitle": "専任スタッフが無料でお見積り・デザイン相談に対応（30分以内にご案内）。",
-    "ctaButton": "お問い合わせ"
+    "ctaButton": "お問い合わせ",
+    "productCount": "{count} 製品"
   },
   "categoryPage": {
     "breadcrumbHome": "ホーム",
@@ -383,7 +388,8 @@
     "freeConsultation": "無料相談",
     "needCustomQuoteFor": "{title} の特注印刷見積もりが必要ですか？",
     "getQuoteNow": "今すぐ見積もり依頼",
-    "allShapesOf": "{title} のすべての仕様を見る"
+    "allShapesOf": "{title} のすべての仕様を見る",
+    "bannerSubtitle": "Viet Dragon の専門スタッフが、サイズや素材の選定から最適なお見積もりまで30分以内にご案内します。"
   },
   "consultModal": {
     "title": "この製品について詳しく相談する",
@@ -431,5 +437,78 @@
     "description": "お探しのページは存在しないか、移動した可能性があります。ホームに戻るか、Viet Dragon の印刷商品をご覧ください。",
     "homeCta": "ホームに戻る",
     "productsCta": "商品を見る"
+  },
+  "materialCard": {
+    "formSizes": "一般的なサイズ:",
+    "formPrintTech": "印刷技術:",
+    "formMaterial": "素材:",
+    "formFinishing": "印刷後加工・仕上がり:",
+    "zalo": "Zalo 相談",
+    "photoMain": "メイン写真",
+    "photoDetail": "詳細写真",
+    "scrollMore": "スクロールして続きを見る",
+    "previousPhoto": "前の写真",
+    "nextPhoto": "次の写真",
+    "sizeLabel": "{tier} ({note})",
+    "tier": {
+      "large": "大",
+      "medium": "中",
+      "small": "小"
+    }
+  },
+  "fastPrint": {
+    "heroAlt": "Viet Dragon 特急印刷",
+    "breadcrumbHome": "ホーム",
+    "breadcrumbProducts": "製品一覧",
+    "breadcrumbCurrent": "特急印刷",
+    "badge": "当日仕上げデジタル特急印刷",
+    "title1": "特急スピード印刷 —",
+    "titleHighlight": "即日仕上がり",
+    "title2": "2時間で納品",
+    "subtitle": "名刺、チラシ、クーポン、ラベル — 小ロット当日仕上げ。最小発注数なし、100%正確な色校正、ホーチミン市・ドンナイ・ブンタウ・ビンズオン省へ直送。",
+    "btnZalo": "Zaloでデータ送信",
+    "prodsEyebrow": "特急印刷対応製品",
+    "prodsTitle": "特急印刷 — 2〜6時間でお届け",
+    "prodsDesc": "全製品を高精度デジタル印刷機で製造。忠実な色再現と美しい仕上がりをお約束します。",
+    "orderNow": "今すぐ注文",
+    "stepsEyebrow": "特急印刷の流れ",
+    "stepsTitle": "簡単3ステップ — 2時間でお届け",
+    "ctaEyebrow": "今すぐご注文・ご相談",
+    "ctaTitle1": "お急ぎですか？",
+    "ctaTitleHighlight": "2時間仕上げでお応えします。",
+    "ctaDesc": "デザインデータをZaloで送信 — 5分以内にお見積りをご案内、ホーチミン市・ドンナイ・ブンタウ・ビンズオン省へ特急配送。",
+    "ctaBtnZalo": "今すぐZaloでファイル送信",
+    "workshopHours": "営業時間 月〜土：8:00〜12:00 & 13:30〜17:30。Zaloオンライン相談は24時間受付中。",
+    "allProducts": "全製品一覧を見る",
+    "getQuote": "お見積り依頼",
+    "price": "{amount, number}₫/{unit}〜",
+    "steps": [
+      {
+        "title": "デザインデータ送付",
+        "desc": "AI、PDF、PSDファイルをZaloまたはメールで送信。15分以内にデータ確認・受付完了します。"
+      },
+      {
+        "title": "特急印刷・製本加工",
+        "desc": "最新の高速デジタル印刷機が正確なCMYKカラーを再現し、PP加工・型抜きを迅速に行います。"
+      },
+      {
+        "title": "柔軟な納品・受取",
+        "desc": "店頭受取またはホーチミン市・ドンナイ・ブンタウ・ビンズオン省への特急バイク配送（最短2〜4時間）。"
+      }
+    ],
+    "features": [
+      "2〜4時間でお届け",
+      "100%高精度カラー",
+      "最小ロット制限なし",
+      "当日仕上げ即日印刷",
+      "15分以内の迅速確認",
+      "市内エリア無料配送"
+    ],
+    "metaTitle": "特急スピード印刷 即日仕上げ | Viet Dragon – ベトナム高品質印刷",
+    "metaDescription": "当日仕上げのデジタル特急印刷 — 名刺、チラシ、クーポン、ラベルシール。ホーチミン市・ドンナイ・ブンタウ・ビンズオン省へ2〜6時間でお届け、正確な色再現。"
+  },
+  "siteMeta": {
+    "title": "Viet Dragon – ベトナム・プロフェッショナル高品質印刷",
+    "description": "Viet Dragon – ホーチミン市・ドンナイ・ブンタウ・ビンズオン省のプロフェッショナル印刷サービス。名刺、カタログ、化粧箱、シール印刷。無料相談・デザイン・サンプル校正・無料配送。"
   }
 }

@@ -24,7 +24,10 @@
     },
     "quote": "Get a Quote",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "fastPrintTag": "fast",
+    "chooseLanguage": "Choose language",
+    "toggleSubmenu": "Toggle subcategories"
   },
   "hero": {
     "slides": [
@@ -280,7 +283,8 @@
       "faq": "FAQ"
     },
     "copyright": "© {year} Viet Dragon. All rights reserved.",
-    "premium": "Premium Printing Services"
+    "premium": "Premium Printing Services",
+    "allProducts": "All Products"
   },
   "productsPage": {
     "metaTitle": "Products | Viet Dragon – Professional Printing",
@@ -297,7 +301,8 @@
     "ctaTitleLine1": "Can't find the",
     "ctaTitleHighlight": "right product?",
     "ctaSubtitle": "Get in touch — free consultation & design, quoted within 30 minutes.",
-    "ctaButton": "Contact us"
+    "ctaButton": "Contact us",
+    "productCount": "{count} products"
   },
   "categoryPage": {
     "breadcrumbHome": "Home",
@@ -383,7 +388,8 @@
     "freeConsultation": "Free Consultation",
     "needCustomQuoteFor": "Need a custom quote for {title}?",
     "getQuoteNow": "Get a Quote Now",
-    "allShapesOf": "All shapes of {title}"
+    "allShapesOf": "All shapes of {title}",
+    "bannerSubtitle": "Viet Dragon specialists assist with size, material choice, and prompt quotation within 30 minutes."
   },
   "consultModal": {
     "title": "Request detailed consultation on this product",
@@ -431,5 +437,78 @@
     "description": "The page you are looking for does not exist or has moved. Head back home or browse Viet Dragon’s printing products.",
     "homeCta": "Back to home",
     "productsCta": "Browse products"
+  },
+  "materialCard": {
+    "formSizes": "Popular sizes:",
+    "formPrintTech": "Printing technique:",
+    "formMaterial": "Material:",
+    "formFinishing": "Post-press finishing:",
+    "zalo": "Zalo Consultation",
+    "photoMain": "Main photo",
+    "photoDetail": "Detail photo",
+    "scrollMore": "Scroll for more",
+    "previousPhoto": "Previous photo",
+    "nextPhoto": "Next photo",
+    "sizeLabel": "{tier} ({note})",
+    "tier": {
+      "large": "Large",
+      "medium": "Medium",
+      "small": "Small"
+    }
+  },
+  "fastPrint": {
+    "heroAlt": "Viet Dragon fast print",
+    "breadcrumbHome": "Home",
+    "breadcrumbProducts": "Products",
+    "breadcrumbCurrent": "Fast Print",
+    "badge": "Same-day digital printing",
+    "title1": "Fast print —",
+    "titleHighlight": "ready",
+    "title2": "in 2 hours",
+    "subtitle": "Business cards, flyers, vouchers, labels — small-run express printing with no minimum order, 100% color accuracy, delivered across HCM City, Dong Nai, Vung Tau & Binh Duong.",
+    "btnZalo": "Send file via Zalo",
+    "prodsEyebrow": "Products available for express print",
+    "prodsTitle": "Express print — delivered in 2–6 hours",
+    "prodsDesc": "All products printed on high-speed digital presses with guaranteed color accuracy and quality finishing.",
+    "orderNow": "Order now",
+    "stepsEyebrow": "How fast print works",
+    "stepsTitle": "3 steps — delivered in 2 hours",
+    "ctaEyebrow": "Start your order now",
+    "ctaTitle1": "Need it fast?",
+    "ctaTitleHighlight": "We deliver in 2 hours.",
+    "ctaDesc": "Send your design file via Zalo — get a quote in 5 minutes and confirm your order for delivery across HCM City, Dong Nai, Vung Tau & Binh Duong.",
+    "ctaBtnZalo": "Send file via Zalo now",
+    "workshopHours": "Workshop hours Mon–Sat: 8:00–12:00 & 13:30–17:30. Online consultation via Zalo 24/7.",
+    "allProducts": "All products",
+    "getQuote": "Get a quote",
+    "price": "From {amount, number}đ/{unit}",
+    "steps": [
+      {
+        "title": "Send your design file",
+        "desc": "Send AI, PDF, or PSD via Zalo/email. We review and confirm within 15 minutes."
+      },
+      {
+        "title": "Fast print & finishing",
+        "desc": "High-speed digital press delivers accurate CMYK colors with lamination and finishing."
+      },
+      {
+        "title": "Flexible delivery",
+        "desc": "Pick up at our shop or get express delivery in HCM City, Dong Nai, Vung Tau & Binh Duong in 2–4 hours."
+      }
+    ],
+    "features": [
+      "Delivered in 2–4 hours",
+      "100% color accuracy",
+      "No minimum quantity",
+      "Same-day printing",
+      "Confirmed in 15 minutes",
+      "Free city delivery"
+    ],
+    "metaTitle": "Fast Print Express | Viet Dragon – Professional Printing",
+    "metaDescription": "Same-day express printing — business cards, flyers, vouchers, labels — delivered across HCM City, Dong Nai, Vung Tau & Binh Duong in 2–6 hours."
+  },
+  "siteMeta": {
+    "title": "Viet Dragon – Professional Printing Services",
+    "description": "Viet Dragon – professional printing services in Ho Chi Minh City, Dong Nai, Vung Tau & Binh Duong. Business cards, catalogues, paper boxes, decals. Free consultation, design, and sample printing."
   }
 }

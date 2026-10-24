@@ -30,7 +30,7 @@ const json = (value: unknown) => JSON.stringify(value);
 const asRecord = (value: unknown) => value as Record<string, unknown>;
 
 describe("publishing every seeded entity unchanged", () => {
-  it("stores each of the 198 documents exactly as composed, one new revision and one version each", async () => {
+  it("stores each of the 201 documents exactly as composed, one new revision and one version each", async () => {
     const refs = await listEntities(db());
     expect(refs).toHaveLength(seeded.outcome.revisions);
 

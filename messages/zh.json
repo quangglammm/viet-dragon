@@ -24,7 +24,10 @@
     },
     "quote": "获取报价",
     "openMenu": "打开菜单",
-    "closeMenu": "关闭菜单"
+    "closeMenu": "关闭菜单",
+    "fastPrintTag": "快印",
+    "chooseLanguage": "选择语言",
+    "toggleSubmenu": "展开子分类"
   },
   "hero": {
     "slides": [
@@ -280,7 +283,8 @@
       "faq": "常见问题"
     },
     "copyright": "© {year} Viet Dragon. 版权所有。",
-    "premium": "高端品质印刷服务"
+    "premium": "高端品质印刷服务",
+    "allProducts": "全部产品"
   },
   "productsPage": {
     "metaTitle": "产品中心 | Viet Dragon – 专业印刷服务",
@@ -297,7 +301,8 @@
     "ctaTitleLine1": "没有找到您需要的",
     "ctaTitleHighlight": "产品？",
     "ctaSubtitle": "立即联系我们 —— 免费咨询与设计，30分钟内极速报价。",
-    "ctaButton": "联系我们"
+    "ctaButton": "联系我们",
+    "productCount": "{count} 款产品"
   },
   "categoryPage": {
     "breadcrumbHome": "首页",
@@ -383,7 +388,8 @@
     "freeConsultation": "免费咨询",
     "needCustomQuoteFor": "需要 {title} 的定制印刷报价？",
     "getQuoteNow": "立即获取报价",
-    "allShapesOf": "查看 {title} 的全部款式"
+    "allShapesOf": "查看 {title} 的全部款式",
+    "bannerSubtitle": "Viet Dragon 专业团队协助提供最佳报价方案、材质与尺寸咨询，30分钟内极速响应。"
   },
   "consultModal": {
     "title": "咨询此产品的详细定制方案",
@@ -431,5 +437,78 @@
     "description": "您访问的页面不存在或已被移动。请返回首页，或浏览 Viet Dragon 的印刷产品。",
     "homeCta": "返回首页",
     "productsCta": "浏览产品"
+  },
+  "materialCard": {
+    "formSizes": "常用尺寸:",
+    "formPrintTech": "印刷工艺:",
+    "formMaterial": "材质:",
+    "formFinishing": "印后加工:",
+    "zalo": "Zalo 咨询",
+    "photoMain": "主图",
+    "photoDetail": "细节图",
+    "scrollMore": "向下滚动查看更多",
+    "previousPhoto": "上一张",
+    "nextPhoto": "下一张",
+    "sizeLabel": "{tier} ({note})",
+    "tier": {
+      "large": "大号",
+      "medium": "中号",
+      "small": "小号"
+    }
+  },
+  "fastPrint": {
+    "heroAlt": "Viet Dragon 极速快印",
+    "breadcrumbHome": "首页",
+    "breadcrumbProducts": "产品",
+    "breadcrumbCurrent": "极速快印",
+    "badge": "当天数码快印取件",
+    "title1": "极速快印 —",
+    "titleHighlight": "极速交付",
+    "title2": "2小时内出货",
+    "subtitle": "名片、传单、优惠券、标签 — 小批量当天快印取件。无起订量门槛，100%色彩精准，胡志明市、同奈、头顿及平阳省送货上门。",
+    "btnZalo": "通过 Zalo 发送文件",
+    "prodsEyebrow": "支持加急印刷的产品",
+    "prodsTitle": "极速快印 — 2至6小时送达",
+    "prodsDesc": "所有产品均由高速数码印刷机制造，保证色彩逼真还原与高品质精工成型。",
+    "orderNow": "立即订购",
+    "stepsEyebrow": "加急印刷流程",
+    "stepsTitle": "简易3步 — 2小时内取件",
+    "ctaEyebrow": "立即开启加急印刷",
+    "ctaTitle1": "时间紧迫？",
+    "ctaTitleHighlight": "我们2小时内为您搞定。",
+    "ctaDesc": "通过 Zalo 发送设计文件 — 5分钟内获取报价并确认订单，快速配送至胡志明市、同奈、头顿及平阳省全境。",
+    "ctaBtnZalo": "立即通过 Zalo 发送文件",
+    "workshopHours": "工厂工作时间 周一至周六：8:00–12:00 & 13:30–17:30。Zalo 在线咨询 24/7 全天候开放。",
+    "allProducts": "查看全部产品",
+    "getQuote": "获取即时报价",
+    "price": "低至 {amount, number}₫/{unit}",
+    "steps": [
+      {
+        "title": "发送设计文件",
+        "desc": "通过 Zalo 或邮箱发送 AI、PDF、PSD。我们将在 15 分钟内审核并确认文件。"
+      },
+      {
+        "title": "极速印刷与成型",
+        "desc": "高速工业数码印刷机精准还原色彩，专业覆膜及模切成型。"
+      },
+      {
+        "title": "灵活配送方式",
+        "desc": "工厂自提或专人送货上门（胡志明市、同奈、头顿及平阳省），最快 2–4 小时送达。"
+      }
+    ],
+    "features": [
+      "2–4小时送达",
+      "100%精准色彩",
+      "无起订量门槛",
+      "当天印刷出货",
+      "15分钟内极速确认",
+      "市区订单免费配送"
+    ],
+    "metaTitle": "极速快印 现印现取 | Viet Dragon – 越南专业印刷",
+    "metaDescription": "当天数码极速快印 —— 商务名片、宣传单页、优惠券、不干胶标签，胡志明市、同奈、头顿及平阳省2–6小时闪电送达，100%精准色彩。"
+  },
+  "siteMeta": {
+    "title": "Viet Dragon – 越南高端专业印刷服务商",
+    "description": "Viet Dragon – 胡志明市、同奈、头顿与平阳省专业高品质印刷服务。商务名片、企业画册、精品礼盒、不干胶贴纸。免费咨询、设计、打样及配送。"
   }
 }

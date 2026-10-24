@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { isIconName } from "@/lib/icons";
 import type { ProductRecord } from "@/scripts/seed/context";
@@ -19,6 +20,9 @@ import { resolveUrl } from "./urls";
 // Equivalence: what the public site's view of the catalog says, read from a database seeded from the old static files, against what
 // those files said — field by field, language by language. Where the file and the page disagree (sizes and specs that vary with the
 // name, per-product names in zh/ja/ko…) the seed picked one answer and the owner decides (docs/data-model.md §8); those are measured.
+
+type CardCopy = { tier: Record<"large" | "medium" | "small", string>; sizeLabel: string };
+const messages = Object.fromEntries(LOCALES.map((locale) => [locale, JSON.parse(readFileSync(`messages/${locale}.json`, "utf8")) as { materialCard: CardCopy }])) as Record<(typeof LOCALES)[number], { materialCard: CardCopy }>;
 
 let seeded: SeededDatabase;
 let catalog: Catalog;
@@ -190,7 +194,14 @@ describe("sizes and spec lists", () => {
   /** The view's sizes and spec lists in the shape the old code returned them, so they can be compared with it and with the database. */
   function viewReadback(): SizeSpecReadback {
     return {
-      sizes: (record, shape, locale) => sizesFor(viewOf(record), shape?.uid ?? null).map((size) => sizeOf(size, locale)),
+      sizes: (record, shape, locale) =>
+        sizesFor(viewOf(record), shape?.uid ?? null).map((size) => {
+          // What the card shows: the tier named by the language's UI copy, the note after it in the copy's brackets.
+          const { id, note, dims } = sizeOf(size, locale);
+          const copy = messages[locale].materialCard;
+          const tier = copy.tier[id];
+          return { id, label: note ? copy.sizeLabel.replace("{tier}", tier).replace("{note}", note) : tier, dims };
+        }),
       specs: (record, shape, kind, locale) => specsFor(viewOf(record), shape?.uid ?? null, kind).flatMap((spec) => (spec.label[locale] ? [spec.label[locale]] : [])),
     };
   }

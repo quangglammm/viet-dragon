@@ -22,6 +22,8 @@ const EXPLAINED: readonly { url: RegExp; why: string }[] = [
   { url: /^\/(ja|ko|zh)\/products\/marketing\/vong-tay-su-kien$/, why: "product title precedence: the old page preferred the shared per-id table over the product's own title (docs/data-model.md §8, «title-precedence-differs»)" },
   { url: /^\/(ja|ko|zh)\/products\/tet\/nhan-dan$/, why: "previous/next product labels: the Tet product's own title, where the old page used a title shared by id with another category" },
   { url: /^\/(ja|ko|zh)\/products\/tet\/to-roi\/bang-khen$/, why: "«best for» lines: the AI-suggested translations of the seed's revision 2 replace the old texts (needs a native reader)" },
+  { url: /^(\/(en|ja|ko|zh))?\/?$|^(\/(en|ja|ko|zh))?\/blog$/, why: "posts are listed newest first: the old file put 28 May before 1 June, so the home preview and the blog grid swap those two (Phase 4 M3, decision 1)" },
+  { url: /^(\/(en|ja|ko|zh))?\/blog\/(5-loi-thuong-gap-khi-chuan-bi-file-in|chon-chat-lieu-in-phu-hop|bao-bi-fnb-local-brand|viet-dragon-mo-rong-binh-duong)$/, why: "previous / next post: the same newest-first order" },
 ];
 
 function option(name: string, fallback: string): string {

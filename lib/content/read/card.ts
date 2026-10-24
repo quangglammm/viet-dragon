@@ -7,20 +7,11 @@ import { anchorOf, type Anchor } from "./urls";
 // Everything one material flashcard draws, for one language: picked texts, trait icon names, the standard sizes, and the technique /
 // material / finishing lists of its product (or shape). Pure; the flashcard component only lays it out.
 
-/** The tier names, by language. They are interface words (the notes after them are the editor's), so they live in code. */
-const TIER_LABEL: Record<LocaleCode, readonly [string, string, string]> = {
-  vi: ["Lớn", "Vừa", "Nhỏ"],
-  en: ["Large", "Medium", "Small"],
-  zh: ["大号", "中号", "小号"],
-  ja: ["大", "中", "小"],
-  ko: ["대", "중", "소"],
-};
-
-const TIERS: readonly SizeView["tier"][] = ["large", "medium", "small"];
-
 export interface CardSize {
+  /** The tier; the card names it in the page's language (`materialCard.tier.*`) and puts `note` after it in brackets. */
   id: SizeView["tier"];
-  label: string;
+  /** The editor's note after the tier name, in the page's language; null when the language has none. */
+  note: string | null;
   dims: string;
 }
 
@@ -53,10 +44,8 @@ export interface CardView {
 const centimetres = (millimetres: number): string => (millimetres / 10).toString();
 
 export function sizeOf(size: SizeView, locale: LocaleCode): CardSize {
-  const base = TIER_LABEL[locale][TIERS.indexOf(size.tier)];
-  const note = size.note[locale];
   const dims = size.text ?? `${centimetres(size.w ?? 0)} x ${centimetres(size.h ?? 0)}${size.d ? ` x ${centimetres(size.d)}` : ""} cm`;
-  return { id: size.tier, label: note ? `${base} (${note})` : base, dims };
+  return { id: size.tier, note: size.note[locale] || null, dims };
 }
 
 export function cardOf(catalog: Catalog, locale: LocaleCode, product: ProductView, option: OptionView, shape: string | null, consultName: string): CardView {
@@ -77,6 +66,3 @@ export function cardOf(catalog: Catalog, locale: LocaleCode, product: ProductVie
     consultName,
   };
 }
-
-/** The tier names (a test keeps them equal to the seed's, which the stored size notes were derived against). */
-export const TIER_LABELS = TIER_LABEL;

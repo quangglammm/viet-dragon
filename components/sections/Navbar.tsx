@@ -36,6 +36,7 @@ function FloatingLocaleSwitcher({
   variant?: "floating" | "topbar";
   className?: string;
 }>) {
+  const t = useTranslations("nav");
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -77,7 +78,7 @@ function FloatingLocaleSwitcher({
         )}
         aria-expanded={open}
         aria-haspopup="listbox"
-        aria-label="Chọn ngôn ngữ"
+        aria-label={t("chooseLanguage")}
         title={currentLang.label}
       >
         <span className={cn("leading-none select-none", isTopbar ? "text-sm" : "text-base")}>
@@ -308,7 +309,6 @@ export default function Navbar() {
                     >
                       <MegaMenuDesktop
                         menu={cat.menu}
-                        locale={locale}
                         isOpen={activeDesktopCat === cat.id}
                         onItemClick={() => setActiveDesktopCat(null)}
                       />
@@ -391,7 +391,7 @@ export default function Navbar() {
                   </Link>
                 <button
                   onClick={() => setOpenMobileCat((current) => current === cat.id ? null : cat.id)}
-                  aria-label="Toggle subcategories"
+                  aria-label={t("toggleSubmenu")}
                   className="p-4 -mr-2 text-zinc-600 hover:text-brand-primary transition-colors"
                 >
                   <ChevronDown
@@ -404,7 +404,7 @@ export default function Navbar() {
               {/* Mobile Accordion Subcategories */}
               {openMobileCat === cat.id && (
                 cat.menu.columns.length > 0 ? (
-                  <MegaMenuMobile menu={cat.menu} locale={locale} onItemClick={closeAllMenu} />
+                  <MegaMenuMobile menu={cat.menu} onItemClick={closeAllMenu} />
                 ) : (
                   <div className="pl-6 pr-4 py-2 flex flex-col gap-2 border-l-2 border-brand-primary/20 ml-4 my-1">
                     <ul className="flex flex-col gap-1">

@@ -24,7 +24,10 @@
     },
     "quote": "견적 요청",
     "openMenu": "메뉴 열기",
-    "closeMenu": "메뉴 닫기"
+    "closeMenu": "메뉴 닫기",
+    "fastPrintTag": "당일인쇄",
+    "chooseLanguage": "언어 선택",
+    "toggleSubmenu": "하위 카테고리 열기/닫기"
   },
   "hero": {
     "slides": [
@@ -280,7 +283,8 @@
       "faq": "자주 묻는 질문"
     },
     "copyright": "© {year} Viet Dragon. 모든 권리 보유.",
-    "premium": "프리미엄 인쇄 서비스"
+    "premium": "프리미엄 인쇄 서비스",
+    "allProducts": "전체 제품"
   },
   "productsPage": {
     "metaTitle": "전체 제품 목록 | Viet Dragon – 전문 인쇄 서비스",
@@ -297,7 +301,8 @@
     "ctaTitleLine1": "찾으시는 제품이",
     "ctaTitleHighlight": "없으신가요?",
     "ctaSubtitle": "지금 문의하세요 —— 무료 상담 및 디자인 지원, 30분 내 빠른 견적 안내.",
-    "ctaButton": "문의하기"
+    "ctaButton": "문의하기",
+    "productCount": "{count} 개 제품"
   },
   "categoryPage": {
     "breadcrumbHome": "홈",
@@ -383,7 +388,8 @@
     "freeConsultation": "무료 상담",
     "needCustomQuoteFor": "{title} 맞춤 인쇄 견적이 필요하신가요?",
     "getQuoteNow": "지금 견적 받기",
-    "allShapesOf": "{title}의 모든 형태 보기"
+    "allShapesOf": "{title}의 모든 형태 보기",
+    "bannerSubtitle": "Viet Dragon 전문 기술팀이 사이즈, 소재 선택 및 최적의 견적 산출을 30분 내 신속히 안내해 드립니다."
   },
   "consultModal": {
     "title": "이 제품에 대해 상세 상담 받기",
@@ -431,5 +437,78 @@
     "description": "찾으시는 페이지가 존재하지 않거나 이동되었습니다. 홈으로 돌아가거나 Viet Dragon의 인쇄 제품을 둘러보세요.",
     "homeCta": "홈으로 돌아가기",
     "productsCta": "제품 보기"
+  },
+  "materialCard": {
+    "formSizes": "자주 쓰이는 규격:",
+    "formPrintTech": "인쇄 기법:",
+    "formMaterial": "재질:",
+    "formFinishing": "인쇄 후가공 / 마감:",
+    "zalo": "Zalo 상담",
+    "photoMain": "대표 사진",
+    "photoDetail": "상세 사진",
+    "scrollMore": "아래로 스크롤하여 더보기",
+    "previousPhoto": "이전 사진",
+    "nextPhoto": "다음 사진",
+    "sizeLabel": "{tier} ({note})",
+    "tier": {
+      "large": "대",
+      "medium": "중",
+      "small": "소"
+    }
+  },
+  "fastPrint": {
+    "heroAlt": "Viet Dragon 당일 특급 인쇄",
+    "breadcrumbHome": "홈",
+    "breadcrumbProducts": "제품 목록",
+    "breadcrumbCurrent": "당일 특급 인쇄",
+    "badge": "당일 완성 디지털 초고속 인쇄",
+    "title1": "초고속 인쇄 —",
+    "titleHighlight": "즉시 출고",
+    "title2": "2시간 완성",
+    "subtitle": "명함, 전단지, 쿠폰, 라벨 스티커 — 소량 당일 즉시 출고. 최소 주문 수량 제한 없음, 100% 정밀 색상 보장, 호치민, 동나이, 붕따우 및 빈증 전역 직배송.",
+    "btnZalo": "Zalo로 파일 전송",
+    "prodsEyebrow": "당일 특급 인쇄 지원 품목",
+    "prodsTitle": "즉시 출고 — 2~6시간 내 배송",
+    "prodsDesc": "모든 제품은 고속 디지털 인쇄기로 제작되며, 정확한 색상 구현과 깔끔한 마감을 보장합니다.",
+    "orderNow": "지금 주문하기",
+    "stepsEyebrow": "빠른 인쇄 진행 절차",
+    "stepsTitle": "간단 3단계 — 2시간 내 수령",
+    "ctaEyebrow": "지금 바로 주문하기",
+    "ctaTitle1": "급하게 필요하신가요?",
+    "ctaTitleHighlight": "2시간 이내에 해결해 드립니다.",
+    "ctaDesc": "디자인 파일을 Zalo로 전송하세요 — 5분 내 견적 안내 및 주문 확인, 호치민, 동나이, 붕따우와 빈증 전역으로 배송됩니다.",
+    "ctaBtnZalo": "지금 Zalo로 파일 전송",
+    "workshopHours": "제작소 운영시간 월~토: 8:00~12:00 & 13:30~17:30. Zalo 실시간 온라인 상담 24시간 상시 가능.",
+    "allProducts": "전체 제품 보기",
+    "getQuote": "견적 요청하기",
+    "price": "최저 {amount, number}₫/{unit}",
+    "steps": [
+      {
+        "title": "디자인 파일 접수",
+        "desc": "AI, PDF, PSD 파일을 Zalo 또는 이메일로 접수. 15분 이내에 파일 검토 후 확정해 드립니다."
+      },
+      {
+        "title": "초고속 인쇄 및 후가공",
+        "desc": "고속 디지털 프레스로 정확한 CMYK 색상을 구현하고 코팅 및 재단 가공을 완성합니다."
+      },
+      {
+        "title": "맞춤형 수령 및 배송",
+        "desc": "매장 직접 수령 또는 호치민, 동나이, 붕따우 및 빈증 전역 퀵 배송, 최단 2~4시간 내 배송."
+      }
+    ],
+    "features": [
+      "2~4시간 신속 배송",
+      "100% 정밀 색상",
+      "최소 주문 수량 없음",
+      "당일 인쇄 즉시 출고",
+      "15분 이내 빠른 확인",
+      "시내 무료 직배송"
+    ],
+    "metaTitle": "당일 특급 인쇄 즉시 출고 | Viet Dragon – 베트남 전문 인쇄",
+    "metaDescription": "당일 출고 초고속 디지털 인쇄 — 명함, 전단지, 쿠폰, 라벨 스티커. 호치민, 동나이, 붕따우 및 빈증 전역 2~6시간 내 신속 배송, 100% 표준 색상 보장."
+  },
+  "siteMeta": {
+    "title": "Viet Dragon – 베트남 전문 프리미엄 인쇄 제작 서비스",
+    "description": "Viet Dragon – 호치민시, 동나이, 붕따우 및 빈증성 전문 프리미엄 인쇄 서비스. 명함, 카탈로그, 종이 박스, 스티커 라벨. 1:1 무료 상담, 디자인, 샘플 인쇄 및 직배송."
   }
 }

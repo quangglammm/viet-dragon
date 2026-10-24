@@ -16,8 +16,13 @@ import Brands from "@/components/sections/Brands";
 import CTA from "@/components/sections/CTA";
 import PartnerLogos from "@/components/sections/PartnerLogos";
 import Footer from "@/components/sections/Footer";
+import type { Locale } from "@/i18n/routing";
+import { getBlog } from "@/lib/content/read/load";
+import { blogPreviewOf } from "@/lib/content/read/posts";
 
-export default function Home() {
+export default async function Home({ params }: Readonly<{ params: Promise<{ locale: Locale }> }>) {
+  const { locale } = await params;
+  const posts = blogPreviewOf(await getBlog(), locale);
   return (
     <>
       <Navbar />
@@ -33,7 +38,7 @@ export default function Home() {
       <FAQ />
       <Quality />
       <Process />
-      <BlogPreview />
+      <BlogPreview posts={posts} />
       <Brands />
       <CTA />
       <PartnerLogos />

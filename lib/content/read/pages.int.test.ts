@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { optionRecordFor, type ProductRecord } from "@/scripts/seed/context";
 import { LOCALES } from "@/scripts/seed/localized";
@@ -5,7 +6,6 @@ import { resolveSegment } from "@/scripts/seed/resolve";
 import { BASE_LABEL } from "@/scripts/seed/steps/sizes-specs";
 import { createSeededDatabase, type SeededDatabase } from "@/tests/helpers/seeded-db";
 import { buildCatalog } from "./catalog";
-import { TIER_LABELS } from "./card";
 import { loadCatalogInput } from "./load";
 import { buildMenus } from "./menus";
 import { navigationOf, type Navigation } from "./navigation";
@@ -60,8 +60,12 @@ function modelOf(locale: Locale, record: ProductRecord, segment?: string): Produ
 }
 
 describe("the tier names", () => {
-  it("are the ones the stored size notes were derived against", () => {
-    expect(TIER_LABELS).toEqual(BASE_LABEL);
+  it("are, in the UI copy, the ones the stored size notes were derived against (the seed's)", () => {
+    for (const locale of LOCALES) {
+      const { materialCard } = JSON.parse(readFileSync(`messages/${locale}.json`, "utf8")) as { materialCard: { tier: Record<string, string>; sizeLabel: string } };
+      expect([materialCard.tier.large, materialCard.tier.medium, materialCard.tier.small], locale).toEqual([...BASE_LABEL[locale]]);
+      expect(materialCard.sizeLabel).toBe("{tier} ({note})");
+    }
   });
 });
 

@@ -3,7 +3,6 @@ import { ArrowLeft, ArrowRight, ImagePlus } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { pickLocale } from "@/lib/locale";
 import { NamedIcon } from "@/components/ui/named-icon";
 import { cn } from "@/lib/utils";
 import type { DetailPageModel, GlossaryTrait, Link as PageLink, MaterialPageModel, ShapePageModel } from "@/lib/content/read/pages";
@@ -15,17 +14,6 @@ import { AutoScrollToTarget } from "@/components/ui/auto-scroll-to-target";
 // to the one the URL named). The three differ in their trail, heading and footer links — nothing else — so one view draws them all.
 
 type Model = DetailPageModel | ShapePageModel | MaterialPageModel;
-
-function allShapesLabel(locale: Locale, title: string): string {
-  return pickLocale(
-    locale,
-    `Xem tất cả hình thức của ${title}`,
-    `All shapes of ${title}`,
-    `查看 ${title} 的全部款式`,
-    `${title} のすべての仕様を見る`,
-    `${title}의 모든 형태 보기`
-  );
-}
 
 interface Frame {
   /** The trail after «category»: the product (when the page is below it), then the page itself. */
@@ -46,7 +34,7 @@ interface Frame {
   all: PageLink;
 }
 
-function frameOf(model: Model, locale: Locale, tr: (key: string) => string): Frame {
+function frameOf(model: Model, tr: (key: string) => string, allShapes: string): Frame {
   const { context } = model;
   if (model.kind === "detail") {
     return {
@@ -64,7 +52,7 @@ function frameOf(model: Model, locale: Locale, tr: (key: string) => string): Fra
       all: { label: tr("viewAllInCategory"), href: context.category.href },
     };
   }
-  const below = { trail: [context.product], pill: context.product, back: context.product, all: { label: allShapesLabel(locale, context.title), href: context.product.href } };
+  const below = { trail: [context.product], pill: context.product, back: context.product, all: { label: allShapes, href: context.product.href } };
   if (model.kind === "shape") {
     return {
       ...below,
@@ -122,7 +110,8 @@ function Pagination({ frame, t }: Readonly<{ frame: Frame; t: (key: string) => s
 
 export async function ProductDetailView({ locale, model, traits }: Readonly<{ locale: Locale; model: Model; traits: readonly GlossaryTrait[] }>) {
   const t = await getTranslations({ locale, namespace: "productDetailPage" });
-  const frame = frameOf(model, locale, t);
+  const tShapes = await getTranslations({ locale, namespace: "subgroupShapes" });
+  const frame = frameOf(model, t, tShapes("allShapesOf", { title: model.context.title }));
   const { context, cards } = model;
   const target = model.kind === "material" ? model.material : null;
 

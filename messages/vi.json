@@ -24,7 +24,10 @@
     },
     "quote": "Nhận Báo Giá",
     "openMenu": "Mở menu",
-    "closeMenu": "Đóng menu"
+    "closeMenu": "Đóng menu",
+    "fastPrintTag": "in nhanh",
+    "chooseLanguage": "Chọn ngôn ngữ",
+    "toggleSubmenu": "Mở rộng danh mục con"
   },
   "hero": {
     "slides": [
@@ -280,7 +283,8 @@
       "faq": "Câu Hỏi Thường Gặp"
     },
     "copyright": "© {year} Viet Dragon. Bảo lưu mọi quyền.",
-    "premium": "In ấn chất lượng cao"
+    "premium": "In ấn chất lượng cao",
+    "allProducts": "Tất cả sản phẩm"
   },
   "productsPage": {
     "metaTitle": "Sản Phẩm | Viet Dragon – In Ấn Chuyên Nghiệp",
@@ -297,7 +301,8 @@
     "ctaTitleLine1": "Không tìm thấy sản phẩm",
     "ctaTitleHighlight": "phù hợp?",
     "ctaSubtitle": "Liên hệ ngay — miễn phí tư vấn & thiết kế, báo giá trong 30 phút.",
-    "ctaButton": "Liên hệ ngay"
+    "ctaButton": "Liên hệ ngay",
+    "productCount": "{count} sản phẩm"
   },
   "categoryPage": {
     "breadcrumbHome": "Trang Chủ",
@@ -383,7 +388,8 @@
     "freeConsultation": "Tư Vấn Miễn Phí",
     "needCustomQuoteFor": "Cần báo giá in ấn cho {title}?",
     "getQuoteNow": "Nhận Báo Giá Ngay",
-    "allShapesOf": "Xem tất cả hình thức của {title}"
+    "allShapesOf": "Xem tất cả hình thức của {title}",
+    "bannerSubtitle": "Đội ngũ kỹ thuật viên Viet Dragon hỗ trợ tính giá tối ưu, tư vấn kích thước và chất liệu trong 30 phút."
   },
   "consultModal": {
     "title": "Tư vấn chi tiết hơn về sản phẩm này",
@@ -431,5 +437,78 @@
     "description": "Trang bạn đang tìm không tồn tại hoặc đã được chuyển đi. Hãy quay về trang chủ hoặc xem các sản phẩm in ấn của Viet Dragon.",
     "homeCta": "Về trang chủ",
     "productsCta": "Xem sản phẩm"
+  },
+  "materialCard": {
+    "formSizes": "Kích thước phổ biến:",
+    "formPrintTech": "Kỹ thuật in:",
+    "formMaterial": "Chất liệu:",
+    "formFinishing": "Thành phẩm sau in:",
+    "zalo": "Tư vấn Zalo",
+    "photoMain": "Ảnh chính",
+    "photoDetail": "Ảnh chi tiết",
+    "scrollMore": "Cuộn xem tiếp",
+    "previousPhoto": "Ảnh trước",
+    "nextPhoto": "Ảnh tiếp theo",
+    "sizeLabel": "{tier} ({note})",
+    "tier": {
+      "large": "Lớn",
+      "medium": "Vừa",
+      "small": "Nhỏ"
+    }
+  },
+  "fastPrint": {
+    "heroAlt": "In nhanh Viet Dragon",
+    "breadcrumbHome": "Trang Chủ",
+    "breadcrumbProducts": "Sản Phẩm",
+    "breadcrumbCurrent": "In Nhanh",
+    "badge": "In kỹ thuật số lấy liền trong ngày",
+    "title1": "In nhanh —",
+    "titleHighlight": "lấy ngay",
+    "title2": "trong 2 giờ",
+    "subtitle": "Danh thiếp, tờ rơi, voucher, tem nhãn — in số lượng ít lấy ngay trong ngày. Không MOQ tối thiểu, chuẩn màu 100%, giao tận nơi TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương.",
+    "btnZalo": "Gửi file qua Zalo",
+    "prodsEyebrow": "Sản phẩm có thể in nhanh",
+    "prodsTitle": "In lấy ngay — giao trong 2–6 giờ",
+    "prodsDesc": "Tất cả sản phẩm đều được in bằng máy kỹ thuật số tốc độ cao, cam kết màu sắc trung thực và thành phẩm đẹp.",
+    "orderNow": "Đặt ngay",
+    "stepsEyebrow": "Quy trình đặt in nhanh",
+    "stepsTitle": "3 bước — nhận hàng trong 2 giờ",
+    "ctaEyebrow": "Bắt đầu đặt hàng ngay",
+    "ctaTitle1": "Cần gấp?",
+    "ctaTitleHighlight": "Chúng tôi giải quyết trong 2 giờ.",
+    "ctaDesc": "Gửi file thiết kế qua Zalo — nhận báo giá trong 5 phút và xác nhận đơn hàng ngay, giao tận nơi tại TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương.",
+    "ctaBtnZalo": "Gửi file qua Zalo ngay",
+    "workshopHours": "Xưởng làm việc T2–T7: 8:00–12:00 & 13:30–17:30. Tư vấn online qua Zalo 24/7.",
+    "allProducts": "Xem tất cả sản phẩm",
+    "getQuote": "Nhận báo giá",
+    "price": "Chỉ từ {amount, number}đ/{unit}",
+    "steps": [
+      {
+        "title": "Gửi file thiết kế",
+        "desc": "Gửi file AI, PDF, PSD qua Zalo/email. Chúng tôi kiểm tra file và xác nhận trong 15 phút."
+      },
+      {
+        "title": "In nhanh & hoàn thiện",
+        "desc": "Máy in kỹ thuật số tốc độ cao in chính xác màu sắc, cán màng và bế thành phẩm theo đúng yêu cầu."
+      },
+      {
+        "title": "Nhận hàng linh hoạt",
+        "desc": "Nhận tại xưởng hoặc giao tận nơi tại TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương, nhanh nhất trong 2–4 giờ."
+      }
+    ],
+    "features": [
+      "Giao trong 2–4 giờ",
+      "Chuẩn màu 100%",
+      "Không MOQ tối thiểu",
+      "In ngay trong ngày",
+      "Xác nhận trong 15 phút",
+      "Miễn phí giao nội thành"
+    ],
+    "metaTitle": "In Nhanh Lấy Liền | Viet Dragon – In Ấn Chuyên Nghiệp",
+    "metaDescription": "In nhanh lấy liền trong ngày — danh thiếp, tờ rơi, voucher, tem nhãn — giao tận nơi TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương trong 2–6 giờ, chuẩn màu 100%."
+  },
+  "siteMeta": {
+    "title": "Viet Dragon – In Ấn Chuyên Nghiệp | Premium Printing Services",
+    "description": "Viet Dragon – dịch vụ in ấn chuyên nghiệp tại TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương. Danh thiếp, catalogue, hộp giấy, decal. Tư vấn, thiết kế, in thử, giao hàng miễn phí."
   }
 }
