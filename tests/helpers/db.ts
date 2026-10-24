@@ -36,8 +36,26 @@ export async function createScratchDatabase(label: string): Promise<ScratchDatab
     url,
     drop: async () => {
       await ready.end();
+      await waitForNoSessions(admin, name);
       await admin.query(`drop database ${name} with (force)`);
       await admin.end();
     },
   };
+}
+
+const SESSION_POLL_MS = 25;
+const SESSION_WAIT_MS = 3_000;
+
+/**
+ * `pool.end()` resolves before the server has closed every connection. Dropping the database right away
+ * (even `with (force)`) kills a connection that is still shutting down, which node-postgres reports as an
+ * unhandled error. Waiting for the sessions to go away first avoids that; the force drop stays as a fallback.
+ */
+async function waitForNoSessions(admin: Pool, database: string): Promise<void> {
+  const deadline = Date.now() + SESSION_WAIT_MS;
+  while (Date.now() < deadline) {
+    const { rows } = await admin.query<{ n: number }>(`select count(*)::int n from pg_stat_activity where datname = $1`, [database]);
+    if (rows[0].n === 0) return;
+    await new Promise((resolve) => setTimeout(resolve, SESSION_POLL_MS));
+  }
 }

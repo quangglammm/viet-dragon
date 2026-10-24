@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 #
 # deps -> build -> runner   (the production app image)
-#     \-> tools             (one-shot jobs: drizzle migrate, the admin CLI; seed arrives in Phase 3)
+#     \-> tools             (one-shot jobs: drizzle migrate, the admin CLI; no seed job — production gets the content from a seeded dump, docs/deployment.md)
 #
 # Build:  docker build --build-arg SITE_URL=https://vietdragon.vn --target runner .
 # The build stage needs NO secrets (`.env*` is in .dockerignore). SITE_URL is the exception only

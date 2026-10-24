@@ -18,6 +18,7 @@ export const AUDIT_ACTIONS = [
   "user.unbanned",
   "user.password_reset",
   "user.sessions_revoked",
+  "content.seeded",
 ] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 
@@ -34,6 +35,7 @@ export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
   "user.unbanned": "Kích hoạt lại tài khoản",
   "user.password_reset": "Đặt lại mật khẩu",
   "user.sessions_revoked": "Thu hồi phiên đăng nhập",
+  "content.seeded": "Nhập dữ liệu gốc của website",
 };
 
 /** Who acted when there is no signed-in user: the CLI (`pnpm admin:create`) or an unauthenticated visitor. */

@@ -41,7 +41,7 @@ This project uses **pnpm** (pinned via `packageManager` in `package.json`) — n
   regenerates `package-lock.json`/`yarn.lock` as a second, conflicting lockfile.
 - Add a dependency: `pnpm add <pkg>` · dev dependency: `pnpm add -D <pkg>`
 - Run scripts: `pnpm dev`, `pnpm build` (runs `next build --webpack`), `pnpm start`, `pnpm lint`, `pnpm test`, `pnpm test:int`,
-  `pnpm admin:create`, `pnpm admin:reset-password <email>` (see **Authentication**)
+  `pnpm admin:create`, `pnpm admin:reset-password <email>` (see **Authentication**), `pnpm seed` (see **Content model**)
 - `pnpm-lock.yaml` is the only lockfile committed — if `package-lock.json` or `yarn.lock`
   ever reappear (e.g. an editor auto-ran `npm install`), delete them, don't commit them.
 - `pnpm-workspace.yaml` holds `allowBuilds` approvals for deps with native build scripts
@@ -320,7 +320,7 @@ languages**, and edits are **drafts until published** (draft → preview → pub
 restorable revision). The relational schema (validated against the real data), the draft/publish
 design, the seed rules and the owner-review list are in `docs/data-model.md` (+ `docs/data-model.sql`).
 
-### Content model (Phase 3a — schema landed; nothing reads or writes it yet)
+### Content model (Phase 3a schema + 3b seed landed; the public site and the admin do not read or write it yet)
 The full design is `docs/data-model.md` (local); this is what the code now guarantees.
 - **Tables:** `lib/db/content/*.ts` (foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog,
   site-message, drafts; shared builders in `columns.ts`, SEO/Open Graph columns in `seo.ts`), re-exported by `lib/db/schema.ts`.
@@ -351,6 +351,20 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   until Phase 4.
 - **Site-wide facts** (business, address, social links, default OG image, JSON-LD Organization) go in the reserved
   `site_message` namespaces `seo` and `business`.
+- **Seed (3b):** `pnpm seed [--dry-run] [--report <path>]` (`scripts/seed-cli.ts`, logic in `scripts/seed/`) loads the site's own
+  data — read from the source modules, `messages/*.json`, `public/` and the three literals lifted from `subgroups-catalog.ts` /
+  `FastPrintClient.tsx` — into an EMPTY content database in one transaction, writes revision 1 of every entity (author NULL; no
+  fake user; one `content.seeded` audit row) and the 41 `legacy_import` archive rows, and writes the Vietnamese owner-review
+  report (default `docs/seed-report.md`, gitignored). **Seed-if-empty, never merge:** editors change content afterwards, so a
+  second run does nothing (advisory lock; two at once seed once). Re-seeding means dropping the database and migrating.
+  The seed only READS the site's sources; Phase 4 deletes some of them (`lib/product-sizes.ts`, `lib/product-specs.ts`, the
+  menus…), so the seed is a pre-Phase-4 tool — production gets the owner-approved content by restoring a full `pg_dump` of a
+  seeded database at cutover (decided; nothing is built for it). Pitfalls found while porting it: 13 `ProductOption` objects
+  are shared between products, so option lookups are per product (`optionRecordFor`), never a global identity map; `pg`
+  returns `bigint` as a string in raw SQL, so test code must `Number()` ids before using them as map keys.
+- **Compose** (`lib/content/compose/`): rows → the zod documents (`composeEntity(db, type, id)`, `listEntities`); the read side
+  that revision 1, 3c's publish and Phase 4's queries share. `lib/content/revision.ts` writes a `content_revision` row.
+  `lib/db/types.ts` has `Db` / `Tx` / `DbExecutor` — code that only reads and writes rows takes `DbExecutor`.
 - **Tests:** `lib/db/content-schema*.int.test.ts` (150 constraint cases, each naming the rule that must fire),
   `tests/helpers/content-db.ts` (one fixture; every test rolls back after `SET CONSTRAINTS ALL IMMEDIATE`, which runs the
   COMMIT-time checks) and `tests/helpers/db.ts` (`createScratchDatabase`, for suites that need their own database). On
@@ -554,6 +568,8 @@ lib/
   admin-access.ts           pure /admin routing decision for proxy.ts + `safeAdminNextPath` (open-redirect guard) + the shared admin paths — import-free
   permissions.ts            access control: roles `admin` / `editor`, `can()` / `hasPermission()`, Vietnamese `ROLE_LABELS` — one source of truth for DAL, UI and the admin plugin
   db/schema.ts, auth-schema.ts   Drizzle schema: auth-schema.ts is GENERATED (never hand-edit); schema.ts adds login_attempt + audit_log (append-only) and re-exports db/content/*
+  db/types.ts               Db / Tx / DbExecutor (types only)
+  content/compose/, revision.ts   rows → zod documents for every entity type · writes a content_revision row
   db/content/*.ts           the CMS content model: foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog, site-message, drafts (+ columns.ts, seo.ts builders)
   content/schemas/          zod document schemas (product, menu, post, library entities) + DOCUMENT_SCHEMAS / parseDocument / documentIdentity
   content/column-registry.ts, schema-paths.ts   every content column → the document path that carries it (or system-owned) · resolver that checks the paths against the zod schemas
@@ -578,6 +594,7 @@ data/
   content/                  JSON written by the current admin (only posts.json is read by the site)
 scripts/
   admin-cli.ts, admin/      `pnpm admin:create` / `admin:reset-password` — entry + prompt.ts (hidden raw-mode input), commands.ts (testable logic), rules.ts, errors.ts
+  seed-cli.ts, seed/        `pnpm seed` — entry · index.ts (seed-if-empty, dry run) · run.ts (the order of the steps) · sources.ts · steps/* · measures.ts · report/* (Vietnamese owner report) · *.int.test.ts (counts, parity with the source, URLs, menus)
   optimize-images.mjs       sharp-based image optimization script (run by hand)
 components/
   providers/
