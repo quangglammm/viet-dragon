@@ -25,7 +25,7 @@ Other v16 facts, verified against those docs:
 | Swiper | 14.x | Hero and Testimonials carousels — `swiper/react` + `swiper/modules` |
 | zod | 4.x | Env validation (`lib/env.ts`); request-body validation in the admin API (planned) |
 | pino | 10.x | Server logging — only through `lib/logger.ts`, see **Logging** below |
-| Drizzle ORM · drizzle-kit · `pg` | 0.45.x · 0.31.x · 8.x | PostgreSQL access (`lib/db`) and migrations (`drizzle.config.ts`); schema so far = auth + audit tables only (content tables arrive in Phase 3a) |
+| Drizzle ORM · drizzle-kit · `pg` | 0.45.x · 0.31.x · 8.x | PostgreSQL access (`lib/db`) and migrations (`drizzle.config.ts`); schema = auth + audit + the CMS content model (45 tables, Phase 3a — see **Content model**) |
 | Better Auth · `@better-auth/drizzle-adapter` · `auth` CLI | 1.7.12 (exact, keep all three in lockstep) | Invite-only accounts, DB sessions, admin plugin (roles). `@node-rs/argon2` hashes passwords. See **Authentication** below |
 | tsx | 4.x | Runs `scripts/admin-cli.ts` (`admin:create` / `admin:reset-password`). Dev dependency, also used inside the Docker `tools` image |
 
@@ -117,7 +117,7 @@ locale (this changes when content moves to the database — see **Admin CMS**).
 **SEO today:** per-page `title` + `description` only (5 languages), `metadataBase` from `SITE_URL`,
 `noindex` on `/admin` and `/zalo-reply`. Canonical, `hreflang` (+ `x-default`), Open Graph, JSON-LD
 and `sitemap.xml` are Phase 4 (`lib/seo`); the SEO fields (`seo_title`, `seo_description`,
-`og_media_id`) go into the Phase 3a schema — see `docs/data-model.md` §11.5a.
+`og_media_id`) are in the content schema since Phase 3a (nothing reads them yet) — see `docs/data-model.md` §11.5a.
 
 ---
 
@@ -320,6 +320,43 @@ languages**, and edits are **drafts until published** (draft → preview → pub
 restorable revision). The relational schema (validated against the real data), the draft/publish
 design, the seed rules and the owner-review list are in `docs/data-model.md` (+ `docs/data-model.sql`).
 
+### Content model (Phase 3a — schema landed; nothing reads or writes it yet)
+The full design is `docs/data-model.md` (local); this is what the code now guarantees.
+- **Tables:** `lib/db/content/*.ts` (foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog,
+  site-message, drafts; shared builders in `columns.ts`, SEO/Open Graph columns in `seo.ts`), re-exported by `lib/db/schema.ts`.
+  Relative imports only (drizzle-kit loads them outside Next). 45 tables; products are the aggregate root; every
+  translated entity has an `*_i18n` table keyed `(owner, locale)`.
+- **Migrations:** `0002_content_tables` is drizzle-kit output plus ONE hand-added function at the top (`nonblank()`, which
+  the table CHECKs call); `0003_content_integrity` is hand-written: immutable-key/uid triggers, frozen slug owners,
+  TRUNCATE guards, the commit-time (deferred) checks, the deferrable `menu_item` foreign keys and the 5 `locale` rows. Add
+  future columns with `pnpm db:generate`; put triggers/functions in a `--custom` migration. Trap: `drizzle-kit generate --custom`
+  snapshots the WHOLE current schema, so a custom migration needs to come AFTER the table migration it depends on (generating
+  it first leaves the next `generate` with nothing to do).
+- **Identity:** anything an editor may rename (product, shape, option, post, Fast Print / showcase item) has an immutable
+  `uid`; vocabulary (material, trait, unit, spec item, category, post category, UI-copy namespace, media) an immutable key.
+  Slugs are attributes owned by `product_slug` / `product_segment` / `post_slug` (canonical + aliases, one namespace each).
+- **Rules that live in the database, not in code:** non-blank Unicode-aware text, one canonical slug per product / shape /
+  option / post and a default-language (`vi`) translation for every translated entity (both checked at COMMIT), frozen
+  slug owners, `TRUNCATE` refused on the namespace/revision tables, photo slots accept images only. Never `TRUNCATE` them in
+  code; a migration that must disables the guard trigger explicitly. The app role has no TRUNCATE or DDL anyway.
+- **Documents** (`lib/content/schemas/`): zod schemas for the whole-entity documents that drafts, revisions and publishes carry
+  (`snapshot_schema` = `DOCUMENT_SCHEMA` = 2): product, menu (one per category), post, category, material, trait, unit, spec
+  item, Fast Print / showcase item, post category, site message. Strict objects, Vietnamese messages for editors.
+  `DOCUMENT_SCHEMAS`, `parseDocument()` and `documentIdentity()` are the entry points.
+- **Column registry** (`lib/content/column-registry.ts`): every content column is either carried by a document path or
+  system-owned. `lib/db/column-registry.int.test.ts` fails when the database and the registry disagree, and
+  `lib/content/column-registry.test.ts` when a path is not in the zod schema. **A new column is not done until it is
+  registered**, carried by the document schema, and (Phase 3d) has an editor control.
+- **Icons:** `lib/icons.ts` is the one name → component registry (the DB stores names). The old per-component maps remain
+  until Phase 4.
+- **Site-wide facts** (business, address, social links, default OG image, JSON-LD Organization) go in the reserved
+  `site_message` namespaces `seo` and `business`.
+- **Tests:** `lib/db/content-schema*.int.test.ts` (150 constraint cases, each naming the rule that must fire),
+  `tests/helpers/content-db.ts` (one fixture; every test rolls back after `SET CONSTRAINTS ALL IMMEDIATE`, which runs the
+  COMMIT-time checks) and `tests/helpers/db.ts` (`createScratchDatabase`, for suites that need their own database). On
+  PostgreSQL a RESTRICT violation reports SQLSTATE 23503 like any foreign key (23001 only on the PGlite prototype), so the
+  tests read `confdeltype` from the catalog instead.
+
 ### Rules for admin / CMS code
 - **Server-side access control only.** Every admin page and every `/api/admin/*` handler
   must authenticate on the server; a client-side redirect is not access control.
@@ -489,7 +526,7 @@ app/
   zalo-reply/               client page: copy a prepared reply, open Zalo
 instrumentation.ts          register(): env fail-fast (Node runtime only, skipped at build) · onRequestError → lib/logger
 instrumentation-node.ts     validateEnvOrExit() — Node-only, imported dynamically so the Edge bundle stays clean
-drizzle.config.ts, drizzle/ drizzle-kit config (loads .env via @next/env) · migrations — empty journal until Phase 3a
+drizzle.config.ts, drizzle/ drizzle-kit config (loads .env via @next/env) · migrations 0000–0003 (auth, audit_log append-only, content tables, content integrity)
 Dockerfile, compose.yaml, compose.dev.yaml, .env.example, .dockerignore, deploy/   see Docker & deployment
 i18n/
   routing.ts               defineRouting({ locales: [vi, en, zh, ja, ko], defaultLocale: vi })
@@ -498,7 +535,7 @@ i18n/
 messages/
   vi, en, zh, ja, ko .json  UI copy, namespaced per section — keep all five key sets in sync
 proxy.ts                    Next 16 "proxy" (not middleware.ts): `/admin/*` → optimistic session-cookie check (lib/admin-access.ts); everything else → next-intl createMiddleware; the intl matcher still skips api/admin/zalo-reply
-vitest.config.mts, vitest.int.config.mts, tests/   unit config · integration config (throwaway DB via tests/db-setup.ts) · shared helpers; `*.test.ts` live beside the code, `*.int.test.ts` need the dev DB
+vitest.config.mts, vitest.int.config.mts, tests/   unit config · integration config (throwaway DB via tests/db-setup.ts + tests/migrate.ts) · shared helpers (auth, db, content-db) and document fixtures; `*.test.ts` live beside the code, `*.int.test.ts` need the dev DB
 hooks/
   use-section-in-view.ts    Shared useRef + useInView(once, margin -80px)
   use-current-hash.ts, use-hash-pulse.ts   Current-hash tracking and hash-target pulse highlight
@@ -516,9 +553,13 @@ lib/
   dal.ts                    the authorization point: getSessionUser, requireUser (pages), requireApiUser (Route Handlers: 401/403/415, same-origin check)
   admin-access.ts           pure /admin routing decision for proxy.ts + `safeAdminNextPath` (open-redirect guard) + the shared admin paths — import-free
   permissions.ts            access control: roles `admin` / `editor`, `can()` / `hasPermission()`, Vietnamese `ROLE_LABELS` — one source of truth for DAL, UI and the admin plugin
-  db/schema.ts, auth-schema.ts   Drizzle schema: auth-schema.ts is GENERATED (never hand-edit); schema.ts adds login_attempt + audit_log (append-only)
+  db/schema.ts, auth-schema.ts   Drizzle schema: auth-schema.ts is GENERATED (never hand-edit); schema.ts adds login_attempt + audit_log (append-only) and re-exports db/content/*
+  db/content/*.ts           the CMS content model: foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog, site-message, drafts (+ columns.ts, seo.ts builders)
+  content/schemas/          zod document schemas (product, menu, post, library entities) + DOCUMENT_SCHEMAS / parseDocument / documentIdentity
+  content/column-registry.ts, schema-paths.ts   every content column → the document path that carries it (or system-owned) · resolver that checks the paths against the zod schemas
+  icons.ts                  the icon registry: stored name → lucide component (ICONS, ICON_NAMES, resolveIcon)
   logger.ts                 getLogger(scope) (pino, redaction), maskPhone(), logRequestError()
-  db/index.ts               lazy pg Pool + drizzle handle (getPool/getDb/pingDatabase); schema arrives in Phase 3a
+  db/index.ts               lazy pg Pool + drizzle handle (getPool/getDb/pingDatabase)
   locale.ts                 pickLocale(locale, vi, en, zh?, ja?, ko?) for data/*.ts fields
   contact.ts                Phone / Zalo / email constants
   motion.ts                 imageWipeReveal Motion variant (clip-path wipe-down reveal)

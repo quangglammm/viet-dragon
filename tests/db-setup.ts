@@ -1,17 +1,14 @@
 import { randomBytes } from "node:crypto";
 import { loadEnvConfig } from "@next/env";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Pool } from "pg";
 import type { TestProject } from "vitest/node";
+import { migrateDatabase, withDatabaseName } from "./migrate";
 
 declare module "vitest" {
   export interface ProvidedContext {
     testDatabaseUrl: string;
   }
 }
-
-const MIGRATIONS_FOLDER = "drizzle";
 
 // Vitest globalSetup: one throwaway database per run, created from the dev server's DATABASE_URL.
 export default async function setup(project: TestProject) {
@@ -32,13 +29,10 @@ export default async function setup(project: TestProject) {
     );
   }
 
-  const url = new URL(adminUrl);
-  url.pathname = `/${dbName}`;
-  const pool = new Pool({ connectionString: url.toString(), max: 1 });
-  await migrate(drizzle(pool), { migrationsFolder: MIGRATIONS_FOLDER });
-  await pool.end();
+  const url = withDatabaseName(adminUrl, dbName);
+  await migrateDatabase(url);
 
-  project.provide("testDatabaseUrl", url.toString());
+  project.provide("testDatabaseUrl", url);
 
   return async () => {
     await admin.query(`drop database ${dbName} with (force)`);

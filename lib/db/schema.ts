@@ -8,6 +8,19 @@ import { app_user } from "./auth-schema";
 // `pnpm auth:schema` — never edit auth-schema.ts by hand.
 export * from "./auth-schema";
 
+// The CMS content model (docs/data-model.md). Triggers, functions, deferrable foreign keys and the `locale` rows
+// live in hand-written migrations (0002_content_helpers, 0004_content_integrity) — Drizzle cannot express them.
+export * from "./content/foundations";
+export * from "./content/library";
+export * from "./content/catalog";
+export * from "./content/shapes-options";
+export * from "./content/sizes-specs";
+export * from "./content/menus";
+export * from "./content/merchandising";
+export * from "./content/blog";
+export * from "./content/site-message";
+export * from "./content/drafts";
+
 // Per-account sign-in throttle, keyed by lower-cased email whether or not the account exists, so a
 // locked-out unknown address behaves exactly like a real one (no enumeration). See lib/auth/lockout.ts.
 export const loginAttempt = pgTable("login_attempt", {
