@@ -63,6 +63,7 @@ export const contentDraft = pgTable(
 );
 
 export const DRAFT_REFERENCE_TYPES = ["material", "trait", "unit", "spec_item", "media"] as const;
+export type DraftReferenceType = (typeof DRAFT_REFERENCE_TYPES)[number];
 
 /**
  * Exact "used by": which library records / media an open draft refers to (the foreign keys cannot see drafts).

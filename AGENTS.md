@@ -320,7 +320,7 @@ languages**, and edits are **drafts until published** (draft → preview → pub
 restorable revision). The relational schema (validated against the real data), the draft/publish
 design, the seed rules and the owner-review list are in `docs/data-model.md` (+ `docs/data-model.sql`).
 
-### Content model (Phase 3a schema + 3b seed + localized URLs landed; the public site and the admin do not read or write it yet)
+### Content model (Phase 3a schema + 3b seed + localized URLs + 3c-1 draft/publish services landed; the public site and the admin do not read or write it yet)
 The full design is `docs/data-model.md` (local); this is what the code now guarantees.
 - **Tables:** `lib/db/content/*.ts` (foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog,
   site-message, drafts; shared builders in `columns.ts`, SEO/Open Graph columns in `seo.ts`), re-exported by `lib/db/schema.ts`.
@@ -382,7 +382,37 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
 - **Compose** (`lib/content/compose/`): rows → the zod documents (`composeEntity(db, type, id)`, `listEntities`); the read side
   that revision 1, 3c's publish and Phase 4's queries share. `lib/content/revision.ts` writes a `content_revision` row.
   `lib/db/types.ts` has `Db` / `Tx` / `DbExecutor` — code that only reads and writes rows takes `DbExecutor`.
-- **Tests:** `lib/db/content-schema*.int.test.ts` (173 constraint cases, each naming the rule that must fire),
+- **Drafts, publish, restore (Phase 3c-1: product + menu; the other ten entity types are 3c-2, the HTTP API 3c-3).** A live entity
+  changes ONLY by publishing a draft: a whole-entity document in `content_draft`, saved as often as the editor likes and however
+  incomplete (`GET` advice comes from `validateSnapshot`: zod + references; publish enforces it). Services in `lib/content/` take a
+  `Db` and throw `Conflict` (409, with a `code`: `STALE_BASE` carries a field-level `changes` diff live → draft, `DRAFT_CHANGED`,
+  `ALREADY_EXISTS`, `GONE`, `DRAFT_EXISTS`), `Invalid` (422, `issues: {path, message}[]`, Vietnamese) or `NotFound` (404):
+  `drafts.ts` (open / resume, create, save, discard, rebase, `draftChanges`), `publish.ts`, `restore.ts` (revisions; restore =
+  open a revision as a draft, `note = "restore:N"`), `aliases.ts` (`releaseAlias`), `used-by.ts`, `validate.ts`, `references.ts`,
+  `diff.ts`, `humanize.ts`, `identity.ts` (URL type names, `spec_item` key `kind.key` in paths), `cache-tags.ts`, `apply/`.
+  - **Publish = ONE transaction:** lock the draft (`FOR UPDATE`) → check `draft_version` (what was previewed is what is published)
+    → zod → lock the live row (`FOR NO KEY UPDATE`) → check `base_version` → `checkReferences` → apply → write the revision with the
+    STORED document (it contains the aliases kept automatically) → delete the draft. Any failure rolls back and the draft survives.
+    No silent merge: a stale base is a 409 with the diff; `rebaseDraft` is the explicit "keep my draft, overwrite live".
+  - **Appliers** (`apply/`, one per type; `applierFor`) upsert children BY UID so shape / option database ids survive every publish
+    (menus point at them), and replace what has no identity (translations, bullets, photos, sizes, specs). **URLs are never lost:**
+    per language a publish keeps canonical + the aliases the document names + every alias already held + the previous canonical
+    (`planProductSlugs`, `planSegments`); only `releaseAlias` (per language, never a canonical URL) lets one go. Shapes, options and
+    their aliases share one namespace per product per language; priority: canonical, explicit aliases, held.
+  - A canonical slug cannot also be an alias in the document (zod), so a product moved into a category where it already has an
+    alias of the same slug must drop that alias in the same edit — the 3d editor should do it for the editor.
+  - A product move out of a category takes it out of that category's mega-menu and bumps BOTH `menu_version`s (categories are locked
+    in id order), so an older menu draft is refused. `affectedBy` / `cacheTags` name what to `revalidateTag(tag, { expire: 0 })`
+    (a product publish also touches the menus it left and joined); the HTTP layer (3c-3) calls them after COMMIT.
+  - `used-by` counts live rows (`USAGES`, checked against the foreign keys in the catalog by a test) plus open drafts
+    (`draft_reference`, rewritten on every autosave by the tolerant `collectReferences`): the foreign keys cannot see drafts.
+  - Database errors are mapped to editor-readable `Invalid` by `humanize` (it unwraps Drizzle's `cause`; deferred constraints fail at
+    COMMIT, so wrap the whole transaction). Unmapped errors pass through untouched.
+- **Tests:** `lib/content/{product,draft,menu}-lifecycle.int.test.ts` run the prototype's lifecycle (docs/spike) through the shipped
+  services on the seeded scratch database (all 25 products and 4 menus round-trip losslessly with every id preserved; renames, swaps,
+  category moves; stale / invalid / concurrent publishes; restore after renames; every document field survives a publish);
+  `tests/helpers/content-lifecycle.ts` is the open → edit → save → publish cycle. Pure logic has unit tests beside it.
+- **Schema tests:** `lib/db/content-schema*.int.test.ts` (173 constraint cases, each naming the rule that must fire),
   `tests/helpers/content-db.ts` (one fixture; every test rolls back after `SET CONSTRAINTS ALL IMMEDIATE`, which runs the
   COMMIT-time checks) and `tests/helpers/db.ts` (`createScratchDatabase`, for suites that need their own database). On
   PostgreSQL a RESTRICT violation reports SQLSTATE 23503 like any foreign key (23001 only on the PGlite prototype), so the
@@ -587,6 +617,9 @@ lib/
   db/schema.ts, auth-schema.ts   Drizzle schema: auth-schema.ts is GENERATED (never hand-edit); schema.ts adds login_attempt + audit_log (append-only) and re-exports db/content/*
   db/types.ts               Db / Tx / DbExecutor (types only)
   content/compose/, revision.ts   rows → zod documents for every entity type · writes a content_revision row
+  content/drafts.ts, publish.ts, restore.ts, aliases.ts, used-by.ts   the write side (3c): drafts, publish, revisions + restore, releasing old URLs, "used by"
+  content/validate.ts, references.ts, diff.ts, humanize.ts, identity.ts, errors.ts, cache-tags.ts   advice + checks, what a document points at, field-level diff, DB error → Vietnamese, URL type names / ids, Conflict / Invalid / NotFound, cache tags
+  content/apply/            one applier per entity type (product, menu so far): document → live rows, plus the per-language slug planning
   db/content/*.ts           the CMS content model: foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog, site-message, drafts (+ columns.ts, seo.ts builders)
   content/schemas/          zod document schemas (product, menu, post, library entities) + DOCUMENT_SCHEMAS / parseDocument / documentIdentity
   content/column-registry.ts, schema-paths.ts   every content column → the document path that carries it (or system-owned) · resolver that checks the paths against the zod schemas

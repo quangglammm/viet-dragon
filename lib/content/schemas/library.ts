@@ -45,11 +45,11 @@ export const unitDocumentSchema = withMasterLanguages(z.strictObject({ schema, k
 export const postCategoryDocumentSchema = withMasterLanguages(z.strictObject({ schema, key: slugSchema, i18n: label }));
 
 /** `key` is `<kind>/<item key>` (the pair is the immutable identity), e.g. `technique/offset`. */
-const SPEC_ITEM_KEY = new RegExp(`^(${SPEC_KIND_VALUES.join("|")})/[a-z0-9]+(-[a-z0-9]+)*$`);
+export const SPEC_ITEM_KEY_PATTERN = new RegExp(`^(${SPEC_KIND_VALUES.join("|")})/[a-z0-9]+(-[a-z0-9]+)*$`);
 export const specItemDocumentSchema = withMasterLanguages(
   z.strictObject({
     schema,
-    key: z.string().regex(SPEC_ITEM_KEY, "Khóa phải có dạng loại/mã, ví dụ technique/offset."),
+    key: z.string().regex(SPEC_ITEM_KEY_PATTERN, "Khóa phải có dạng loại/mã, ví dụ technique/offset."),
     isDefault: z.boolean(),
     i18n: label,
   }),
@@ -99,10 +99,12 @@ export const showcaseItemDocumentSchema = withMasterLanguages(
   }),
 );
 
+export const SITE_MESSAGE_NAMESPACE_PATTERN = /^[A-Za-z][A-Za-z0-9]*$/;
+
 /** `key` is the namespace; the document holds that namespace for every language (one draft edits them side by side). */
 export const siteMessageDocumentSchema = z.strictObject({
   schema,
-  key: z.string().regex(/^[A-Za-z][A-Za-z0-9]*$/, "Tên nhóm chỉ gồm chữ cái và số, bắt đầu bằng chữ cái."),
+  key: z.string().regex(SITE_MESSAGE_NAMESPACE_PATTERN, "Tên nhóm chỉ gồm chữ cái và số, bắt đầu bằng chữ cái."),
   data: z.partialRecord(localeSchema, z.record(z.string(), z.unknown())),
 });
 
