@@ -51,3 +51,11 @@ export function cacheTags(affected: readonly Affected[]): string[] {
   }
   return [...tags];
 }
+
+/**
+ * The tags a cached READ carries: the type and entity tags of what it renders, but NOT the root `content` tag — every publish
+ * revalidates that one (`cacheTags`), so a read tagged with it would be thrown away by a change that does not concern it.
+ */
+export function readTags(...reads: readonly Affected[]): string[] {
+  return cacheTags(reads).filter((tag) => tag !== CONTENT_TAG);
+}

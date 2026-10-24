@@ -11,6 +11,7 @@
     "admin:create": "tsx scripts/admin-cli.ts create",
     "admin:reset-password": "tsx scripts/admin-cli.ts reset-password",
     "seed": "tsx scripts/seed-cli.ts",
+    "parity:capture": "tsx scripts/parity/capture.ts",
     "auth:schema": "auth generate --config lib/auth.cli.ts --adapter drizzle --dialect pg --output lib/db/auth-schema.ts -y",
     "test": "vitest run",
     "test:int": "vitest run --config vitest.int.config.mts",

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { affectedBy, cacheTags } from "./cache-tags";
+import { affectedBy, cacheTags, readTags } from "./cache-tags";
 
 const product = { type: "product", id: "11111111-1111-4111-8111-111111111111" } as const;
 
@@ -43,5 +43,20 @@ describe("cacheTags", () => {
       "content:menu:tet",
       "content:menu:office",
     ]);
+  });
+});
+
+describe("readTags", () => {
+  it("tags a read with its type and entity but never with the root tag that every publish revalidates", () => {
+    expect(readTags({ type: "product" })).toEqual(["content:product"]);
+    expect(readTags({ type: "menu", id: "tet" })).toEqual(["content:menu", "content:menu:tet"]);
+    for (const tag of readTags({ type: "product", id: "u1" }, { type: "category" })) expect(tag).not.toBe("content");
+  });
+
+  it("is invalidated by exactly the changes that concern it: what a publish revalidates covers what a read is tagged with", () => {
+    const published = new Set(cacheTags(affectedBy({ type: "trait", id: "glossy" }, null, null)));
+    expect(readTags({ type: "product" }).every((tag) => published.has(tag))).toBe(true); // a trait change reaches every cached product
+    const unrelated = new Set(cacheTags(affectedBy({ type: "post", id: "p1" }, null, null)));
+    expect(readTags({ type: "product" }).some((tag) => unrelated.has(tag))).toBe(false); // a post change does not
   });
 });

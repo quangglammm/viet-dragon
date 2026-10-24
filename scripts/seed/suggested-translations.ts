@@ -125,3 +125,13 @@ export const SUGGESTION_TEXT_COUNTS = {
   traits: Object.keys(TRAIT_SUGGESTIONS).length * SUGGESTED_LOCALES.length * 2,
   bullets: BULLET_SUGGESTIONS.length * SUGGESTED_LOCALES.length * 3,
 } as const;
+
+/**
+ * The three "best for" bullets that replaced the single summarizing zh/ja/ko line (AI-suggested, revision 2 of the product).
+ * Every other bullet must still equal the source; these 9 lists must equal the suggestion instead.
+ */
+export function suggestedBulletsFor(productKey: string, source: { nameVi: string; bestForVi: string[]; bestForZh?: string[] }, kind: string, locale: string): readonly string[] | undefined {
+  if (kind !== "best_for" || !(SUGGESTED_LOCALES as readonly string[]).includes(locale)) return undefined;
+  const suggestion = BULLET_SUGGESTIONS.find((s) => s.product === productKey && s.optionNameVi === source.nameVi && s.bestFor.zh.length === source.bestForVi.length && source.bestForZh?.length === 1);
+  return suggestion?.bestFor[locale as (typeof SUGGESTED_LOCALES)[number]];
+}

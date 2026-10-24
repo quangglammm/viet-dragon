@@ -60,3 +60,6 @@ screenshot*.mjs
 
 # local planning docs (admin CMS design notes) — not committed
 /docs/
+
+# page-text parity corpus (generated from a local build; large)
+/.parity/

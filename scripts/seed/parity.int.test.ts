@@ -3,7 +3,7 @@ import { createSeededDatabase, type SeededDatabase } from "@/tests/helpers/seede
 import { LOCALES, localizedList, localizedText, translated } from "./localized";
 import { formatMaterialDisplayName } from "./material-name";
 import { readSizesAndSpecs, replayCardCalls, type SizeSpecReadback } from "./measures";
-import { BULLET_SUGGESTIONS, SUGGESTED_LOCALES } from "./suggested-translations";
+import { suggestedBulletsFor } from "./suggested-translations";
 import { groupBy, isBlankText, orNull } from "./util";
 
 // Read-back checks. Each compares what the DATABASE yields with what the SITE computes from the source today.
@@ -19,16 +19,6 @@ beforeAll(async () => {
 afterAll(async () => {
   await seeded.close();
 });
-
-/**
- * The three "best for" bullets that replaced the single summarizing zh/ja/ko line (AI-suggested, revision 2 of the product).
- * Every other bullet must still equal the source; these 9 lists must equal the suggestion instead.
- */
-function suggestedBulletsFor(productKey: string, source: { nameVi: string; bestForVi: string[]; bestForZh?: string[] }, kind: string, locale: string): readonly string[] | undefined {
-  if (kind !== "best_for" || !(SUGGESTED_LOCALES as readonly string[]).includes(locale)) return undefined;
-  const suggestion = BULLET_SUGGESTIONS.find((s) => s.product === productKey && s.optionNameVi === source.nameVi && s.bestFor.zh.length === source.bestForVi.length && source.bestForZh?.length === 1);
-  return suggestion?.bestFor[locale as (typeof SUGGESTED_LOCALES)[number]];
-}
 
 const rows = async <T extends object>(sql: string): Promise<T[]> => (await seeded.scratch.pool.query(sql)).rows as T[];
 const products = () => [...seeded.outcome.products.values()];

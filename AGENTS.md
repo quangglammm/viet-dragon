@@ -495,6 +495,26 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   `site-message-labels.ts` (a test keeps them equal to the keys of `messages/vi.json`). A missing required text reads «Bắt buộc phải nhập.»
   (`MESSAGES.required`), not zod's default. Known gaps: aliases of posts and categories are listed but cannot be released (the service only
   releases product URLs); the reserved `seo` / `business` namespaces cannot be created from the UI (site_message is not creatable).
+- **Public read layer (Phase 4, M1 — built and tested; no page uses it yet, M2 switches them).** `lib/content/read/`: `catalog.ts` / `menus.ts` /
+  `selectors.ts` / `urls.ts` / `messages.ts` are PURE functions from the documents (`composeEntity`, proven lossless) to the public site's view
+  models (`types.ts`: `CategoryView`, `ProductView` with shapes / options / sizes / specs, `MenuView`, traits, materials); `load.ts` has the
+  database loaders (`loadCatalog`, `loadMenus`, `loadPublishedMessages`, any executor — the tests use a seeded scratch database) and the cached
+  reads the pages will call (`getCatalog`, `getMenus`, `getPublishedMessages`), wrapped by `cache.ts` (`unstable_cache` + tags, logs
+  «content read rebuilt» on a miss). **View models hold one object for all languages** (`Localized` = a text per language that has one; `pickText`
+  falls back requested → en → vi, per bullet for lists) — a deliberate refinement of "keep the old `xVi/xEn` shapes": the old suffix fields are not
+  rebuilt. **Cache tags:** a read carries `readTags(...)` (`lib/content/cache-tags.ts`), never `cacheTags`, because every publish revalidates the root
+  `content` tag; verified in a real Next runtime that a publish rebuilds exactly the reads it touches (a product publish → catalog + menus, a UI-copy
+  publish → only that language's messages) and a direct database edit does not show (cached). The catalog is one entry (~590 KB; the data cache limits
+  an entry to 2 MB — a test fails at 1.5 MB). **Rules:** shape-scoped options/sizes/specs REPLACE the product's for that shape (`selectors.ts`); an
+  archived product is not in the catalog (404, not in menus); `resolveUrl(catalog, locale, parts)` answers `ok`, `redirect` (an alias, or a slug of
+  another language, to the canonical URL of the page's language) or `notFound`, and every internal link is built by `categoryPath` / `productPath` /
+  `segmentPath` (the fixed word `products` is `PRODUCTS_SEGMENT`, localized in the routing milestone); UI copy = `mergeMessages(file defaults,
+  published)`: the files own the structure, `""` leaves the default. **Equivalence:** `lib/content/read/catalog.int.test.ts` compares the views with the old
+  static files on a seeded database — titles, descriptions, 110 options (names, card headings, bullets, traits, photos, prices), sizes and specs
+  (the 510 canonical contexts and the owner-decision measure, 4,045 renders / 2,163 differ), the four menus, and every candidate URL segment and
+  `/products/…` link in every language; 11 mutations are caught. `scripts/parity/` (`pnpm parity:capture`) keeps the old site's prerendered pages
+  (1,867, text + links) in `.parity/legacy.json` (gitignored) for the page-text comparison after each page milestone. Files meant for the browser
+  (`text.ts`, `types.ts`, `selectors.ts`, `urls.ts`) are guarded by `lib/content/read/client-bundle.test.ts` (`tests/helpers/import-graph.ts`).
 - **Tests:** `app/api/admin/content/content-api.int.test.ts` (who may call what, preconditions, error shapes, cache tags, audit rows —
   with the app's own database pointed at a seeded scratch one by setting `DATABASE_URL` before the first `getDb()`),
   `lib/content/http.test.ts`; `lib/content/entities.int.test.ts` (all 198 seeded entities publish unchanged; each of the nine creatable types is created,
@@ -713,6 +733,7 @@ lib/
   content/validate.ts, references.ts, diff.ts, humanize.ts, identity.ts, errors.ts, cache-tags.ts   advice + checks, what a document points at, field-level diff, DB error → Vietnamese, URL type names / ids, Conflict / Invalid / NotFound, cache tags
   content/delete.ts, summaries.ts   delete / archive-first rules (+ the "delete" revision) · admin list rows
   content/editor/           the editors' client-safe logic: paths, session reducer, API client, completeness, create templates, entity meta, vocabulary, product ops / menu ops / lists / slugs / slug ops / message tree / sections / uid (no server imports — client-bundle.test.ts)
+  content/read/             the PUBLIC site's reads (Phase 4): pure document → view-model builders (catalog, menus, selectors, urls, messages), the loaders and the cached reads (load.ts, cache.ts) — pages call the `get*` ones
   content/field-registry.ts, entity-types.ts, slugify.ts, media-library.ts, authors.ts, vocabulary.ts   every editable leaf → label + control · the 12 entity types (database-free) · URL slugs · media picker data · account names for the history · picker lists
   content/http.ts, requests.ts, effects.ts   the HTTP layer of app/api/admin/content: URL / If-Match / capped JSON body / error mapping · zod request bodies · cache tags + audit after commit
   content/apply/            one applier per entity type (all twelve): document → live rows, plus the per-language slug planning (`planSegments` also serves posts and categories)
