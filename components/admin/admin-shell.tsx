@@ -15,17 +15,16 @@ import { cn } from "@/lib/utils";
 type AdminShellProps = {
   /** Already authenticated by the server layout (lib/dal.ts) — the shell never decides access itself. */
   user: Pick<SessionUser, "name" | "email" | "role">;
-  showLegacyEditors: boolean;
   children: React.ReactNode;
 };
 
-export function AdminShell({ user, showLegacyEditors, children }: Readonly<AdminShellProps>) {
+export function AdminShell({ user, children }: Readonly<AdminShellProps>) {
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [theme, setTheme] = useAdminTheme();
 
-  const sections = buildNav(user.role, showLegacyEditors);
+  const sections = buildNav(user.role);
   const currentLabel = sections.flatMap((section) => section.items).find((item) => isNavItemActive(pathname, item.href))?.label;
 
   const handleLogout = async () => {

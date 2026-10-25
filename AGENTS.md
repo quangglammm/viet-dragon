@@ -99,8 +99,8 @@ Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
 
 | Route | Notes |
 |---|---|
-| `/admin/*` | CMS UI — own root layout, Vietnamese only. `/admin/content/[type]` (list) and `/admin/content/[type]/[id]` (editor) are the editors on the content database (Phase 3d). See **Admin CMS** |
-| `/api/admin/*` | CMS API — legacy `blog`, `media`, `products`, `translations`, `translate` (Phase 3d replaces them) and the new `content/**` (drafts, publish, revisions, delete — see **Content model**). Every handler starts with `requireApiUser` (a test enforces it) |
+| `/admin/*` | CMS UI — own root layout, Vietnamese only: sign-in, account, users, audit and `/admin/content/[type]` (list) / `/admin/content/[type]/[id]` (editor), the editors on the content database. See **Admin CMS** |
+| `/api/admin/*` | CMS API — `content/**` (drafts, publish, revisions, delete — see **Content model**) and `preview` (turns Draft Mode on/off — see **Preview**). Every handler starts with `requireApiUser` (a test enforces it) |
 | `/api/auth/*` | Better Auth (`app/api/auth/[...all]/route.ts`): sign-in/out, session, password change, admin-plugin user management. Sign-in must use this HTTP surface — only HTTP requests are rate limited, not `auth.api.*` calls |
 | `/api/consult` | Public. Receives quote/consult leads from `QuoteModal` / `ConsultBottomSheet`, emails them |
 | `/zalo-reply` | Client page that copies a prepared reply message and opens Zalo (`noindex`) |
@@ -197,37 +197,27 @@ element inside the existing column/grid div instead of appending it as a row sib
 ---
 
 ## Data files
-- `data/subgroups-catalog.ts` (≈9,200 lines) — **no longer read by the public site (since Phase 4 M2): it is the seed's input**
-  (`pnpm seed`) and the legacy admin's; a test (`lib/content/read/legacy-sources.test.ts`) fails if public code imports it, the menus,
-  `data/translations`, `data/categories` (values), `lib/product-sizes`, `lib/product-specs`, `lib/shape-aliases` or `lib/content-store`
-  `data/posts`, `data/showcase` and `scripts/seed/legacy/fast-print.ts` (no leftovers since M3). Phase 4 M5 moves them under `scripts/seed/legacy/`. What it holds: `MAIN_CATEGORIES` (4: Tiếp thị/Marketing, Văn phòng/Office, Bao bì/Packaging,
-  Ấn phẩm Tết/Tet Publications) and `SUBGROUPS_CATALOG` (25 subgroups — 7 marketing, 6 office,
-  4 packaging, 8 tet — with 77 shapes and 101 materials in total); lookups via
-  `getSubgroupById()` / `getSubgroupsByCategory()`.
-- `data/categories.ts` — the **types** (`ProductCategory`, `ProductItem`, `ProductOption`,
-  `ProductOptionGroup`), still read by the seed and the legacy admin; `showcaseImages` moved to `data/showcase.ts`. Every name/description field is split `xVi`/`x`
-  (English) with optional `xZh`/`xJa`/`xKo` — read with `pickLocale()`, never several at once.
-- `data/translations.ts` — extra zh/ja/ko text kept **outside** the records
-  (`SHOWCASE_LABELS`, `CATEGORY_NAMES`, `CATEGORY_DESCS`, `ITEM_NAMES`, `ITEM_DESCS`,
-  `SHAPE_DESCS`, keyed by id). The seed reads it; the public site does not.
-- `data/posts.ts` — `BlogPost` type, `blogPosts` (6 posts, **imported from
-  `data/content/posts.json`** at build time) and `categoryColors`. **No longer read by the public site (since M3)**: the seed and the
-  legacy admin read it; the blog pages read the database. Same `xVi`/`x` split, including full article bodies.
-- `data/marketing-menu.ts`, `office-menu.ts`, `packaging-menu.ts`, `tet-menu.ts` — the old Navbar
-  mega-menu definitions; the seed reads them, the Navbar now draws the menus from the database (`MegaMenuDesktop` / `MegaMenuMobile`).
-- `data/content/*.json` — files written by the current admin (`posts.json`, `products.json`,
-  `subgroups.json`). Only the legacy admin and the seed read them; **no public page does**.
-- `data/material-traits.ts` — the old icon glossary for `ProductOption.descriptionTraits` bullets; the seed reads it, the card and the
-  glossary popover now read the traits from the database.
+- **`scripts/seed/legacy/`** — the static sources the content database replaced. Nothing but the seed (`pnpm seed`, `scripts/seed/sources.ts`) and a few
+  seed-parity tests read them; a test (`lib/content/read/legacy-sources.test.ts`) fails if any public entry point imports anything under `scripts/`.
+  They were `data/*.ts` and three `lib/` heuristics until Phase 4 M5 moved them here (the old admin's `data/content/*.json` snapshots were deleted — they were an
+  older copy of the catalog, last edited before the final `.ts` edits, and the seed never read them). What is there:
+  - `subgroups-catalog.ts` (≈9,200 lines) — `MAIN_CATEGORIES` (4: Tiếp thị/Marketing, Văn phòng/Office, Bao bì/Packaging, Ấn phẩm Tết/Tet Publications) and
+    `SUBGROUPS_CATALOG` (25 subgroups — 7 marketing, 6 office, 4 packaging, 8 tet — with 77 shapes and 101 materials in total); lookups via `getSubgroupById()`.
+  - `categories.ts` — the **types** (`ProductCategory`, `ProductItem`, `ProductOption`, `ProductOptionGroup`). Every name/description field is split `xVi`/`x`
+    (English) with optional `xZh`/`xJa`/`xKo` — the old convention, kept only here.
+  - `translations.ts` — extra zh/ja/ko text kept outside the records (`SHOWCASE_LABELS`, `CATEGORY_NAMES`, `CATEGORY_DESCS`, `ITEM_NAMES`, `ITEM_DESCS`, `SHAPE_DESCS`, keyed by id).
+  - `posts.ts` + `posts.json` — `BlogPost` type and the 6 posts with full article bodies. `showcase.ts`, `fast-print.ts` — the `/products` gallery and the Fast Print items.
+  - `marketing-menu.ts`, `office-menu.ts`, `packaging-menu.ts`, `tet-menu.ts` — the old Navbar mega-menu definitions. `material-traits.ts` — the old icon glossary for the option bullets.
+  - `product-sizes.ts`, `product-specs.ts`, `shape-aliases.ts` — the old name-matching size / spec heuristics and the shape-id dictionary (the seed measured owner decision 1 with them).
+- The catalog, categories, menus, blog, Fast Print, showcase and UI copy the **public site** shows come from the content database (see **Content model**); the UI copy's
+  *structure* from `messages/*.json`.
 - `coverImage` / `image` fields are real local paths (`/images/category/...`,
   `/images/product/...`, `/images/blog/...`) served straight from `public/` — no
   `unoptimized` prop needed on those `<Image>`s. The one picsum reference in the
-  codebase is the testimonial avatar seeds in `Testimonials.tsx` (not a `data/*.ts` field —
+  codebase is the testimonial avatar seeds in `Testimonials.tsx` (not a catalog field —
   those live inline in the component, zipped with `messages/*.json` `t.raw("items")`).
-- **`data/*.ts` vs `messages/*.json`**: structured records with a stable shape (blog posts, until the next
-  milestone moves them; categories, products and traits are in the database) live in `data/` with `xVi`/`x` field pairs. Pure UI
-  copy (headings, buttons, FAQ, checklists) lives in `messages/<locale>.json` (all five) —
-  see Internationalization below. Don't move one into the other's convention.
+- **Content database vs `messages/*.json`**: structured records (products, categories, posts, Fast Print, showcase, menus) live in the content database; pure UI
+  copy (headings, buttons, FAQ, checklists) lives in `messages/<locale>.json` (all five), whose texts the database may override — see Internationalization below.
 
 ---
 
@@ -260,7 +250,7 @@ element inside the existing column/grid div instead of appending it as a row sib
   metadata (icons, hrefs, image seeds, `highlighted` flags) in the component as a
   locale-agnostic array and zip it with `t.raw()` by index — see `Portfolio.tsx` for the
   pattern.
-- **`data/*.ts` fields** (not UI copy) — read via
+- **Fields that carry one text per language outside the database** — read via
   `pickLocale(locale, viValue, enValue, zhValue?, jaValue?, koValue?)` from `lib/locale.ts`
   (falls back to the English value when a zh/ja/ko value is `undefined`), with `locale` from
   `useLocale()` (client) or the page's own `params.locale` (server).
@@ -288,7 +278,7 @@ writing a new eyebrow/heading/button/badge block:
 - `components/ui/icon-badge.tsx` — icon-in-circle badge (`size`: sm/md/lg, `rounded`: full/xl).
 - `hooks/use-section-in-view.ts` — the `useRef` + `useInView(ref, { once: true, margin: "-80px" })`
   pair, for sections where multiple children must reveal off one shared trigger.
-- `lib/locale.ts` — `pickLocale(locale, vi, en, zh?, ja?, ko?)` for `data/*.ts` field selection.
+- `lib/locale.ts` — `pickLocale(locale, vi, en, zh?, ja?, ko?)` for per-language field selection.
 - `lib/contact.ts` — phone / Zalo / email constants (`PHONE_NUMBER`, `PHONE_NUMBER_2`,
   `ZALO_CHAT_URL`, `CONTACT_EMAIL`, plus `*_FORMATTED` variants); reuse these instead of
   re-hardcoding the phone/Zalo number in a new component (`FloatingContact` and
@@ -307,42 +297,48 @@ wrapper would need as many props as it saves.
 ---
 
 ## Admin CMS
-**Status: being rebuilt** on branch `feature/admin-cms`. Decisions, phases and acceptance
+**Status: rebuilt on the content database** on branch `feature/admin-cms` — Phases 0–4 are done (auth, content model, editors, the public site reading the database,
+Preview); Phase 5 (media), 6 (hardening) and 7 (cutover) are next. Decisions, phases and acceptance
 criteria live in `docs/admin-architecture.md`; the auth checklist in `docs/security.md`;
-the VPS/Docker runbook in `docs/deployment.md`. Sections marked **(planned)** describe the
-target — until a phase lands, the "current state" below is the truth.
+the VPS/Docker runbook in `docs/deployment.md`. Sections marked **(planned)** describe what is still to come.
 
-### Current state (`develop`)
+### Current state
 - UI: the admin has its own root layout (`app/admin/layout.tsx`, Vietnamese-only UI) and sits
   **outside** `app/[locale]` and outside next-intl. `app/admin/login` and `app/admin/account/password`
   (the forced change) are standalone dark-card pages (`AuthCardShell`); everything else lives in the
   route group `app/admin/(console)/`, whose server layout calls `requireUser()` and renders
-  `components/admin/admin-shell.tsx`. Console pages: `account`, `users` and `audit` (Phase 2), the **content
-  editors** `content/[type]` + `content/[type]/[id]` (Phase 3d — see **Content model → Editors**), plus
-  the five legacy editors `site-content`, `products`, `blog`, `media`, `translations` (client components,
-  no longer wrapping themselves in the shell; hidden from the sidebar when `NODE_ENV=production`).
-- API: `app/api/admin/{blog,media,products,translations,translate}`. Persistence is
-  `lib/content-store.ts`, which reads and writes `data/content/*.json`, `messages/*.json`
-  and `public/uploads/` on the **local filesystem**.
-- Auth: Better Auth guards both the pages and these API routes (`requireApiUser`: content routes need
-  `content:edit`, media upload `media:upload` as multipart, media delete `media:delete`). The old shared-password
+  `components/admin/admin-shell.tsx`. Console pages: `account`, `users` and `audit` (Phase 2) and the **content
+  editors** `content/[type]` + `content/[type]/[id]` (Phase 3d — see **Content model → Editors**). The five pre-database
+  editors (`site-content`, `products`, `blog`, `media`, `translations`), their API (`/api/admin/{blog,media,products,translations,translate}`) and
+  `lib/content-store.ts` (which wrote `data/content/*.json`, `messages/*.json` and `public/uploads/` on the local filesystem) were **deleted in Phase 4 M5**.
+- API: `app/api/admin/content/**` (drafts, publish, revisions, delete) and `app/api/admin/preview`. Auth: Better Auth guards the pages and every handler
+  (`requireApiUser`: content routes need `content:edit` / `content:publish` / `content:delete`). The old shared-password
   session (`lib/admin-auth.ts`, a hardcoded fallback password and a forgeable base64 cookie) is deleted; those
-  credentials remain in git history until Phase 7 rotates anything that ever used them. The handlers still parse
-  bodies with `request.json() as T` and write to the source tree — they are Caddy-blocked in production and are
-  replaced wholesale in Phase 3, so don't extend them.
-- **What the public site sees of admin edits (Phase 4 M2):** the catalog — products, categories, shapes, materials, traits, sizes and
-  specs — and the whole navigation (mega-menus, footer, home shop strips) come from the content database, so a publish shows on the
-  next request, no rebuild; since M3 so do the blog (posts, categories, URLs), Fast Print (items, prices, units), the `/products` showcase
-  gallery and the UI copy (`messages/*.json` + the published `site_message` texts). What is still in code: the two product hrefs of
-  `ShopBanner` (they redirect through aliases; M4), the fixed path words and hreflang / sitemap / JSON-LD (M4). `products.json` /
-  `subgroups.json` are never read at all.
-- `/api/admin/translate` is a stub (returns the input unchanged unless it is one of six
-  hardcoded nav labels).
+  credentials remain in git history until Phase 7 rotates anything that ever used them.
+- **What the public site sees of admin edits:** everything — the catalog (products, categories, shapes, materials, traits, sizes, specs), the whole navigation
+  (mega-menus, footer, home shop strips), the blog (posts, categories, URLs), Fast Print (items, prices, units), the `/products` showcase gallery and the UI copy
+  (`messages/*.json` + the published `site_message` texts) come from the content database, so a publish shows on the next request, no rebuild. What is
+  still in code: the structure of the UI copy (`messages/*.json`) and the fixed path words (`lib/routes.ts`). **Drafts are visible to editors through Preview** (below).
+- **Preview (Phase 4 M5).** «Xem trước» in an editor (open draft, saved) → `POST /api/admin/preview {type, id, locale}` (`requireApiUser`, `content:edit`) refuses a draft
+  that is missing or invalid (422 with the editor's issues), turns **Draft Mode** on (`__prerender_bypass`, `Secure; SameSite=None` — plain-HTTP `localhost` works in Chrome/Firefox
+  only because they treat it as secure) and answers `{ url }`: the draft's own page in the chosen language (`lib/content/read/preview-target.ts`, on the overlaid catalog and blog, so a
+  never-published product gets its draft URL). The editor opens it in ONE named tab (`vd-preview`, opened synchronously in the click so the pop-up blocker allows it).
+  - **The preview is the published site with EVERY valid open draft laid over it** (drafts are per entity, not per user): `lib/content/read/preview.ts` — `overlayOf` (pure: valid
+    drafts apply, the rest are skipped and named with their first issue) and `loadPreviewOverlay` (every `content_draft` through `validateSnapshot`). The `load*` functions in
+    `load.ts` take the overlay (`documentsOf`: the live documents in order, a draft standing in for its entity, then the drafts of entities not published yet) and the pure builders
+    after them cannot tell. The `get*` the pages call are `previewable(...)`: with an overlay they read the database directly — **never through `cachedRead`, so a preview cannot reach
+    the data cache** — otherwise the cached published read. `getPublishedCatalog` / `getPublishedBlog` are what `app/sitemap.ts` reads (a preview cookie must not put drafts in `sitemap.xml`).
+  - **The gate** (`lib/content/read/preview-session.ts`, `previewOverlay()`, once per request): Draft Mode on AND a signed-in user past the forced password change AND `content:edit`; anything
+    short of that reads the published site. The bypass cookie alone is a switch, never an identity. `components/ui/preview-notice.tsx` (server) → `preview-banner.tsx` (client) draw the strip
+    «Đang xem bản nháp · N đang hiển thị» (applied / skipped drafts with links to their editors, «Thoát xem trước» = `DELETE /api/admin/preview` + reload) only for a request that passes the gate,
+    so the ISR pages every visitor gets carry no trace of it (verified in production mode: ISR `HIT` with `s-maxage` for visitors before, during and after an editor's preview of the same URL).
+  - Limits to know: a draft that is valid alone but refers to something that exists only as another draft (a new material used by a new product) is skipped until the first is published
+    (references are checked against the live rows, like publish); the preview recomposes catalog + menus + messages uncached (hundreds of ms — editors only).
 
 ### Target **(planned — see the phases in `docs/admin-architecture.md`)**
 PostgreSQL + Drizzle ORM · Better Auth with invite-only named accounts and `admin` /
-`editor` roles · public pages reading content through `lib/content/*` (tag-cached, with a
-static-seed fallback) · validated media pipeline served from a volume · Docker Compose +
+`editor` roles · public pages reading content through `lib/content/read/*` (tag-cached, no static fallback) ·
+validated media pipeline served from a volume (Phase 5) · Docker Compose +
 Caddy on one VPS. **The customer must be able to edit every product attribute in all 5
 languages**, and edits are **drafts until published** (draft → preview → publish, every publish a
 restorable revision). The relational schema (validated against the real data), the draft/publish
@@ -403,8 +399,7 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   fake user; one `content.seeded` audit row) and the 41 `legacy_import` archive rows, and writes the Vietnamese owner-review
   report (default `docs/seed-report.md`, gitignored). **Seed-if-empty, never merge:** editors change content afterwards, so a
   second run does nothing (advisory lock; two at once seed once). Re-seeding means dropping the database and migrating.
-  The seed only READS the site's sources; Phase 4 deletes some of them (`lib/product-sizes.ts`, `lib/product-specs.ts`, the
-  menus…), so the seed is a pre-Phase-4 tool — production gets the owner-approved content by restoring a full `pg_dump` of a
+  The seed only READS the site's sources, which live in `scripts/seed/legacy/` since Phase 4 M5 — production gets the owner-approved content by restoring a full `pg_dump` of a
   seeded database at cutover (decided; nothing is built for it). After seeding it applies the suggested zh/ja/ko translations (revision 2
   of 12 traits and the Tet flyer product). Pitfalls found while porting it: 13 `ProductOption` objects
   are shared between products, so option lookups are per product (`optionRecordFor`), never a global identity map; `pg`
@@ -480,8 +475,9 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   `ENTITY_META[type].editable`, add a sample document to `forms.test.ts`, give it a nav look in `admin-nav.ts`.
   `client-bundle.test.ts` fails if the browser code reaches a server-only module through its imports. Media: `GET
   /api/admin/content/media` (read-only; uploads are Phase 5, files are served at `/<storage_key>`). zod messages reach the editor in
-  Vietnamese (`parseOptions`, passed per parse — never `z.config`, which would change env validation too). No Preview button until
-  Phase 4 (the public pages cannot render a draft yet): the publish dialog's field-level diff is the feedback. There is no DOM test
+  Vietnamese (`parseOptions`, passed per parse — never `z.config`, which would change env validation too). The header has a «Xem trước» button
+  (enabled while a draft is open and saved — it waits for the autosave; `api.previewDraft(ref, language)`, see **Preview** under Admin CMS) next to «Hủy bản nháp» / «Xuất bản…»;
+  the publish dialog's field-level diff stays the review of what changes. There is no DOM test
   library: interaction is covered by the reducers' tests and a browser smoke (see docs/verification), rendering by server-side
   rendering in tests.
   **The product editor (3d-2)** is one draft edited in six tabs (`components/admin/content/forms/product/`: general, URLs & SEO, shapes,
@@ -500,7 +496,7 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   because a publish keeps every alias it holds. Browser-smoke findings kept in mind: restoring an old version after a category move
   and publishing it keeps every URL (19 rows for one product, none lost).
   **Post, category, menu and UI copy (3d-3).** A **post** (`forms/post-form.tsx`): text per language (the content box is tall; format
-  `plain` | `markdown`, no preview until Phase 4), category from the post categories, a `DateField`, read time, cover, slug + SEO. A post that was
+  `plain` | `markdown`), category from the post categories, a `DateField`, read time, cover, slug + SEO. A post that was
   never published follows its titles for its slugs (`slug-ops.ts`: `setRootSlug`, `followRootNames`, the same rules as a product's); a
   published post's URL never changes by typing. The create dialog dates a new post in Vietnam (`vietnamToday`) and files it under a post
   category (`ENTITY_META.group` drives the list column and the dialog's select for products and posts alike). A **category**
@@ -524,7 +520,7 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   `site-message-labels.ts` (a test keeps them equal to the keys of `messages/vi.json`). A missing required text reads «Bắt buộc phải nhập.»
   (`MESSAGES.required`), not zod's default. Known gaps: aliases of posts and categories are listed but cannot be released (the service only
   releases product URLs); the reserved `seo` / `business` namespaces cannot be created from the UI (site_message is not creatable).
-- **Public read layer (Phase 4: M1 foundation, M2 catalog pages + navigation, M3 blog / Fast Print / showcase / UI copy, M4 URL words + SEO + sitemap — landed).** `lib/content/read/`: `catalog.ts` / `menus.ts` /
+- **Public read layer (Phase 4 — complete: M1 foundation, M2 catalog pages + navigation, M3 blog / Fast Print / showcase / UI copy, M4 URL words + SEO + sitemap, M5 Preview + cleanup).** `lib/content/read/`: `catalog.ts` / `menus.ts` /
   `selectors.ts` / `urls.ts` / `messages.ts` are PURE functions from the documents (`composeEntity`, proven lossless) to the public site's view
   models (`types.ts`: `CategoryView`, `ProductView` with shapes / options / sizes / specs, `MenuView`, traits, materials); `load.ts` has the
   database loaders (`loadCatalog`, `loadMenus`, `loadPublishedMessages`, any executor — the tests use a seeded scratch database) and the cached
@@ -594,6 +590,15 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   og:url / locale / image, Twitter card, JSON-LD parses, title = og:title); a vi-only `seoTitle` shows in Vietnamese only; a `shopBanner` link and `seo.siteName`
   publish show without a rebuild; the switcher lands on the other language's canonical in one request from a product, material, post, Fast Print and the home
   page; hash deep links and in-page hash navigation work on `/san-pham/…`.
+  **M5 — Preview and cleanup.** Preview is described under **Admin CMS → Preview**; the loaders' `overlay` argument and the `previewable` wrapper are in `load.ts`. Cleanup: the
+  seed-only sources moved to `scripts/seed/legacy/`, the five pre-database editors, their API and `lib/content-store.ts` were deleted, the Caddy list lost the legacy paths
+  (and bare `/api/admin`), `outputFileTracingExcludes` is gone. **Evidence:** `preview.test.ts`, `preview-target.test.ts`, `preview.int.test.ts` (an edited product, a draft-only product at its draft
+  URL, an invalid draft held back, an archived draft, post / menu / UI copy / Fast Print drafts, an empty preview equal to the published read), `app/api/admin/preview/preview.int.test.ts` (route:
+  401 / 403 / 415 / 422 / 404, Draft Mode switched on only for a valid draft, the landing page of each kind; the gate: Draft Mode off, no session, temporary password) with 7 mutations of the loader,
+  the gate and the route caught; production-mode smoke on a scratch seeded database (34 checks: the editor sees drafts, visitors never do — ISR `HIT` before / during / after, the bypass cookie
+  alone shows nothing, the sitemap lists no draft, the removed admin paths 404, publish makes preview and site agree) and a browser run of the editor button (disabled while unsaved, named tab,
+  banner, in-preview navigation, exit, the refusal closing the blank tab); `pnpm parity:compare` unchanged (331 identical + 1,491 forms-only + 43 explained + 0 other, hops 29 × 0, 1,473 × 1, 363 × 2);
+  the Caddy list probed with the caddy image.
 - **Tests:** `app/api/admin/content/content-api.int.test.ts` (who may call what, preconditions, error shapes, cache tags, audit rows —
   with the app's own database pointed at a seeded scratch one by setting `DATABASE_URL` before the first `getDb()`),
   `lib/content/http.test.ts`; `lib/content/entities.int.test.ts` (all 202 seeded entities publish unchanged; each of the nine creatable types is created,
@@ -618,7 +623,7 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   (never `process.env` directly) and fail fast when it is missing.
 - **Mutations must invalidate the public site** — `revalidateTag(tag, { expire: 0 })`
   (two-argument form) from a Route Handler.
-- **Don't import `lib/content-store.ts` from public pages**; it is deleted by Phase 4.
+- **Public code imports nothing under `scripts/`** (the seed and its legacy sources) — `lib/content/read/legacy-sources.test.ts` enforces it.
 - **Never write content to the filesystem at runtime** in new code — content goes to the
   database (Phase 3), uploads to the uploads volume (Phase 5), never into `public/`.
 - **No product attribute in code.** Names, text, sizes, spec lists, icons, prices and menu
@@ -723,15 +728,13 @@ Runbook and rationale: `docs/deployment.md`.
 - App container: non-root, read-only root FS (writable: `/tmp` and the `.next/cache` volume — the data cache is keyed by build, so a deploy never reads the previous build's entries),
   `cap_drop: ALL`, no published ports. `db` sits on an `internal` network. **One app instance only.**
 - Building needs internet (`next/font/google`) and `--build-arg SITE_URL=…` — nothing else.
-- `deploy/Caddyfile` is fail-closed for the admin: under `/admin` only `login`, `account`, `users`, `audit` and
-  `content` are reachable, and under `/api/admin` only `content`; every other `/admin*` path and `/api/admin/*` route (the
-  legacy editors and their API, which write to the source tree) 404 until Phase 4 deletes them — **a new admin page or API
-  path must be added to the `not path` list**. `/api/auth/*` is
+- `deploy/Caddyfile` is fail-closed for the admin (`@admin_unlisted`): under `/admin` only `login`, `account`, `users`, `audit` and
+  `content` are reachable, and under `/api/admin` only `content` and `preview`; every other `/admin*` and `/api/admin*` path 404s — **a new admin page or API
+  path must be added to the `not path` list** (test it with the caddy image and no upstream: 502 = passes, 404 = blocked). `/api/auth/*` is
   open (sign-in). It also 404s `/api/health` (internal healthcheck only) and overwrites `X-Real-IP` with the TCP peer.
-- `output: "standalone"` does not copy `public/` or `.next/static`; the runner stage does.
-  `next.config.ts` still carries the Vercel-era `outputFileTracingExcludes` workaround for `public/`,
-  removed in Phase 4. The image is ~1.1 GB mostly because ~1,700 prerendered pages ship in
-  `.next/server/app`; request-time rendering (Phase 4) shrinks it.
+- `output: "standalone"` does not copy `public/` or `.next/static`; the runner stage does. The Vercel-era `outputFileTracingExcludes` workaround for `public/` is gone
+  (its cause, `content-store` scanning `public/`, was deleted in Phase 4 M5; the trace no longer pulls `public/` in). Measured at M5: `.next/standalone` 59 MB (it was 67 MB
+  with `data/` traced in), `.next/server/app` 3.8 MB — nothing under `[locale]` is prerendered any more, so the old ~1,700 prerendered pages no longer ship.
 
 ---
 
@@ -769,11 +772,11 @@ zero warnings.
 ```
 app/
   [locale]/                 public site — layout mounts SiteDataProvider, SmoothScroll, QuoteModalProvider, FloatingContact, LanguageDetectorToast; products/[category]/[product]/[segment] are dynamic routes
-  admin/                    CMS UI — own root layout, Vietnamese only, outside next-intl (see Admin CMS); login/, account/password/ standalone; (console)/ = shell + account, users, audit + legacy editors
+  admin/                    CMS UI — own root layout, Vietnamese only, outside next-intl (see Admin CMS); login/, account/password/ standalone; (console)/ = shell + account, users, audit + content/[type]/[id] editors
   [locale]/not-found.tsx    localized 404 (Navbar + Footer); reached via the [locale]/[...rest] catch-all
   api/consult/              public lead endpoint (nodemailer)
   api/health/               liveness for the Docker healthcheck (always 200; db state in the body)
-  api/admin/                CMS API: blog, media, products, translations, translate (route-guards.test.ts + legacy-routes.int.test.ts enforce the guard)
+  api/admin/                CMS API: content/** (drafts, publish, revisions, delete) and preview (Draft Mode switch) — route-guards.test.ts enforces the guard; preview.int.test.ts the switch and the gate
   robots.ts                 robots.txt (names the sitemap)
   sitemap.ts                sitemap.xml — dynamic, built by lib/content/read/sitemap.ts
   zalo-reply/               client page: copy a prepared reply, open Zalo
@@ -824,29 +827,18 @@ lib/
   icons.ts                  the icon registry: stored name → lucide component (ICONS, ICON_NAMES, resolveIcon); draw with components/ui/named-icon.tsx
   logger.ts                 getLogger(scope) (pino, redaction), maskPhone(), logRequestError()
   db/index.ts               lazy pg Pool + drizzle handle (getPool/getDb/pingDatabase)
-  locale.ts                 pickLocale(locale, vi, en, zh?, ja?, ko?) for data/*.ts fields
+  locale.ts                 pickLocale(locale, vi, en, zh?, ja?, ko?) for per-language fields
   routes.ts                 the fixed URL words per language + localizePath / toInternalPath / publicPath / parsePublicPath / decideRoute (import-free: browser, proxy, tests)
   locale-switch.ts          client: the other language's address from the page's own <link rel=alternate hreflang>
   contact.ts                Phone / Zalo / email constants
   motion.ts                 imageWipeReveal Motion variant (clip-path wipe-down reveal)
   utils.ts                  cn()
   hash-navigation.ts, menu-active.ts   Safe hash navigation (aliases through `data-aliases`), active-menu detection (plain comparison of canonical links)
-  shape-aliases.ts          the old shape-id dictionary — seed only (public code must not import it)
-  product-sizes.ts, product-specs.ts   the old name-matching size / spec heuristics — seed only
-  content-store.ts          admin-only: local-filesystem persistence — to be replaced (see Admin CMS)
-data/
-  subgroups-catalog.ts      MAIN_CATEGORIES (4) + SUBGROUPS_CATALOG (25) — the seed's input (the public site reads the database)
-  categories.ts             ProductCategory/ProductItem/ProductOption types (seed / legacy admin)
-  showcase.ts               showcaseImages (the old /products gallery — seed input)
-  translations.ts           zh/ja/ko text for showcase labels, categories, items, shapes (seed input)
-  posts.ts                  BlogPost type, blogPosts (from content/posts.json) + categoryColors (seed / legacy admin input)
-  marketing-menu.ts, office-menu.ts, packaging-menu.ts, tet-menu.ts   the old mega-menu columns (seed input)
-  material-traits.ts        the old MaterialTrait icon glossary (seed input)
-  content/                  JSON written by the current admin (only posts.json is read by the site)
+  content/read/preview*.ts  Preview: preview.ts (overlayOf / loadPreviewOverlay — valid drafts laid over the published reads), preview-session.ts (the gate: Draft Mode + editor session), preview-target.ts (the page an editor's draft lands on)
 scripts/
   admin-cli.ts, admin/      `pnpm admin:create` / `admin:reset-password` — entry + prompt.ts (hidden raw-mode input), commands.ts (testable logic), rules.ts, errors.ts
   parity/                   `pnpm parity:capture` / `parity:compare` — page text + links of the old site vs the new (classify.ts, compare.ts, text.ts, capture.ts)
-  seed-cli.ts, seed/        `pnpm seed` — entry · index.ts (seed-if-empty, dry run) · run.ts (the order of the steps) · sources.ts · steps/* · measures.ts · report/* (Vietnamese owner report) · *.int.test.ts (counts, parity with the source, URLs, menus)
+  seed-cli.ts, seed/        `pnpm seed` — entry · index.ts (seed-if-empty, dry run) · run.ts (the order of the steps) · sources.ts · steps/* · measures.ts · report/* (Vietnamese owner report) · legacy/ (the static sources the database replaced: catalog, translations, posts, showcase, Fast Print, menus, traits, size / spec heuristics, shape aliases — seed input only) · *.int.test.ts (counts, parity with the source, URLs, menus)
   optimize-images.mjs       sharp-based image optimization script (run by hand)
 components/
   blog/                     post-body.tsx (a post's blocks in the article's classes), post-category-badge.tsx (category colors by key, neutral default)
@@ -857,7 +849,6 @@ components/
   admin/                    admin-shell (+ admin-nav.ts role-filtered sidebar, admin-theme.tsx), auth-card-shell, password-field, notice, failure-notice, modal, page-parts (PageHeader, AdminCard, button/input classes)
     content/                the content editors: entity-editor, entity-list, create-dialog, editor-context, field primitives (fields, media-field, icon-field, field-shell), language-tabs, publish-dialog, history-panel, danger-card, diff-view, issue-list, use-draft-session; forms/ = one form per entity type (forms/product/ = the six-tab product editor, forms/menu/ = the menu editor, post-form, category-form, site-message-form) + forms.test.ts (coverage of all twelve); list-card, slug-field, alias-list, media-list-field, use-open-keys = the building blocks of the nested editors
     account/, users/, audit/   sessions panel · users manager (cards, create / confirm / one-time-password dialogs, user-actions.ts) · audit filter form + table
-    donut-chart, media-card, media-delete-modal, media-picker-modal   legacy editors' pieces
   sections/                 all "use client"; landing page order = page.tsx import order
     Navbar.tsx              Fixed top nav, mobile hamburger drawer, 5-locale flag switcher (reads useSiteData)
     MegaMenuDesktop.tsx, MegaMenuMobile.tsx   the ONE mega-menu pair, driven by a category's NavMenu
@@ -887,6 +878,7 @@ components/
     floating-contact.tsx      Global Zalo/phone floating buttons (root layout)
     quote-modal.tsx, consult-bottom-sheet.tsx   Lead-capture UIs; both POST to /api/consult
     language-detector-toast.tsx, auto-scroll-to-target.tsx, zalo-icon.tsx   Locale suggestion toast, hash auto-scroll helper, Zalo glyph
+    preview-notice.tsx, preview-banner.tsx   Draft Mode strip (server decides via the gate, client draws applied / skipped drafts and «Thoát xem trước»)
   seo/json-ld.tsx           <script type="application/ld+json"> that cannot be closed by editor text (serializeJsonLd)
     named-icon.tsx            <NamedIcon name> — draws an icon the database names (lib/icons.ts)
     material-flashcard.tsx    Per-option flip card (takes a CardView): images, traits, sizes / specs form, copy-to-Zalo consult flow

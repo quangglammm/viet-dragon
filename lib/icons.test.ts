@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Layers, Zap } from "lucide-react";
-import { MAIN_CATEGORIES, SUBGROUPS_CATALOG } from "@/data/subgroups-catalog";
-import { materialTraits } from "@/data/material-traits";
+import { MAIN_CATEGORIES, SUBGROUPS_CATALOG } from "@/scripts/seed/legacy/subgroups-catalog";
+import { materialTraits } from "@/scripts/seed/legacy/material-traits";
 import { PRINT_PRODUCTS } from "@/scripts/seed/legacy/fast-print";
 import { ICON_NAMES, ICONS, isIconName, resolveIcon } from "./icons";
 

@@ -1,4 +1,4 @@
-import type { ProductOption } from "@/data/categories";
+import type { ProductOption } from "@/scripts/seed/legacy/categories";
 import * as schema from "@/lib/db/schema";
 import { isIconName } from "@/lib/icons";
 import type { MaterialRecord, MediaRegistry, OptionModel, OptionRecord, ProductRecord, SeedContext } from "../context";

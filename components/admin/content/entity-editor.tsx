@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FilePen, Loader2, Rocket, Trash2 } from "lucide-react";
+import { Eye, FilePen, Loader2, Rocket, Trash2 } from "lucide-react";
 import { Modal } from "@/components/admin/modal";
 import { Notice } from "@/components/admin/notice";
 import { BUTTON_PRIMARY, BUTTON_SECONDARY, PageHeader } from "@/components/admin/page-parts";
@@ -26,6 +26,8 @@ import { PublishDialog } from "./publish-dialog";
 import { useDraftSession } from "./use-draft-session";
 
 const UUID_VALUE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+/** One named tab for every preview, so the next one replaces the page instead of piling up tabs. */
+const PREVIEW_TAB = "vd-preview";
 
 type EntityEditorProps = {
   entity: Ref;
@@ -49,6 +51,7 @@ export function EntityEditor({ entity, label, live, initialDraft, vocab, authors
   const [publishing, setPublishing] = useState(false);
   const [discarding, setDiscarding] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [previewing, setPreviewing] = useState(false);
   const [releasing, setReleasing] = useState<{ language: LocaleCode; alias: ReleasableAlias } | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const meta = ENTITY_META[entity.type];
@@ -103,10 +106,30 @@ export function EntityEditor({ entity, label, live, initialDraft, vocab, authors
     else setMessage(result.problem.message);
   };
 
+  // The tab is opened here, inside the click: after the request it would be a pop-up and the browser would block it.
+  const preview = async () => {
+    const tab = window.open("about:blank", PREVIEW_TAB);
+    if (!tab) return setMessage("Trình duyệt đã chặn cửa sổ mới. Hãy cho phép cửa sổ bật lên cho trang này rồi thử lại.");
+    setMessage(null);
+    setPreviewing(true);
+    const result = await api.previewDraft(entity, language);
+    setPreviewing(false);
+    if (result.ok) {
+      tab.location.href = result.data.url;
+      tab.focus();
+    } else {
+      tab.close();
+      // The issues themselves are already listed below the header, so the notice says what to do about them.
+      setMessage(result.problem.code === "INVALID" ? "Bản nháp chưa hợp lệ nên chưa xem trước được. Hãy sửa các lỗi trong danh sách bên dưới." : result.problem.message);
+    }
+  };
+
   const status = (session.document.status as string | undefined) ?? "published";
   // Letting an old URL go is its own publish: only from the live view (no open draft to go stale), and only for those who may publish.
   const canRelease = entity.type === "product" && !session.editing && canPublish;
   const publishable = canPublish && isPublishable(session);
+  // The preview shows what is SAVED, so it waits for the autosave (about a second after the last keystroke).
+  const savedForPreview = session.draftVersion !== null && (session.save === "clean" || session.save === "saved");
   const saveText = describeSave(session, formatAdminTime);
 
   return (
@@ -124,6 +147,15 @@ export function EntityEditor({ entity, label, live, initialDraft, vocab, authors
             )}
             {session.editing && (
               <>
+                <button
+                  type="button"
+                  disabled={!savedForPreview || previewing}
+                  title={savedForPreview ? "Mở website với bản nháp này (ngôn ngữ đang chọn)." : "Đang chờ lưu bản nháp…"}
+                  onClick={() => void preview()}
+                  className={BUTTON_SECONDARY}
+                >
+                  {previewing ? <Loader2 size={14} className="animate-spin" aria-hidden /> : <Eye size={14} aria-hidden />} Xem trước
+                </button>
                 <button type="button" onClick={() => setDiscarding(true)} className={BUTTON_SECONDARY}>
                   <Trash2 size={14} aria-hidden /> Hủy bản nháp
                 </button>

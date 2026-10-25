@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import * as schema from "@/lib/db/schema";
 import type { DbExecutor } from "@/lib/db/types";
 import { pickLocale } from "@/lib/locale";
-import type { SizeItem } from "@/lib/product-sizes";
+import type { SizeItem } from "@/scripts/seed/legacy/product-sizes";
 import type { ProductRecord, ShapeRecord } from "./context";
 import { LOCALES, localizedText, type Locale } from "./localized";
 import { formatMaterialDisplayName } from "./material-name";

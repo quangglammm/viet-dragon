@@ -1,4 +1,4 @@
-import type { MaterialTraitKey } from "@/data/material-traits";
+import type { MaterialTraitKey } from "@/scripts/seed/legacy/material-traits";
 
 // AI-SUGGESTED translations for the Chinese, Japanese and Korean text the site does not have yet. They are written
 // from the Vietnamese and English sources, are NOT reviewed by a native reader, and are flagged everywhere:

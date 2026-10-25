@@ -133,7 +133,7 @@ const LIVE: Record<DraftEntityType, (x: DbExecutor) => Promise<LiveRow[]>> = {
 };
 
 /** The Vietnamese name a draft's document gives itself, for a new entity that has no live row to read it from. */
-function labelOfSnapshot(snapshot: unknown): string | null {
+export function labelOfSnapshot(snapshot: unknown): string | null {
   const document = snapshot as { i18n?: Record<string, Record<string, unknown> | string | undefined>; key?: unknown } | null;
   const vi = document?.i18n?.[VI];
   const named = typeof vi === "object" && vi !== null ? (vi.title ?? vi.name ?? vi.label) : undefined;

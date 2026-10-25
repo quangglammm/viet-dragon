@@ -8,16 +8,15 @@
 		max_size 2MB
 	}
 
-	# Fail closed: under /admin only the Better Auth console (sign-in, account, users, audit) and the content
-	# editors on the database (/admin/content, and the API behind them, /api/admin/content) are public.
-	# The pre-Phase-3 editors (/admin/site-content, products, blog, media, translations) and the legacy
-	# /api/admin/* routes behind them write into the source tree, so they stay 404 until Phase 4 deletes
-	# them. /api/auth/* is not matched here, so sign-in works.
-	@admin_not_ready {
-		path /admin /admin/* /api/admin/*
-		not path /admin /admin/login /admin/login/* /admin/account /admin/account/* /admin/users /admin/users/* /admin/audit /admin/audit/* /admin/content /admin/content/* /api/admin/content /api/admin/content/*
+	# Fail closed: a new admin page or API path is a 404 until it is added here. Under /admin only the Better Auth
+	# console (sign-in, account, users, audit) and the content editors (/admin/content) are public, and under
+	# /api/admin only the API behind those editors (/api/admin/content) and the preview switch (/api/admin/preview).
+	# /api/auth/* is not matched here, so sign-in works.
+	@admin_unlisted {
+		path /admin /admin/* /api/admin /api/admin/*
+		not path /admin /admin/login /admin/login/* /admin/account /admin/account/* /admin/users /admin/users/* /admin/audit /admin/audit/* /admin/content /admin/content/* /api/admin/content /api/admin/content/* /api/admin/preview
 	}
-	respond @admin_not_ready 404
+	respond @admin_unlisted 404
 
 	# Docker's healthcheck calls the app directly; there is no reason to expose this publicly.
 	@health path /api/health

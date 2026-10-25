@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { materialTraits } from "@/data/material-traits";
+import { materialTraits } from "@/scripts/seed/legacy/material-traits";
 import { BULLET_SUGGESTIONS, SUGGESTED_LOCALES, SUGGESTION_TEXT_COUNTS, TRAIT_SUGGESTIONS, type SuggestedLocale } from "./suggested-translations";
 
 // These translations are machine-suggested and not reviewed by a native reader. The tests can only catch mechanical

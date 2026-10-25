@@ -84,6 +84,7 @@ export interface PublishPayload {
 
 const NETWORK_PROBLEM: ApiProblem = { status: 0, code: "NETWORK", message: "Không kết nối được máy chủ. Hãy kiểm tra mạng rồi thử lại." };
 const BASE = "/api/admin/content";
+const PREVIEW_URL = "/api/admin/preview";
 
 const entityUrl = (ref: Ref): string => `${BASE}/${entityTypeToUrl(ref.type)}/${encodeURIComponent(encodeEntityId(ref.type, ref.id))}`;
 
@@ -153,6 +154,8 @@ export function createContentApi(fetcher: Fetcher = (input, init) => fetch(input
     usedBy: (ref: Ref) => call<{ live: number; drafts: number }>("GET", `${entityUrl(ref)}/used-by`),
     releaseAlias: (ref: Ref, body: { locale: string; slug: string; category?: string }) => call<{ ref: Ref; version: number }>("POST", `${entityUrl(ref)}/release-alias`, { body }),
     deleteEntity: (ref: Ref, comment?: string) => call<{ ref: Ref; version: number }>("DELETE", entityUrl(ref), { body: comment ? { comment } : {} }),
+    /** Turns the preview on and answers the page that shows the draft, in `locale`. */
+    previewDraft: (ref: Ref, locale: string) => call<{ url: string }>("POST", PREVIEW_URL, { body: { type: ref.type, id: ref.id, locale } }),
     media: (params: MediaQueryParams) => call<{ items: MediaRow[]; hasMore: boolean; folders: { folder: string; count: number }[] }>("GET", `${BASE}/media${query({ ...params })}`),
   };
 }

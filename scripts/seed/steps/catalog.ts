@@ -1,4 +1,4 @@
-import type { ShapeItem, SubgroupCategory } from "@/data/subgroups-catalog";
+import type { ShapeItem, SubgroupCategory } from "@/scripts/seed/legacy/subgroups-catalog";
 import * as schema from "@/lib/db/schema";
 import type { MediaRegistry, ProductRecord, SeedContext, ShapeRecord } from "../context";
 import { LOCALES, TRANSLATED_LOCALES, localizedText, translated } from "../localized";

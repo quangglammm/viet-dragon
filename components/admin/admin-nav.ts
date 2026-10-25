@@ -2,10 +2,8 @@ import {
   FileText,
   FolderTree,
   Gem,
-  Image as ImageIcon,
   Images,
   Languages,
-  LayoutTemplate,
   ListChecks,
   Package,
   PanelTop,
@@ -69,21 +67,11 @@ const CONTENT_ITEMS: NavItem[] = EDITABLE_TYPES.map((type) => ({
   permission: ["content", "edit"],
 }));
 
-// The pre-Phase-3 editors. They write to the source tree, so production hides them (Caddy blocks them too).
-const LEGACY_EDITOR_ITEMS: NavItem[] = [
-  { href: "/admin/site-content", label: "Quản Lý Giao Diện & Ảnh", subtitle: "Sửa tất cả chữ & ảnh website", icon: LayoutTemplate },
-  { href: "/admin/products", label: "Sản Phẩm & Quy Cách In", subtitle: "Danh mục, quy cách & vật liệu", icon: Package },
-  { href: "/admin/translations", label: "Bản Dịch 5 Ngôn Ngữ", subtitle: "VI · EN · ZH · JA · KO", icon: Languages },
-  { href: "/admin/media", label: "Thư Viện Mẫu In & Ảnh", subtitle: "Ảnh mẫu in, bao bì & xưởng", icon: ImageIcon },
-  { href: "/admin/blog", label: "Kiến Thức & Tin Tức In", subtitle: "Mẹo in ấn, case study", icon: FileText },
-].map((item): NavItem => ({ ...item, permission: ["content", "edit"] }));
-
 /** The sidebar for one role: sections the role cannot use at all are dropped, not left empty. */
-export function buildNav(role: string, showLegacyEditors: boolean): NavSection[] {
+export function buildNav(role: string): NavSection[] {
   const sections: NavSection[] = [
     { title: "Tài Khoản & Hệ Thống", items: ACCOUNT_ITEMS },
     { title: "Nội Dung Website", items: CONTENT_ITEMS },
-    ...(showLegacyEditors ? [{ title: "Danh Mục Quản Trị", items: LEGACY_EDITOR_ITEMS }] : []),
   ];
   return sections
     .map((section) => ({ ...section, items: section.items.filter((item) => !item.permission || hasPermission(role, item.permission)) }))

@@ -1,5 +1,5 @@
-import type { ProductOption } from "@/data/categories";
-import type { ShapeItem } from "@/data/subgroups-catalog";
+import type { ProductOption } from "@/scripts/seed/legacy/categories";
+import type { ShapeItem } from "@/scripts/seed/legacy/subgroups-catalog";
 import * as schema from "@/lib/db/schema";
 import { isIconName } from "@/lib/icons";
 import type { MaterialRecord, OptionModel, SeedContext } from "../context";

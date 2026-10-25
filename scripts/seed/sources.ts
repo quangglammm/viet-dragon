@@ -2,18 +2,18 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 import { z } from "zod";
-import { showcaseImages } from "@/data/showcase";
-import { materialTraits } from "@/data/material-traits";
-import { MARKETING_SUBMENU_COLUMNS } from "@/data/marketing-menu";
-import { OFFICE_SUBMENU_COLUMNS } from "@/data/office-menu";
-import { PACKAGING_SUBMENU_COLUMNS } from "@/data/packaging-menu";
-import { blogPosts, type BlogPost } from "@/data/posts";
-import { MAIN_CATEGORIES, SUBGROUPS_CATALOG, getSubgroupById, type ProductCategoryDef, type SubgroupCategory } from "@/data/subgroups-catalog";
-import { TET_SUBMENU_COLUMNS } from "@/data/tet-menu";
-import * as translations from "@/data/translations";
-import { getProductSizes } from "@/lib/product-sizes";
-import { PRINT_TECHNIQUES, getPostPressFinishing, getProductMaterials } from "@/lib/product-specs";
-import { SHAPE_ALIASES, toSlug } from "@/lib/shape-aliases";
+import { showcaseImages } from "@/scripts/seed/legacy/showcase";
+import { materialTraits } from "@/scripts/seed/legacy/material-traits";
+import { MARKETING_SUBMENU_COLUMNS } from "@/scripts/seed/legacy/marketing-menu";
+import { OFFICE_SUBMENU_COLUMNS } from "@/scripts/seed/legacy/office-menu";
+import { PACKAGING_SUBMENU_COLUMNS } from "@/scripts/seed/legacy/packaging-menu";
+import { blogPosts, type BlogPost } from "@/scripts/seed/legacy/posts";
+import { MAIN_CATEGORIES, SUBGROUPS_CATALOG, getSubgroupById, type ProductCategoryDef, type SubgroupCategory } from "@/scripts/seed/legacy/subgroups-catalog";
+import { TET_SUBMENU_COLUMNS } from "@/scripts/seed/legacy/tet-menu";
+import * as translations from "@/scripts/seed/legacy/translations";
+import { getProductSizes } from "@/scripts/seed/legacy/product-sizes";
+import { PRINT_TECHNIQUES, getPostPressFinishing, getProductMaterials } from "@/scripts/seed/legacy/product-specs";
+import { SHAPE_ALIASES, toSlug } from "@/scripts/seed/legacy/shape-aliases";
 import { PRINT_PRODUCTS } from "./legacy/fast-print";
 import { LOCALES, type Locale } from "./localized";
 
@@ -100,14 +100,14 @@ function liftLiteral(file: string, pattern: RegExp, description: string): string
 
 function loadSubgroupAliases(root: string): Record<string, string> {
   const literal = liftLiteral(
-    path.join(root, "data/subgroups-catalog.ts"),
+    path.join(root, "scripts/seed/legacy/subgroups-catalog.ts"),
     /const SUBGROUP_ALIASES: Record<string, string> = (\{[\s\S]*?\n\});/,
     "SUBGROUP_ALIASES",
   );
   return z.record(z.string(), z.string()).parse(evaluateLiteral(literal));
 }
 
-const SCANNED_DIRECTORIES = ["app", "components", "data", "lib", "messages", "i18n", "hooks", "scripts/seed/legacy"];
+const SCANNED_DIRECTORIES = ["app", "components", "lib", "messages", "i18n", "hooks", "scripts/seed/legacy"];
 const SCANNED_FILE = /\.(ts|tsx|json|css)$/;
 const ADMIN_PATH = /(^|\/)(admin|api\/admin)\//;
 const TEST_FILE = /\.(test|int\.test)\.ts$/;
@@ -123,7 +123,7 @@ function scanSource(root: string): { productLinks: Map<string, string>; mediaRef
     if (TEST_FILE.test(relative)) return;
     const text = fs.readFileSync(file, "utf8");
     for (const match of text.matchAll(MEDIA_PATH)) mediaReferences.add(match[1]);
-    if (ADMIN_PATH.test(relative)) return; // the legacy admin links are not the public site
+    if (ADMIN_PATH.test(relative)) return; // the admin's links are not the public site
     for (const match of text.matchAll(PRODUCT_LINK)) if (!productLinks.has(match[1])) productLinks.set(match[1], relative);
   };
   const walk = (directory: string): void => {

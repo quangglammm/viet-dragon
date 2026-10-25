@@ -1,5 +1,5 @@
-import type { ProductOption } from "@/data/categories";
-import type { ShapeItem, SubgroupCategory } from "@/data/subgroups-catalog";
+import type { ProductOption } from "@/scripts/seed/legacy/categories";
+import type { ShapeItem, SubgroupCategory } from "@/scripts/seed/legacy/subgroups-catalog";
 import type { Tx } from "@/lib/db/types";
 import type { Locale } from "./localized";
 import type { Notes } from "./notes";

@@ -60,6 +60,12 @@ export async function getDraft(x: DbExecutor, ref: EntityRef): Promise<Draft | n
   return row ? toDraft(row) : null;
 }
 
+/** Every open draft, oldest first: what a preview lays over the published site. */
+export async function listDrafts(x: DbExecutor): Promise<Draft[]> {
+  const rows = await x.select().from(schema.contentDraft).orderBy(schema.contentDraft.createdAt, schema.contentDraft.id);
+  return rows.map(toDraft);
+}
+
 /** The draft row, locked until the transaction ends. */
 export async function lockDraft(tx: Tx, ref: EntityRef): Promise<Draft | null> {
   const [row] = await tx.select().from(schema.contentDraft).where(whereDraft(ref)).for("update");

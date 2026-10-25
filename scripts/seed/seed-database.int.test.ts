@@ -96,8 +96,10 @@ describe("the owner report", () => {
   it("counts only files nothing mentions as unused (components that hard-code an image keep theirs)", () => {
     const { unreferencedMedia, registeredMedia } = seeded.status === "seeded" ? seeded.inspection : { unreferencedMedia: [], registeredMedia: 0 };
     expect(registeredMedia).toBe(1010);
-    expect(unreferencedMedia.length).toBeGreaterThan(250);
-    expect(unreferencedMedia.length).toBeLessThan(350);
+    // Was 250-350 while the old admin's catalog snapshots (data/content/{products,subgroups}.json, last edited 2026-10-11 and superseded by
+    // later edits of subgroups-catalog.ts) still mentioned ~320 photos nothing shows; with the snapshots deleted those count as unused too.
+    expect(unreferencedMedia.length).toBeGreaterThan(550);
+    expect(unreferencedMedia.length).toBeLessThan(650);
     expect(unreferencedMedia).not.toContain("images/category/innhanh.webp"); // hard-coded in FastPrintClient
   });
 

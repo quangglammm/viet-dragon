@@ -1,5 +1,5 @@
 import * as schema from "@/lib/db/schema";
-import type { SizeItem } from "@/lib/product-sizes";
+import type { SizeItem } from "@/scripts/seed/legacy/product-sizes";
 import type { ProductRecord, SeedContext, ShapeRecord } from "../context";
 import { LOCALES, localizedText, type Locale } from "../localized";
 import { parseDimensionsCm } from "../parse";

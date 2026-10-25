@@ -11,7 +11,7 @@ const FORBIDDEN_PACKAGES = ["drizzle-orm", "pg", "better-auth", "pino", "next/he
 const FORBIDDEN_MODULES = [
   "@/lib/db", "@/lib/dal", "@/lib/logger", "@/lib/env", "@/lib/auth", "@/lib/content/effects", "@/lib/content/http", "@/lib/content/drafts", "@/lib/content/publish", "@/lib/content/restore",
   "@/lib/content/delete", "@/lib/content/compose", "@/lib/content/summaries", "@/lib/content/used-by", "@/lib/content/validate", "@/lib/content/references", "@/lib/content/apply",
-  "@/lib/content/vocabulary", "@/lib/content/authors", "@/lib/content/media-library", "@/lib/content/read/load", "@/lib/content/read/cache",
+  "@/lib/content/vocabulary", "@/lib/content/authors", "@/lib/content/media-library", "@/lib/content/read/load", "@/lib/content/read/cache", "@/lib/content/read/preview", "@/lib/content/read/preview-session",
 ];
 
 const IMPORT = /^\s*import\s+(?!type\b)[^;]*?from\s+["']([^"']+)["']|^\s*export\s+(?!type\b)[^;]*?from\s+["']([^"']+)["']/gm;

@@ -3,7 +3,7 @@
 // - Shapes (Hình thức) -> rendered as cards on /products/[categoryId]/[subgroupId]
 // - Materials (Chất liệu) -> rendered as flashcards on /products/[categoryId]/[subgroupId]/[shapeId]
 
-import type { ProductOption } from "@/data/categories";
+import type { ProductOption } from "@/scripts/seed/legacy/categories";
 
 export interface ShapeItem {
   id: string;

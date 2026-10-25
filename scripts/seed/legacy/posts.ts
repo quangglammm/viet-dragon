@@ -28,7 +28,7 @@ export interface BlogPost {
   contentKo?: string;
 }
 
-import storedPosts from "./content/posts.json";
+import storedPosts from "./posts.json";
 
 export const blogPosts: BlogPost[] = storedPosts as unknown as BlogPost[];
 
