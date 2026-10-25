@@ -40,9 +40,11 @@ type EntityEditorProps = {
   authors: Record<string, string>;
   canPublish: boolean;
   canDelete: boolean;
+  /** `media:upload`: the image picker may add pictures. */
+  canUploadMedia: boolean;
 };
 
-export function EntityEditor({ entity, label, live, initialDraft, vocab, authors, canPublish, canDelete }: Readonly<EntityEditorProps>) {
+export function EntityEditor({ entity, label, live, initialDraft, vocab, authors, canPublish, canDelete, canUploadMedia }: Readonly<EntityEditorProps>) {
   const router = useRouter();
   const api = useMemo(() => createContentApi(), []);
   const { session, problem, edit, adopt, closeDraft, startEditing, reload, overwrite } = useDraftSession({ entity, live: live?.document ?? null, initialDraft });
@@ -201,7 +203,7 @@ export function EntityEditor({ entity, label, live, initialDraft, vocab, authors
         <LanguageTabs active={language} completeness={meta.noCoverage ? undefined : coverage} onChange={setLanguage} />
       </div>
 
-      <EditorProvider type={entity.type} document={session.document} baseline={live?.document ?? null} focus={focus} onReleaseAlias={canRelease ? (aliasLanguage, alias) => setReleasing({ language: aliasLanguage, alias }) : undefined} language={language} readOnly={!session.editing} issues={session.issues} vocab={vocab} onChange={edit}>
+      <EditorProvider type={entity.type} document={session.document} baseline={live?.document ?? null} focus={focus} onReleaseAlias={canRelease ? (aliasLanguage, alias) => setReleasing({ language: aliasLanguage, alias }) : undefined} language={language} readOnly={!session.editing} issues={session.issues} vocab={vocab} canUploadMedia={canUploadMedia} onChange={edit}>
         <div className="space-y-5">
           {session.editing && <IssueList type={entity.type} issues={session.issues} onGo={goToIssue} />}
           <Form />

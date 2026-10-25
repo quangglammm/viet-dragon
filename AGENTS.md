@@ -308,8 +308,8 @@ the VPS/Docker runbook in `docs/deployment.md`. Sections marked **(planned)** de
   **outside** `app/[locale]` and outside next-intl. `app/admin/login` and `app/admin/account/password`
   (the forced change) are standalone dark-card pages (`AuthCardShell`); everything else lives in the
   route group `app/admin/(console)/`, whose server layout calls `requireUser()` and renders
-  `components/admin/admin-shell.tsx`. Console pages: `account`, `users` and `audit` (Phase 2) and the **content
-  editors** `content/[type]` + `content/[type]/[id]` (Phase 3d — see **Content model → Editors**). The five pre-database
+  `components/admin/admin-shell.tsx`. Console pages: `account`, `users` and `audit` (Phase 2), the **content
+  editors** `content/[type]` + `content/[type]/[id]` (Phase 3d — see **Content model → Editors**) and the **picture library** `media` (Phase 5 — see **Media**). The five pre-database
   editors (`site-content`, `products`, `blog`, `media`, `translations`), their API (`/api/admin/{blog,media,products,translations,translate}`) and
   `lib/content-store.ts` (which wrote `data/content/*.json`, `messages/*.json` and `public/uploads/` on the local filesystem) were **deleted in Phase 4 M5**.
 - API: `app/api/admin/content/**` (drafts, publish, revisions, delete) and `app/api/admin/preview`. Auth: Better Auth guards the pages and every handler
@@ -350,6 +350,16 @@ the VPS/Docker runbook in `docs/deployment.md`. Sections marked **(planned)** de
   (`"<sha256>"`, 304 supported) from the row, `Cache-Control: public, max-age=31536000, immutable`, `nosniff`, `Content-Security-Policy: default-src 'none'; sandbox`; a row whose file is missing is logged and a 404.
   Audit actions `media.uploaded` (not for a repeat) / `media.deleted`. **Images only for now** (decided 2026-10-25): no page can play an uploaded video. Deleting a file that an old REVISION names is allowed — restoring
   that revision shows the usual «Không tìm thấy ảnh». Not in this phase: alt-text / rename editing, a storage quota, upload throttling (Phase 6).
+  **Media UI (Phase 5 M2).** `GET /api/admin/content/media` also answers `maxUploadBytes` and takes `order=newest|name`. **The UI refuses a file BEFORE sending it** when it can only fail
+  (`lib/content/editor/media-upload.ts` `checkFile`: empty, over the cap, an SVG or another non-photo MIME type; an unknown type such as AVIF in some browsers is left to the server) — above all the size, because a body over the cap makes
+  the server answer 413 and close the connection while the browser is still sending, which `fetch` reports as a dead network. The queue (`uploadQueueReducer`, pure and unit-tested) sends ONE file at a time, a failure never stops the
+  rest, every file ends with its own result line (stored / already in the library / the reason — server refusals are prefixed with the file name); the hook (`use-media-upload`) keeps the `File` objects under the ids it counts.
+  **Library page** `/admin/media` (`app/admin/(console)/media/page.tsx`, `content:edit`; «Thư viện ảnh» in the sidebar): upload panel (editors and admins: several files, drag and drop), filters (search, folder, source — default «Đã tải lên», newest first),
+  tiles with a source badge and «Mở ảnh»; «Xóa» only for an admin on an upload, in a dialog that shows the server's refusal («đang được dùng (n mục đang hiển thị, m bản nháp)») and stays open.
+  **Picker** (`MediaPickerDialog` in `media-field.tsx`): the same source filter and, for a user with `media:upload` (`canUploadMedia` through `EditorContext`), «Tải ảnh lên» — ONE file, and the new image fills the slot at once.
+  **Evidence:** `media-upload.test.ts` (20: every check, the whole queue incl. out-of-order results; 8 mutations of the cap, the type hints, the one-at-a-time rule, the state guards, the multipart header and the nav permission all caught), `api.test.ts` (multipart without a content type, delete body), `admin-nav.test.ts`, int tests for `maxUploadBytes` / `order`; a browser run in production mode on a scratch
+  seeded database: a batch of six files (two stored; an SVG, an HTML file and an 11 MB file refused in the browser with no request; an exe renamed `.jpg` refused by the server), the editor sees no «Xóa», a banner uploaded through the product's cover picker (3600×1200 → 3000×1000)
+  fills the slot, autosaves, shows in «Xem trước» and, once published, on the visitor's page through `/_next/image?url=%2Fuploads%2F…`; an admin's delete is refused while the product uses it (dialog stays open) and works for an unused upload (tile, row, file gone, URL 404); mobile width.
   **Evidence:** `lib/media/{formats,process}.test.ts` (51 + 16 unit tests incl. real sharp: GPS EXIF gone, orientation, CMYK, animated GIF, pixel bomb, truncated JPEG), `app/api/admin/content/media/media-api.int.test.ts`
   (41: 401 / 403 / 415 / 413 by length and by streaming / 422 for SVG, sized SVG, HTML, exe-as-jpg, pdf, zip, garbage, cut PNG; storage + row + no EXIF; dedupe, also concurrent; serving headers, HEAD, 304, 11 traversal
   cases with a decoy file outside the volume, non-upload and file-less rows; delete 403 / 404 / READ_ONLY / in-use by a published product / by a draft only / success; audit) and 16 mutations of the sniffing, the guard,
@@ -756,8 +766,8 @@ Runbook and rationale: `docs/deployment.md`.
 - App container: non-root, read-only root FS (writable: `/tmp` and the `.next/cache` volume — the data cache is keyed by build, so a deploy never reads the previous build's entries),
   `cap_drop: ALL`, no published ports. `db` sits on an `internal` network. **One app instance only.**
 - Building needs internet (`next/font/google`) and `--build-arg SITE_URL=…` — nothing else.
-- `deploy/Caddyfile` is fail-closed for the admin (`@admin_unlisted`): under `/admin` only `login`, `account`, `users`, `audit` and
-  `content` are reachable, and under `/api/admin` only `content` and `preview`; every other `/admin*` and `/api/admin*` path 404s — **a new admin page or API
+- `deploy/Caddyfile` is fail-closed for the admin (`@admin_unlisted`): under `/admin` only `login`, `account`, `users`, `audit`,
+  `content` and `media` are reachable, and under `/api/admin` only `content` and `preview`; every other `/admin*` and `/api/admin*` path 404s — **a new admin page or API
   path must be added to the `not path` list** (test it with the caddy image and no upstream: 502 = passes, 404 = blocked). `/api/auth/*` is
   open (sign-in). It also 404s `/api/health` (internal healthcheck only) and overwrites `X-Real-IP` with the TCP peer.
 - Uploads: the `uploads` volume is mounted at `/data/uploads` (compose; the Dockerfile creates the directory owned by `node` so the named volume inherits it, and its native-module check also loads OUR `sharp` — there are two copies, ours 0.35 and Next's 0.34, which makes `.next/standalone` ~78 MB). Back it up **together with the database**. Caddy caps bodies at 2 MB except `/api/admin/content/media` (12 MB, `@upload` / `@not_upload` matchers — two `request_body` directives with different matchers; a second unmatched one would not raise the first). Tested with the caddy image and a node stand-in upstream (3 MB: 413 elsewhere, 200 on the upload route; 13 MB: 413 everywhere, chunked too).
@@ -846,7 +856,7 @@ lib/
   content/drafts.ts, publish.ts, restore.ts, aliases.ts, used-by.ts   the write side (3c): drafts, publish, revisions + restore, releasing old URLs, "used by"
   content/validate.ts, references.ts, diff.ts, humanize.ts, identity.ts, errors.ts, cache-tags.ts   advice + checks, what a document points at, field-level diff, DB error → Vietnamese, URL type names / ids, Conflict / Invalid / NotFound, cache tags
   content/delete.ts, summaries.ts   delete / archive-first rules (+ the "delete" revision) · admin list rows
-  content/editor/           the editors' client-safe logic: paths, session reducer, API client, completeness, create templates, entity meta, vocabulary, product ops / menu ops / lists / slugs / slug ops / message tree / sections / uid (no server imports — client-bundle.test.ts)
+  content/editor/           the editors' client-safe logic: paths, session reducer, API client, media-upload (file checks + the upload queue reducer), completeness, create templates, entity meta, vocabulary, product ops / menu ops / lists / slugs / slug ops / message tree / sections / uid (no server imports — client-bundle.test.ts)
   content/read/             the PUBLIC site's reads (Phase 4): pure document → view-model builders (catalog, menus, selectors, urls, messages, posts, merchandising, markdown), language-resolved page models (navigation, card, pages, posts), the loaders and cached reads (load.ts, cache.ts, site.ts) and resolve-page.ts / resolve-post.ts — pages call the `get*` ones
   content/field-registry.ts, entity-types.ts, slugify.ts, media-library.ts, authors.ts, vocabulary.ts   every editable leaf → label + control · the 12 entity types (database-free) · URL slugs · media picker data · account names for the history · picker lists
   content/http.ts, requests.ts, effects.ts   the HTTP layer of app/api/admin/content: URL / If-Match / capped JSON body / error mapping · zod request bodies · cache tags + audit after commit
@@ -879,6 +889,7 @@ components/
     quote-modal-provider.tsx  Context that opens the QuoteModal from anywhere
     site-data-provider.tsx  SiteDataProvider / useSiteData(): the language's navigation (categories, cards, menus) for the client chrome
   admin/                    admin-shell (+ admin-nav.ts role-filtered sidebar, admin-theme.tsx), auth-card-shell, password-field, notice, failure-notice, modal, page-parts (PageHeader, AdminCard, button/input classes)
+    media/                  the picture library (Phase 5 M2): media-library (the page: filters, tiles, paging), upload-panel (button + drop zone + a result line per file), delete-media-dialog, use-media-page (the filtered, paged list — also the picker's), use-media-upload (runs the queue)
     content/                the content editors: entity-editor, entity-list, create-dialog, editor-context, field primitives (fields, media-field, icon-field, field-shell), language-tabs, publish-dialog, history-panel, danger-card, diff-view, issue-list, use-draft-session; forms/ = one form per entity type (forms/product/ = the six-tab product editor, forms/menu/ = the menu editor, post-form, category-form, site-message-form) + forms.test.ts (coverage of all twelve); list-card, slug-field, alias-list, media-list-field, use-open-keys = the building blocks of the nested editors
     account/, users/, audit/   sessions panel · users manager (cards, create / confirm / one-time-password dialogs, user-actions.ts) · audit filter form + table
   sections/                 all "use client"; landing page order = page.tsx import order

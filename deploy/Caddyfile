@@ -15,12 +15,12 @@
 	}
 
 	# Fail closed: a new admin page or API path is a 404 until it is added here. Under /admin only the Better Auth
-	# console (sign-in, account, users, audit) and the content editors (/admin/content) are public, and under
+	# console (sign-in, account, users, audit), the content editors (/admin/content) and the picture library (/admin/media) are public, and under
 	# /api/admin only the API behind those editors (/api/admin/content, uploads included) and the preview switch (/api/admin/preview).
 	# /api/auth/* is not matched here, so sign-in works.
 	@admin_unlisted {
 		path /admin /admin/* /api/admin /api/admin/*
-		not path /admin /admin/login /admin/login/* /admin/account /admin/account/* /admin/users /admin/users/* /admin/audit /admin/audit/* /admin/content /admin/content/* /api/admin/content /api/admin/content/* /api/admin/preview
+		not path /admin /admin/login /admin/login/* /admin/account /admin/account/* /admin/users /admin/users/* /admin/audit /admin/audit/* /admin/content /admin/content/* /admin/media /admin/media/* /api/admin/content /api/admin/content/* /api/admin/preview
 	}
 	respond @admin_unlisted 404
 

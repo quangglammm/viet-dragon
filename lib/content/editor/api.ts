@@ -70,9 +70,19 @@ export interface MediaRow {
   createdAt: string;
 }
 
+/** One page of the library, with the folders to filter by and the largest file the server takes. */
+export interface MediaPage {
+  items: MediaRow[];
+  hasMore: boolean;
+  folders: { folder: string; count: number }[];
+  maxUploadBytes: number;
+}
+
 export interface MediaQueryParams {
   q?: string;
   kind?: "image" | "video";
+  source?: MediaRow["source"];
+  order?: "name" | "newest";
   folder?: string;
   offset?: number;
   limit?: number;
@@ -113,9 +123,12 @@ async function problemOf(response: Response): Promise<ApiProblem> {
 export type Fetcher = (input: string, init?: RequestInit) => Promise<Response>;
 
 export function createContentApi(fetcher: Fetcher = (input, init) => fetch(input, init)) {
-  async function call<T>(method: string, url: string, { body, headers }: { body?: unknown; headers?: Record<string, string> } = {}): Promise<ApiResult<T>> {
-    const init: RequestInit = { method, credentials: "same-origin", headers: { ...(method === "GET" ? {} : { "content-type": "application/json" }), ...headers } };
+  async function call<T>(method: string, url: string, { body, form, headers }: { body?: unknown; form?: FormData; headers?: Record<string, string> } = {}): Promise<ApiResult<T>> {
+    // A form carries its own content type (with the boundary); JSON bodies, and bodiless writes, say so.
+    const contentType: Record<string, string> = method === "GET" || form ? {} : { "content-type": "application/json" };
+    const init: RequestInit = { method, credentials: "same-origin", headers: { ...contentType, ...headers } };
     if (body !== undefined) init.body = JSON.stringify(body);
+    if (form) init.body = form;
     let response: Response;
     try {
       response = await fetcher(url, init);
@@ -158,7 +171,15 @@ export function createContentApi(fetcher: Fetcher = (input, init) => fetch(input
     deleteEntity: (ref: Ref, comment?: string) => call<{ ref: Ref; version: number }>("DELETE", entityUrl(ref), { body: comment ? { comment } : {} }),
     /** Turns the preview on and answers the page that shows the draft, in `locale`. */
     previewDraft: (ref: Ref, locale: string) => call<{ url: string }>("POST", PREVIEW_URL, { body: { type: ref.type, id: ref.id, locale } }),
-    media: (params: MediaQueryParams) => call<{ items: MediaRow[]; hasMore: boolean; folders: { folder: string; count: number }[] }>("GET", `${BASE}/media${query({ ...params })}`),
+    media: (params: MediaQueryParams) => call<MediaPage>("GET", `${BASE}/media${query({ ...params })}`),
+    /** Adds one image to the library (the server re-encodes it). `existing`: the same picture was already there. */
+    uploadMedia: (file: File) => {
+      const form = new FormData();
+      form.append("file", file);
+      return call<{ item: MediaRow; existing: boolean }>("POST", `${BASE}/media`, { form });
+    },
+    /** Removes an upload from the library (admin only; refused while something uses it). */
+    deleteMedia: (key: string) => call<undefined>("DELETE", `${BASE}/media`, { body: { key } }),
   };
 }
 

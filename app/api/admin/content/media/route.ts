@@ -16,6 +16,7 @@ const query = z.strictObject({
   q: z.string().trim().max(100).optional(),
   kind: z.enum(["image", "video"]).optional(),
   source: z.enum(["static", "upload"]).optional(),
+  order: z.enum(["name", "newest"]).optional(),
   folder: z
     .string()
     .max(100)
@@ -32,7 +33,7 @@ async function auditMedia(request: Request, user: SessionUser, action: AuditActi
   await recordAudit({ actorId: user.id, actorLabel: user.email, action, entityType: "media", entityId: key, ...requestMeta(request.headers), detail });
 }
 
-/** The files an image field can point at, with the folders to filter by. */
+/** The files an image field can point at, with the folders to filter by and the largest upload the server takes (so the UI can refuse a big file before sending it). */
 export async function GET(request: Request) {
   const auth = await requireApiUser(request, ["content", "edit"]);
   if (!auth.ok) return auth.response;
@@ -41,7 +42,7 @@ export async function GET(request: Request) {
     const parsed = query.safeParse(Object.fromEntries(new URL(request.url).searchParams), parseOptions);
     if (!parsed.success) throw new Invalid(zodIssues(parsed.error));
     const [page, folders] = await Promise.all([listMedia(getDb(), parsed.data), listMediaFolders(getDb())]);
-    return json({ ...page, folders });
+    return json({ ...page, folders, maxUploadBytes: getMediaEnv().MEDIA_MAX_IMAGE_MB * MEGABYTE });
   });
 }
 

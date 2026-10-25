@@ -276,6 +276,22 @@ describe("the library listing", () => {
     expect(uploads.items[0]).toMatchObject({ source: "upload", createdAt: expect.any(String) });
     expect((await list(editor.cookie, "?source=nope")).status).toBe(422);
   });
+
+  it("tells the UI the largest upload it may send", async () => {
+    const body = await read<{ maxUploadBytes: number }>(await list(editor.cookie));
+    expect(body.maxUploadBytes).toBe(10 * MEGABYTE);
+  });
+
+  it("can list the latest uploads first, or by name", async () => {
+    const first = await uploadOk("zzz-first.jpg", await jpegWithGps(300, 200));
+    await new Promise((resolve) => setTimeout(resolve, 15));
+    const second = await uploadOk("aaa-second.jpg", await jpegWithGps(310, 200));
+    const keys = async (search: string) => (await read<{ items: { key: string }[] }>(await list(editor.cookie, search))).items.map((item) => item.key);
+    expect(await keys("?source=upload&order=newest")).toEqual([second.item.key, first.item.key]);
+    expect(await keys("?source=upload&order=name")).toEqual([second.item.key, first.item.key].sort());
+    expect(await keys("?source=upload")).toEqual([second.item.key, first.item.key].sort());
+    expect((await list(editor.cookie, "?order=sideways")).status).toBe(422);
+  });
 });
 
 // ───────────── serving ─────────────

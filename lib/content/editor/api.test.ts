@@ -61,6 +61,36 @@ describe("requests", () => {
     expect(calls[0].url).toBe("/api/admin/content/media?q=a+b&kind=image&offset=60");
     await createContentApi(fetcher).media({});
     expect(calls[1].url).toBe("/api/admin/content/media");
+    await createContentApi(fetcher).media({ source: "upload", order: "newest" });
+    expect(calls[2].url).toBe("/api/admin/content/media?source=upload&order=newest");
+  });
+
+  it("uploads a file as a form: one `file` part, and NO content type (the browser adds its own, with the boundary)", async () => {
+    const { fetcher, calls } = fakeFetch(() => jsonResponse({ item: { key: "uploads/2026/a-00000000.webp" }, existing: false }, { status: 201 }));
+    const result = await createContentApi(fetcher).uploadMedia(new File([new Uint8Array([1, 2, 3])], "ảnh.jpg", { type: "image/jpeg" }));
+    expect(result).toMatchObject({ ok: true, data: { existing: false } });
+    expect(calls[0].url).toBe("/api/admin/content/media");
+    expect(calls[0].init.method).toBe("POST");
+    expect((calls[0].init.headers as Record<string, string>)["content-type"]).toBeUndefined();
+    const form = calls[0].init.body as FormData;
+    expect(form).toBeInstanceOf(FormData);
+    expect([...form.keys()]).toEqual(["file"]);
+    expect((form.get("file") as File).name).toBe("ảnh.jpg");
+    expect(calls[0].init.credentials).toBe("same-origin");
+  });
+
+  it("deletes an upload by its key, in a JSON body", async () => {
+    const { fetcher, calls } = fakeFetch(() => new Response(null, { status: 204 }));
+    expect(await createContentApi(fetcher).deleteMedia("uploads/2026/a-00000000.webp")).toEqual({ ok: true, data: undefined });
+    expect(calls[0].init.method).toBe("DELETE");
+    expect((calls[0].init.headers as Record<string, string>)["content-type"]).toBe("application/json");
+    expect(JSON.parse(calls[0].init.body as string)).toEqual({ key: "uploads/2026/a-00000000.webp" });
+  });
+
+  it("hands back the server's refusal of an upload or a delete, with its code", async () => {
+    const { fetcher } = fakeFetch(() => jsonResponse({ error: "Ảnh này đang được dùng (1 mục đang hiển thị, 0 bản nháp).", code: "IN_USE" }, { status: 409 }));
+    const result = await createContentApi(fetcher).deleteMedia("uploads/2026/a-00000000.webp");
+    expect(result).toMatchObject({ ok: false, problem: { status: 409, code: "IN_USE" } });
   });
 });
 

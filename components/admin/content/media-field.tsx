@@ -1,18 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, ImageIcon, Loader2, Search, Video } from "lucide-react";
+import { ChevronLeft, ChevronRight, ImageIcon, Loader2, Search, UploadCloud, Video } from "lucide-react";
 import { Modal } from "@/components/admin/modal";
 import { Notice } from "@/components/admin/notice";
-import { BUTTON_SECONDARY, INPUT_CLASS } from "@/components/admin/page-parts";
-import { createContentApi, type MediaRow } from "@/lib/content/editor/api";
+import { useMediaPage, type MediaFilters } from "@/components/admin/media/use-media-page";
+import { useMediaUpload } from "@/components/admin/media/use-media-upload";
+import { BUTTON_PRIMARY, BUTTON_SECONDARY, INPUT_CLASS } from "@/components/admin/page-parts";
+import type { MediaRow } from "@/lib/content/editor/api";
+import { ACCEPT_ATTRIBUTE } from "@/lib/content/editor/media-upload";
 import { MEDIA_PAGE_SIZE } from "@/lib/content/media-limits";
 import { cn } from "@/lib/utils";
+import { useEditor } from "./editor-context";
 import { FieldShell, useFieldFrame, type FieldProps } from "./field-shell";
 
-// Image fields. The value is the file's storage key (`images/hero/a.webp`); the file is served at `/<key>`.
-// Uploading new files is Phase 5, so the picker only chooses among the files the library already holds.
+// Image fields. The value is the file's storage key (`images/hero/a.webp`, `uploads/2026/poster-1a2b3c4d.webp`); the file is served at `/<key>`.
+// The picker chooses among the files the library holds, and — for a user who may upload — adds a new one and fills the slot with it.
 
 export const mediaUrl = (key: string): string => `/${key}`;
 
@@ -75,57 +79,65 @@ export function MediaField({ nullable = true, imageOnly = false, hint, className
 
 type PickerProps = { imageOnly: boolean; current: string | null; onPick: (key: string) => void; onClose: () => void };
 
-type Loaded = { key: string; items: MediaRow[]; hasMore: boolean; folders: { folder: string; count: number }[]; error: string | null };
-
 export function MediaPickerDialog({ imageOnly, current, onPick, onClose }: Readonly<PickerProps>) {
-  const api = useMemo(() => createContentApi(), []);
+  const { canUploadMedia } = useEditor();
   const [search, setSearch] = useState("");
-  const [query, setQuery] = useState("");
-  const [folder, setFolder] = useState("");
-  const [offset, setOffset] = useState(0);
-  const [loaded, setLoaded] = useState<Loaded | null>(null);
-  const requestKey = `${query}|${folder}|${offset}|${imageOnly}`;
+  const [filters, setFilters] = useState<MediaFilters>({ q: "", folder: "", source: "", offset: 0, imageOnly });
+  const { page, error, loading } = useMediaPage(filters);
+  const fileInput = useRef<HTMLInputElement>(null);
+  // A new picture fills the slot at once: the picker closes on it.
+  const upload = useMediaUpload({ maxBytes: page?.maxUploadBytes, onUploaded: (item) => onPick(item.key) });
+  const last = upload.entries.at(-1);
 
-  useEffect(() => {
-    let cancelled = false;
-    void api.media({ q: query, folder, offset, limit: MEDIA_PAGE_SIZE, kind: imageOnly ? "image" : undefined }).then((result) => {
-      if (cancelled) return;
-      setLoaded(result.ok ? { key: requestKey, ...result.data, error: null } : { key: requestKey, items: [], hasMore: false, folders: [], error: result.problem.message });
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [api, query, folder, offset, imageOnly, requestKey]);
-
-  const loading = loaded?.key !== requestKey;
+  const change = (next: Partial<MediaFilters>) => setFilters((previous) => ({ ...previous, offset: 0, ...next }));
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
-    setOffset(0);
-    setQuery(search.trim());
+    change({ q: search.trim() });
+  };
+  const choose = (list: FileList | null) => {
+    if (list?.[0]) {
+      upload.clear();
+      upload.add([list[0]]);
+    }
+    if (fileInput.current) fileInput.current.value = "";
   };
 
   return (
-    <Modal title="Chọn ảnh" description={imageOnly ? "Chỉ ảnh (không nhận video)." : "Ảnh hoặc video trong thư viện."} size="lg" onClose={onClose}>
+    <Modal title="Chọn ảnh" description={imageOnly ? "Chỉ ảnh (không nhận video)." : "Ảnh hoặc video trong thư viện."} size="lg" locked={upload.busy} onClose={onClose}>
       <form onSubmit={submit} className="mb-3 flex flex-wrap gap-2">
         <div className="relative min-w-52 flex-1">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden />
           <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tìm theo tên tệp…" aria-label="Tìm theo tên tệp" className={cn(INPUT_CLASS, "pl-9")} />
         </div>
-        <select value={folder} onChange={(event) => { setOffset(0); setFolder(event.target.value); }} aria-label="Thư mục" className={cn(INPUT_CLASS, "w-auto")}>
+        <select value={filters.source} onChange={(event) => change({ source: event.target.value as MediaFilters["source"] })} aria-label="Nguồn ảnh" className={cn(INPUT_CLASS, "w-auto")}>
+          <option value="">Tất cả ảnh</option>
+          <option value="upload">Đã tải lên</option>
+          <option value="static">Có sẵn của website</option>
+        </select>
+        <select value={filters.folder} onChange={(event) => change({ folder: event.target.value })} aria-label="Thư mục" className={cn(INPUT_CLASS, "w-auto")}>
           <option value="">Tất cả thư mục</option>
-          {(loaded?.folders ?? []).map((entry) => (
+          {(page?.folders ?? []).map((entry) => (
             <option key={entry.folder} value={entry.folder}>{entry.folder} ({entry.count})</option>
           ))}
         </select>
         <button type="submit" className={BUTTON_SECONDARY}>Tìm</button>
+        {canUploadMedia && (
+          <>
+            <input ref={fileInput} type="file" accept={ACCEPT_ATTRIBUTE} onChange={(event) => choose(event.target.files)} className="hidden" aria-label="Chọn ảnh để tải lên" />
+            <button type="button" disabled={upload.busy} onClick={() => fileInput.current?.click()} className={BUTTON_PRIMARY}>
+              {upload.busy ? <Loader2 size={14} className="animate-spin" aria-hidden /> : <UploadCloud size={14} aria-hidden />} Tải ảnh lên
+            </button>
+          </>
+        )}
       </form>
 
-      {loaded?.error && <Notice tone="error">{loaded.error}</Notice>}
+      {last?.status === "failed" && <Notice tone="error" className="mb-3">{last.message}</Notice>}
+      {error && <Notice tone="error">{error}</Notice>}
       {loading && <div className="flex h-40 items-center justify-center text-slate-400"><Loader2 className="animate-spin" size={22} aria-label="Đang tải" /></div>}
-      {!loading && loaded && loaded.items.length === 0 && !loaded.error && <p className="py-10 text-center text-xs font-semibold text-slate-400">Không có tệp nào khớp.</p>}
-      {!loading && loaded && loaded.items.length > 0 && (
+      {!loading && page && page.items.length === 0 && !error && <p className="py-10 text-center text-xs font-semibold text-slate-400">Không có tệp nào khớp.</p>}
+      {!loading && page && page.items.length > 0 && (
         <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
-          {loaded.items.map((item) => (
+          {page.items.map((item) => (
             <li key={item.key}>
               <button
                 type="button"
@@ -142,9 +154,9 @@ export function MediaPickerDialog({ imageOnly, current, onPick, onClose }: Reado
       )}
 
       <div className="mt-4 flex items-center justify-between">
-        <button type="button" disabled={offset === 0 || loading} onClick={() => setOffset(Math.max(0, offset - MEDIA_PAGE_SIZE))} className={BUTTON_SECONDARY}><ChevronLeft size={14} aria-hidden /> Trước</button>
-        <span className="text-[11px] font-semibold text-slate-400">Từ {offset + 1}</span>
-        <button type="button" disabled={!loaded?.hasMore || loading} onClick={() => setOffset(offset + MEDIA_PAGE_SIZE)} className={BUTTON_SECONDARY}>Sau <ChevronRight size={14} aria-hidden /></button>
+        <button type="button" disabled={filters.offset === 0 || loading} onClick={() => setFilters((previous) => ({ ...previous, offset: Math.max(0, previous.offset - MEDIA_PAGE_SIZE) }))} className={BUTTON_SECONDARY}><ChevronLeft size={14} aria-hidden /> Trước</button>
+        <span className="text-[11px] font-semibold text-slate-400">Từ {filters.offset + 1}</span>
+        <button type="button" disabled={!page?.hasMore || loading} onClick={() => setFilters((previous) => ({ ...previous, offset: previous.offset + MEDIA_PAGE_SIZE }))} className={BUTTON_SECONDARY}>Sau <ChevronRight size={14} aria-hidden /></button>
       </div>
     </Modal>
   );

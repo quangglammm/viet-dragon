@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { EDITABLE_TYPES, listUrl } from "@/lib/content/editor/entity-meta";
-import { buildNav, isNavItemActive } from "./admin-nav";
+import { MEDIA_LIBRARY_HREF, buildNav, isNavItemActive } from "./admin-nav";
 
 const hrefs = (role: string) => buildNav(role).flatMap((section) => section.items.map((item) => item.href));
 
-const CONTENT_HREFS = EDITABLE_TYPES.map(listUrl);
+const CONTENT_HREFS = [...EDITABLE_TYPES.map(listUrl), MEDIA_LIBRARY_HREF];
 
 describe("buildNav", () => {
   it("shows an admin the account, users and audit pages, then the content editors", () => {
@@ -15,10 +15,11 @@ describe("buildNav", () => {
     expect(hrefs("editor")).toEqual(["/admin/account", ...CONTENT_HREFS]);
   });
 
-  it("links every editable type, to its own list", () => {
+  it("links every editable type, to its own list, and the picture library after them", () => {
     expect(CONTENT_HREFS).toContain("/admin/content/material");
     expect(CONTENT_HREFS).toContain("/admin/content/fast-print-item");
-    expect(CONTENT_HREFS.length).toBe(EDITABLE_TYPES.length);
+    expect(CONTENT_HREFS.length).toBe(EDITABLE_TYPES.length + 1);
+    expect(CONTENT_HREFS.at(-1)).toBe("/admin/media");
   });
 
   it("shows nothing privileged to a user with no known role", () => {

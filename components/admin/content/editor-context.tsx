@@ -37,6 +37,8 @@ export interface EditorApi {
   readOnly: boolean;
   issues: readonly Issue[];
   vocab: Vocabulary;
+  /** The signed-in user may add pictures to the library (`media:upload`): the image picker then offers «Tải ảnh lên». */
+  canUploadMedia: boolean;
   /** Concrete path of a template path (`i18n.*.title` → `i18n.vi.title`). */
   resolve: (path: string) => string;
   read: (path: string) => unknown;
@@ -65,6 +67,7 @@ type EditorProviderProps = {
   readOnly: boolean;
   issues: readonly Issue[];
   vocab: Vocabulary;
+  canUploadMedia?: boolean;
   baseline?: Document | null;
   focus?: FocusRequest | null;
   onReleaseAlias?: (language: LocaleCode, alias: ReleasableAlias) => void;
@@ -72,7 +75,7 @@ type EditorProviderProps = {
   children?: React.ReactNode;
 };
 
-export function EditorProvider({ type, document, language, readOnly, issues, vocab, baseline = null, focus = null, onReleaseAlias, onChange, children }: Readonly<EditorProviderProps>) {
+export function EditorProvider({ type, document, language, readOnly, issues, vocab, canUploadMedia = false, baseline = null, focus = null, onReleaseAlias, onChange, children }: Readonly<EditorProviderProps>) {
   const api = useMemo<EditorApi>(() => {
     const resolve = (path: string) => path.replace("*", language);
     return {
@@ -84,6 +87,7 @@ export function EditorProvider({ type, document, language, readOnly, issues, voc
       readOnly,
       issues,
       vocab,
+      canUploadMedia,
       resolve,
       read: (path) => getIn(document, resolve(path)),
       change: (path, value) => onChange(value === undefined ? removeIn(document, resolve(path)) : setIn(document, resolve(path), value)),
@@ -91,6 +95,6 @@ export function EditorProvider({ type, document, language, readOnly, issues, voc
       replace: onChange,
       releaseAlias: onReleaseAlias ? (alias) => onReleaseAlias(language, alias) : undefined,
     };
-  }, [type, document, baseline, focus, language, readOnly, issues, vocab, onReleaseAlias, onChange]);
+  }, [type, document, baseline, focus, language, readOnly, issues, vocab, canUploadMedia, onReleaseAlias, onChange]);
   return <EditorContext.Provider value={api}>{children}</EditorContext.Provider>;
 }

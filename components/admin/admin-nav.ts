@@ -2,6 +2,7 @@ import {
   FileText,
   FolderTree,
   Gem,
+  ImagePlus,
   Images,
   Languages,
   ListChecks,
@@ -59,13 +60,21 @@ const CONTENT_ITEM_LOOK: Partial<Record<DraftEntityType, { subtitle: string; ico
   site_message: { subtitle: "Chữ trên giao diện, 5 ngôn ngữ", icon: Languages },
 };
 
-const CONTENT_ITEMS: NavItem[] = EDITABLE_TYPES.map((type) => ({
-  href: listUrl(type),
-  label: ENTITY_META[type].label,
-  subtitle: CONTENT_ITEM_LOOK[type]?.subtitle ?? "",
-  icon: CONTENT_ITEM_LOOK[type]?.icon ?? FileText,
-  permission: ["content", "edit"],
-}));
+/** The picture library: not an entity type (a file has no document, draft or revisions), so it is listed beside the editors. */
+export const MEDIA_LIBRARY_HREF = "/admin/media";
+
+const CONTENT_ITEMS: NavItem[] = [
+  ...EDITABLE_TYPES.map(
+    (type): NavItem => ({
+      href: listUrl(type),
+      label: ENTITY_META[type].label,
+      subtitle: CONTENT_ITEM_LOOK[type]?.subtitle ?? "",
+      icon: CONTENT_ITEM_LOOK[type]?.icon ?? FileText,
+      permission: ["content", "edit"],
+    }),
+  ),
+  { href: MEDIA_LIBRARY_HREF, label: "Thư viện ảnh", subtitle: "Tải ảnh lên, tìm lại ảnh đã dùng", icon: ImagePlus, permission: ["content", "edit"] },
+];
 
 /** The sidebar for one role: sections the role cannot use at all are dropped, not left empty. */
 export function buildNav(role: string): NavSection[] {

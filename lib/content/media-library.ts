@@ -1,4 +1,4 @@
-import { and, asc, eq, ilike, like, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, like, sql } from "drizzle-orm";
 import * as schema from "@/lib/db/schema";
 import type { DbExecutor } from "@/lib/db/types";
 
@@ -29,6 +29,8 @@ export interface MediaQuery {
   q?: string;
   kind?: "image" | "video";
   source?: MediaItem["source"];
+  /** `name` (the default): by storage key. `newest`: the latest uploads first, what the library page shows. */
+  order?: "name" | "newest";
   /** A folder of the library, e.g. `images/hero`: files directly or deeply under it. */
   folder?: string;
   limit?: number;
@@ -83,7 +85,7 @@ export async function listMedia(x: DbExecutor, query: MediaQuery = {}): Promise<
     .from(schema.media)
     .leftJoin(schema.mediaI18n, and(eq(schema.mediaI18n.mediaId, schema.media.id), eq(schema.mediaI18n.locale, "vi")))
     .where(and(...conditions))
-    .orderBy(asc(schema.media.storageKey))
+    .orderBy(...(query.order === "newest" ? [desc(schema.media.createdAt), asc(schema.media.storageKey)] : [asc(schema.media.storageKey)]))
     .limit(limit + 1)
     .offset(query.offset ?? 0);
   return { items: rows.slice(0, limit).map(toItem), hasMore: rows.length > limit };

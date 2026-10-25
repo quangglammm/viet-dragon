@@ -48,6 +48,7 @@ export default async function ContentEditorPage({ params }: Readonly<EditorPageP
       authors={await listAuthorNames(db)}
       canPublish={hasPermission(user.role, ["content", "publish"])}
       canDelete={hasPermission(user.role, ["content", "delete"])}
+      canUploadMedia={hasPermission(user.role, ["media", "upload"])}
     />
   );
 }
