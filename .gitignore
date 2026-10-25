@@ -34,6 +34,9 @@ yarn-error.log*
 .env*
 !.env.example
 
+# images uploaded through the admin in development (the production volume is /data/uploads)
+/.uploads/
+
 # vercel
 .vercel
 

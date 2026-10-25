@@ -3,14 +3,20 @@
 {$SITE_ADDRESS} {
 	encode zstd gzip
 
-	# Cap request bodies before they reach the app. Phase 5 raises this for the upload route only.
-	request_body {
+	# Cap request bodies before they reach the app: 2 MB everywhere, except the upload route (an image is at most MEDIA_MAX_IMAGE_MB, 11 at the
+	# most, plus the form around it). Two disjoint matchers, because a second `request_body` would not raise the first one's limit.
+	@upload path /api/admin/content/media
+	@not_upload not path /api/admin/content/media
+	request_body @not_upload {
 		max_size 2MB
+	}
+	request_body @upload {
+		max_size 12MB
 	}
 
 	# Fail closed: a new admin page or API path is a 404 until it is added here. Under /admin only the Better Auth
 	# console (sign-in, account, users, audit) and the content editors (/admin/content) are public, and under
-	# /api/admin only the API behind those editors (/api/admin/content) and the preview switch (/api/admin/preview).
+	# /api/admin only the API behind those editors (/api/admin/content, uploads included) and the preview switch (/api/admin/preview).
 	# /api/auth/* is not matched here, so sign-in works.
 	@admin_unlisted {
 		path /admin /admin/* /api/admin /api/admin/*

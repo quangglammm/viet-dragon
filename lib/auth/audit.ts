@@ -24,6 +24,8 @@ export const AUDIT_ACTIONS = [
   "content.discarded",
   "content.deleted",
   "content.alias_released",
+  "media.uploaded",
+  "media.deleted",
 ] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 
@@ -46,6 +48,8 @@ export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
   "content.discarded": "Hủy bản nháp",
   "content.deleted": "Xóa nội dung",
   "content.alias_released": "Gỡ đường dẫn cũ",
+  "media.uploaded": "Tải ảnh lên thư viện",
+  "media.deleted": "Xóa ảnh khỏi thư viện",
 };
 
 /** Who acted when there is no signed-in user: the CLI (`pnpm admin:create`) or an unauthenticated visitor. */

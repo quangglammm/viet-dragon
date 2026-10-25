@@ -10,13 +10,15 @@ import { breadcrumbLd, metadataFor } from "@/lib/content/read/page-seo";
 import { samePath } from "@/lib/content/read/seo";
 import { JsonLd } from "@/components/seo/json-ld";
 import { PostCategoryBadge } from "@/components/blog/post-category-badge";
+import { localeOf } from "@/lib/route-locale";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale: localeSegment } = await params;
+  const locale = localeOf(localeSegment);
   const t = await getTranslations({ locale, namespace: "blogPage" });
   return metadataFor({ locale, meta: { title: t("metaTitle"), description: t("metaDescription"), image: null }, paths: samePath("/blog") });
 }
@@ -26,7 +28,8 @@ export default async function BlogPage({
 }: Readonly<{
   params: Promise<{ locale: Locale }>;
 }>) {
-  const { locale } = await params;
+  const { locale: localeSegment } = await params;
+  const locale = localeOf(localeSegment);
   const t = await getTranslations({ locale, namespace: "blogPage" });
   const { featured, rest } = blogIndexOf(await getBlog(), locale);
 

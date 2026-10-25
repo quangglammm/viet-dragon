@@ -11,11 +11,13 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { peekPost, resolvePost } from "@/lib/content/read/resolve-post";
 import { PostBody } from "@/components/blog/post-body";
 import { PostCategoryBadge } from "@/components/blog/post-category-badge";
+import { localeOf } from "@/lib/route-locale";
 
 type PostParams = { locale: Locale; slug: string };
 
 export async function generateMetadata({ params }: { params: Promise<PostParams> }): Promise<Metadata> {
-  const { locale, slug } = await params;
+  const { locale: localeSegment, slug } = await params;
+  const locale = localeOf(localeSegment);
   const found = await peekPost(locale, slug);
   if (!found) return {};
   const paths = Object.fromEntries(LOCALES.map((language) => [language, postPath(language, found.post)])) as Record<(typeof LOCALES)[number], string>;
@@ -23,7 +25,8 @@ export async function generateMetadata({ params }: { params: Promise<PostParams>
 }
 
 export default async function BlogPostPage({ params }: Readonly<{ params: Promise<PostParams> }>) {
-  const { locale, slug } = await params;
+  const { locale: localeSegment, slug } = await params;
+  const locale = localeOf(localeSegment);
   const t = await getTranslations({ locale, namespace: "blogPostPage" });
   const found = await resolvePost(locale, slug);
   const { post, dateLong, blocks, prev, next, meta } = postPageOf(found.blog, locale, found.post);

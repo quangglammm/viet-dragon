@@ -61,8 +61,12 @@ services:
       SMTP_PASS: ${SMTP_PASS:-}
       SMTP_FROM: ${SMTP_FROM:-}
       CONSULT_RECEIVER_EMAIL: ${CONSULT_RECEIVER_EMAIL:-}
+      # Images added through the admin live on this volume, never in public/. Back it up together with the database (docs/deployment.md).
+      UPLOADS_DIR: /data/uploads
+      MEDIA_MAX_IMAGE_MB: ${MEDIA_MAX_IMAGE_MB:-}
     volumes:
       - nextcache:/app/.next/cache
+      - uploads:/data/uploads
     networks: [edge, internal]
     depends_on:
       db:
@@ -158,3 +162,4 @@ volumes:
   caddy_data:
   caddy_config:
   nextcache:
+  uploads:

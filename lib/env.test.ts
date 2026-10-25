@@ -14,6 +14,8 @@ const MANAGED = [
   "SITE_URL",
   "LOG_LEVEL",
   "BETTER_AUTH_SECRET",
+  "UPLOADS_DIR",
+  "MEDIA_MAX_IMAGE_MB",
 ] as const;
 
 const GOOD_DB = "postgres://vietdragon:s3cretpassw0rd-long@127.0.0.1:5432/vietdragon";
@@ -57,6 +59,7 @@ const COMPLETE_PROD = {
   ...FULL_SMTP,
   SITE_URL: "https://vietdragon.vn",
   BETTER_AUTH_SECRET: GOOD_SECRET,
+  UPLOADS_DIR: "/data/uploads",
 };
 
 describe("assertEnv", () => {
@@ -70,7 +73,7 @@ describe("assertEnv", () => {
 
   it("reports every broken group in one failure", async () => {
     const message = await problems({ NODE_ENV: "production" });
-    for (const group of ["database:", "mail:", "site:", "auth:"]) expect(message).toContain(group);
+    for (const group of ["database:", "mail:", "site:", "auth:", "media:"]) expect(message).toContain(group);
   });
 
   it("names only the broken group when one is wrong", async () => {
@@ -222,5 +225,28 @@ describe("auth group", () => {
       expect(await problems({ ...COMPLETE_PROD, BETTER_AUTH_SECRET: secret })).toContain("auth: BETTER_AUTH_SECRET");
     }
     expect((await loadEnv({ ...COMPLETE_PROD, BETTER_AUTH_SECRET: GOOD_SECRET })).getAuthEnv().BETTER_AUTH_SECRET).toBe(GOOD_SECRET);
+  });
+});
+
+describe("media group", () => {
+  it("defaults to a folder under the working directory and 10 MB outside production", async () => {
+    const env = (await loadEnv({ NODE_ENV: "development" })).getMediaEnv();
+    expect(env.UPLOADS_DIR).toBe(`${process.cwd()}/.uploads`);
+    expect(env.MEDIA_MAX_IMAGE_MB).toBe(10);
+  });
+
+  it("requires the uploads volume in production, as an absolute path", async () => {
+    const withoutDir: Record<string, string> = { ...COMPLETE_PROD };
+    delete withoutDir.UPLOADS_DIR;
+    expect(await problems(withoutDir)).toContain("media: UPLOADS_DIR is required in production");
+    expect(await problems({ ...COMPLETE_PROD, UPLOADS_DIR: "" })).toContain("media: UPLOADS_DIR is required");
+    expect(await problems({ ...COMPLETE_PROD, UPLOADS_DIR: "uploads" })).toContain("media: UPLOADS_DIR must be an absolute path");
+    expect((await loadEnv({ ...COMPLETE_PROD, UPLOADS_DIR: "/data/uploads/" })).getMediaEnv().UPLOADS_DIR).toBe("/data/uploads/");
+  });
+
+  it("takes the size cap in whole megabytes, between 1 and what Caddy lets through", async () => {
+    expect((await loadEnv({ NODE_ENV: "development", MEDIA_MAX_IMAGE_MB: "5" })).getMediaEnv().MEDIA_MAX_IMAGE_MB).toBe(5);
+    expect((await loadEnv({ NODE_ENV: "development", MEDIA_MAX_IMAGE_MB: "" })).getMediaEnv().MEDIA_MAX_IMAGE_MB).toBe(10);
+    for (const bad of ["0", "12", "abc", "2.5"]) expect(await problems({ ...COMPLETE_PROD, MEDIA_MAX_IMAGE_MB: bad })).toContain("media: MEDIA_MAX_IMAGE_MB");
   });
 });

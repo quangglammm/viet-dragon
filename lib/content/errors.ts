@@ -24,7 +24,9 @@ export type ConflictCode =
   /** Delete: something still uses the record (live rows or open drafts). */
   | "IN_USE"
   /** Delete: products, posts and Fast Print items must be archived first. */
-  | "NOT_ARCHIVED";
+  | "NOT_ARCHIVED"
+  /** Delete: a built-in file of the site (not an upload) cannot be removed from the library. */
+  | "READ_ONLY";
 
 export class Conflict extends Error {
   readonly status = 409;

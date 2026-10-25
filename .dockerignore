@@ -6,6 +6,9 @@
 .playwright-mcp
 .DS_Store
 
+# Uploaded through the admin in development; production keeps them on the uploads volume.
+.uploads
+
 # Rebuilt inside the image.
 node_modules
 .next

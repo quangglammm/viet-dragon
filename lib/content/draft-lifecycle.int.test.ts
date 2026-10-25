@@ -171,7 +171,8 @@ describe("what an open draft refers to ('used by' sees drafts)", () => {
     const found = await rows<{ tbl: string; col: string; ref: string }>(`
       select c.conrelid::regclass::text tbl, a.attname col, c.confrelid::regclass::text ref
         from pg_constraint c join pg_attribute a on a.attrelid = c.conrelid and a.attnum = any (c.conkey)
-       where c.contype = 'f' and c.confdeltype <> 'c' and c.confrelid::regclass::text in ('material', 'unit', 'trait', 'spec_item', 'post_category')
+       where c.contype = 'f' and c.confdeltype <> 'c' and c.confrelid::regclass::text in ('material', 'unit', 'trait', 'spec_item', 'post_category', 'media')
+         and a.attname !~ '_kind$' -- the kind half of a composite key into media is not a reference of its own
        order by 1, 2`);
     const registered = Object.entries(USAGES).flatMap(([type, usage]) => usage.columns.map(({ table, column }) => ({ tbl: table, col: column, ref: type })));
     const sort = <T extends { tbl: string; col: string }>(list: T[]) => [...list].sort((a, b) => `${a.tbl}.${a.col}`.localeCompare(`${b.tbl}.${b.col}`));

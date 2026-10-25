@@ -60,12 +60,14 @@ export interface RevisionRow {
 
 export interface MediaRow {
   key: string;
+  source: "static" | "upload";
   kind: "image" | "video";
   mime: string;
   width: number | null;
   height: number | null;
   bytes: number;
   alt: string | null;
+  createdAt: string;
 }
 
 export interface MediaQueryParams {

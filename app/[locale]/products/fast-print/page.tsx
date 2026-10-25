@@ -7,6 +7,7 @@ import { breadcrumbLd, metadataFor } from "@/lib/content/read/page-seo";
 import { samePath } from "@/lib/content/read/seo";
 import { JsonLd } from "@/components/seo/json-ld";
 import FastPrintClient from "./FastPrintClient";
+import { localeOf } from "@/lib/route-locale";
 
 // Rendered on its first request (the locale layout reads the content database) and cached — see app/[locale]/layout.tsx.
 export function generateStaticParams() {
@@ -14,13 +15,15 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale: localeSegment } = await params;
+  const locale = localeOf(localeSegment);
   const t = await getTranslations({ locale, namespace: "fastPrint" });
   return metadataFor({ locale, meta: { title: t("metaTitle"), description: t("metaDescription"), image: null }, paths: samePath("/products/fast-print") });
 }
 
 export default async function FastPrintPage({ params }: Readonly<{ params: Promise<{ locale: Locale }> }>) {
-  const { locale } = await params;
+  const { locale: localeSegment } = await params;
+  const locale = localeOf(localeSegment);
   const t = await getTranslations({ locale, namespace: "fastPrint" });
   const crumbs = [
     { name: t("breadcrumbHome"), path: "/" },

@@ -100,10 +100,11 @@ Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
 | Route | Notes |
 |---|---|
 | `/admin/*` | CMS UI — own root layout, Vietnamese only: sign-in, account, users, audit and `/admin/content/[type]` (list) / `/admin/content/[type]/[id]` (editor), the editors on the content database. See **Admin CMS** |
-| `/api/admin/*` | CMS API — `content/**` (drafts, publish, revisions, delete — see **Content model**) and `preview` (turns Draft Mode on/off — see **Preview**). Every handler starts with `requireApiUser` (a test enforces it) |
+| `/api/admin/*` | CMS API — `content/**` (drafts, publish, revisions, delete — see **Content model**; `content/media` is the library: list, upload, delete — see **Media**) and `preview` (turns Draft Mode on/off — see **Preview**). Every handler starts with `requireApiUser` (a test enforces it) |
 | `/api/auth/*` | Better Auth (`app/api/auth/[...all]/route.ts`): sign-in/out, session, password change, admin-plugin user management. Sign-in must use this HTTP surface — only HTTP requests are rate limited, not `auth.api.*` calls |
 | `/api/consult` | Public. Receives quote/consult leads from `QuoteModal` / `ConsultBottomSheet`, emails them |
 | `/zalo-reply` | Client page that copies a prepared reply message and opens Zalo (`noindex`) |
+| `/uploads/<year>/<name>-<hash>.webp` | `app/uploads/[...key]/route.ts` — serves the images uploaded through the admin from the uploads volume (`lib/media`); the site's own pictures are in `public/`. See **Media** under Admin CMS. `proxy.ts` skips it (the path has a file extension) |
 | `/api/health` | Liveness for the Docker healthcheck: always 200 while the process serves, body `{ status, db: "ok" \| "down" }` — a database outage must not mark the app unhealthy |
 | `/robots.txt` | `app/robots.ts` — disallows `/admin`, `/api/`, `/zalo-reply`; names `<SITE_URL>/sitemap.xml` (static, baked at build) |
 | `/sitemap.xml` | `app/sitemap.ts` — `force-dynamic` (so `next build` needs no database), built by the pure `lib/content/read/sitemap.ts` from the cached catalog, blog and revision dates: every canonical page in five languages (~1,130 entries today) with `hreflang` alternates + `x-default` and a `lastmod` only where one record decides it |
@@ -334,6 +335,32 @@ the VPS/Docker runbook in `docs/deployment.md`. Sections marked **(planned)** de
     so the ISR pages every visitor gets carry no trace of it (verified in production mode: ISR `HIT` with `s-maxage` for visitors before, during and after an editor's preview of the same URL).
   - Limits to know: a draft that is valid alone but refers to something that exists only as another draft (a new material used by a new product) is skipped until the first is published
     (references are checked against the live rows, like publish); the preview recomposes catalog + menus + messages uncached (hundreds of ms — editors only).
+
+- **Media (Phase 5 M1).** The library is the `media` table: the site's own files (`source = 'static'`, served from `public/` at `/<storage_key>`, read-only) and uploads
+  (`source = 'upload'`, key `uploads/<year>/<readable-name>-<8 hex of sha256>.webp`, served by `app/uploads/[...key]/route.ts`). Documents refer to a file by its key; `checkReferences` /
+  `draft_reference` already understood `media`. **Upload** — `POST /api/admin/content/media` (multipart, ONE `file` part, `requireApiUser(["media","upload"])`, body read through a cap, `lib/media/request.ts`):
+  `lib/media/formats.ts` sniffs the bytes (jpeg / png / gif / webp / avif; SVG, HTML, exe, pdf, zip, HEIC and video are refused with a reason in Vietnamese — the name and MIME type the browser claims are never
+  looked at), `lib/media/process.ts` decodes with sharp (`failOn: "warning"`, 80 MP pixel limit, 2 decodes at a time) and ENCODES A NEW WebP from the pixels: EXIF/GPS/XMP dropped, orientation applied,
+  longest side ≤ 3000 px (never enlarged), colours in sRGB, a GIF keeps its first frame — nothing of the original survives, so a polyglot or appended payload dies here. `lib/media/service.ts` `uploadImage`
+  dedupes by the sha256 of the stored bytes (`200 { existing: true }`), writes the file (temp name + rename, `lib/media/store.ts`, every path through `isUploadKey` + a `path.relative` check) BEFORE inserting
+  the row, and removes the file if the insert fails (a unique-key race keeps it: same key = same bytes). **Delete** — `DELETE /api/admin/content/media {key}`, `media:delete` (admin only): the row must be an
+  upload (`READ_ONLY` otherwise), `usedBy(tx, "media", key)` (`lib/content/used-by.ts` — the 14 FK columns into `media`, checked against `pg_constraint` by `draft-lifecycle.int.test.ts`, plus open drafts via
+  `draft_reference`) must be 0 live + 0 drafts (`IN_USE` 409 with the counts), the row goes in one transaction (FK RESTRICT is the last line), the file after COMMIT (failure logged, never served without its row).
+  **Serving** — `GET`/`HEAD /uploads/<year>/<file>`: the path must match `parseUploadPath` exactly (the traversal guard: year `\d{4}`, file `<slug>-<8 hex>.webp`), the row must be an upload; content type and ETag
+  (`"<sha256>"`, 304 supported) from the row, `Cache-Control: public, max-age=31536000, immutable`, `nosniff`, `Content-Security-Policy: default-src 'none'; sandbox`; a row whose file is missing is logged and a 404.
+  Audit actions `media.uploaded` (not for a repeat) / `media.deleted`. **Images only for now** (decided 2026-10-25): no page can play an uploaded video. Deleting a file that an old REVISION names is allowed — restoring
+  that revision shows the usual «Không tìm thấy ảnh». Not in this phase: alt-text / rename editing, a storage quota, upload throttling (Phase 6).
+  **Evidence:** `lib/media/{formats,process}.test.ts` (51 + 16 unit tests incl. real sharp: GPS EXIF gone, orientation, CMYK, animated GIF, pixel bomb, truncated JPEG), `app/api/admin/content/media/media-api.int.test.ts`
+  (41: 401 / 403 / 415 / 413 by length and by streaming / 422 for SVG, sized SVG, HTML, exe-as-jpg, pdf, zip, garbage, cut PNG; storage + row + no EXIF; dedupe, also concurrent; serving headers, HEAD, 304, 11 traversal
+  cases with a decoy file outside the volume, non-upload and file-less rows; delete 403 / 404 / READ_ONLY / in-use by a published product / by a draft only / success; audit) and 16 mutations of the sniffing, the guard,
+  the decoder settings, the dedupe, the in-use refusal, the source checks and the body cap (the survivors are equivalent: `toColourspace` was redundant and was removed, the declared-length check only saves reading).
+  Production-mode smoke on a scratch seeded database (41 checks over real HTTP): refusals write nothing; a GPS-tagged photo is stored as a 1600×1200 WebP without EXIF; served to a visitor with the right headers, 304, HEAD;
+  **`/_next/image?url=/uploads/…` optimises it through the route handler**; the same picture again is `existing`; a CMYK JPEG uploads; 7 traversal probes (`curl --path-as-is`) never answer 200; the file survives a server restart
+  (it is on the volume, not in `.next`); an open draft, then a published product, block the delete (409 with the counts), an editor gets 403, a built-in file `READ_ONLY`; after the cover is restored the delete removes row + file and the URL 404s;
+  audit rows. **Findings fixed on the way:** (1) the seed labelled `public/uploads/*` as `source = 'upload'` — all seeded files are `static` now, and `deleteUpload` also requires `isUploadKey(key)` (a test inserts such a row);
+  (2) **any unknown path with a file extension (`/wp-login.php`, `/nope.png`) was a 500**, not a 404: `proxy.ts` skips such paths, so `[locale]` arrived as `"wp-login.php"` and the pages indexed the catalog by it (the layout's `hasLocale` check
+  renders alongside the page, too late). Every page under `app/[locale]` now reads its segment through `localeOf()` (`lib/route-locale.ts`, 404 for anything that is not one of the five languages); parity unchanged (331 / 1,491 / 43 / 0).
+  (3) the standalone output now holds two sharp copies (ours 0.35, Next's 0.34): ~78 MB. A client that sends a body over the cap sees the connection closed after the 413 — the editor UI (M2) checks the size before sending.
 
 ### Target **(planned — see the phases in `docs/admin-architecture.md`)**
 PostgreSQL + Drizzle ORM · Better Auth with invite-only named accounts and `admin` /
@@ -625,7 +652,7 @@ The full design is `docs/data-model.md` (local); this is what the code now guara
   (two-argument form) from a Route Handler.
 - **Public code imports nothing under `scripts/`** (the seed and its legacy sources) — `lib/content/read/legacy-sources.test.ts` enforces it.
 - **Never write content to the filesystem at runtime** in new code — content goes to the
-  database (Phase 3), uploads to the uploads volume (Phase 5), never into `public/`.
+  database (Phase 3), uploaded images to the uploads volume through `lib/media` (Phase 5), never into `public/`.
 - **No product attribute in code.** Names, text, sizes, spec lists, icons, prices and menu
   placement belong in the database and must have an editor control (a registry test enforces
   it). Don't add new `if (name.includes(...))` heuristics, inline per-locale dictionaries, or
@@ -685,9 +712,9 @@ forced password change, account/sessions, users, audit), the `/api/admin/*` guar
 
 ## Environment variables
 All config goes through `lib/env.ts` (zod) — never read `process.env` directly in new code. It has
-five independently validated groups, each behind its own lazy accessor so one group's problem never
-breaks an unrelated consumer: `getDatabaseEnv()`, `getMailEnv()`, `getLogEnv()`, `getSiteEnv()`, `getAuthEnv()`.
-`assertEnv()` validates all four at once at server start (`instrumentation.ts` →
+six independently validated groups, each behind its own lazy accessor so one group's problem never
+breaks an unrelated consumer: `getDatabaseEnv()`, `getMailEnv()`, `getLogEnv()`, `getSiteEnv()`, `getAuthEnv()`, `getMediaEnv()`.
+`assertEnv()` validates all six at once at server start (`instrumentation.ts` →
 `instrumentation-node.ts`) and **exits with code 1** on a bad config, printing variable names, never
 values. It is skipped during `next build`, so the Docker build stage needs no secrets.
 
@@ -698,6 +725,7 @@ values. It is skipped during `next build`, so the Docker build stage needs no se
 | `SITE_URL` | site | Public origin, no path. Required in production (dev default `http://localhost:3000`). **Needed at build time too** — pages are prerendered, so it is baked in (docker build arg) |
 | `LOG_LEVEL` | logging | `fatal` … `trace` / `silent`; default `info` in production, `debug` in dev, `silent` under test |
 | `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | mail | **Required in production.** Elsewhere, if any is unset a consult lead is only logged (phone masked) and never emailed |
+| `UPLOADS_DIR`, `MEDIA_MAX_IMAGE_MB` | media | `UPLOADS_DIR`: absolute path of the uploads volume — **required in production** (compose sets `/data/uploads`), default `./.uploads` elsewhere (gitignored). `MEDIA_MAX_IMAGE_MB`: largest upload, whole MB 1–11, default 10 (Caddy lets 12 MB through to the upload route, so the cap cannot go higher without raising it there) |
 | `SMTP_PORT` (587), `SMTP_SECURE`, `SMTP_FROM`, `CONSULT_RECEIVER_EMAIL` | mail | Optional; the receiver defaults to `CONTACT_EMAIL` in `lib/contact.ts` |
 | `POSTGRES_PASSWORD`, `APP_DB_PASSWORD`, `SITE_ADDRESS`, `HTTP_PORT`, `HTTPS_PORT`, `APP_TAG` | compose only | Interpolated by `compose.yaml` / `compose.dev.yaml`; the app never reads them. See `.env.example` |
 
@@ -732,6 +760,7 @@ Runbook and rationale: `docs/deployment.md`.
   `content` are reachable, and under `/api/admin` only `content` and `preview`; every other `/admin*` and `/api/admin*` path 404s — **a new admin page or API
   path must be added to the `not path` list** (test it with the caddy image and no upstream: 502 = passes, 404 = blocked). `/api/auth/*` is
   open (sign-in). It also 404s `/api/health` (internal healthcheck only) and overwrites `X-Real-IP` with the TCP peer.
+- Uploads: the `uploads` volume is mounted at `/data/uploads` (compose; the Dockerfile creates the directory owned by `node` so the named volume inherits it, and its native-module check also loads OUR `sharp` — there are two copies, ours 0.35 and Next's 0.34, which makes `.next/standalone` ~78 MB). Back it up **together with the database**. Caddy caps bodies at 2 MB except `/api/admin/content/media` (12 MB, `@upload` / `@not_upload` matchers — two `request_body` directives with different matchers; a second unmatched one would not raise the first). Tested with the caddy image and a node stand-in upstream (3 MB: 413 elsewhere, 200 on the upload route; 13 MB: 413 everywhere, chunked too).
 - `output: "standalone"` does not copy `public/` or `.next/static`; the runner stage does. The Vercel-era `outputFileTracingExcludes` workaround for `public/` is gone
   (its cause, `content-store` scanning `public/`, was deleted in Phase 4 M5; the trace no longer pulls `public/` in). Measured at M5: `.next/standalone` 59 MB (it was 67 MB
   with `data/` traced in), `.next/server/app` 3.8 MB — nothing under `[locale]` is prerendered any more, so the old ~1,700 prerendered pages no longer ship.
@@ -776,7 +805,8 @@ app/
   [locale]/not-found.tsx    localized 404 (Navbar + Footer); reached via the [locale]/[...rest] catch-all
   api/consult/              public lead endpoint (nodemailer)
   api/health/               liveness for the Docker healthcheck (always 200; db state in the body)
-  api/admin/                CMS API: content/** (drafts, publish, revisions, delete) and preview (Draft Mode switch) — route-guards.test.ts enforces the guard; preview.int.test.ts the switch and the gate
+  uploads/                  `[...key]/route.ts` — serves uploaded images (GET/HEAD) from the uploads volume
+  api/admin/                CMS API: content/** (drafts, publish, revisions, delete, media library) and preview (Draft Mode switch) — route-guards.test.ts enforces the guard; preview.int.test.ts the switch and the gate
   robots.ts                 robots.txt (names the sitemap)
   sitemap.ts                sitemap.xml — dynamic, built by lib/content/read/sitemap.ts
   zalo-reply/               client page: copy a prepared reply, open Zalo
@@ -834,6 +864,8 @@ lib/
   motion.ts                 imageWipeReveal Motion variant (clip-path wipe-down reveal)
   utils.ts                  cn()
   hash-navigation.ts, menu-active.ts   Safe hash navigation (aliases through `data-aliases`), active-menu detection (plain comparison of canonical links)
+  route-locale.ts           localeOf(segment): the language a [locale] segment names, or notFound() — every page under app/[locale] reads its param through it
+  media/                    Phase 5: formats.ts (pure — sniffing, safe names, `uploadKey`, `parseUploadPath` = the traversal guard), process.ts (sharp: decode → new WebP), store.ts (the uploads volume), service.ts (`uploadImage`, `deleteUpload`, `readUploadRecord`), request.ts (capped multipart reader)
   content/read/preview*.ts  Preview: preview.ts (overlayOf / loadPreviewOverlay — valid drafts laid over the published reads), preview-session.ts (the gate: Draft Mode + editor session), preview-target.ts (the page an editor's draft lands on)
 scripts/
   admin-cli.ts, admin/      `pnpm admin:create` / `admin:reset-password` — entry + prompt.ts (hidden raw-mode input), commands.ts (testable logic), rules.ts, errors.ts

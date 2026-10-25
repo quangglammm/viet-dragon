@@ -41,14 +41,16 @@ ENV NODE_ENV=production \
     HOSTNAME=0.0.0.0 \
     PORT=3000
 # `output: "standalone"` emits server.js + traced node_modules only; public/ and the static
-# assets are copied explicitly. .next/cache is the one writable path (a volume in compose.yaml).
+# assets are copied explicitly. .next/cache and /data/uploads are the writable paths (volumes in compose.yaml).
 COPY --from=build --chown=node:node /app/.next/standalone ./
 COPY --from=build --chown=node:node /app/.next/static ./.next/static
 COPY --from=build --chown=node:node /app/public ./public
-RUN mkdir -p .next/cache && chown node:node .next/cache
-# Fail the BUILD, not the first sign-in, if standalone tracing left a native module out of the image.
-# `sharp` is Next's own copy (the image optimizer), resolved from inside `next`, not our top-level dependency.
-RUN node -e "const r = require; r('@node-rs/argon2'); r(r.resolve('sharp', { paths: [r.resolve('next')] })); console.log('native modules load')"
+# /data/uploads is where compose mounts the uploads volume (images added through the admin, lib/media): a named volume takes its owner from this
+# directory the first time it is created, so it must belong to `node` here or the read-only app could not write to it.
+RUN mkdir -p .next/cache /data/uploads && chown node:node .next/cache /data/uploads
+# Fail the BUILD, not the first sign-in or the first upload, if standalone tracing left a native module out of the image.
+# There are two copies of `sharp`: Next's own (the image optimizer), resolved from inside `next`, and ours (lib/media re-encodes uploads), resolved from the app.
+RUN node -e "const r = require; r('@node-rs/argon2'); r('sharp'); r(r.resolve('sharp', { paths: [r.resolve('next')] })); console.log('native modules load')"
 USER node
 EXPOSE 3000
 # /api/health answers 200 while the process serves requests (db state is in the body).

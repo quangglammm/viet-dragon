@@ -1,0 +1,55 @@
+import { HttpError } from "@/lib/content/http";
+import { Invalid } from "@/lib/content/errors";
+
+// Reads the one file an upload request carries. The body is read through a cap — the declared length first, then the stream itself, which
+// may lie or have no length at all — so a client cannot make the server buffer more than it agreed to, and only then is the form parsed.
+
+const FILE_FIELD = "file";
+/** What a multipart envelope (boundaries, the part's headers, the other fields) may add to the file itself. */
+const ENVELOPE_ALLOWANCE = 64 * 1024;
+const MEGABYTE = 1024 * 1024;
+
+const tooLarge = (maxBytes: number) => new HttpError(413, "PAYLOAD_TOO_LARGE", `Ảnh quá lớn (tối đa ${Math.floor(maxBytes / MEGABYTE)} MB). Hãy thu nhỏ ảnh rồi tải lên lại.`);
+
+async function readCapped(request: Request, limit: number, tooBig: () => HttpError): Promise<Uint8Array> {
+  const declared = Number(request.headers.get("content-length"));
+  if (Number.isFinite(declared) && declared > limit) throw tooBig();
+  const reader = request.body?.getReader();
+  if (!reader) return new Uint8Array(0);
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > limit) {
+      await reader.cancel();
+      throw tooBig();
+    }
+    chunks.push(value);
+  }
+  return Buffer.concat(chunks);
+}
+
+export interface UploadedFile {
+  bytes: Uint8Array;
+  name: string;
+}
+
+/** The single `file` part of a multipart request, at most `maxBytes` long. Anything else in the form is refused. */
+export async function readUploadedFile(request: Request, maxBytes: number): Promise<UploadedFile> {
+  const body = await readCapped(request, maxBytes + ENVELOPE_ALLOWANCE, () => tooLarge(maxBytes));
+  let form: FormData;
+  try {
+    form = await new Response(body as BodyInit, { headers: { "content-type": request.headers.get("content-type") ?? "" } }).formData();
+  } catch {
+    throw new HttpError(400, "INVALID_FORM", "Không đọc được dữ liệu tải lên. Hãy thử lại.");
+  }
+  const entries = [...form.entries()];
+  const files = entries.filter(([name]) => name === FILE_FIELD);
+  if (files.length !== 1 || entries.length !== 1) throw new Invalid([{ path: FILE_FIELD, message: "Mỗi lần chỉ tải lên một ảnh, trong trường «file»." }]);
+  const [, file] = files[0];
+  if (typeof file === "string") throw new Invalid([{ path: FILE_FIELD, message: "Trường «file» phải là một tệp." }]);
+  if (file.size > maxBytes) throw tooLarge(maxBytes);
+  return { bytes: new Uint8Array(await file.arrayBuffer()), name: file.name };
+}

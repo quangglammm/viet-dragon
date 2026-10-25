@@ -10,18 +10,21 @@ import { breadcrumbLd, metadataFor } from "@/lib/content/read/page-seo";
 import { alternatePaths, categoryPath } from "@/lib/content/read/urls";
 import { JsonLd } from "@/components/seo/json-ld";
 import { peekPage, resolvePage } from "@/lib/content/read/resolve-page";
+import { localeOf } from "@/lib/route-locale";
 
 type CategoryParams = { locale: Locale; category: string };
 
 export async function generateMetadata({ params }: { params: Promise<CategoryParams> }): Promise<Metadata> {
-  const { locale, category } = await params;
+  const { locale: localeSegment, category } = await params;
+  const locale = localeOf(localeSegment);
   const found = await peekPage(locale, { category });
   if (!found) return {};
   return metadataFor({ locale, meta: categoryPageOf(found.catalog, locale, found.category).meta, paths: alternatePaths(found.catalog, found.category, null, null) });
 }
 
 export default async function CategoryPage({ params }: Readonly<{ params: Promise<CategoryParams> }>) {
-  const { locale, category } = await params;
+  const { locale: localeSegment, category } = await params;
+  const locale = localeOf(localeSegment);
   const t = await getTranslations({ locale, namespace: "categoryPage" });
   const found = await resolvePage(locale, { category });
   const { name, description, icon, cover, cards: items, prev, next } = categoryPageOf(found.catalog, locale, found.category);

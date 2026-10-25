@@ -27,7 +27,11 @@ function listFiles(directory: string): string[] {
     .sort();
 }
 
-/** Registers every file under public/images, videos and uploads, so documents can refer to a file by its storage key. */
+/**
+ * Registers every file under public/images, videos and uploads, so documents can refer to a file by its storage key. All of them are `static`: they
+ * ship with the build and cannot be removed at runtime — including the few under public/uploads/, left over from the old admin. `source = "upload"`
+ * belongs to the files lib/media stores on the uploads volume.
+ */
 export async function seedMedia({ tx, src, notes }: SeedContext): Promise<MediaRegistry> {
   const publicDirectory = path.join(src.root, "public");
   const rows: (typeof schema.media.$inferInsert)[] = [];
@@ -38,7 +42,7 @@ export async function seedMedia({ tx, src, notes }: SeedContext): Promise<MediaR
       if (STRAY_FILE.test(key)) notes.add("media-stray", key);
       else if (!mime) notes.add("media-unknown-extension", key);
       else {
-        rows.push({ source: top === "uploads" ? "upload" : "static", storageKey: key, kind: mime.startsWith("video") ? "video" : "image", mime, bytes: fs.statSync(file).size });
+        rows.push({ source: "static", storageKey: key, kind: mime.startsWith("video") ? "video" : "image", mime, bytes: fs.statSync(file).size });
       }
     }
   }

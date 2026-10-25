@@ -12,13 +12,15 @@ import { samePath } from "@/lib/content/read/seo";
 import { getNavigation } from "@/lib/content/read/site";
 import { JsonLd } from "@/components/seo/json-ld";
 import { ShowcaseGallery } from "@/components/sections/ShowcaseGallery";
+import { localeOf } from "@/lib/route-locale";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale: localeSegment } = await params;
+  const locale = localeOf(localeSegment);
   const t = await getTranslations({ locale, namespace: "productsPage" });
   return metadataFor({ locale, meta: { title: t("metaTitle"), description: t("metaDescription"), image: null }, paths: samePath("/products") });
 }
@@ -28,7 +30,8 @@ export default async function ProductsPage({
 }: Readonly<{
   params: Promise<{ locale: Locale }>;
 }>) {
-  const { locale } = await params;
+  const { locale: localeSegment } = await params;
+  const locale = localeOf(localeSegment);
   const t = await getTranslations({ locale, namespace: "productsPage" });
   const { categories } = await getNavigation(locale);
   const showcase = showcaseCardsOf(await getShowcase(), locale);

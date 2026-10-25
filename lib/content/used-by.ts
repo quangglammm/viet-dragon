@@ -3,11 +3,13 @@ import * as schema from "@/lib/db/schema";
 import type { DraftReferenceType } from "@/lib/db/content/drafts";
 import type { DbExecutor } from "@/lib/db/types";
 
-// "Used by" for library records. The foreign keys protect LIVE rows, but cannot see an open draft that points at a record,
+// "Used by" for library records and media files. The foreign keys protect LIVE rows, but cannot see an open draft that points at a record,
 // so a delete must ask here first: live rows (counted from the referencing tables) plus open drafts (`draft_reference`).
 
 export const USED_BY_TYPES = ["material", "unit", "trait", "spec_item", "post_category"] as const;
 export type UsedByType = (typeof USED_BY_TYPES)[number];
+/** What can be asked: the library records, and a media file (which is not an entity of its own: it has no document or draft). */
+export type UsageKey = UsedByType | "media";
 
 interface Usage {
   /** The referenced value for a key: the key itself, or a subquery for the id when the table is referenced by id. */
@@ -18,7 +20,7 @@ interface Usage {
   drafts?: (x: DbExecutor, key: string) => Promise<number>;
 }
 
-export const USAGES: Record<UsedByType, Usage> = {
+export const USAGES: Record<UsageKey, Usage> = {
   material: {
     referenced: (key) => sql`(select id from material where slug = ${key})`,
     columns: [{ table: "option", column: "material_id" }],
@@ -44,6 +46,27 @@ export const USAGES: Record<UsedByType, Usage> = {
     // `draft_reference` has no row type for blog categories, so the open post drafts are read from their documents.
     drafts: (x, key) => x.$count(schema.contentDraft, and(eq(schema.contentDraft.entityType, "post"), sql`${schema.contentDraft.snapshot}->>'category' = ${key}`)),
   },
+  // The key is the file's storage key. The Open Graph and option-photo references are composite foreign keys (id + kind, so a photo slot
+  // cannot take a video): the `_kind` half is not a column that holds a reference and is left out.
+  media: {
+    referenced: (key) => sql`(select id from media where storage_key = ${key})`,
+    columns: [
+      { table: "product", column: "cover_media_id" },
+      { table: "product", column: "og_media_id" },
+      { table: "category", column: "cover_media_id" },
+      { table: "category", column: "og_media_id" },
+      { table: "post", column: "cover_media_id" },
+      { table: "post", column: "og_media_id" },
+      { table: "shape", column: "image_media_id" },
+      { table: "shape", column: "og_media_id" },
+      { table: "option", column: "og_media_id" },
+      { table: "option_image", column: "media_id" },
+      { table: "menu_group", column: "image_media_id" },
+      { table: "menu_item", column: "image_media_id" },
+      { table: "fast_print_item", column: "image_media_id" },
+      { table: "showcase_item", column: "media_id" },
+    ],
+  },
 };
 
 export interface UsedBy {
@@ -53,7 +76,7 @@ export interface UsedBy {
   drafts: number;
 }
 
-export async function usedBy(x: DbExecutor, type: UsedByType, key: string): Promise<UsedBy> {
+export async function usedBy(x: DbExecutor, type: UsageKey, key: string): Promise<UsedBy> {
   const { referenced, columns, drafts: countDrafts } = USAGES[type];
   let live = 0;
   for (const { table, column } of columns) {
