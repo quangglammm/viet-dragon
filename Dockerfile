@@ -49,7 +49,8 @@ COPY --from=build --chown=node:node /app/public ./public
 # directory the first time it is created, so it must belong to `node` here or the read-only app could not write to it.
 RUN mkdir -p .next/cache /data/uploads && chown node:node .next/cache /data/uploads
 # Fail the BUILD, not the first sign-in or the first upload, if standalone tracing left a native module out of the image.
-# There are two copies of `sharp`: Next's own (the image optimizer), resolved from inside `next`, and ours (lib/media re-encodes uploads), resolved from the app.
+# `sharp` is used twice — by Next's image optimizer (resolved from inside `next`) and by us (lib/media re-encodes uploads, resolved from the app); it is one
+# copy since Phase 6 M1, but both resolutions are checked, so a tracing change that splits them again fails the build.
 RUN node -e "const r = require; r('@node-rs/argon2'); r('sharp'); r(r.resolve('sharp', { paths: [r.resolve('next')] })); console.log('native modules load')"
 USER node
 EXPOSE 3000

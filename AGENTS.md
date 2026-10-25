@@ -1,7 +1,7 @@
 # Viet Dragon – Agent Instructions
 
 ## Read the docs before touching Next.js APIs
-This project uses **Next.js 16.2.x** (16.2.12 installed) — breaking changes from earlier versions are real.
+This project uses **Next.js 16.4.x** (16.4.3 installed; moved from 16.2.12 in Phase 6 M1 because 16.2.12 has critical advisories) — breaking changes from earlier versions are real.
 Read `node_modules/next/dist/docs/` before writing any Next.js-specific code.
 Most important breaking change: **`params` is now `Promise<{...}>`** — always `await params` in page and metadata functions.
 
@@ -16,11 +16,11 @@ Other v16 facts, verified against those docs:
 ## Stack & exact versions
 | Package | Version | Notes |
 |---|---|---|
-| Next.js | 16.2.x (16.2.12 installed) | App Router, React Server Components |
+| Next.js | 16.4.x (16.4.3 installed; `@next/env` and `eslint-config-next` are pinned to the same version) | App Router, React Server Components |
 | React | 19.2.4 | |
 | Tailwind CSS | v4 | `@theme inline` syntax — no `tailwind.config.ts` |
 | Motion | 12.x | Import from `"motion/react"` — NOT `"framer-motion"` |
-| next-intl | 4.13.x | `/[locale]` routing — see Internationalization below |
+| next-intl | 4.14.x | `/[locale]` routing — see Internationalization below |
 | Lenis | 1.3.x | Smooth scroll — desktop only (see below) |
 | Swiper | 14.x | Hero and Testimonials carousels — `swiper/react` + `swiper/modules` |
 | zod | 4.x | Env validation (`lib/env.ts`); request-body validation in the admin API (planned) |
@@ -50,6 +50,19 @@ This project uses **pnpm** (pinned via `packageManager` in `package.json`) — n
   an interactive terminal (not a non-TTY/agent shell — it writes unresolved
   `set this to true or false` placeholders there instead of prompting) and commit the
   updated file.
+
+---
+
+## Dependency security (Phase 6 M1)
+- **The gate is `pnpm audit --prod --audit-level=high` (exit 0)** — what ships in the image. CI runs the same command (and weekly). A plain `pnpm audit` also lists the dev tooling (`shadcn` CLI, drizzle-kit's old esbuild-kit,
+  Tailwind's toolchain…): those never reach the image and are tracked, not gated.
+- **Why it was not clean before:** Next 16.2.12 had critical advisories (unauthenticated RCE in the Image Optimization API — `/_next/image` is public here, and serves uploads —, SSRF in image optimization, RCE in `next/og`, DoS in Server Actions;
+  fixed from 16.4.1), `nodemailer` < 10.1.4, Next's bundled `sharp` 0.34 (libvips / libheif / librsvg), and ~60 advisories under the `shadcn` CLI, which sat in `dependencies`. Phase 6 M1: Next 16.4.3, `next-intl` 4.14, `nodemailer` 10.2.1, `shadcn` → `devDependencies`,
+  one `sharp` (0.35.5); 79 advisories → 0 in `--prod`. Verified on the upgraded production build: parity unchanged (331 / 1,491 / 43 / 0), the Preview smoke, the media smoke (the optimizer reads `/uploads/…`), the optimizer refuses a foreign host, an unlisted quality and an internal URL (400).
+- **`overrides` in `pnpm-workspace.yaml`** pin transitive packages whose parent has not moved yet (`nanoid`, `source-map-js` under postcss; `esbuild` under drizzle-kit's old kit). Each names the vulnerable range; remove a line when the parent's own range passes it
+  (the way to check: delete it, `pnpm install`, `pnpm audit --prod`).
+- Upgrading Next: read the docs in `node_modules/next/dist/docs/` first (copy the old folder, `diff -rq` the pages this app depends on: proxy, draft mode, `unstable_cache`, `revalidateTag`, image, headers, output), then run the whole gate set plus both real-runtime smokes. Next 16.4 added a lint rule
+  (`@next/next/no-location-assign-relative-destination`) — `lib/auth-client.ts` navigates with `new URL(…)` because a full-page load is deliberate there.
 
 ---
 
@@ -115,8 +128,8 @@ Root `app/[locale]/layout.tsx` reads the navigation from the content database (`
 its `generateStaticParams` returns `[]`, so **nothing under `[locale]` is prerendered**: `next build` needs no database, the home page and
 the other static pages are generated on their first request and cached until a publish touches what they read (tags), and the three
 catalog routes above are plain dynamic routes (no `generateStaticParams`) that render per request from the tag-cached reads
-(~15–30 ms measured). Why dynamic: when a cached (ISR) page throws a redirect, Next 16.2.12 sends the `Location` header twice on the first
-response, and clients that join repeated headers (Node's `fetch`, some crawlers) follow «/a, /a» to a 404 — found by the parity run; a
+(~15–30 ms measured). Why dynamic: when a cached (ISR) page throws a redirect, Next 16.2.12 sent the `Location` header twice on the first
+response (not re-tested on 16.4.3 — the routes stay dynamic, so it cannot show), and clients that join repeated headers (Node's `fetch`, some crawlers) follow «/a, /a» to a 404 — found by the parity run; a
 dynamic render sends it once, and an alias released in the admin stops redirecting at once. Do not add `generateStaticParams` or
 `connection()` to those routes (a dynamic API under ISR is a 500, `DYNAMIC_SERVER_USAGE`).
 
@@ -343,7 +356,7 @@ the VPS/Docker runbook in `docs/deployment.md`. Sections marked **(planned)** de
   looked at), `lib/media/process.ts` decodes with sharp (`failOn: "warning"`, 80 MP pixel limit, 2 decodes at a time) and ENCODES A NEW WebP from the pixels: EXIF/GPS/XMP dropped, orientation applied,
   longest side ≤ 3000 px (never enlarged), colours in sRGB, a GIF keeps its first frame — nothing of the original survives, so a polyglot or appended payload dies here. `lib/media/service.ts` `uploadImage`
   dedupes by the sha256 of the stored bytes (`200 { existing: true }`), writes the file (temp name + rename, `lib/media/store.ts`, every path through `isUploadKey` + a `path.relative` check) BEFORE inserting
-  the row, and removes the file if the insert fails (a unique-key race keeps it: same key = same bytes). **Delete** — `DELETE /api/admin/content/media {key}`, `media:delete` (admin only): the row must be an
+  the row, and removes the file if anything after the write fails. The duplicate check + insert run in ONE transaction that first takes `pg_advisory_xact_lock(hashtextextended(sha256))`, so the same picture uploaded at the same moment under different names (different keys) still becomes one file and one row (found in Phase 6 M1: the earlier check-then-insert let several through when requests interleaved — `media-api.int.test.ts` now fires 5 at once, 4 rounds, and fails 3/3 without the lock); a key that already belongs to a DIFFERENT picture (an 8-hex prefix collision) is answered with 422. **Delete** — `DELETE /api/admin/content/media {key}`, `media:delete` (admin only): the row must be an
   upload (`READ_ONLY` otherwise), `usedBy(tx, "media", key)` (`lib/content/used-by.ts` — the 14 FK columns into `media`, checked against `pg_constraint` by `draft-lifecycle.int.test.ts`, plus open drafts via
   `draft_reference`) must be 0 live + 0 drafts (`IN_USE` 409 with the counts), the row goes in one transaction (FK RESTRICT is the last line), the file after COMMIT (failure logged, never served without its row).
   **Serving** — `GET`/`HEAD /uploads/<year>/<file>`: the path must match `parseUploadPath` exactly (the traversal guard: year `\d{4}`, file `<slug>-<8 hex>.webp`), the row must be an upload; content type and ETag
@@ -370,7 +383,7 @@ the VPS/Docker runbook in `docs/deployment.md`. Sections marked **(planned)** de
   audit rows. **Findings fixed on the way:** (1) the seed labelled `public/uploads/*` as `source = 'upload'` — all seeded files are `static` now, and `deleteUpload` also requires `isUploadKey(key)` (a test inserts such a row);
   (2) **any unknown path with a file extension (`/wp-login.php`, `/nope.png`) was a 500**, not a 404: `proxy.ts` skips such paths, so `[locale]` arrived as `"wp-login.php"` and the pages indexed the catalog by it (the layout's `hasLocale` check
   renders alongside the page, too late). Every page under `app/[locale]` now reads its segment through `localeOf()` (`lib/route-locale.ts`, 404 for anything that is not one of the five languages); parity unchanged (331 / 1,491 / 43 / 0).
-  (3) the standalone output now holds two sharp copies (ours 0.35, Next's 0.34): ~78 MB. A client that sends a body over the cap sees the connection closed after the 413 — the editor UI (M2) checks the size before sending.
+  (3) the standalone output held two sharp copies (ours 0.35, Next's 0.34): ~78 MB — one copy since Phase 6 M1. A client that sends a body over the cap sees the connection closed after the 413 — the editor UI (M2) checks the size before sending.
 
 ### Target **(planned — see the phases in `docs/admin-architecture.md`)**
 PostgreSQL + Drizzle ORM · Better Auth with invite-only named accounts and `admin` /
@@ -770,7 +783,7 @@ Runbook and rationale: `docs/deployment.md`.
   `content` and `media` are reachable, and under `/api/admin` only `content` and `preview`; every other `/admin*` and `/api/admin*` path 404s — **a new admin page or API
   path must be added to the `not path` list** (test it with the caddy image and no upstream: 502 = passes, 404 = blocked). `/api/auth/*` is
   open (sign-in). It also 404s `/api/health` (internal healthcheck only) and overwrites `X-Real-IP` with the TCP peer.
-- Uploads: the `uploads` volume is mounted at `/data/uploads` (compose; the Dockerfile creates the directory owned by `node` so the named volume inherits it, and its native-module check also loads OUR `sharp` — there are two copies, ours 0.35 and Next's 0.34, which makes `.next/standalone` ~78 MB). Back it up **together with the database**. Caddy caps bodies at 2 MB except `/api/admin/content/media` (12 MB, `@upload` / `@not_upload` matchers — two `request_body` directives with different matchers; a second unmatched one would not raise the first). Tested with the caddy image and a node stand-in upstream (3 MB: 413 elsewhere, 200 on the upload route; 13 MB: 413 everywhere, chunked too).
+- Uploads: the `uploads` volume is mounted at `/data/uploads` (compose; the Dockerfile creates the directory owned by `node` so the named volume inherits it, and its native-module check also loads OUR `sharp` — since Phase 6 M1 there is ONE copy (0.35.5, shared with Next's image optimizer: `.next/standalone` is ~63 MB)). Back it up **together with the database**. Caddy caps bodies at 2 MB except `/api/admin/content/media` (12 MB, `@upload` / `@not_upload` matchers — two `request_body` directives with different matchers; a second unmatched one would not raise the first). Tested with the caddy image and a node stand-in upstream (3 MB: 413 elsewhere, 200 on the upload route; 13 MB: 413 everywhere, chunked too).
 - `output: "standalone"` does not copy `public/` or `.next/static`; the runner stage does. The Vercel-era `outputFileTracingExcludes` workaround for `public/` is gone
   (its cause, `content-store` scanning `public/`, was deleted in Phase 4 M5; the trace no longer pulls `public/` in). Measured at M5: `.next/standalone` 59 MB (it was 67 MB
   with `data/` traced in), `.next/server/app` 3.8 MB — nothing under `[locale]` is prerendered any more, so the old ~1,700 prerendered pages no longer ship.

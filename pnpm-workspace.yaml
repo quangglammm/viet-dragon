@@ -9,3 +9,12 @@ allowBuilds:
 # (seen in Docker builds), so retry harder; the Dockerfile also verifies the native modules load.
 fetchRetries: 6
 fetchRetryMaxtimeout: 120000
+
+# Transitive dependencies with a published fix that their parents have not picked up yet (pnpm audit --prod --audit-level=high must stay clean —
+# CI runs it). Each line names the vulnerable range and the patched version; drop a line once the parent's own range moves past it.
+overrides:
+  # postcss (inside Next and Tailwind) pins nanoid ^3 and source-map-js ^1.2.1
+  'nanoid@<3.3.18': 3.3.18
+  'source-map-js@<1.2.2': 1.2.2
+  # drizzle-kit's old esbuild-kit loader (a dev tool, never in the image); its other esbuild is already 0.25
+  'esbuild@<=0.24.2': 0.25.12

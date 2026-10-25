@@ -14,5 +14,6 @@ export const authClient = createAuthClient({ plugins: [adminClient({ ac, roles }
 export async function reauthenticate(): Promise<void> {
   const here = `${window.location.pathname}${window.location.search}`;
   await authClient.signOut().catch(() => undefined);
-  window.location.assign(`${ADMIN_LOGIN_PATH}?next=${encodeURIComponent(here)}&reason=fresh`);
+  // An absolute URL on purpose: Next's lint rule steers a relative destination to the router, which is exactly what must NOT happen here.
+  window.location.assign(new URL(`${ADMIN_LOGIN_PATH}?next=${encodeURIComponent(here)}&reason=fresh`, window.location.origin).href);
 }

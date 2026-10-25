@@ -1,11 +1,11 @@
 import { createHash } from "node:crypto";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { Conflict, Invalid, NotFound } from "@/lib/content/errors";
 import { databaseErrorOf } from "@/lib/content/humanize";
 import { readMedia, type MediaItem } from "@/lib/content/media-library";
 import { usedBy } from "@/lib/content/used-by";
 import { media } from "@/lib/db/schema";
-import type { Db } from "@/lib/db/types";
+import type { Db, DbExecutor } from "@/lib/db/types";
 import { getLogger } from "@/lib/logger";
 import { isUploadKey, rejectionReason, sniffImage, uploadKey } from "./formats";
 import { processImage } from "./process";
@@ -14,7 +14,6 @@ import { removeUpload, writeUpload } from "./store";
 // Upload and delete, the two things that change the library. The HTTP layer (app/api/admin/content/media) only authenticates and reads the body.
 
 const log = getLogger("media");
-const UNIQUE_VIOLATION = "23505";
 const FOREIGN_KEY_VIOLATION = "23503";
 
 export interface UploadInput {
@@ -36,7 +35,7 @@ export interface UploadResult {
 
 const sha256 = (bytes: Uint8Array): string => createHash("sha256").update(bytes).digest("hex");
 
-async function uploadedWith(db: Db, hash: string): Promise<MediaItem | null> {
+async function uploadedWith(db: DbExecutor, hash: string): Promise<MediaItem | null> {
   const [row] = await db.select({ key: media.storageKey }).from(media).where(eq(media.sha256, hash)).limit(1);
   return row ? readMedia(db, row.key) : null;
 }
@@ -57,43 +56,49 @@ export async function readUploadRecord(db: Db, key: string): Promise<UploadRecor
 
 /**
  * Checks the bytes, stores a re-encoded copy on the volume and registers it. The order matters: the file is written before the row, so a row
- * never points at nothing; a row that fails is followed by removing the file it was for.
+ * never points at nothing; a failure after the write is followed by removing the file it was for.
+ *
+ * The same picture uploaded twice at the same moment — under different names, so under different keys — must still become ONE file and one
+ * row: the duplicate check and the insert run in a transaction that first takes a lock named after the picture's hash, so the second request
+ * waits for the first and then finds its row.
  */
 export async function uploadImage(db: Db, { bytes, name, author, now = new Date() }: UploadInput): Promise<UploadResult> {
   if (!sniffImage(bytes)) throw new Invalid([{ path: "file", message: rejectionReason(bytes) }]);
   const processed = await processImage(Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength));
   const hash = sha256(processed.bytes);
-
-  const already = await uploadedWith(db, hash);
-  if (already) return { item: already, existing: true };
-
   const key = uploadKey({ year: now.getUTCFullYear(), name, hash });
-  await writeUpload(key, processed.bytes);
+
+  let written = false;
   try {
-    await db.insert(media).values({
-      source: "upload",
-      backend: "local",
-      storageKey: key,
-      kind: "image",
-      mime: processed.mime,
-      width: processed.width,
-      height: processed.height,
-      bytes: processed.bytes.length,
-      sha256: hash,
-      createdBy: author,
+    return await db.transaction(async (tx) => {
+      await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${hash}, 0))`);
+      const already = await uploadedWith(tx, hash);
+      if (already) return { item: already, existing: true };
+      // The 8 hex characters of the hash are part of the key; another picture under the same name that shares them is a 1-in-4-billion event, answered plainly.
+      if (await readMedia(tx, key)) throw new Invalid([{ path: "file", message: "Đã có một ảnh khác trùng tên tệp này. Hãy đổi tên tệp rồi tải lên lại." }]);
+
+      await writeUpload(key, processed.bytes);
+      written = true;
+      await tx.insert(media).values({
+        source: "upload",
+        backend: "local",
+        storageKey: key,
+        kind: "image",
+        mime: processed.mime,
+        width: processed.width,
+        height: processed.height,
+        bytes: processed.bytes.length,
+        sha256: hash,
+        createdBy: author,
+      });
+      const item = await readMedia(tx, key);
+      if (!item) throw new Error(`the row of ${key} is missing right after it was inserted`);
+      return { item, existing: false };
     });
   } catch (error) {
-    // Two uploads of the same picture at once: the other one won, and the file on disk is the same bytes under the same key — keep it.
-    if (databaseErrorOf(error)?.code === UNIQUE_VIOLATION) {
-      const winner = await readMedia(db, key);
-      if (winner) return { item: winner, existing: true };
-    }
-    await removeUpload(key).catch((cause: unknown) => log.error({ err: cause, key }, "could not remove the file of a failed upload"));
+    if (written) await removeUpload(key).catch((cause: unknown) => log.error({ err: cause, key }, "could not remove the file of a failed upload"));
     throw error;
   }
-  const item = await readMedia(db, key);
-  if (!item) throw new Error(`the row of ${key} is missing right after it was inserted`);
-  return { item, existing: false };
 }
 
 /**

@@ -247,12 +247,31 @@ describe("POST /api/admin/content/media — what is in the file", () => {
     expect(await mediaRows()).toBe(1);
   });
 
-  it("two identical uploads at once make one file and one row", async () => {
-    const bytes = await jpegWithGps(640, 480);
-    const responses = await Promise.all([1, 2, 3].map((index) => post({ cookie: editor.cookie, file: { bytes, name: `same-${index}.jpg` } })));
-    expect(responses.every((response) => response.status === 200 || response.status === 201)).toBe(true);
-    const keys = new Set((await Promise.all(responses.map((response) => read<Uploaded>(response)))).map((body) => body.item.key));
-    expect(keys.size).toBe(1);
+  it("identical uploads at once — under DIFFERENT names, so different keys — still make one file and one row", async () => {
+    // Repeated: the race this guards against was only visible some of the time.
+    for (let round = 0; round < 4; round += 1) {
+      rmSync(volume, { recursive: true, force: true });
+      mkdirSync(volume, { recursive: true });
+      await getPool().query("delete from media where source = 'upload'");
+      const bytes = await jpegWithGps(640 + round, 480);
+      const responses = await Promise.all([1, 2, 3, 4, 5].map((index) => post({ cookie: editor.cookie, file: { bytes, name: `same-${round}-${index}.jpg` } })));
+      expect(responses.map((response) => response.status).every((status) => status === 200 || status === 201)).toBe(true);
+      const bodies = await Promise.all(responses.map((response) => read<Uploaded>(response)));
+      expect(new Set(bodies.map((body) => body.item.key)).size).toBe(1);
+      expect(bodies.filter((body) => !body.existing)).toHaveLength(1);
+      expect(filesOnVolume()).toHaveLength(1);
+      expect(await mediaRows()).toBe(1);
+    }
+  });
+
+  it("answers plainly, and stores nothing, when another picture already holds this name and hash prefix", async () => {
+    const bytes = await jpegWithGps(333, 222);
+    const first = await uploadOk("clash.jpg", bytes);
+    // Make the existing row look like a DIFFERENT picture that has the same key (what a hash-prefix collision would be).
+    await getPool().query("update media set sha256 = repeat('f', 64) where storage_key = $1", [first.item.key]);
+    const clash = await post({ cookie: editor.cookie, file: { bytes, name: "clash.jpg" } });
+    expect(clash.status).toBe(422);
+    expect((await read<ErrorBody>(clash)).error).toContain("trùng tên tệp");
     expect(filesOnVolume()).toHaveLength(1);
     expect(await mediaRows()).toBe(1);
   });
