@@ -14,8 +14,10 @@ vi.mock("next/cache", () => ({ revalidateTag: vi.fn(), revalidatePath: vi.fn() }
 import { DELETE, GET, POST } from "@/app/api/admin/content/media/route";
 import { GET as serve, HEAD as serveHead } from "@/app/uploads/[...key]/route";
 import { discardDraft, openDraft, saveDraft } from "@/lib/content/drafts";
+import { Invalid } from "@/lib/content/errors";
+import { uploadImage } from "@/lib/media/service";
 import type { ProductDocument } from "@/lib/content/schemas";
-import { getPool } from "@/lib/db";
+import { getDb, getPool } from "@/lib/db";
 import { auditRows, createUser, login, ORIGIN, uniqueEmail } from "@/tests/helpers/auth";
 import { editAndPublish, liveDocument } from "@/tests/helpers/content-lifecycle";
 import { createSeededDatabase, type SeededDatabase } from "@/tests/helpers/seeded-db";
@@ -59,6 +61,8 @@ beforeEach(async () => {
   mkdirSync(volume, { recursive: true });
   await getPool().query("delete from content_draft");
   await getPool().query("delete from media where source = 'upload' or storage_key like 'uploads/2026/lookalike-%'");
+  // The editor is shared by the whole file and the throttle is per account: a test that needs it sets its own count.
+  await getPool().query("delete from rate_limit where key like 'vd:upload-user:%'");
 });
 
 // ───────────── plumbing ─────────────
@@ -282,6 +286,40 @@ describe("POST /api/admin/content/media — what is in the file", () => {
     const rows = await auditRows({ action: "media.uploaded", entityId: item.key });
     expect(rows).toHaveLength(1);
     expect(rows[0]).toMatchObject({ actor_label: editor.email, entity_type: "media" });
+  });
+});
+
+describe("throttle and quota", () => {
+  it("answers 429 with Retry-After when an account uploads too fast, and lets it go on after the window", async () => {
+    const key = `vd:upload-user:${editor.id}`;
+    await getPool().query("delete from rate_limit where key = $1", [key]);
+    await getPool().query("insert into rate_limit (id, key, count, last_request) values (gen_random_uuid()::text, $1, 30, (extract(epoch from clock_timestamp()) * 1000)::bigint)", [key]);
+    const refused = await post({ cookie: editor.cookie, file: { bytes: await jpegWithGps(), name: "fast.jpg" } });
+    expect(refused.status).toBe(429);
+    expect(Number(refused.headers.get("retry-after"))).toBeGreaterThan(500);
+    expect((await read<ErrorBody>(refused)).code).toBe("RATE_LIMITED");
+    expect(filesOnVolume()).toEqual([]);
+    // Another account is not held up by it.
+    expect((await post({ cookie: admin.cookie, file: { bytes: await jpegWithGps(), name: "other.jpg" } })).status).toBe(201);
+    await getPool().query("delete from rate_limit where key = $1", [key]);
+    expect((await post({ cookie: editor.cookie, file: { bytes: await jpegWithGps(301), name: "after.jpg" } })).status).toBe(201);
+  });
+
+  it("refuses a picture that would take the library past its quota, and says by how much it is used", async () => {
+    const first = await uploadImage(getDb(), { bytes: await jpegWithGps(500, 400), name: "one.jpg", author: null, quotaBytes: 1_000_000 });
+    const used = first.item.bytes;
+    // A quota with room for exactly what is there and nothing more.
+    const bytes = await jpegWithGps(520, 410);
+    const error = await uploadImage(getDb(), { bytes, name: "two.jpg", author: null, quotaBytes: used + 10 }).then(() => null, (caught: unknown) => caught);
+    expect(error).toBeInstanceOf(Invalid);
+    expect((error as Invalid).issues[0].message).toContain("Thư viện ảnh đã đầy");
+    expect(filesOnVolume()).toHaveLength(1);
+    expect(await mediaRows()).toBe(1);
+    // The same picture again costs nothing, so a full library still answers «already here».
+    const again = await uploadImage(getDb(), { bytes: await jpegWithGps(500, 400), name: "one-again.jpg", author: null, quotaBytes: used });
+    expect(again.existing).toBe(true);
+    // And with room, the second one goes in.
+    expect((await uploadImage(getDb(), { bytes, name: "two.jpg", author: null, quotaBytes: 10_000_000 })).existing).toBe(false);
   });
 });
 

@@ -16,6 +16,7 @@ const MANAGED = [
   "BETTER_AUTH_SECRET",
   "UPLOADS_DIR",
   "MEDIA_MAX_IMAGE_MB",
+  "MEDIA_MAX_TOTAL_MB",
 ] as const;
 
 const GOOD_DB = "postgres://vietdragon:s3cretpassw0rd-long@127.0.0.1:5432/vietdragon";
@@ -233,6 +234,7 @@ describe("media group", () => {
     const env = (await loadEnv({ NODE_ENV: "development" })).getMediaEnv();
     expect(env.UPLOADS_DIR).toBe(`${process.cwd()}/.uploads`);
     expect(env.MEDIA_MAX_IMAGE_MB).toBe(10);
+    expect(env.MEDIA_MAX_TOTAL_MB).toBe(2048);
   });
 
   it("requires the uploads volume in production, as an absolute path", async () => {
@@ -248,5 +250,11 @@ describe("media group", () => {
     expect((await loadEnv({ NODE_ENV: "development", MEDIA_MAX_IMAGE_MB: "5" })).getMediaEnv().MEDIA_MAX_IMAGE_MB).toBe(5);
     expect((await loadEnv({ NODE_ENV: "development", MEDIA_MAX_IMAGE_MB: "" })).getMediaEnv().MEDIA_MAX_IMAGE_MB).toBe(10);
     for (const bad of ["0", "12", "abc", "2.5"]) expect(await problems({ ...COMPLETE_PROD, MEDIA_MAX_IMAGE_MB: bad })).toContain("media: MEDIA_MAX_IMAGE_MB");
+  });
+
+  it("takes the library's total quota in whole megabytes", async () => {
+    expect((await loadEnv({ NODE_ENV: "development", MEDIA_MAX_TOTAL_MB: "500" })).getMediaEnv().MEDIA_MAX_TOTAL_MB).toBe(500);
+    expect((await loadEnv({ NODE_ENV: "development", MEDIA_MAX_TOTAL_MB: "" })).getMediaEnv().MEDIA_MAX_TOTAL_MB).toBe(2048);
+    for (const bad of ["0", "-5", "abc", "1.5"]) expect(await problems({ ...COMPLETE_PROD, MEDIA_MAX_TOTAL_MB: bad })).toContain("media: MEDIA_MAX_TOTAL_MB");
   });
 });

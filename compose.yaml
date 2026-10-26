@@ -64,6 +64,7 @@ services:
       # Images added through the admin live on this volume, never in public/. Back it up together with the database (docs/deployment.md).
       UPLOADS_DIR: /data/uploads
       MEDIA_MAX_IMAGE_MB: ${MEDIA_MAX_IMAGE_MB:-}
+      MEDIA_MAX_TOTAL_MB: ${MEDIA_MAX_TOTAL_MB:-}
     volumes:
       - nextcache:/app/.next/cache
       - uploads:/data/uploads

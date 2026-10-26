@@ -405,7 +405,8 @@
     "errorRequired": "Vui lòng nhập số điện thoại của bạn.",
     "errorInvalid": "Số điện thoại không đúng định dạng (ví dụ: 0901234567).",
     "errorGeneric": "Không thể gửi yêu cầu. Vui lòng thử lại.",
-    "scrollForMore": "Cuộn xem tiếp"
+    "scrollForMore": "Cuộn xem tiếp",
+    "tooManyRequests": "Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau ít phút hoặc gọi hotline."
   },
   "quoteModal": {
     "eyebrow": "Tư Vấn & Báo Giá Nhanh",
@@ -432,7 +433,8 @@
     "successDesc": "Chuyên viên Viet Dragon sẽ liên hệ lại với bạn trong vòng 30 phút qua số điện thoại này.",
     "openZaloNow": "Chat qua Zalo ngay",
     "close": "Đóng",
-    "phoneError": "Vui lòng nhập số điện thoại hợp lệ (10 số)."
+    "phoneError": "Vui lòng nhập số điện thoại hợp lệ (10 số).",
+    "tooManyRequests": "Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau ít phút hoặc gọi hotline."
   },
   "notFound": {
     "title": "Không tìm thấy trang",

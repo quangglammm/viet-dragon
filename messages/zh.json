@@ -405,7 +405,8 @@
     "errorRequired": "请输入您的电话号码。",
     "errorInvalid": "电话号码格式不正确（例如：0901234567）。",
     "errorGeneric": "无法提交请求，请稍后重试。",
-    "scrollForMore": "向下滚动查看更多"
+    "scrollForMore": "向下滚动查看更多",
+    "tooManyRequests": "您提交的请求过于频繁，请几分钟后再试，或直接致电热线。"
   },
   "quoteModal": {
     "eyebrow": "快速咨询与即时报价",
@@ -432,7 +433,8 @@
     "successDesc": "Viet Dragon 印刷专员将在30分钟内通过此电话与您联系。",
     "openZaloNow": "立即通过 Zalo 咨询",
     "close": "关闭",
-    "phoneError": "请输入有效的电话号码。"
+    "phoneError": "请输入有效的电话号码。",
+    "tooManyRequests": "您提交的请求过于频繁，请几分钟后再试，或直接致电热线。"
   },
   "notFound": {
     "title": "找不到页面",

@@ -405,7 +405,8 @@
     "errorRequired": "Please enter your phone number.",
     "errorInvalid": "Invalid phone number format (e.g. 0901234567).",
     "errorGeneric": "Failed to send request. Please try again.",
-    "scrollForMore": "Scroll for more"
+    "scrollForMore": "Scroll for more",
+    "tooManyRequests": "You have sent too many requests. Please try again in a few minutes or call our hotline."
   },
   "quoteModal": {
     "eyebrow": "Quick Consultation & Quote",
@@ -432,7 +433,8 @@
     "successDesc": "Viet Dragon specialist will contact you within 30 minutes via this phone number.",
     "openZaloNow": "Chat via Zalo now",
     "close": "Close",
-    "phoneError": "Please enter a valid phone number."
+    "phoneError": "Please enter a valid phone number.",
+    "tooManyRequests": "You have sent too many requests. Please try again in a few minutes or call our hotline."
   },
   "notFound": {
     "title": "Page not found",

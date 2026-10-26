@@ -66,6 +66,36 @@ This project uses **pnpm** (pinned via `packageManager` in `package.json`) — n
 
 ---
 
+## Public endpoints, headers and CSP (Phase 6 M2)
+- **Rate limits** (`lib/rate-limit.ts`): fixed windows in Postgres, in Better Auth's `rate_limit` table under keys `vd:<purpose>:<subject>` (they never meet Better Auth's `<ip>|<path>` keys). `consumeLimit(db, { purpose, subject, windowSeconds, max })`
+  is ONE atomic `INSERT … ON CONFLICT DO UPDATE` using the database clock, so concurrent requests count exactly and a restart does not forget an abuser. The client address is `x-real-ip` only (Caddy overwrites it). **It fails OPEN**: the callers
+  (`/api/consult`, `/api/csp-report`) let a request through and log when the database cannot be asked — a lost lead costs more than a few extra requests. `tooManyRequests()` answers 429 + `Retry-After` + `{ error, code: "RATE_LIMITED" }`.
+  Limits: consult **5 / 10 min per address** (counted first, junk and honeypot included), **3 / hour per phone** (hashed in the key), **100 / hour overall**; uploads **30 / 10 min per account**; CSP reports **30 / min per address**.
+- **`/api/consult`** (`app/api/consult/route.ts`; logic in `lib/consult/{schema,email}.ts`, phone rules in `lib/phone.ts`): body read through `lib/http/body.ts` `readBodyCapped` (**8 KB**, declared length first, then the stream is counted → 413), broken JSON → 400
+  `INVALID_JSON`, a strict zod schema with a cap per field (`parseConsult` → `lead | honeypot | invalid`; control characters are stripped, so a CRLF cannot reach the subject), and a **honeypot** (`website` in the JSON; the input in `components/ui/honeypot-field.tsx` has an
+  unguessable HTML name, `autoComplete="off"` and password-manager opt-outs so a customer's autofill never fills it) — a filled one gets the normal success answer and no mail. **Every visitor value is HTML-escaped** in the mail, and the «Nhắn tin qua Zalo»
+  link is built from `SITE_URL` only: a `productUrl` of another origin is dropped (not an error), `Origin` is never read. The phone pattern is `PHONE_PATTERN` in `lib/phone.ts` (the old `[3|5|7|8|9]` class accepted a `|`); both forms import it. Both forms show
+  `tooManyRequests` (UI copy, five languages) on a 429 and never the server's Vietnamese text.
+- **Uploads:** `POST /api/admin/content/media` is throttled per account (above) before the body is read, and `uploadImage` refuses a picture that would take all uploads past **`MEDIA_MAX_TOTAL_MB`** (default 2048; 422 «Thư viện ảnh đã đầy…» with the figures). The quota is checked
+  AFTER the dedupe lookup, so the same picture again costs nothing and a full library still answers «already here». It is soft: two different pictures arriving at once may overshoot by one.
+- **Response headers** are the pure table in `lib/security-headers.ts`, returned by `next.config.ts` `headers()` (plus `poweredByHeader: false`); `security-headers.test.ts` pins it. Every response: `X-Frame-Options: DENY`, a `Permissions-Policy` that switches off the
+  features the site never uses (camera, microphone, geolocation, payment, usb… — **not** autoplay or the clipboard: the About video starts on a click and the admin copies text). `/admin/*` and `/api/*`: `Cache-Control: no-store` + `X-Robots-Tag: noindex, nofollow`;
+  `/zalo-reply`: noindex. **Caddy owns** `Strict-Transport-Security`, `X-Content-Type-Options`, `Referrer-Policy` and removing `Server` — the app does not repeat them, so none appears twice (a test checks). A new header goes in the table, and a test line.
+- **CSP, in two parts.** **Enforced** on every page (`ENFORCED_CSP`): `frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'` — four directives that need no knowledge of what a page loads. **Report-Only** in production builds only (`REPORT_ONLY_CSP`, dev needs
+  `eval`): the full policy the site is expected to satisfy — `default-src 'self'`, `'unsafe-inline'` for scripts and styles ONLY, `img-src 'self'` plus the two picsum hosts, `connect-src 'self'`, `frame-src 'none'`, `report-uri /api/csp-report`. **No nonces, on purpose:**
+  Next needs a per-request nonce to be dynamic, which would end the ISR everything here is built on; the stricter step later is dropping `'unsafe-inline'` with Next's experimental SRI hashes. The CSP rule skips `/uploads/*` (its own `default-src 'none'; sandbox`) and
+  `/_next/*` (the image optimizer sends its own `sandbox` policy) — a second policy there would only replace theirs. No `frame-ancestors` in the report-only policy (browsers ignore it there and warn).
+- **`POST /api/csp-report`** (`app/api/csp-report/route.ts`, parser `lib/csp-report.ts`): public by necessity (browsers post without cookies). Accepts `application/csp-report`, `application/reports+json` and `application/json`, reads at most 16 KB, **answers 204 to everything**
+  (including a limit, junk and an oversize body), and logs one `warn` per violation under scope `csp` with only `{ directive, blocked (an origin or keyword, never a URL), document (PATH only), disposition, source, line }`; at most 10 reports per request; reports caused by
+  browser extensions are dropped. Read the soak with `jq 'select(.scope=="csp")'` on the container log.
+- **Survey (production build, Chromium, every page type in five languages, quote modal, About video, admin lists, an editor with every tab, the media page + an upload, the media picker):** public pages and the admin produce **no violation of the policy above except two, both explained.**
+  (1) The testimonial avatars are `picsum.photos/seed/…` placeholders, which redirect to `fastly.picsum.photos`; CSP is checked on every hop, so both hosts are listed (and the report names the FIRST url, `picsum.photos`, not the hop that failed). They go when the avatars are replaced.
+  (2) Every admin page reports `script-src` / `eval` from one chunk: zod's feature test `try { Function("") } catch {}` (`allowsEval`) in the editors' bundle. Zod catches the refusal and uses its non-JIT path — verified by loading an editor under a REAL enforced `script-src 'self' 'unsafe-inline'`:
+  all fields and tabs render, no page error. It is an explained report, not a reason for `'unsafe-eval'`; filter it when reading the soak (`blocked == "eval"` and `document` starting `/admin`). No `data:`/`blob:` image, worker or manifest exists anywhere, so none is allowed.
+- **Promotion rule:** enforce the whole policy only after a production soak with no unexplained report, and before that load an editor, autosave, publish and upload under the enforced policy (the survey only loaded it). Do not add `'unsafe-eval'`, a wildcard or a third-party host without a survey line saying why.
+
+---
+
 ## Project overview
 **Viet Dragon** (vietdragon.vn) — professional printing company, TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương.
 - Five locales — Vietnamese (`vi`, default, unprefixed URLs), English (`en`), Chinese (`zh`),
@@ -79,14 +109,14 @@ This project uses **pnpm** (pinned via `packageManager` in `package.json`) — n
   `unoptimized` prop. Exception: **testimonial avatars** (`Testimonials.tsx`) still hit
   `picsum.photos/seed/vdt{1,2,3}/80/80`, so `next.config.ts`'s `images.remotePatterns`
   entry for `picsum.photos` must stay until those are replaced.
-- `public/videos/about.mp4` — background/loop video used by the About section.
+- `public/videos/about.mp4` — the About section shows a poster and plays this video (with controls) after a click; it is not a background loop.
 - Floating chrome rendered outside the section stack: `FloatingContact` (Zalo + phone
   buttons, bottom-right, global in `app/[locale]/layout.tsx`) and `MaterialGlossaryFab`
   (bottom-left icon-legend popover, on the pages that show material cards). Shared phone/Zalo constants live in `lib/contact.ts` — reuse those
   instead of re-hardcoding the number. `app/[locale]/layout.tsx` also mounts
   `SiteDataProvider` (the navigation read from the content database), `QuoteModalProvider` (the quote modal) and `LanguageDetectorToast`.
 - Consult leads: `QuoteModal` and `ConsultBottomSheet` both POST to `/api/consult`, which emails
-  the lead via nodemailer (SMTP env vars — see **Environment variables**). `/zalo-reply` is a
+  the lead via nodemailer (SMTP env vars — see **Environment variables**; limits, escaping and the honeypot are in **Public endpoints, headers and CSP**). `/zalo-reply` is a
   standalone client page (outside `[locale]`) that copies a prepared reply and opens Zalo.
 
 ---
@@ -115,7 +145,8 @@ Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
 | `/admin/*` | CMS UI — own root layout, Vietnamese only: sign-in, account, users, audit and `/admin/content/[type]` (list) / `/admin/content/[type]/[id]` (editor), the editors on the content database. See **Admin CMS** |
 | `/api/admin/*` | CMS API — `content/**` (drafts, publish, revisions, delete — see **Content model**; `content/media` is the library: list, upload, delete — see **Media**) and `preview` (turns Draft Mode on/off — see **Preview**). Every handler starts with `requireApiUser` (a test enforces it) |
 | `/api/auth/*` | Better Auth (`app/api/auth/[...all]/route.ts`): sign-in/out, session, password change, admin-plugin user management. Sign-in must use this HTTP surface — only HTTP requests are rate limited, not `auth.api.*` calls |
-| `/api/consult` | Public. Receives quote/consult leads from `QuoteModal` / `ConsultBottomSheet`, emails them |
+| `/api/consult` | Public. Receives quote/consult leads from `QuoteModal` / `ConsultBottomSheet`, emails them. 8 KB cap, zod-validated, honeypot, escaped mail, 5 / 10 min per address · 3 / hour per phone · 100 / hour overall (429 + `Retry-After`) |
+| `/api/csp-report` | Public. Receives the browsers' Content-Security-Policy reports (Report-Only); 16 KB cap, 30 / min per address, always 204, logs a trimmed record |
 | `/zalo-reply` | Client page that copies a prepared reply message and opens Zalo (`noindex`) |
 | `/uploads/<year>/<name>-<hash>.webp` | `app/uploads/[...key]/route.ts` — serves the images uploaded through the admin from the uploads volume (`lib/media`); the site's own pictures are in `public/`. See **Media** under Admin CMS. `proxy.ts` skips it (the path has a file extension) |
 | `/api/health` | Liveness for the Docker healthcheck: always 200 while the process serves, body `{ status, db: "ok" \| "down" }` — a database outage must not mark the app unhealthy |
@@ -748,7 +779,7 @@ values. It is skipped during `next build`, so the Docker build stage needs no se
 | `SITE_URL` | site | Public origin, no path. Required in production (dev default `http://localhost:3000`). **Needed at build time too** — pages are prerendered, so it is baked in (docker build arg) |
 | `LOG_LEVEL` | logging | `fatal` … `trace` / `silent`; default `info` in production, `debug` in dev, `silent` under test |
 | `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | mail | **Required in production.** Elsewhere, if any is unset a consult lead is only logged (phone masked) and never emailed |
-| `UPLOADS_DIR`, `MEDIA_MAX_IMAGE_MB` | media | `UPLOADS_DIR`: absolute path of the uploads volume — **required in production** (compose sets `/data/uploads`), default `./.uploads` elsewhere (gitignored). `MEDIA_MAX_IMAGE_MB`: largest upload, whole MB 1–11, default 10 (Caddy lets 12 MB through to the upload route, so the cap cannot go higher without raising it there) |
+| `UPLOADS_DIR`, `MEDIA_MAX_IMAGE_MB`, `MEDIA_MAX_TOTAL_MB` | media | `UPLOADS_DIR`: absolute path of the uploads volume — **required in production** (compose sets `/data/uploads`), default `./.uploads` elsewhere (gitignored). `MEDIA_MAX_IMAGE_MB`: largest upload, whole MB 1–11, default 10 (Caddy lets 12 MB through to the upload route, so the cap cannot go higher without raising it there). `MEDIA_MAX_TOTAL_MB`: all uploads together, whole MB, default 2048 — past it an upload is refused (422) until something is deleted; size the uploads volume above it |
 | `SMTP_PORT` (587), `SMTP_SECURE`, `SMTP_FROM`, `CONSULT_RECEIVER_EMAIL` | mail | Optional; the receiver defaults to `CONTACT_EMAIL` in `lib/contact.ts` |
 | `POSTGRES_PASSWORD`, `APP_DB_PASSWORD`, `SITE_ADDRESS`, `HTTP_PORT`, `HTTPS_PORT`, `APP_TAG` | compose only | Interpolated by `compose.yaml` / `compose.dev.yaml`; the app never reads them. See `.env.example` |
 
@@ -850,6 +881,12 @@ hooks/
   use-section-in-view.ts    Shared useRef + useInView(once, margin -80px)
   use-current-hash.ts, use-hash-pulse.ts   Current-hash tracking (reports a card's canonical id for an alias hash) and hash-target pulse highlight
 lib/
+  security-headers.ts       the response-header table next.config.ts returns (X-Frame-Options, Permissions-Policy, enforced CSP subset, report-only CSP, no-store / noindex for admin + API) — import-free
+  csp-report.ts             pure parser of CSP reports (legacy + Reporting API) → trimmed, extension-free violations; MAX_CSP_REPORT_BYTES
+  rate-limit.ts             consumeLimit (atomic fixed window in the `rate_limit` table), limitKey / digest / clientAddress, pruneLimits, tooManyRequests (429)
+  phone.ts                  PHONE_PATTERN, cleanPhone, isPhoneNumber, zaloNumber — one phone rule for both forms and the API
+  http/body.ts              readBodyCapped(request, limit) + BodyTooLarge — declared length first, then the stream is counted
+  consult/                  schema.ts (parseConsult: caps, cleaning, same-site url, honeypot) · email.ts (escapeHtml, buildLeadEmail — Zalo link from SITE_URL only)
   env.ts                    zod-validated config: getDatabaseEnv/getMailEnv/getLogEnv/getSiteEnv/getAuthEnv + assertEnv (relative imports: drizzle.config.ts loads it outside Next)
   auth.ts                   createAuth() / lazy getAuth() — Better Auth config (argon2id, 12 h DB sessions, `vd` strict cookies, DB rate limit, admin plugin). Importing it reads no env
   auth.cli.ts               eager `auth` export for the Better Auth CLI only (`pnpm auth:schema` regenerates lib/db/auth-schema.ts)
@@ -915,7 +952,7 @@ components/
     Hero.tsx                Swiper fade-effect autoplay carousel, per-slide gradient bg
     ShopCategories.tsx      Horizontal category rail (scroll-snap on mobile)
     ShopBanner.tsx          2-up promo banner
-    About.tsx               Looping video + stat card, checklist, CTA
+    About.tsx               Poster that plays the video on click + stat card, checklist, CTA
     Services.tsx            4 free-service cards
     Shop.tsx                 Tabbed product grid by category
     CtaBanner.tsx            Full-bleed image banner, 2 CTAs
@@ -932,7 +969,7 @@ components/
     section-heading.tsx, wipe-button.tsx, icon-badge.tsx   Reusable primitives — see above
     accordion.tsx, avatar.tsx, badge.tsx, button.tsx, card.tsx, separator.tsx, tabs.tsx   shadcn/ui primitives
     floating-contact.tsx      Global Zalo/phone floating buttons (root layout)
-    quote-modal.tsx, consult-bottom-sheet.tsx   Lead-capture UIs; both POST to /api/consult
+    quote-modal.tsx, consult-bottom-sheet.tsx   Lead-capture UIs; both POST to /api/consult (with honeypot-field.tsx, the hidden trap input)
     language-detector-toast.tsx, auto-scroll-to-target.tsx, zalo-icon.tsx   Locale suggestion toast, hash auto-scroll helper, Zalo glyph
     preview-notice.tsx, preview-banner.tsx   Draft Mode strip (server decides via the gate, client draws applied / skipped drafts and «Thoát xem trước»)
   seo/json-ld.tsx           <script type="application/ld+json"> that cannot be closed by editor text (serializeJsonLd)

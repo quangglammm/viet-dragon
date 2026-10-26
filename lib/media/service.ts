@@ -7,6 +7,7 @@ import { usedBy } from "@/lib/content/used-by";
 import { media } from "@/lib/db/schema";
 import type { Db, DbExecutor } from "@/lib/db/types";
 import { getLogger } from "@/lib/logger";
+import { formatBytes } from "@/lib/content/editor/media-upload";
 import { isUploadKey, rejectionReason, sniffImage, uploadKey } from "./formats";
 import { processImage } from "./process";
 import { removeUpload, writeUpload } from "./store";
@@ -23,6 +24,8 @@ export interface UploadInput {
   name: string;
   /** Account id of the uploader. */
   author: string | null;
+  /** All uploads together may not pass this many bytes; omitted = no limit (tests). Soft: two different pictures arriving at once may overshoot it by one. */
+  quotaBytes?: number;
   /** Injectable for tests. */
   now?: Date;
 }
@@ -62,7 +65,7 @@ export async function readUploadRecord(db: Db, key: string): Promise<UploadRecor
  * row: the duplicate check and the insert run in a transaction that first takes a lock named after the picture's hash, so the second request
  * waits for the first and then finds its row.
  */
-export async function uploadImage(db: Db, { bytes, name, author, now = new Date() }: UploadInput): Promise<UploadResult> {
+export async function uploadImage(db: Db, { bytes, name, author, quotaBytes, now = new Date() }: UploadInput): Promise<UploadResult> {
   if (!sniffImage(bytes)) throw new Invalid([{ path: "file", message: rejectionReason(bytes) }]);
   const processed = await processImage(Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength));
   const hash = sha256(processed.bytes);
@@ -76,6 +79,13 @@ export async function uploadImage(db: Db, { bytes, name, author, now = new Date(
       if (already) return { item: already, existing: true };
       // The 8 hex characters of the hash are part of the key; another picture under the same name that shares them is a 1-in-4-billion event, answered plainly.
       if (await readMedia(tx, key)) throw new Invalid([{ path: "file", message: "Đã có một ảnh khác trùng tên tệp này. Hãy đổi tên tệp rồi tải lên lại." }]);
+
+      if (quotaBytes !== undefined) {
+        const used = Number((await tx.execute<{ used: string }>(sql`select coalesce(sum(bytes), 0)::bigint as used from media where source = 'upload'`)).rows[0].used);
+        if (used + processed.bytes.length > quotaBytes) {
+          throw new Invalid([{ path: "file", message: `Thư viện ảnh đã đầy (đang dùng ${formatBytes(used)} trên ${formatBytes(quotaBytes)}). Hãy xóa bớt ảnh không dùng trong «Thư viện ảnh» rồi tải lên lại.` }]);
+        }
+      }
 
       await writeUpload(key, processed.bytes);
       written = true;

@@ -7,10 +7,13 @@ import { Invalid, zodIssues } from "@/lib/content/errors";
 import { handle, json, noContent, readJson } from "@/lib/content/http";
 import { listMedia, listMediaFolders, MAX_MEDIA_PAGE_SIZE } from "@/lib/content/media-library";
 import { parseOptions } from "@/lib/content/schemas";
+import { consumeLimit, tooManyRequests } from "@/lib/rate-limit";
 import { readUploadedFile } from "@/lib/media/request";
 import { deleteUpload, uploadImage } from "@/lib/media/service";
 
 const MEGABYTE = 1024 * 1024;
+/** 30 pictures in ten minutes is a busy editor; more is a script, or somebody else holding the account. */
+const UPLOAD_THROTTLE = { purpose: "upload-user", windowSeconds: 10 * 60, max: 30 } as const;
 
 const query = z.strictObject({
   q: z.string().trim().max(100).optional(),
@@ -55,8 +58,13 @@ export async function POST(request: Request) {
   if (!auth.ok) return auth.response;
 
   return handle(async () => {
-    const file = await readUploadedFile(request, getMediaEnv().MEDIA_MAX_IMAGE_MB * MEGABYTE);
-    const result = await uploadImage(getDb(), { bytes: file.bytes, name: file.name, author: auth.user.id });
+    // Counted before the body is read: a refused request costs nothing but this one query.
+    const throttle = await consumeLimit(getDb(), { ...UPLOAD_THROTTLE, subject: auth.user.id });
+    if (!throttle.allowed) return tooManyRequests(throttle, "Bạn tải ảnh lên quá nhanh. Vui lòng đợi ít phút rồi tiếp tục.");
+
+    const { MEDIA_MAX_IMAGE_MB, MEDIA_MAX_TOTAL_MB } = getMediaEnv();
+    const file = await readUploadedFile(request, MEDIA_MAX_IMAGE_MB * MEGABYTE);
+    const result = await uploadImage(getDb(), { bytes: file.bytes, name: file.name, author: auth.user.id, quotaBytes: MEDIA_MAX_TOTAL_MB * MEGABYTE });
     if (!result.existing) await auditMedia(request, auth.user, "media.uploaded", result.item.key, { bytes: result.item.bytes, width: result.item.width, height: result.item.height });
     return json(result, { status: result.existing ? 200 : 201 });
   });

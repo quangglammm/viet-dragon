@@ -1,8 +1,9 @@
 import { HttpError } from "@/lib/content/http";
 import { Invalid } from "@/lib/content/errors";
+import { BodyTooLarge, readBodyCapped } from "@/lib/http/body";
 
-// Reads the one file an upload request carries. The body is read through a cap — the declared length first, then the stream itself, which
-// may lie or have no length at all — so a client cannot make the server buffer more than it agreed to, and only then is the form parsed.
+// Reads the one file an upload request carries. The body is read through a cap (lib/http/body.ts) so a client cannot make the server buffer
+// more than it agreed to, and only then is the form parsed.
 
 const FILE_FIELD = "file";
 /** What a multipart envelope (boundaries, the part's headers, the other fields) may add to the file itself. */
@@ -11,26 +12,6 @@ const MEGABYTE = 1024 * 1024;
 
 const tooLarge = (maxBytes: number) => new HttpError(413, "PAYLOAD_TOO_LARGE", `Ảnh quá lớn (tối đa ${Math.floor(maxBytes / MEGABYTE)} MB). Hãy thu nhỏ ảnh rồi tải lên lại.`);
 
-async function readCapped(request: Request, limit: number, tooBig: () => HttpError): Promise<Uint8Array> {
-  const declared = Number(request.headers.get("content-length"));
-  if (Number.isFinite(declared) && declared > limit) throw tooBig();
-  const reader = request.body?.getReader();
-  if (!reader) return new Uint8Array(0);
-  const chunks: Uint8Array[] = [];
-  let size = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    size += value.byteLength;
-    if (size > limit) {
-      await reader.cancel();
-      throw tooBig();
-    }
-    chunks.push(value);
-  }
-  return Buffer.concat(chunks);
-}
-
 export interface UploadedFile {
   bytes: Uint8Array;
   name: string;
@@ -38,7 +19,9 @@ export interface UploadedFile {
 
 /** The single `file` part of a multipart request, at most `maxBytes` long. Anything else in the form is refused. */
 export async function readUploadedFile(request: Request, maxBytes: number): Promise<UploadedFile> {
-  const body = await readCapped(request, maxBytes + ENVELOPE_ALLOWANCE, () => tooLarge(maxBytes));
+  const body = await readBodyCapped(request, maxBytes + ENVELOPE_ALLOWANCE).catch((error: unknown) => {
+    throw error instanceof BodyTooLarge ? tooLarge(maxBytes) : error;
+  });
   let form: FormData;
   try {
     form = await new Response(body as BodyInit, { headers: { "content-type": request.headers.get("content-type") ?? "" } }).formData();

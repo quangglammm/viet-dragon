@@ -16,11 +16,11 @@ describe("leafPaths", () => {
     expect(leafPaths({ vi: { a: "1" }, en: { a: "1", b: "2" }, zh: { b: "2", c: "3" } })).toEqual(["a", "b", "c"]);
   });
 
-  it("finds exactly the 362 texts of the real Vietnamese file (and the same ones in the faq of every language)", () => {
+  it("finds exactly the 364 texts of the real Vietnamese file (and the same ones in the faq of every language)", () => {
     const real = (locale: string) => ({ [locale]: messages(locale).faq });
     for (const locale of LOCALES) expect(leafPaths(real(locale) as MessageData)).toEqual(leafPaths({ vi: messages("vi").faq } as MessageData));
     const total = Object.values(messages("vi")).reduce<number>((sum, namespace) => sum + leafPaths({ vi: namespace }).length, 0);
-    expect(total).toBe(362);
+    expect(total).toBe(364);
   });
 });
 

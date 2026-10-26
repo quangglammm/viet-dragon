@@ -5,6 +5,8 @@ import { AnimatePresence, motion, useDragControls } from "motion/react";
 import { X, Phone, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { ZALO_CHAT_URL } from "@/lib/contact";
+import { cleanPhone, isPhoneNumber } from "@/lib/phone";
+import { HoneypotField } from "@/components/ui/honeypot-field";
 import { ZaloIcon } from "@/components/ui/zalo-icon";
 import { pickLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/routing";
@@ -18,8 +20,6 @@ interface ConsultBottomSheetProps {
   sizeDims?: string;
   locale?: Locale;
 }
-
-const PHONE_REGEX = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/;
 
 export function ConsultBottomSheet({
   isOpen,
@@ -35,6 +35,7 @@ export function ConsultBottomSheet({
   const locale = propLocale ?? ctxLocale;
 
   const [phone, setPhone] = useState("");
+  const [trap, setTrap] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -69,14 +70,14 @@ export function ConsultBottomSheet({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanPhone = phone.trim().replace(/[\s.-]/g, "");
+    const number = cleanPhone(phone);
 
-    if (!cleanPhone) {
+    if (!number) {
       setError(t("errorRequired"));
       return;
     }
 
-    if (!PHONE_REGEX.test(cleanPhone)) {
+    if (!isPhoneNumber(number)) {
       setError(t("errorInvalid"));
       return;
     }
@@ -107,7 +108,8 @@ export function ConsultBottomSheet({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            phone: cleanPhone,
+            phone: number,
+            website: trap,
             productName,
             materialName,
             sizeLabel,
@@ -117,8 +119,8 @@ export function ConsultBottomSheet({
         });
 
         if (!res.ok) {
-          const data = (await res.json()) as { error?: string };
-          setError(data.error ?? t("errorGeneric"));
+          // The words come from the page's own language, not from the server's (Vietnamese-only) message.
+          setError(res.status === 429 ? t("tooManyRequests") : t("errorGeneric"));
           return;
         }
 
@@ -251,7 +253,8 @@ export function ConsultBottomSheet({
                   </p>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <form onSubmit={handleSubmit} className="relative flex flex-col gap-4">
+                  <HoneypotField value={trap} onChange={setTrap} />
                   <div className="flex flex-col gap-1.5">
                     <label
                       htmlFor="consult-phone-input"

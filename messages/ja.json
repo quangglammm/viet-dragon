@@ -405,7 +405,8 @@
     "errorRequired": "お電話番号を入力してください。",
     "errorInvalid": "電話番号の形式が正しくありません（例: 0901234567）。",
     "errorGeneric": "送信に失敗しました。もう一度お試しください。",
-    "scrollForMore": "スクロールして続きを見る"
+    "scrollForMore": "スクロールして続きを見る",
+    "tooManyRequests": "リクエストが多すぎます。数分後にもう一度お試しいただくか、ホットラインまでお電話ください。"
   },
   "quoteModal": {
     "eyebrow": "迅速なご相談・お見積り",
@@ -432,7 +433,8 @@
     "successDesc": "Viet Dragon 専門スタッフより30分以内にお電話にてご連絡いたします。",
     "openZaloNow": "Zalo で直接相談する",
     "close": "閉じる",
-    "phoneError": "有効な電話番号を入力してください。"
+    "phoneError": "有効な電話番号を入力してください。",
+    "tooManyRequests": "リクエストが多すぎます。数分後にもう一度お試しいただくか、ホットラインまでお電話ください。"
   },
   "notFound": {
     "title": "ページが見つかりません",

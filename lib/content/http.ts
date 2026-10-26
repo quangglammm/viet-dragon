@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { BodyTooLarge, readBodyCapped } from "@/lib/http/body";
 import { getLogger } from "@/lib/logger";
 import type { EntityRef } from "./compose";
 import type { Draft } from "./drafts";
@@ -80,25 +81,13 @@ export function optionalIfMatch(request: Request): number | undefined {
 
 const tooLarge = () => new HttpError(413, "PAYLOAD_TOO_LARGE", "Nội dung gửi lên quá lớn (tối đa 2 MB).");
 
-/** Reads at most MAX_BODY_BYTES: the declared length is checked first, and the stream is cut off if it lies or is missing. */
+/** Reads at most MAX_BODY_BYTES (lib/http/body.ts counts the stream, not just the declared length). */
 async function readTextCapped(request: Request): Promise<string> {
-  const declared = Number(request.headers.get("content-length"));
-  if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) throw tooLarge();
-  const reader = request.body?.getReader();
-  if (!reader) return "";
-  const chunks: Uint8Array[] = [];
-  let size = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    size += value.byteLength;
-    if (size > MAX_BODY_BYTES) {
-      await reader.cancel();
-      throw tooLarge();
-    }
-    chunks.push(value);
+  try {
+    return Buffer.from(await readBodyCapped(request, MAX_BODY_BYTES)).toString("utf8");
+  } catch (error) {
+    throw error instanceof BodyTooLarge ? tooLarge() : error;
   }
-  return Buffer.concat(chunks).toString("utf8");
 }
 
 /** The JSON body, validated by `schema`. With `optional`, no body at all means `{}`. Never `request.json() as T`. */

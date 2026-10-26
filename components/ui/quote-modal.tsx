@@ -15,6 +15,8 @@ import {
   Send,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { cleanPhone, isPhoneNumber } from "@/lib/phone";
+import { HoneypotField } from "@/components/ui/honeypot-field";
 import {
   PHONE_NUMBER,
   PHONE_NUMBER_FORMATTED,
@@ -30,8 +32,6 @@ interface QuoteModalProps {
   productName?: string;
 }
 
-const PHONE_REGEX = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/;
-
 export function QuoteModal({
   isOpen,
   onClose,
@@ -39,6 +39,7 @@ export function QuoteModal({
 }: Readonly<QuoteModalProps>) {
   const t = useTranslations("quoteModal");
   const [phone, setPhone] = useState("");
+  const [trap, setTrap] = useState("");
   const [note, setNote] = useState(productName ?? "");
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -73,14 +74,14 @@ export function QuoteModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanPhone = phone.trim().replace(/[\s.-]/g, "");
+    const number = cleanPhone(phone);
 
-    if (!cleanPhone) {
+    if (!number) {
       setError(t("phoneError"));
       return;
     }
 
-    if (!PHONE_REGEX.test(cleanPhone)) {
+    if (!isPhoneNumber(number)) {
       setError(t("phoneError"));
       return;
     }
@@ -95,14 +96,15 @@ export function QuoteModal({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            phone: cleanPhone,
+            phone: number,
+            website: trap,
             productName: itemDescription,
             productUrl: typeof window !== "undefined" ? window.location.href : "",
           }),
         });
 
         if (!res.ok) {
-          setError(t("phoneError"));
+          setError(res.status === 429 ? t("tooManyRequests") : t("phoneError"));
           return;
         }
 
@@ -294,7 +296,8 @@ export function QuoteModal({
                   </div>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <form onSubmit={handleSubmit} className="relative flex flex-col gap-4">
+                  <HoneypotField value={trap} onChange={setTrap} />
                   {/* Phone input */}
                   <div>
                     <label

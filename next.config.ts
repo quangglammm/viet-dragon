@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { securityHeaders } from "./lib/security-headers";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
@@ -14,6 +15,9 @@ const nextConfig: NextConfig = {
   // `public/` or `.next/static` — the Dockerfile's runner stage does.
   output: "standalone",
   env: { CONTENT_CACHE_BUILD },
+  // Next would announce itself in `X-Powered-By`; the other security headers are lib/security-headers.ts (Caddy adds the rest).
+  poweredByHeader: false,
+  headers: async () => securityHeaders({ reportOnly: process.env.NODE_ENV === "production" }),
   images: {
     qualities: [30, 75, 85],
     formats: ["image/avif", "image/webp"],

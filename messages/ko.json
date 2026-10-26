@@ -405,7 +405,8 @@
     "errorRequired": "전화번호를 입력해 주세요.",
     "errorInvalid": "전화번호 형식이 올바르지 않습니다 (예: 0901234567).",
     "errorGeneric": "전송에 실패했습니다. 다시 시도해 주세요.",
-    "scrollForMore": "아래로 스크롤하여 더보기"
+    "scrollForMore": "아래로 스크롤하여 더보기",
+    "tooManyRequests": "요청이 너무 많습니다. 몇 분 후 다시 시도하시거나 핫라인으로 전화해 주세요."
   },
   "quoteModal": {
     "eyebrow": "빠른 상담 및 견적 안내",
@@ -432,7 +433,8 @@
     "successDesc": "Viet Dragon 전문 상담원이 30분 이내에 남겨주신 연락처로 안내해 드리겠습니다.",
     "openZaloNow": "Zalo로 바로 문의하기",
     "close": "닫기",
-    "phoneError": "올바른 전화번호를 입력해 주세요."
+    "phoneError": "올바른 전화번호를 입력해 주세요.",
+    "tooManyRequests": "요청이 너무 많습니다. 몇 분 후 다시 시도하시거나 핫라인으로 전화해 주세요."
   },
   "notFound": {
     "title": "페이지를 찾을 수 없습니다",

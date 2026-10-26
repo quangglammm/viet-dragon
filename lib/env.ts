@@ -14,6 +14,8 @@ const HTTP_PROTOCOLS = new Set(["http:", "https:"]);
 const DEFAULT_DEV_SITE_URL = "http://localhost:3000";
 const DEFAULT_DEV_UPLOADS_DIR = ".uploads";
 const DEFAULT_MAX_IMAGE_MB = 10;
+const DEFAULT_MAX_TOTAL_MB = 2048;
+const MAX_TOTAL_MB_LIMIT = 10_000_000;
 /** Above this a request body no longer fits what Caddy lets through for the upload route (deploy/Caddyfile). */
 const MAX_IMAGE_MB_LIMIT = 11;
 const LOG_LEVELS = ["fatal", "error", "warn", "info", "debug", "trace", "silent"] as const;
@@ -148,6 +150,8 @@ const mediaSchema = z
     NODE_ENV: nodeEnv,
     UPLOADS_DIR: optionalString,
     MEDIA_MAX_IMAGE_MB: z.preprocess(emptyToUndefined, z.coerce.number().int().min(1).max(MAX_IMAGE_MB_LIMIT).default(DEFAULT_MAX_IMAGE_MB)),
+    // Everything the admin has uploaded, together: the volume is finite and an editor's account can be a stranger's.
+    MEDIA_MAX_TOTAL_MB: z.preprocess(emptyToUndefined, z.coerce.number().int().min(1).max(MAX_TOTAL_MB_LIMIT).default(DEFAULT_MAX_TOTAL_MB)),
   })
   .transform((env, ctx) => {
     if (env.UPLOADS_DIR === undefined) {
