@@ -343,7 +343,7 @@ wrapper would need as many props as it saves.
 
 ## Admin CMS
 **Status: rebuilt on the content database** on branch `feature/admin-cms` — Phases 0–4 are done (auth, content model, editors, the public site reading the database,
-Preview); Phase 5 (media), 6 (hardening) and 7 (cutover) are next. Decisions, phases and acceptance
+Preview), 5 (media) and 6 (hardening, backups, CI) are done; Phase 7 (the cutover to the VPS) is next. Decisions, phases and acceptance
 criteria live in `docs/admin-architecture.md`; the auth checklist in `docs/security.md`;
 the VPS/Docker runbook in `docs/deployment.md`. Sections marked **(planned)** describe what is still to come.
 
@@ -782,6 +782,7 @@ values. It is skipped during `next build`, so the Docker build stage needs no se
 | `UPLOADS_DIR`, `MEDIA_MAX_IMAGE_MB`, `MEDIA_MAX_TOTAL_MB` | media | `UPLOADS_DIR`: absolute path of the uploads volume — **required in production** (compose sets `/data/uploads`), default `./.uploads` elsewhere (gitignored). `MEDIA_MAX_IMAGE_MB`: largest upload, whole MB 1–11, default 10 (Caddy lets 12 MB through to the upload route, so the cap cannot go higher without raising it there). `MEDIA_MAX_TOTAL_MB`: all uploads together, whole MB, default 2048 — past it an upload is refused (422) until something is deleted; size the uploads volume above it |
 | `SMTP_PORT` (587), `SMTP_SECURE`, `SMTP_FROM`, `CONSULT_RECEIVER_EMAIL` | mail | Optional; the receiver defaults to `CONTACT_EMAIL` in `lib/contact.ts` |
 | `POSTGRES_PASSWORD`, `APP_DB_PASSWORD`, `SITE_ADDRESS`, `HTTP_PORT`, `HTTPS_PORT`, `APP_TAG` | compose only | Interpolated by `compose.yaml` / `compose.dev.yaml`; the app never reads them. See `.env.example` |
+| `BACKUP_HOUR`, `BACKUP_TZ`, `BACKUP_KEEP_DAYS`, `BACKUP_MAX_AGE_HOURS`, `BACKUP_RCLONE_REMOTE`, `BACKUP_OFFSITE_ENV_FILE` | compose only | The `backup` service's schedule, retention, health threshold and optional off-box copy (credentials as `RCLONE_CONFIG_OFFSITE_*` in `./backup-offsite.env`, gitignored). The app never reads them |
 
 `.env*` is gitignored except `.env.example` — never commit real values. `pnpm dev` needs
 `DATABASE_URL` (and `SITE_URL` for `pnpm build`) in the local `.env` and exits at start-up without
@@ -801,9 +802,9 @@ with `maskPhone()`. `instrumentation.ts` logs uncaught request errors through `o
 
 ## Docker & deployment
 Production target: Docker Compose on a single VPS. Files: `Dockerfile` (stages `deps` → `build` →
-`runner`, plus `tools` for the migrate job and the admin CLI), `compose.yaml` (`caddy` → `app` → `db`, plus a one-shot
-`migrate` and the on-demand `admin-cli` under profile `tools`), `deploy/Caddyfile`, `deploy/db-init/` (creates the DML-only `vietdragon_app` role on
-first init), `.env.example`. `compose.dev.yaml` is Postgres only, on `127.0.0.1:5432`, for `pnpm dev`.
+`runner`, plus `tools` for the migrate job and the admin CLI), `compose.yaml` (`caddy` → `app` → `db`, a one-shot
+`migrate`, the nightly `backup` sidecar, and the on-demand `admin-cli` and `restore` under profile `tools`), `deploy/Caddyfile`, `deploy/db-init/` (creates the DML-only `vietdragon_app` role on
+first init), `deploy/backup/` (the backup / restore image), `.env.example`. `compose.dev.yaml` is Postgres only, on `127.0.0.1:5432`, for `pnpm dev`.
 Runbook and rationale: `docs/deployment.md`.
 - The app connects as `vietdragon_app` (SELECT/INSERT/UPDATE/DELETE only — no DDL, no TRUNCATE);
   `migrate` runs as the owner. Never point the app at the owner role.
@@ -815,6 +816,15 @@ Runbook and rationale: `docs/deployment.md`.
   path must be added to the `not path` list** (test it with the caddy image and no upstream: 502 = passes, 404 = blocked). `/api/auth/*` is
   open (sign-in). It also 404s `/api/health` (internal healthcheck only) and overwrites `X-Real-IP` with the TCP peer.
 - Uploads: the `uploads` volume is mounted at `/data/uploads` (compose; the Dockerfile creates the directory owned by `node` so the named volume inherits it, and its native-module check also loads OUR `sharp` — since Phase 6 M1 there is ONE copy (0.35.5, shared with Next's image optimizer: `.next/standalone` is ~63 MB)). Back it up **together with the database**. Caddy caps bodies at 2 MB except `/api/admin/content/media` (12 MB, `@upload` / `@not_upload` matchers — two `request_body` directives with different matchers; a second unmatched one would not raise the first). Tested with the caddy image and a node stand-in upstream (3 MB: 413 elsewhere, 200 on the upload route; 13 MB: 413 everywhere, chunked too).
+- **Backups (Phase 6 M3)** — `backup` service (`deploy/backup/`, `postgres:17-alpine` + bash + rclone; uid 70, no capabilities, read-only root FS, `uploads` mounted read-only, owner DB credentials because the check needs `CREATE DATABASE`): every night at `BACKUP_HOUR` (03:00 `Asia/Ho_Chi_Minh`) and once at start if none is verified,
+  `backup.sh` writes `/backups/<UTC stamp>/` = `db.dump` (`pg_dump -Fc`) THEN `uploads.tar.gz` (so every row has its file) + checksums + row counts, built as `<stamp>.partial` and renamed only after `verify.sh` restored the dump into a scratch database, matched **every table's row count** (between the counts taken just before and just after the dump) and found every uploaded picture
+  in the archive (`VERIFIED` is the last file written). Retention `BACKUP_KEEP_DAYS` (14), the newest 3 always kept. Optional off-box copy (`BACKUP_RCLONE_REMOTE`, credentials in the gitignored `backup-offsite.env`); the healthcheck is "newest verified backup < `BACKUP_MAX_AGE_HOURS` (26) old and, if configured, copied". It waits for `migrate` (an empty database is not a backup; `verify.sh` refuses to bless a comparison that counted nothing).
+  The decisions are plain functions in `deploy/backup/lib.sh`, unit-tested through bash (`lib.test.ts`); everything that touches Postgres or volumes was proven by the performed restore drill (`docs/deployment.md`).
+- **Restore** — `docker compose … --profile tools run --rm restore latest|<stamp>` (database + uploads) or `restore --dump <file>` (database only: **the way the first content is loaded at cutover**), with the app STOPPED. It verifies checksums, **refuses while the app runs** (asks `app:3000/api/health`; database sessions alone prove nothing — the pool closes idle connections), loads a SIDE database in one transaction, runs
+  `deploy/backup/app-role-grants.sql`, compares counts with the backup's, then swaps by `ALTER DATABASE … RENAME` (the previous one is kept as `vietdragon_before_restore_<time>` until dropped) and refills the uploads volume as root with `CHOWN`/`DAC_OVERRIDE`/`FOWNER` only. **Never restore a seeded development dump with a bare `pg_restore`:** it carries no grants for `vietdragon_app` (0 ACL entries) and the app could not read a table.
+  `app-role-grants.sql` states what the app role may do (DML, sequences, `audit_log` insert-only, no `TRUNCATE`/DDL); `grants.test.ts` ties it to `db-init` and migration `0001`. The backup image owns `/data/uploads` as uid 1000 so a volume first mounted by a sidecar is still writable by the app.
+- **CI** (`.github/workflows/ci.yml`; `dependabot.yml`): `verify` (tsc, eslint 0 warnings, unit, integration on a `postgres:17` service, `pnpm build`, `pnpm db:generate` must change nothing in `drizzle/`), `docker` (shellcheck on `deploy/`, `docker compose config`, `caddy validate`, `docker build` of runner / tools / backup), `audit` (`pnpm audit --prod --audit-level=high`; the whole workflow also weekly).
+  GitHub Actions cannot run locally: every command was run by hand and the YAML passes `actionlint`; actions are pinned by major tag. A new shell script under `deploy/` must pass `shellcheck -x` (run it through `koalaman/shellcheck`; right after writing a file the Docker Desktop mount can show a half-written copy and report parse errors that are not there — rerun).
 - `output: "standalone"` does not copy `public/` or `.next/static`; the runner stage does. The Vercel-era `outputFileTracingExcludes` workaround for `public/` is gone
   (its cause, `content-store` scanning `public/`, was deleted in Phase 4 M5; the trace no longer pulls `public/` in). Measured at M5: `.next/standalone` 59 MB (it was 67 MB
   with `data/` traced in), `.next/server/app` 3.8 MB — nothing under `[locale]` is prerendered any more, so the old ~1,700 prerendered pages no longer ship.
@@ -868,6 +878,8 @@ instrumentation.ts          register(): env fail-fast (Node runtime only, skippe
 instrumentation-node.ts     validateEnvOrExit() — Node-only, imported dynamically so the Edge bundle stays clean
 drizzle.config.ts, drizzle/ drizzle-kit config (loads .env via @next/env) · migrations 0000–0003 (auth, audit_log append-only, content tables, content integrity)
 Dockerfile, compose.yaml, compose.dev.yaml, .env.example, .dockerignore, deploy/   see Docker & deployment
+deploy/backup/              the backup / restore image: lib.sh (pure decisions, lib.test.ts), backup.sh, verify.sh, restore.sh, entrypoint.sh (nightly scheduler), healthcheck.sh, app-role-grants.sql (grants.test.ts), Dockerfile
+.github/                    workflows/ci.yml (verify · docker · audit) and dependabot.yml
 i18n/
   routing.ts               defineRouting({ locales: [vi, en, zh, ja, ko], defaultLocale: vi })
   navigation.tsx            Locale-aware Link/usePathname/useRouter/redirect/permanentRedirect/getPathname over createNavigation — internal paths in, the language's words out; import from here, not next/*

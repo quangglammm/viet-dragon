@@ -70,3 +70,6 @@ screenshot*.mjs
 # browser-smoke artifacts (Playwright MCP output and screenshots)
 /.playwright-mcp/
 /smoke-*.png
+
+# Credentials of the off-box backup remote (compose.yaml `backup` service env_file) — never committed.
+/backup-offsite.env

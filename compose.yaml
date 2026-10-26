@@ -123,6 +123,46 @@ services:
     security_opt: ["no-new-privileges:true"]
     logging: *default-logging
 
+  # Nightly backup of the database and the uploads volume, VERIFIED by restoring it into a scratch database (docs/deployment.md «Backups»).
+  # It connects as the schema OWNER because the verification needs CREATE DATABASE; it has no published port and no access to the app.
+  backup:
+    build:
+      context: ./deploy/backup
+    image: viet-dragon-backup:${APP_TAG:-local}
+    restart: unless-stopped
+    init: true
+    environment:
+      PGHOST: db
+      PGUSER: vietdragon
+      PGPASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      PGDATABASE: vietdragon
+      BACKUP_HOUR: ${BACKUP_HOUR:-}
+      BACKUP_TZ: ${BACKUP_TZ:-}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-}
+      BACKUP_MAX_AGE_HOURS: ${BACKUP_MAX_AGE_HOURS:-}
+      BACKUP_RCLONE_REMOTE: ${BACKUP_RCLONE_REMOTE:-}
+    # Credentials of the off-box remote, as RCLONE_CONFIG_<REMOTE>_<OPTION>=… lines (docs/deployment.md). Optional: no file, no off-box copy.
+    env_file:
+      - path: ${BACKUP_OFFSITE_ENV_FILE:-./backup-offsite.env}
+        required: false
+    volumes:
+      - backups:/backups
+      # Read-only: the backup never changes what the app serves.
+      - uploads:/data/uploads:ro
+    # The base image declares a data volume that nothing here uses; a tmpfs on it stops compose from creating an anonymous one.
+    tmpfs: [/tmp, /var/lib/postgresql/data]
+    networks: [internal, edge]
+    depends_on:
+      db:
+        condition: service_healthy
+      # A database with no tables yet is not worth a backup (and verify.sh refuses to call one verified): wait for the schema.
+      migrate:
+        condition: service_completed_successfully
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    logging: *default-logging
+
   # Break-glass account management — not started by `up` (profile). Create the first admin, or recover:
   #   docker compose --env-file /etc/vietdragon/.env run --rm admin-cli create
   #   docker compose --env-file /etc/vietdragon/.env run --rm admin-cli reset-password someone@example.com
@@ -152,6 +192,40 @@ services:
     security_opt: ["no-new-privileges:true"]
     logging: *default-logging
 
+  # Restores the database (and the uploads) from a backup, or loads a first dump — with the app STOPPED (docs/deployment.md «Restore»):
+  #   docker compose --env-file /etc/vietdragon/.env stop app
+  #   docker compose --env-file /etc/vietdragon/.env --profile tools run --rm restore latest
+  #   docker compose --env-file /etc/vietdragon/.env --profile tools run --rm -v "$PWD/seed.dump:/import/seed.dump:ro" restore --dump /import/seed.dump
+  # Runs as root with only the three capabilities needed to put the uploaded files back under their original owner (`node`); the root FS is read-only.
+  restore:
+    profiles: [tools]
+    build:
+      context: ./deploy/backup
+    image: viet-dragon-backup:${APP_TAG:-local}
+    entrypoint: ["/opt/backup/restore.sh"]
+    restart: "no"
+    user: "0:0"
+    healthcheck:
+      disable: true
+    environment:
+      PGHOST: db
+      PGUSER: vietdragon
+      PGPASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      PGDATABASE: vietdragon
+    volumes:
+      - backups:/backups
+      - uploads:/data/uploads
+    tmpfs: [/tmp, /var/lib/postgresql/data]
+    networks: [internal]
+    depends_on:
+      db:
+        condition: service_healthy
+    read_only: true
+    cap_drop: [ALL]
+    cap_add: [CHOWN, DAC_OVERRIDE, FOWNER]
+    security_opt: ["no-new-privileges:true"]
+    logging: *default-logging
+
 networks:
   edge: {}
   # No route to the internet or the host: the database is reachable only from app and migrate.
@@ -164,3 +238,5 @@ volumes:
   caddy_config:
   nextcache:
   uploads:
+  # Backup sets (<stamp>/db.dump + uploads.tar.gz …). On the same disk as the data: copy them off the box too (BACKUP_RCLONE_REMOTE).
+  backups:
