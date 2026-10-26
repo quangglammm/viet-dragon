@@ -62,7 +62,9 @@ screenshot*.mjs
 .codegraph
 
 # local planning docs (admin CMS design notes) — not committed
-/docs/
+!/docs/
+/docs/*
+!/docs/admin-manual-testing.md
 
 # page-text parity corpus (generated from a local build; large)
 /.parity/
