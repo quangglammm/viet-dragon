@@ -2,7 +2,7 @@
 // Utility to handle safe hash navigation on shapes and avoid Next.js fragment duplication
 
 import type React from "react";
-import { SHAPE_ALIASES } from "@/lib/shape-aliases";
+import { toInternalPath } from "@/lib/routes";
 
 /**
  * Normalizes a pathname by stripping query params, locale prefix (/vi, /en, etc.), and trailing slash.
@@ -25,13 +25,13 @@ export const TOP_RESET_RETRY_MS = [50, 150, 300];
 export const DEEP_LINK_SCROLL_DELAY_MS = Math.max(...TOP_RESET_RETRY_MS) + 50;
 
 /**
- * Resolves a URL hash (with or without "#") to its target element, falling back
- * to the canonical shape id when the hash is an alias (e.g. "flyer-budget").
+ * Resolves a URL hash (with or without "#") to its target element. A shape or material card carries its canonical slug as `id` and
+ * every other name it has had, in any language, in `data-aliases` — so a hash from an old link or another language still finds it.
  */
 export function findHashTarget(hash: string): HTMLElement | null {
   const id = hash.replace(/^#+/, "").split("#")[0]?.trim();
   if (!id) return null;
-  return document.getElementById(id) ?? document.getElementById(SHAPE_ALIASES[id] ?? "");
+  return document.getElementById(id) ?? document.querySelector<HTMLElement>(`[data-aliases~="${CSS.escape(id)}"]`);
 }
 
 /**
@@ -77,7 +77,8 @@ export function navigateToShapeHash(targetHref: string, e?: React.MouseEvent): b
   if (typeof window === "undefined" || !targetHref) return false;
 
   const [rawTargetPath, targetHash] = targetHref.split("#");
-  const currentPath = normalizePathname(window.location.pathname);
+  // The address bar shows the language's words (`/san-pham/…`); the links are internal paths (`/products/…`).
+  const currentPath = toInternalPath(normalizePathname(window.location.pathname));
   const targetPath = normalizePathname(rawTargetPath);
 
   if (currentPath === targetPath) {

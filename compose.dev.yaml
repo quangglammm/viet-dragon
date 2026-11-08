@@ -1,0 +1,24 @@
+# Local development database only — run the app on the host with `pnpm dev`.
+#   docker compose -f compose.dev.yaml up -d
+# Bound to loopback so it is never reachable from the network. The production
+# stack (db on an internal network, behind Caddy) lives in compose.yaml.
+services:
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: vietdragon
+      POSTGRES_DB: vietdragon
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vietdragon -d vietdragon"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata_dev:

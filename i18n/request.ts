@@ -1,5 +1,6 @@
 import { getRequestConfig } from "next-intl/server";
 import { hasLocale } from "next-intl";
+import { getMessages } from "@/lib/content/read/load";
 import { routing } from "./routing";
 
 export default getRequestConfig(async ({ requestLocale }) => {
@@ -8,8 +9,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
     ? requested
     : routing.defaultLocale;
 
-  return {
-    locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
-  };
+  // The files' texts with the published UI copy of the content database laid over them (cached; rebuilt by a UI-copy publish).
+  return { locale, messages: await getMessages(locale) };
 });

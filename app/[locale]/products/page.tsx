@@ -1,27 +1,28 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import {
-  Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles,
-  ArrowRight, type LucideIcon,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { pickLocale } from "@/lib/locale";
-import { showcaseImages } from "@/data/categories";
-import { MAIN_CATEGORIES, getSubgroupsByCategory } from "@/data/subgroups-catalog";
-import { SHOWCASE_LABELS, CATEGORY_NAMES, CATEGORY_DESCS } from "@/data/translations";
-
-const iconMap: Record<string, LucideIcon> = { Briefcase, Package, Calendar, Gift, User, Layers, Zap, Sparkles };
+import { NamedIcon } from "@/components/ui/named-icon";
+import { getShowcase } from "@/lib/content/read/load";
+import { showcaseCardsOf } from "@/lib/content/read/merchandising";
+import { breadcrumbLd, metadataFor } from "@/lib/content/read/page-seo";
+import { samePath } from "@/lib/content/read/seo";
+import { getNavigation } from "@/lib/content/read/site";
+import { JsonLd } from "@/components/seo/json-ld";
+import { ShowcaseGallery } from "@/components/sections/ShowcaseGallery";
+import { localeOf } from "@/lib/route-locale";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale: localeSegment } = await params;
+  const locale = localeOf(localeSegment);
   const t = await getTranslations({ locale, namespace: "productsPage" });
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  return metadataFor({ locale, meta: { title: t("metaTitle"), description: t("metaDescription"), image: null }, paths: samePath("/products") });
 }
 
 export default async function ProductsPage({
@@ -29,14 +30,15 @@ export default async function ProductsPage({
 }: Readonly<{
   params: Promise<{ locale: Locale }>;
 }>) {
-  const { locale } = await params;
+  const { locale: localeSegment } = await params;
+  const locale = localeOf(localeSegment);
   const t = await getTranslations({ locale, namespace: "productsPage" });
-  const [s1, s2, s3, s4, s5] = showcaseImages;
-  const showcaseLabel = (s: (typeof showcaseImages)[number]) =>
-    pickLocale(locale, s.label, s.labelEn, SHOWCASE_LABELS[s.seed]?.zh, SHOWCASE_LABELS[s.seed]?.ja, SHOWCASE_LABELS[s.seed]?.ko);
+  const { categories } = await getNavigation(locale);
+  const showcase = showcaseCardsOf(await getShowcase(), locale);
 
   return (
     <div className="bg-white">
+      <JsonLd data={breadcrumbLd(locale, [{ name: t("breadcrumbHome"), path: "/" }, { name: t("breadcrumbCurrent"), path: "/products" }])} />
       {/* ── Page header ── */}
       <div className="max-w-7xl mx-auto px-6 pt-14 pb-10">
         <nav aria-label="breadcrumb" className="flex items-center gap-2 text-sm text-zinc-400 mb-10">
@@ -62,94 +64,7 @@ export default async function ProductsPage({
       </div>
 
       {/* ── Editorial showcase gallery ── */}
-      <div className="max-w-7xl mx-auto px-6 pb-16">
-
-        {/* Mobile grid (< lg): simple 2-column with fixed card heights */}
-        <div className="lg:hidden grid grid-cols-2 gap-3">
-          {showcaseImages.map((s, i) => (
-            <div
-              key={s.seed}
-              className={`relative rounded-2xl overflow-hidden group ${i === 0 ? "col-span-2 h-52" : "h-40"}`}
-            >
-              <Image
-                src={s.src}
-                alt={showcaseLabel(s)}
-                fill
-                sizes="50vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-3 left-3">
-                <p className="text-white font-black text-sm">{showcaseLabel(s)}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Desktop editorial layout (lg+) */}
-        <div className="hidden lg:block">
-          {/* Row 1: tall left + 2 squares right */}
-          <div className="grid grid-cols-3 gap-3 h-[480px]">
-            {/* Large portrait */}
-            <div className="col-span-1 relative rounded-2xl overflow-hidden group">
-              <Image
-                src={s1.src}
-                alt={showcaseLabel(s1)}
-                fill
-                sizes="33vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-5 left-5">
-                <p className="text-white font-black text-base">{showcaseLabel(s1)}</p>
-              </div>
-            </div>
-
-            {/* Right: 2 squares stacked */}
-            <div className="col-span-2 grid grid-rows-2 gap-3">
-              {[s2, s3].map((s) => (
-                <div key={s.seed} className="relative rounded-2xl overflow-hidden group">
-                  <Image
-                    src={s.src}
-                    alt={showcaseLabel(s)}
-                    fill
-                    sizes="66vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/10 to-transparent" />
-                  <div className="absolute bottom-4 left-5">
-                    <p className="text-white font-black text-sm">{showcaseLabel(s)}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Row 2: 2 wide side-by-side */}
-          <div className="grid grid-cols-2 gap-3 mt-3 h-[260px]">
-            {[s4, s5].map((s) => (
-              <div key={s.seed} className="relative rounded-2xl overflow-hidden group">
-                <Image
-                  src={s.src}
-                  alt={showcaseLabel(s)}
-                  fill
-                  sizes="50vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-5">
-                  <p className="text-white font-black text-sm">{showcaseLabel(s)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Gallery caption */}
-        <p className="text-center text-xs text-zinc-400 mt-4">
-          {t("galleryCaption")}
-        </p>
-      </div>
+      <ShowcaseGallery cards={showcase} caption={t("galleryCaption")} />
 
       {/* ── Category grid ── */}
       <div className="border-t border-zinc-100">
@@ -159,27 +74,27 @@ export default async function ProductsPage({
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {MAIN_CATEGORIES.map((cat) => {
-              const Icon = iconMap[cat.icon] ?? Briefcase;
-              const name = pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko);
-              const description = pickLocale(locale, cat.descriptionVi, cat.description, CATEGORY_DESCS[cat.id]?.zh, CATEGORY_DESCS[cat.id]?.ja, CATEGORY_DESCS[cat.id]?.ko);
-              const subgroups = getSubgroupsByCategory(cat.id);
+            {categories.map((cat) => {
+              const { name, description } = cat;
+              const subgroups = cat.cards;
               return (
                 <div key={cat.id} className="group block">
                   <div className="h-full rounded-2xl border border-zinc-100 overflow-hidden hover:border-zinc-300 hover:shadow-lg transition-all duration-300 bg-white flex flex-col">
                     {/* Cover image */}
-                    <Link href={`/products/${cat.id}`} className="block relative h-52 overflow-hidden shrink-0">
-                      <Image
-                        src={cat.coverImage}
-                        alt={name}
-                        fill
-                        sizes="(min-width: 768px) 50vw, 100vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
+                    <Link href={cat.href} className="block relative h-52 overflow-hidden shrink-0">
+                      {cat.cover && (
+                        <Image
+                          src={cat.cover}
+                          alt={name}
+                          fill
+                          sizes="(min-width: 768px) 50vw, 100vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/70 to-transparent" />
                       <div className="absolute bottom-4 left-5 flex items-center gap-3">
                         <span className="p-2 rounded-lg bg-white/20 backdrop-blur-sm text-white">
-                          <Icon size={18} strokeWidth={1.5} />
+                          <NamedIcon name={cat.icon} size={18} strokeWidth={1.5} />
                         </span>
                         <div>
                           <p className="text-white font-black text-base leading-snug">{name}</p>
@@ -195,7 +110,7 @@ export default async function ProductsPage({
                     <div className="p-6 flex flex-col justify-between gap-6 flex-1">
                       <div className="flex flex-col gap-4">
                         <Link
-                          href={`/products/${cat.id}`}
+                          href={cat.href}
                           className="block text-zinc-500 text-sm leading-relaxed hover:text-zinc-800 transition-colors"
                         >
                           {description}
@@ -205,10 +120,10 @@ export default async function ProductsPage({
                           {subgroups.map((sub) => (
                             <Link
                               key={sub.id}
-                              href={`/products/${cat.id}/${sub.id}`}
+                              href={sub.href}
                               className="px-3.5 py-1.5 bg-zinc-50 hover:bg-brand-soft hover:text-brand-primary border border-zinc-200 hover:border-brand-primary/30 text-zinc-700 text-xs font-semibold rounded-full transition-all duration-200"
                             >
-                              {pickLocale(locale, sub.titleVi, sub.titleEn, sub.titleZh, sub.titleJa, sub.titleKo)}
+                              {sub.title}
                             </Link>
                           ))}
                         </div>
@@ -216,21 +131,13 @@ export default async function ProductsPage({
 
                       <div className="pt-2 border-t border-zinc-100 flex items-center justify-between">
                         <Link
-                          href={`/products/${cat.id}`}
+                          href={cat.href}
                           className="text-brand-primary text-sm font-semibold hover:underline"
                         >
                           {t("viewDetail")}
                         </Link>
                         <span className="text-xs text-zinc-400 font-medium">
-                          {locale === "vi"
-                            ? `${subgroups.length} sản phẩm`
-                            : locale === "zh"
-                            ? `${subgroups.length} 款产品`
-                            : locale === "ja"
-                            ? `${subgroups.length} 製品`
-                            : locale === "ko"
-                            ? `${subgroups.length} 개 제품`
-                            : `${subgroups.length} products`}
+                          {t("productCount", { count: subgroups.length })}
                         </span>
                       </div>
                     </div>

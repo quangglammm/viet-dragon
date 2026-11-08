@@ -1,0 +1,4 @@
+# Only the scripts and the SQL belong in the backup image; the tests run in CI, not inside it.
+*.test.ts
+Dockerfile
+.dockerignore
