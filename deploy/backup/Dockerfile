@@ -2,7 +2,7 @@
 #
 # The backup / restore image: pg_dump, pg_restore and psql of the SAME major version as the database (17), plus rclone for the optional off-box copy.
 # One image, three jobs (compose.yaml): `backup` (a scheduler, nightly), `restore` (a one-shot under profile `tools`) and ad-hoc `exec`s.
-FROM postgres:17-alpine
+FROM postgres:18-alpine
 
 # /data/uploads exists here, owned by the app's user (uid 1000, `node` in the app image), for one reason: a NEW named volume takes its owner from the image
 # path of the FIRST container that mounts it. If the backup or restore container did that without this directory, the uploads volume would be root-owned
