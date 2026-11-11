@@ -44,6 +44,7 @@ export function MegaMenuMobile({
                 <li key={`${group.id}-${item.id}-${itemIdx}`}>
                   <Link
                     href={item.href}
+                    scroll={false}
                     onClick={(e) => handleLinkClick(item.href, e)}
                     className={cn(
                       "flex items-center justify-between py-1.5 px-2 -mx-2 rounded-lg text-sm transition-all",

@@ -61,15 +61,20 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
 
         if (scrollTimer) clearTimeout(scrollTimer);
 
-        // On route change mount: wait out SmoothScroll's top-reset window (350ms)
-        // On in-page hashchange: wait briefly for menu closing/layout (80ms)
-        const delay = isHashChangeEvent ? 80 : 350;
-        scrollTimer = setTimeout(() => {
+        const performScroll = () => {
           const el = findHashTarget(matched.anchor.id);
           if (el) {
             smoothScrollToElement(el);
           }
-        }, delay);
+        };
+
+        // On route change mount: wait out SmoothScroll's top-reset window (350ms)
+        // On in-page hashchange: wait briefly for menu closing/layout (80ms)
+        const delay = isHashChangeEvent ? 80 : 350;
+        scrollTimer = setTimeout(performScroll, delay);
+        if (!isHashChangeEvent) {
+          setTimeout(performScroll, 750);
+        }
       }
     }
 
@@ -206,10 +211,18 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
                 className={cn(
                   "group flex flex-col rounded-2xl bg-white overflow-hidden transition-all duration-300 relative scroll-mt-28 lg:scroll-mt-36 cursor-pointer",
                   isHighlighted
-                    ? "border-2 border-brand-primary shadow-xl -translate-y-1.5"
+                    ? "border-2 border-brand-primary ring-4 ring-brand-primary/25 shadow-2xl shadow-brand-primary/15 -translate-y-1.5"
                     : "border-2 border-zinc-200/80 hover:border-brand-primary/40 hover:shadow-xl hover:-translate-y-0.5"
                 )}
               >
+                {/* Highlight Badge */}
+                {isHighlighted && (
+                  <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-primary text-white text-xs font-bold shadow-lg shadow-brand-primary/30">
+                    <Sparkles size={12} className="text-amber-300 fill-amber-300" />
+                    <span>{t("shapesSelectedBadge")}</span>
+                  </div>
+                )}
+
                 {/* Image */}
                 <div className="relative h-52 overflow-hidden bg-zinc-100 block">
                   {shape.image ? (
@@ -229,14 +242,19 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
 
                 {/* Body */}
                 <div className="flex flex-col gap-2.5 p-5 flex-1 bg-white">
-                  <p
-                    className={cn(
-                      "font-black text-base lg:text-lg transition-colors leading-snug",
-                      isHighlighted ? "text-brand-primary" : "text-zinc-900 group-hover:text-brand-primary"
+                  <div className="flex items-center gap-2">
+                    {isHighlighted && (
+                      <span className="w-2.5 h-2.5 rounded-full bg-brand-primary shrink-0 ring-4 ring-brand-primary/25" />
                     )}
-                  >
-                    {shapeName}
-                  </p>
+                    <p
+                      className={cn(
+                        "font-black text-base lg:text-lg transition-colors leading-snug",
+                        isHighlighted ? "text-brand-primary" : "text-zinc-900 group-hover:text-brand-primary"
+                      )}
+                    >
+                      {shapeName}
+                    </p>
+                  </div>
 
                   <p className="text-zinc-500 text-xs sm:text-sm leading-relaxed flex-1">
                     {shapeDesc}
@@ -247,10 +265,10 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
                       href={detailHref}
                       onClick={(e) => e.stopPropagation()}
                       className={cn(
-                        "inline-flex items-center gap-1.5 py-1.5 text-xs font-bold transition-all",
+                        "inline-flex items-center gap-1.5 py-2 px-3 text-xs font-bold transition-all rounded-xl",
                         isHighlighted
-                          ? "px-3.5 bg-brand-primary text-white rounded-xl shadow-sm hover:bg-brand-primary/90"
-                          : "text-brand-primary group-hover:text-brand-primary/80"
+                          ? "bg-brand-primary text-white shadow-md hover:bg-brand-primary/90"
+                          : "text-brand-primary hover:bg-brand-primary/10"
                       )}
                     >
                       {t("viewMaterialsAndPrice")}{" "}

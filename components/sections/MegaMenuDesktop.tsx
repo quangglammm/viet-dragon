@@ -97,6 +97,7 @@ export function MegaMenuDesktop({
                         <li key={`${group.id}-${item.id}-${itemIdx}`}>
                           <Link
                             href={item.href}
+                            scroll={false}
                             onClick={(e) => handleLinkClick(item.href, e)}
                             onMouseEnter={() => {
                               setBgImage(item.image ?? menu.defaultImage);

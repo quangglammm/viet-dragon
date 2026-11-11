@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { catalogInput } from "@/tests/fixtures/catalog";
+import { catalogInput, categoryDocument } from "@/tests/fixtures/catalog";
 import { menuDocument, productDocument } from "@/tests/fixtures/documents";
 import type { MenuDocument } from "../schemas";
+import { mockCatalog, mockMenus } from "@/lib/mock-data";
 import { buildCatalog } from "./catalog";
 import { buildMenus } from "./menus";
 import { cardsOf, menuOf, navigationOf, referenceImageOf } from "./navigation";
@@ -51,6 +52,81 @@ describe("navigationOf", () => {
   it("has an empty menu for a category without one", () => {
     expect(navigationOf(catalog(), {}, "vi").categories[0].menu).toEqual({ defaultImage: null, columns: [] });
     expect(menuOf(catalog(), "vi", undefined)).toEqual({ defaultImage: null, columns: [] });
+  });
+
+  it("scopes product lookup to categoryId when multiple categories share a product uid", () => {
+    const p1 = { ...productDocument(), category: "marketing", uid: "shared-uid", shapes: [{ ...productDocument().shapes[0], uid: "shape-mkt" }] };
+    const p2 = {
+      ...productDocument(),
+      category: "tet",
+      uid: "shared-uid",
+      shapes: [{
+        ...productDocument().shapes[0],
+        uid: "shape-tet",
+        name: { vi: "Hình Thức Tết" },
+        slugs: {
+          vi: { slug: "hinh-thuc-tet", aliases: [] },
+          en: { slug: "tet-shape", aliases: [] },
+          zh: { slug: "tet-shape", aliases: [] },
+          ja: { slug: "tet-shape", aliases: [] },
+          ko: { slug: "tet-shape", aliases: [] },
+        },
+      }],
+    };
+    const tetCategory = categoryDocument("tet", {
+      slugs: {
+        vi: { slug: "an-pham-tet", aliases: [] },
+        en: { slug: "tet", aliases: [] },
+        zh: { slug: "tet", aliases: [] },
+        ja: { slug: "tet", aliases: [] },
+        ko: { slug: "tet", aliases: [] },
+      },
+    });
+    const built = buildCatalog({ ...catalogInput(), categories: [categoryDocument(), tetCategory], products: [p1, p2] });
+    const tetMenu = {
+      category: "tet",
+      columns: [{
+        column: 0,
+        groups: [{
+          product: "shared-uid",
+          title: { vi: "Tết" },
+          description: {},
+          image: null,
+          items: [{ target: { shape: "shape-tet" }, kind: "shape" as const, label: { vi: "Hình Thức Tết" }, image: null, isFast: false }],
+        }],
+      }],
+    };
+    const nav = navigationOf(built, { tet: tetMenu }, "vi");
+    const tetCat = nav.categories.find((c) => c.id === "tet");
+    expect(tetCat?.menu.columns[0].groups[0].items[0].href).toBe("/products/an-pham-tet/to-roi#hinh-thuc-tet");
+  });
+
+  it("resolves shape items in mock data menus to hrefs containing hash anchors", () => {
+    const nav = navigationOf(mockCatalog, mockMenus, "vi");
+    let shapeCount = 0;
+    const missingHash: string[] = [];
+    for (const [catId, menuObj] of Object.entries(mockMenus)) {
+      const cat = nav.categories.find((c) => c.id === catId);
+      for (const col of menuObj.columns || []) {
+        for (const group of col.groups || []) {
+          for (const item of group.items || []) {
+            if (item.target && "shape" in item.target) {
+              shapeCount++;
+              const shapeUid = (item.target as { shape: string }).shape;
+              const navItem = cat?.menu.columns
+                .flatMap((c) => c.groups)
+                .flatMap((g) => g.items)
+                .find((i) => i.id === shapeUid);
+              if (navItem && !navItem.href.includes("#")) {
+                missingHash.push(`${catId} -> ${group.product} -> shape ${shapeUid}`);
+              }
+            }
+          }
+        }
+      }
+    }
+    expect(shapeCount).toBeGreaterThan(0);
+    expect(missingHash).toEqual([]);
   });
 });
 

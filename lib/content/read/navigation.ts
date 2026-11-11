@@ -56,23 +56,37 @@ export interface Navigation {
   categories: NavCategory[];
 }
 
-const productOf = (catalog: Catalog, uid: string): ProductView | undefined => catalog.products.find((product) => product.uid === uid);
+const productOf = (catalog: Catalog, uid: string, categoryId?: string): ProductView | undefined =>
+  (categoryId ? catalog.products.find((product) => product.uid === uid && product.category === categoryId) : undefined) ??
+  catalog.products.find((product) => product.uid === uid);
 
 function menuItemOf(catalog: Catalog, locale: LocaleCode, product: ProductView, item: MenuItemView): NavMenuItem {
   if ("shape" in item.target) {
     const uid = item.target.shape;
-    const shape = product.shapes.find((candidate) => candidate.uid === uid || Object.values(candidate.slugs).some((s) => s.slug === uid));
+    const labelText = pickText(locale, item.label).toLowerCase().trim();
+    const shape = product.shapes.find(
+      (candidate) =>
+        candidate.uid === uid ||
+        Object.values(candidate.slugs).some((s) => s.slug === uid || s.aliases.includes(uid)) ||
+        pickText(locale, candidate.name).toLowerCase().trim() === labelText
+    );
     const href = shape ? `${productPath(catalog, locale, product)}#${shape.slugs[locale].slug}` : productPath(catalog, locale, product);
     return { id: uid, label: pickText(locale, item.label), href, image: item.image, isFast: item.isFast };
   }
   const uid = item.target.option;
-  const option = product.options.find((candidate) => candidate.uid === uid || Object.values(candidate.slugs).some((s) => s.slug === uid));
+  const labelText = pickText(locale, item.label).toLowerCase().trim();
+  const option = product.options.find(
+    (candidate) =>
+      candidate.uid === uid ||
+      Object.values(candidate.slugs).some((s) => s.slug === uid || s.aliases.includes(uid)) ||
+      pickText(locale, candidate.name).toLowerCase().trim() === labelText
+  );
   const href = option ? segmentPath(catalog, locale, product, { option }) : productPath(catalog, locale, product);
   return { id: uid, label: pickText(locale, item.label), href, image: item.image, isFast: item.isFast };
 }
 
-function menuGroupOf(catalog: Catalog, locale: LocaleCode, group: MenuGroupView): NavMenuGroup | null {
-  const product = productOf(catalog, group.product);
+function menuGroupOf(catalog: Catalog, locale: LocaleCode, group: MenuGroupView, categoryId?: string): NavMenuGroup | null {
+  const product = productOf(catalog, group.product, categoryId);
   if (!product) return null;
   return {
     id: product.uid,
@@ -83,10 +97,10 @@ function menuGroupOf(catalog: Catalog, locale: LocaleCode, group: MenuGroupView)
   };
 }
 
-export function menuOf(catalog: Catalog, locale: LocaleCode, menu: MenuView | undefined): NavMenu {
+export function menuOf(catalog: Catalog, locale: LocaleCode, menu: MenuView | undefined, categoryId?: string): NavMenu {
   const columns = (menu?.columns ?? []).map((column) => ({
     id: `column-${column.column}`,
-    groups: column.groups.map((group) => menuGroupOf(catalog, locale, group)).filter((g): g is NavMenuGroup => g !== null),
+    groups: column.groups.map((group) => menuGroupOf(catalog, locale, group, categoryId)).filter((g): g is NavMenuGroup => g !== null),
   }));
   return { defaultImage: columns[0]?.groups[0]?.image ?? null, columns };
 }
@@ -130,7 +144,7 @@ export function navigationOf(catalog: Catalog, menus: Readonly<Record<string, Me
       cover: category.cover,
       href: categoryPath(locale, category),
       cards: cardsOf(catalog, locale, category),
-      menu: menuOf(catalog, locale, menus[category.id]),
+      menu: menuOf(catalog, locale, menus[category.id], category.id),
     })),
   };
 }
