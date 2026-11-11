@@ -1,0 +1,67 @@
+[
+  {
+    "uid": "vd-show-1",
+    "key": "vd-show-1",
+    "src": "/images/product/vd-item-card.jpeg",
+    "aspect": "tall",
+    "label": {
+      "vi": "Danh thiếp cao cấp",
+      "en": "Premium Business Cards",
+      "zh": "高端商务名片",
+      "ja": "プレミアムビジネス名刺",
+      "ko": "프리미엄 비즈니스 명함"
+    }
+  },
+  {
+    "uid": "vd-show-2",
+    "key": "vd-show-2",
+    "src": "/images/product/vd-item-box.jpg",
+    "aspect": "square",
+    "label": {
+      "vi": "Hộp giấy sang trọng",
+      "en": "Luxury Packaging",
+      "zh": "奢华礼品包装盒",
+      "ja": "高級ペーパーボックス包装",
+      "ko": "고급 패키지 박스"
+    }
+  },
+  {
+    "uid": "vd-show-3",
+    "key": "vd-show-3",
+    "src": "/images/product/vd-item-catalogue.jpeg",
+    "aspect": "square",
+    "label": {
+      "vi": "Catalogue chuyên nghiệp",
+      "en": "Professional Catalogue",
+      "zh": "专业企业画册",
+      "ja": "プロフェッショナルカタログ",
+      "ko": "전문 기업 카탈로그"
+    }
+  },
+  {
+    "uid": "vd-show-4",
+    "key": "vd-show-4",
+    "src": "/images/product/vd-item-label.jpeg",
+    "aspect": "wide",
+    "label": {
+      "vi": "Nhãn mác tinh tế",
+      "en": "Premium Labels",
+      "zh": "精致标签贴纸",
+      "ja": "上質ラベルシール",
+      "ko": "정밀 라벨 스티커"
+    }
+  },
+  {
+    "uid": "vd-show-5",
+    "key": "vd-show-5",
+    "src": "/images/product/vd-item-lixi.jpeg",
+    "aspect": "wide",
+    "label": {
+      "vi": "Bao lì xì Tết",
+      "en": "Tet Lucky Envelopes",
+      "zh": "新年春节红包",
+      "ja": "お年玉・新年ポチ袋",
+      "ko": "새해 세뱃돈 봉투"
+    }
+  }
+]

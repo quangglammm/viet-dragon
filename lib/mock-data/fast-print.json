@@ -1,0 +1,271 @@
+{
+  "items": [
+    {
+      "uid": "danh-thiep",
+      "key": "danh-thiep",
+      "image": "/images/product/vd-item-card.jpeg",
+      "icon": "CreditCard",
+      "fromPrice": 120000,
+      "unit": "hop",
+      "name": {
+        "vi": "Danh thiếp",
+        "en": "Business Cards",
+        "zh": "商务名片",
+        "ja": "ビジネス名刺",
+        "ko": "비즈니스 명함"
+      },
+      "tag": {
+        "vi": "In nhanh 2h",
+        "en": "Ready in 2h",
+        "zh": "2小时快印",
+        "ja": "2時間特急",
+        "ko": "2시간 출고"
+      },
+      "description": {
+        "vi": "Danh thiếp C300, cán màng mờ/bóng, bo góc tùy chọn.",
+        "en": "300gsm card, matte/gloss lamination, optional round corners.",
+        "zh": "300gsm 铜版纸，哑膜/亮膜覆膜，可选圆角。",
+        "ja": "300gsm コート紙、マット/グロスPP加工、角丸加工対応。",
+        "ko": "300gsm 스노우지, 무광/유광 코팅, 모따기 가공 선택 가능."
+      }
+    },
+    {
+      "uid": "to-roi",
+      "key": "to-roi",
+      "image": "/images/category/toroi.webp",
+      "icon": "FileText",
+      "fromPrice": 850,
+      "unit": "to",
+      "name": {
+        "vi": "Tờ rơi / Leaflet",
+        "en": "Flyers & Leaflets",
+        "zh": "宣传单页 / 折页",
+        "ja": "チラシ / フライヤー",
+        "ko": "전단지 / 리플렛"
+      },
+      "tag": {
+        "vi": "In nhanh 4h",
+        "en": "Ready in 4h",
+        "zh": "4小时快印",
+        "ja": "4時間特急",
+        "ko": "4시간 출고"
+      },
+      "description": {
+        "vi": "Tờ rơi A5/A4 Couche 150–200gsm, cán màng bảo vệ.",
+        "en": "A5/A4 flyers, C150–C200gsm, with optional lamination.",
+        "zh": "A5/A4 150–200gsm 铜版纸，表面保护性覆膜。",
+        "ja": "A5/A4 コート紙 150–200gsm、表面保護PP加工。",
+        "ko": "A5/A4 150–200gsm 아트지, 표면 보호 코팅."
+      }
+    },
+    {
+      "uid": "voucher",
+      "key": "voucher",
+      "image": "/images/product/tag-couche1.webp",
+      "icon": "StickyNote",
+      "fromPrice": 1100,
+      "unit": "to",
+      "name": {
+        "vi": "Voucher / Phiếu",
+        "en": "Vouchers & Coupons",
+        "zh": "代金券 / 优惠券",
+        "ja": "クーポン / 引換券",
+        "ko": "쿠폰 / 상품권"
+      },
+      "tag": {
+        "vi": "In nhanh 4h",
+        "en": "Ready in 4h",
+        "zh": "4小时快印",
+        "ja": "4時間特急",
+        "ko": "4시간 출고"
+      },
+      "description": {
+        "vi": "Voucher cấn răng cưa nhảy số, bảo vệ bằng cán màng.",
+        "en": "Perforated vouchers with sequential numbering.",
+        "zh": "打齿孔撕线设计，连续流水编号，覆膜保护。",
+        "ja": "ミシン目加工、ナンバリング連番印字、保護PP加工。",
+        "ko": "미싱선 가공, 일련번호 넘버링, 코팅 처리."
+      }
+    },
+    {
+      "uid": "tem-nhan",
+      "key": "tem-nhan",
+      "image": "/images/product/vd-item-decal.jpeg",
+      "icon": "Package2",
+      "fromPrice": 400,
+      "unit": "tem",
+      "name": {
+        "vi": "Tem nhãn / Decal",
+        "en": "Labels & Stickers",
+        "zh": "不干胶标签 / 贴纸",
+        "ja": "ラベル / シール",
+        "ko": "라벨 / 스티커"
+      },
+      "tag": {
+        "vi": "In nhanh 2h",
+        "en": "Ready in 2h",
+        "zh": "2小时快印",
+        "ja": "2時間特急",
+        "ko": "2시간 출고"
+      },
+      "description": {
+        "vi": "Decal giấy, nhựa chống nước, bế theo hình bất kỳ.",
+        "en": "Paper or waterproof vinyl stickers, kiss-cut to any shape.",
+        "zh": "铜版纸胶或防水PVC材质，支持任意异形模切。",
+        "ja": "上質紙シール・防水耐水ビニール、自由な形状にダイカット。",
+        "ko": "일반 종이 및 방수 비닐 라벨, 자유 곡선 도무송 재단."
+      }
+    },
+    {
+      "uid": "catalogue",
+      "key": "catalogue",
+      "image": "/images/product/vd-item-catalogue.jpeg",
+      "icon": "Printer",
+      "fromPrice": 3600,
+      "unit": "cuon",
+      "name": {
+        "vi": "Catalogue / Tờ gấp",
+        "en": "Catalogues & Brochures",
+        "zh": "企业画册 / 宣传折页",
+        "ja": "カタログ / パンフレット",
+        "ko": "카탈로그 / 브로슈어"
+      },
+      "tag": {
+        "vi": "In nhanh 6h",
+        "en": "Ready in 6h",
+        "zh": "6小时快印",
+        "ja": "6時間特急",
+        "ko": "6시간 출고"
+      },
+      "description": {
+        "vi": "Catalogue A4/A5 tiêu chuẩn, tờ gấp đôi, gấp ba.",
+        "en": "A4/A5 catalogues, bi-fold and tri-fold brochures.",
+        "zh": "标准 A4/A5 画册、对折页、三折页。",
+        "ja": "A4/A5 標準カタログ、2つ折り・3つ折りリーフレット。",
+        "ko": "표준 A4/A5 카탈로그, 2단/3단 접지 팜플렛."
+      }
+    },
+    {
+      "uid": "envelope",
+      "key": "envelope",
+      "image": "/images/product/vd-item-envelope.jpeg",
+      "icon": "Package2",
+      "fromPrice": 1800,
+      "unit": "cai",
+      "name": {
+        "vi": "Bao thư lấy ngay",
+        "en": "Express Envelopes",
+        "zh": "加急信封",
+        "ja": "特急封筒",
+        "ko": "당일 인쇄 봉투"
+      },
+      "tag": {
+        "vi": "Lấy ngay",
+        "en": "Express",
+        "zh": "急件速取",
+        "ja": "即日発送",
+        "ko": "즉시 출고"
+      },
+      "description": {
+        "vi": "Bao thư in nhanh nhiều kích thước, giao trong 4h.",
+        "en": "Multiple sizes, express delivery within 4h.",
+        "zh": "多种尺寸信封快速印刷，4小时内送达。",
+        "ja": "各種サイズ対応、特急印刷・4時間以内のお届け。",
+        "ko": "다양한 규격의 봉투 인쇄, 4시간 이내 배송."
+      }
+    }
+  ],
+  "units": {
+    "hop": {
+      "vi": "Hộp",
+      "en": "Box",
+      "zh": "盒",
+      "ja": "箱",
+      "ko": "상자"
+    },
+    "to": {
+      "vi": "Tờ",
+      "en": "Sheet",
+      "zh": "张",
+      "ja": "枚",
+      "ko": "장"
+    },
+    "cai": {
+      "vi": "Cái",
+      "en": "Pcs",
+      "zh": "个",
+      "ja": "個",
+      "ko": "개"
+    },
+    "tem": {
+      "vi": "Tem",
+      "en": "Stamp",
+      "zh": "贴",
+      "ja": "枚",
+      "ko": "매"
+    },
+    "m2": {
+      "vi": "M2",
+      "en": "m²",
+      "zh": "平方米",
+      "ja": "m²",
+      "ko": "m²"
+    },
+    "cuon": {
+      "vi": "Cuốn",
+      "en": "Book",
+      "zh": "本",
+      "ja": "冊",
+      "ko": "권"
+    },
+    "ram": {
+      "vi": "Ram",
+      "en": "Ream",
+      "zh": "令",
+      "ja": "連",
+      "ko": "련"
+    },
+    "tui": {
+      "vi": "Túi",
+      "en": "Bag",
+      "zh": "袋",
+      "ja": "袋",
+      "ko": "백"
+    },
+    "bo": {
+      "vi": "Bộ",
+      "en": "Set",
+      "zh": "套",
+      "ja": "セット",
+      "ko": "세트"
+    },
+    "buc": {
+      "vi": "Bức",
+      "en": "Pcs",
+      "zh": "幅",
+      "ja": "点",
+      "ko": "점"
+    },
+    "phieu": {
+      "vi": "Phiếu",
+      "en": "Voucher",
+      "zh": "张",
+      "ja": "枚",
+      "ko": "매"
+    },
+    "ve": {
+      "vi": "Vé",
+      "en": "Ticket",
+      "zh": "张",
+      "ja": "枚",
+      "ko": "매"
+    },
+    "ao": {
+      "vi": "Áo",
+      "en": "Shirt",
+      "zh": "件",
+      "ja": "枚",
+      "ko": "티셔츠"
+    }
+  }
+}
