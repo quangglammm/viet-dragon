@@ -22,9 +22,6 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      # Baked into the build (canonical URLs, robots.txt, sitemap); any well-formed origin will do here.
-      SITE_URL: https://vietdragon.vn
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4 # the version comes from `packageManager` in package.json
@@ -40,6 +37,9 @@ jobs:
       - name: Unit tests
         run: pnpm test
       - name: Production build
+        env:
+          # Baked into the build (canonical URLs, robots.txt, sitemap); any well-formed origin will do here.
+          SITE_URL: https://vietdragon.vn
         run: pnpm build
 
   audit:

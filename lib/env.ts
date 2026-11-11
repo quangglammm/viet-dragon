@@ -73,7 +73,13 @@ function parseSiteOrigin(value: string): string | null {
 const siteSchema = z
   .object({ NODE_ENV: nodeEnv, SITE_URL: optionalString })
   .transform((env, ctx) => {
-    if (env.SITE_URL === undefined) {
+    const vercelOrigin = process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : undefined;
+    const rawUrl = env.SITE_URL ?? vercelOrigin;
+    if (rawUrl === undefined) {
       if (env.NODE_ENV !== "production") return { ...env, SITE_URL: DEFAULT_DEV_SITE_URL };
       ctx.addIssue({
         code: "custom",
@@ -82,7 +88,7 @@ const siteSchema = z
       });
       return z.NEVER;
     }
-    const origin = parseSiteOrigin(env.SITE_URL);
+    const origin = parseSiteOrigin(rawUrl);
     if (origin === null) {
       ctx.addIssue({
         code: "custom",
