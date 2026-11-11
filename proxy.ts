@@ -12,17 +12,26 @@ const intlMiddleware = createMiddleware(routing);
  * the canonical address. Absolute, from SITE_URL.
  */
 export default function proxy(request: NextRequest) {
-  const { pathname, search } = request.nextUrl;
-  const decision = decideRoute(pathname);
-  if (decision.action === "redirect") {
-    return NextResponse.redirect(new URL(`${decision.pathname}${search}`, getSiteEnv().SITE_URL), 308);
+  try {
+    const { pathname, search } = request.nextUrl;
+    const decision = decideRoute(pathname);
+    if (decision.action === "redirect") {
+      return NextResponse.redirect(new URL(`${decision.pathname}${search}`, getSiteEnv().SITE_URL), 308);
+    }
+    if (decision.action === "rewrite") {
+      const url = request.nextUrl.clone();
+      url.pathname = decision.pathname;
+      return intlMiddleware(new NextRequest(url, request));
+    }
+    return intlMiddleware(request);
+  } catch (error) {
+    console.error("Proxy error:", error);
+    try {
+      return intlMiddleware(request);
+    } catch {
+      return NextResponse.next();
+    }
   }
-  if (decision.action === "rewrite") {
-    const url = request.nextUrl.clone();
-    url.pathname = decision.pathname;
-    return intlMiddleware(new NextRequest(url, request));
-  }
-  return intlMiddleware(request);
 }
 
 export const config = {
