@@ -1,19 +1,12 @@
-import { createHash, randomUUID } from "node:crypto";
-import { sql } from "drizzle-orm";
-import { requestMeta } from "@/lib/auth/audit";
-import type { DbExecutor } from "@/lib/db/types";
+import { createHash } from "node:crypto";
 
-// A fixed-window limiter for the app's own public endpoints (the consult form, uploads, CSP reports), in the `rate_limit` table Better Auth already
-// keeps in Postgres — so a restart does not forget an abuser and a second instance could not be used to get around it.
-//
-// One statement per check: the count of the current window is incremented (or the window restarted) by an `INSERT … ON CONFLICT DO UPDATE`, so two
-// requests at the same moment are counted one after the other, never both as «the first». The window's start is kept in `last_request`; the time is
-// the database's, not the app's. Keys all begin `vd:` — Better Auth's own keys look like `<ip>|<path>` and never meet them.
+// An in-memory fixed-window limiter for the app's public endpoints (the consult form, CSP reports).
+// Fully decoupled from PostgreSQL / database so the application can run in any serverless or standalone Node.js environment.
 
 export interface Limit {
-  /** What is being limited: `consult-ip`, `upload-user`… */
+  /** What is being limited: `consult-ip`, `consult-phone`… */
   purpose: string;
-  /** Who: an address, an account id, a hash. Anything; it only has to be the same every time for the same subject. */
+  /** Who: an address, a phone digest, or string identifier. */
   subject: string;
   windowSeconds: number;
   max: number;
@@ -33,45 +26,85 @@ const MAX_SUBJECT_LENGTH = 100;
 const PRUNE_EVERY_MS = 10 * 60 * MILLISECONDS;
 const PRUNE_AFTER_MS = 24 * 60 * 60 * MILLISECONDS;
 
-export const limitKey = (purpose: string, subject: string): string => `${KEY_PREFIX}${purpose}:${subject.slice(0, MAX_SUBJECT_LENGTH)}`;
+interface RateRecord {
+  count: number;
+  lastRequest: number; // timestamp in ms
+}
 
-/** A subject that should not sit in the table in the clear (a phone number): a short fixed-length digest. */
-export const digest = (value: string): string => createHash("sha256").update(value).digest("hex").slice(0, 24);
+const memoryStore = new Map<string, RateRecord>();
 
-/** The client's address as Caddy reports it (`x-real-ip`; Caddy overwrites it, the app publishes no port). Without one — plain dev — everybody is one client. */
-export const clientAddress = (headers: Headers): string => requestMeta(headers).ip ?? "unknown";
+export const limitKey = (purpose: string, subject: string): string =>
+  `${KEY_PREFIX}${purpose}:${subject.slice(0, MAX_SUBJECT_LENGTH)}`;
+
+/** A subject that should not sit in memory in the clear (a phone number): a short fixed-length digest. */
+export const digest = (value: string): string =>
+  createHash("sha256").update(value).digest("hex").slice(0, 24);
+
+/**
+ * Extract the client's IP from headers. Supports x-real-ip (Caddy / reverse proxy) and x-forwarded-for.
+ */
+export function clientAddress(headers: Headers): string {
+  const realIp = headers.get("x-real-ip");
+  if (realIp) return realIp.trim();
+  const forwarded = headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0].trim();
+  return "unknown";
+}
 
 /** Seconds until a window that started at `start` is over (at least 1). */
 export function retryAfterSeconds(start: number, windowMs: number, now: number): number {
   return Math.max(1, Math.ceil((start + windowMs - now) / MILLISECONDS));
 }
 
-/** Counts one request against `limit` and says whether it may go ahead. */
-export async function consumeLimit(db: DbExecutor, { purpose, subject, windowSeconds, max }: Limit): Promise<LimitResult> {
+/**
+ * Counts one request against `limit` in memory and returns whether it is allowed.
+ * `_db` is optional and ignored, kept for backwards compatibility.
+ */
+export async function consumeLimit(
+  _db: unknown,
+  { purpose, subject, windowSeconds, max }: Limit
+): Promise<LimitResult> {
+  const now = Date.now();
   const windowMs = windowSeconds * MILLISECONDS;
-  const result = await db.execute<{ count: number; last_request: string; now: string }>(sql`
-    with clock as (select (extract(epoch from clock_timestamp()) * 1000)::bigint as now)
-    insert into rate_limit (id, key, count, last_request)
-    select ${randomUUID()}, ${limitKey(purpose, subject)}, 1, clock.now from clock
-    on conflict (key) do update set
-      count = case when rate_limit.last_request <= (select now from clock) - ${windowMs}::bigint then 1 else rate_limit.count + 1 end,
-      last_request = case when rate_limit.last_request <= (select now from clock) - ${windowMs}::bigint then (select now from clock) else rate_limit.last_request end
-    returning count, last_request, (select now from clock) as now`);
-  const row = result.rows[0];
-  const count = Number(row.count);
-  return { allowed: count <= max, count, retryAfterSeconds: retryAfterSeconds(Number(row.last_request), windowMs, Number(row.now)) };
+  const key = limitKey(purpose, subject);
+
+  let record = memoryStore.get(key);
+  if (!record || now - record.lastRequest > windowMs) {
+    record = { count: 1, lastRequest: now };
+    memoryStore.set(key, record);
+    return { allowed: true, count: 1, retryAfterSeconds: windowSeconds };
+  }
+
+  record.count += 1;
+  const allowed = record.count <= max;
+  const retryAfter = retryAfterSeconds(record.lastRequest, windowMs, now);
+
+  return { allowed, count: record.count, retryAfterSeconds: retryAfter };
 }
 
 let lastPrune = 0;
 
-/** Drops the expired counters of this module's keys, at most once in a while per process: cheap housekeeping that keeps the table from growing. */
-export async function pruneLimits(db: DbExecutor, now = Date.now()): Promise<void> {
+/** Drops expired counters from memory. */
+export async function pruneLimits(_db?: unknown, now = Date.now()): Promise<void> {
   if (now - lastPrune < PRUNE_EVERY_MS) return;
   lastPrune = now;
-  await db.execute(sql`delete from rate_limit where key like ${`${KEY_PREFIX}%`} and last_request < (extract(epoch from clock_timestamp()) * 1000)::bigint - ${PRUNE_AFTER_MS}::bigint`);
+  for (const [key, record] of memoryStore.entries()) {
+    if (now - record.lastRequest > PRUNE_AFTER_MS) {
+      memoryStore.delete(key);
+    }
+  }
 }
 
 /** The answer for a refused request: 429, `Retry-After`, and the app's usual error shape. */
 export function tooManyRequests(result: LimitResult, message: string): Response {
-  return Response.json({ error: message, code: "RATE_LIMITED" }, { status: 429, headers: { "retry-after": String(result.retryAfterSeconds), "cache-control": "no-store" } });
+  return Response.json(
+    { error: message, code: "RATE_LIMITED" },
+    {
+      status: 429,
+      headers: {
+        "retry-after": String(result.retryAfterSeconds),
+        "cache-control": "no-store",
+      },
+    }
+  );
 }

@@ -29,10 +29,10 @@ const entryAt = (list: readonly SitemapEntry[], path: string): SitemapEntry => l
 describe("the sitemap", () => {
   it("lists every page once per language, each at its own address", () => {
     const list = entries();
-    // 4 fixed + category + product + 2 shapes + 2 options + 1 post, in 5 languages
-    expect(list).toHaveLength(11 * LOCALES.length);
+    // 3 fixed (/, /products, /blog) + category + product + 2 shapes + 2 options + 1 post, in 5 languages
+    expect(list).toHaveLength(10 * LOCALES.length);
     expect(new Set(paths(list)).size).toBe(list.length);
-    expect(paths(list)).toEqual(expect.arrayContaining(["/", "/en", "/zh", "/ja", "/ko", "/san-pham", "/en/products", "/san-pham/in-nhanh", "/ko/products/fast-print", "/bai-viet", "/ja/blog"]));
+    expect(paths(list)).toEqual(expect.arrayContaining(["/", "/en", "/zh", "/ja", "/ko", "/san-pham", "/en/products", "/bai-viet", "/ja/blog"]));
   });
 
   it("writes a product, its shapes and its materials in the language's words and slugs", () => {
@@ -85,7 +85,7 @@ describe("the sitemap", () => {
 
   it("gives no date to a page that no single record decides, and none to a page with no revision on record", () => {
     const list = entries();
-    for (const path of ["/", "/en", "/san-pham", "/en/products", "/bai-viet", "/san-pham/in-nhanh"]) expect(entryAt(list, path)).not.toHaveProperty("lastModified");
+    for (const path of ["/", "/en", "/san-pham", "/en/products", "/bai-viet"]) expect(entryAt(list, path)).not.toHaveProperty("lastModified");
     expect(entryAt(entries({ modified: {} }), "/san-pham/tiep-thi/to-roi")).not.toHaveProperty("lastModified");
   });
 

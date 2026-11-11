@@ -391,7 +391,8 @@
     "needCustomQuoteFor": "Need a custom quote for {title}?",
     "getQuoteNow": "Get a Quote Now",
     "allShapesOf": "All shapes of {title}",
-    "bannerSubtitle": "Viet Dragon specialists assist with size, material choice, and prompt quotation within 30 minutes."
+    "bannerSubtitle": "Viet Dragon specialists assist with size, material choice, and prompt quotation within 30 minutes.",
+    "shapesSelectedBadge": "Selected Shape"
   },
   "consultModal": {
     "title": "Request detailed consultation on this product",

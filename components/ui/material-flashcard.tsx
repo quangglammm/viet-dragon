@@ -106,7 +106,7 @@ export function MaterialFlashcard({
   backToDetailsHint,
 }: Readonly<MaterialFlashcardProps>) {
   const [flipped, setFlipped] = useState(false);
-  const [selectedSize, setSelectedSize] = useState<"large" | "medium" | "small" | null>(null);
+  const [selectedSizeIndex, setSelectedSizeIndex] = useState<number | null>(null);
   const [consultOpen, setConsultOpen] = useState(false);
   const [mobileImageIdx, setMobileImageIdx] = useState(0);
 
@@ -190,7 +190,7 @@ export function MaterialFlashcard({
     }
   };
 
-  const selectedSizeItem = sizes.find((s) => s.id === selectedSize);
+  const selectedSizeItem = selectedSizeIndex !== null ? sizes[selectedSizeIndex] : undefined;
   const printTechList = card.techniques;
   const materialList = card.materials;
   const finishingList = card.finishing;
@@ -291,33 +291,61 @@ export function MaterialFlashcard({
             className="relative w-full aspect-square md:aspect-[2/1] bg-zinc-100 flex flex-col overflow-hidden"
             style={{ backfaceVisibility: "hidden" }}
           >
-            {/* Desktop 3-image collage */}
+            {/* Desktop collage / single image */}
             <div
               onClick={handleCardFlip}
-              className="hidden md:grid grid-cols-2 w-full h-full gap-0.5 bg-white cursor-pointer"
+              className="hidden md:block w-full h-full bg-white cursor-pointer"
             >
-              <ImageSlot
-                src={cardImages[0]}
-                alt={`${productName} — ${name} - 0`}
-                aspectClass="aspect-square"
-                sizes="(min-width: 1024px) 25vw, 50vw"
-                isMain
-              />
+              {uniqueImages.length <= 1 ? (
+                <ImageSlot
+                  src={cardImages[0]}
+                  alt={`${productName} — ${name}`}
+                  aspectClass="w-full h-full"
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  isMain
+                />
+              ) : uniqueImages.length === 2 ? (
+                <div className="grid grid-cols-2 w-full h-full gap-0.5">
+                  <ImageSlot
+                    src={cardImages[0]}
+                    alt={`${productName} — ${name} - 0`}
+                    aspectClass="w-full h-full"
+                    sizes="(min-width: 1024px) 25vw, 50vw"
+                    isMain
+                  />
+                  <ImageSlot
+                    src={cardImages[1]}
+                    alt={`${productName} — ${name} - 1`}
+                    aspectClass="w-full h-full"
+                    sizes="(min-width: 1024px) 25vw, 50vw"
+                  />
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 w-full h-full gap-0.5">
+                  <ImageSlot
+                    src={cardImages[0]}
+                    alt={`${productName} — ${name} - 0`}
+                    aspectClass="aspect-square"
+                    sizes="(min-width: 1024px) 25vw, 50vw"
+                    isMain
+                  />
 
-              <div className="grid grid-rows-2 gap-0.5 w-full h-full">
-                <ImageSlot
-                  src={cardImages[1]}
-                  alt={`${productName} — ${name} - 1`}
-                  aspectClass="aspect-[2/1]"
-                  sizes="(min-width: 1024px) 25vw, 50vw"
-                />
-                <ImageSlot
-                  src={cardImages[2]}
-                  alt={`${productName} — ${name} - 2`}
-                  aspectClass="aspect-[2/1]"
-                  sizes="(min-width: 1024px) 25vw, 50vw"
-                />
-              </div>
+                  <div className="grid grid-rows-2 gap-0.5 w-full h-full">
+                    <ImageSlot
+                      src={cardImages[1]}
+                      alt={`${productName} — ${name} - 1`}
+                      aspectClass="aspect-[2/1]"
+                      sizes="(min-width: 1024px) 25vw, 50vw"
+                    />
+                    <ImageSlot
+                      src={cardImages[2]}
+                      alt={`${productName} — ${name} - 2`}
+                      aspectClass="aspect-[2/1]"
+                      sizes="(min-width: 1024px) 25vw, 50vw"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Mobile 1-image carousel with swipe & navigation arrows */}
@@ -490,19 +518,19 @@ export function MaterialFlashcard({
       <div className="flex flex-col gap-4 p-5 bg-white border-t border-zinc-100">
         
         {/* 1. Kích thước phổ biến (thu nhỏ vừa với chữ, click để nở ra ghi đè kích thước luôn bên trong ô, click lại hiện lại chữ) */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-          <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {t("formSizes")}
-          </span>
+        {sizes.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
-            {sizes.map((s) => {
-              const isSelected = selectedSize === s.id;
+            <span className="text-xs font-bold text-zinc-900 shrink-0">
+              {t("formSizes")}
+            </span>
+            {sizes.map((s, idx) => {
+              const isSelected = selectedSizeIndex === idx;
               return (
                 <motion.button
                   layout
-                  key={s.id}
+                  key={`${s.id}-${s.dims}-${idx}`}
                   type="button"
-                  onClick={() => setSelectedSize((prev) => (prev === s.id ? null : s.id))}
+                  onClick={() => setSelectedSizeIndex((prev) => (prev === idx ? null : idx))}
                   transition={{ layout: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } }}
                   className={cn(
                     "inline-flex items-center justify-center px-3 py-1.5 rounded-lg border text-xs transition-colors duration-200 cursor-pointer select-none overflow-hidden",
@@ -540,41 +568,41 @@ export function MaterialFlashcard({
               );
             })}
           </div>
-        </div>
+        )}
 
         {/* 2. Kỹ thuật in: in nhanh, offset, ép kim, dập nổi dập chìm */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-          <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {t("formPrintTech")}
-          </span>
+        {printTechList.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
-            {printTechList.map((tech) => (
+            <span className="text-xs font-bold text-zinc-900 shrink-0">
+              {t("formPrintTech")}
+            </span>
+            {printTechList.map((tech, idx) => (
               <span
-                key={tech}
-                className="inline-flex items-center px-3 py-1.5 rounded-lg border border-[#7000fe]/30 bg-transparent text-xs font-medium text-zinc-700 select-none cursor-default"
+                key={`${tech}-${idx}`}
+                className="inline-flex items-center px-3 py-1.5 rounded-lg border border-[#7000fe]/30 bg-transparent text-xs font-medium text-zinc-700 select-none cursor-default whitespace-nowrap"
               >
                 {tech}
               </span>
             ))}
           </div>
-        </div>
+        )}
 
         {/* 3. Chất liệu */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-          <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {t("formMaterial")}
-          </span>
+        {materialList.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
-            {materialList.map((mat) => {
+            <span className="text-xs font-bold text-zinc-900 shrink-0">
+              {t("formMaterial")}
+            </span>
+            {materialList.map((mat, idx) => {
               const isCurrent =
                 mat.toLowerCase() === name.toLowerCase() ||
                 name.toLowerCase().includes(mat.toLowerCase()) ||
                 mat.toLowerCase().includes(name.toLowerCase());
               return (
                 <span
-                  key={mat}
+                  key={`${mat}-${idx}`}
                   className={cn(
-                    "inline-flex items-center px-3 py-1.5 rounded-lg border text-xs select-none cursor-default transition-colors",
+                    "inline-flex items-center px-3 py-1.5 rounded-lg border text-xs select-none cursor-default transition-colors whitespace-nowrap",
                     isCurrent
                       ? "bg-[#ede8ff] border-brand-primary text-brand-primary font-semibold ring-1 ring-brand-primary/40 shadow-2xs"
                       : "border-[#7000fe]/30 bg-transparent text-zinc-700 font-medium"
@@ -585,22 +613,24 @@ export function MaterialFlashcard({
               );
             })}
           </div>
-        </div>
+        )}
 
         {/* 4. Thành phẩm sau in (Bế, Dán, Cán màng... hiển thị ngang hàng và xuống hàng tự nhiên) */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-bold text-zinc-900 shrink-0">
-            {t("formFinishing")}
-          </span>
-          {finishingList.map((item) => (
-            <span
-              key={item}
-              className="inline-flex items-center px-3 py-1.5 rounded-lg border border-[#7000fe]/30 bg-transparent text-xs font-medium text-zinc-700 select-none cursor-default"
-            >
-              {item}
+        {finishingList.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-bold text-zinc-900 shrink-0">
+              {t("formFinishing")}
             </span>
-          ))}
-        </div>
+            {finishingList.map((item, idx) => (
+              <span
+                key={`${item}-${idx}`}
+                className="inline-flex items-center px-3 py-1.5 rounded-lg border border-[#7000fe]/30 bg-transparent text-xs font-medium text-zinc-700 select-none cursor-default whitespace-nowrap"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* Bottom action row: Nút tư vấn Zalo */}
         <div className="flex items-center justify-end pt-3 border-t border-zinc-100 gap-3">

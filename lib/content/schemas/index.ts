@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import type { DraftEntityType } from "@/lib/db/content/drafts";
+import type { DraftEntityType } from "@/lib/content/entity-types";
 import {
   categoryDocumentSchema,
   fastPrintItemDocumentSchema,

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { z } from "zod";
 import { menuDocument, postDocument, productDocument, slugsOf, UID } from "@/tests/fixtures/documents";
-import { DRAFT_ENTITY_TYPES } from "@/lib/db/content/drafts";
+import { DRAFT_ENTITY_TYPES } from "@/lib/content/entity-types";
 import {
   DOCUMENT_SCHEMAS,
   documentIdentity,

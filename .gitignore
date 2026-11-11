@@ -65,6 +65,7 @@ screenshot*.mjs
 !/docs/
 /docs/*
 !/docs/admin-manual-testing.md
+!/docs/admin-manual-testing.vi.md
 
 # page-text parity corpus (generated from a local build; large)
 /.parity/

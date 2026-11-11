@@ -251,6 +251,15 @@ export function ConsultBottomSheet({
                   <p className="text-xs text-zinc-600 max-w-xs leading-relaxed">
                     {t("successDesc")}
                   </p>
+                  <a
+                    href={ZALO_CHAT_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0068ff] text-white font-bold text-xs shadow-md hover:bg-[#0055d4] transition-colors mt-1"
+                  >
+                    <ZaloIcon className="size-4 shrink-0" />
+                    <span>Chat Zalo</span>
+                  </a>
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="relative flex flex-col gap-4">

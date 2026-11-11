@@ -1,5 +1,5 @@
 import type { LocaleCode } from "../schemas";
-import { sizesFor, specsFor } from "./selectors";
+import { shapeOf, sizesFor, specsFor } from "./selectors";
 import { pickText } from "./text";
 import type { Catalog, OptionView, ProductView, SizeView } from "./types";
 import { anchorOf, type Anchor } from "./urls";
@@ -50,6 +50,9 @@ export function sizeOf(size: SizeView, locale: LocaleCode): CardSize {
 
 export function cardOf(catalog: Catalog, locale: LocaleCode, product: ProductView, option: OptionView, shape: string | null, consultName: string): CardView {
   const list = (kind: "technique" | "finishing" | "material_hint") => specsFor(product, shape, kind).map((spec) => pickText(locale, spec.label)).filter((text) => text !== "");
+  const shapeItem = shapeOf(product, shape);
+  const fallback = shapeItem?.image ? [shapeItem.image] : (product.cover ? [product.cover] : []);
+  const optionImages = option.pureImages.length > 0 ? option.pureImages : option.images;
   return {
     uid: option.uid,
     anchor: anchorOf(option.slugs, locale),
@@ -58,7 +61,7 @@ export function cardOf(catalog: Catalog, locale: LocaleCode, product: ProductVie
     tagline: pickText(locale, option.tagline),
     features: option.features.map((feature) => ({ icon: feature.trait ? (catalog.traits[feature.trait]?.icon ?? null) : null, text: pickText(locale, feature.text) })),
     bestFor: option.bestFor.map((line) => pickText(locale, line)),
-    images: option.pureImages.length > 0 ? option.pureImages : option.images,
+    images: optionImages.length > 0 ? optionImages : fallback,
     sizes: sizesFor(product, shape).map((size) => sizeOf(size, locale)),
     techniques: list("technique"),
     materials: list("material_hint"),

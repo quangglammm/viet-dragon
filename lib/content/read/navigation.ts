@@ -61,16 +61,19 @@ const productOf = (catalog: Catalog, uid: string): ProductView | undefined => ca
 function menuItemOf(catalog: Catalog, locale: LocaleCode, product: ProductView, item: MenuItemView): NavMenuItem {
   if ("shape" in item.target) {
     const uid = item.target.shape;
-    const shape = product.shapes.find((candidate) => candidate.uid === uid)!;
-    return { id: uid, label: pickText(locale, item.label), href: `${productPath(catalog, locale, product)}#${shape.slugs[locale].slug}`, image: item.image, isFast: item.isFast };
+    const shape = product.shapes.find((candidate) => candidate.uid === uid || Object.values(candidate.slugs).some((s) => s.slug === uid));
+    const href = shape ? `${productPath(catalog, locale, product)}#${shape.slugs[locale].slug}` : productPath(catalog, locale, product);
+    return { id: uid, label: pickText(locale, item.label), href, image: item.image, isFast: item.isFast };
   }
   const uid = item.target.option;
-  const option = product.options.find((candidate) => candidate.uid === uid)!;
-  return { id: uid, label: pickText(locale, item.label), href: segmentPath(catalog, locale, product, { option }), image: item.image, isFast: item.isFast };
+  const option = product.options.find((candidate) => candidate.uid === uid || Object.values(candidate.slugs).some((s) => s.slug === uid));
+  const href = option ? segmentPath(catalog, locale, product, { option }) : productPath(catalog, locale, product);
+  return { id: uid, label: pickText(locale, item.label), href, image: item.image, isFast: item.isFast };
 }
 
-function menuGroupOf(catalog: Catalog, locale: LocaleCode, group: MenuGroupView): NavMenuGroup {
-  const product = productOf(catalog, group.product)!;
+function menuGroupOf(catalog: Catalog, locale: LocaleCode, group: MenuGroupView): NavMenuGroup | null {
+  const product = productOf(catalog, group.product);
+  if (!product) return null;
   return {
     id: product.uid,
     title: pickText(locale, group.title),
@@ -81,7 +84,10 @@ function menuGroupOf(catalog: Catalog, locale: LocaleCode, group: MenuGroupView)
 }
 
 export function menuOf(catalog: Catalog, locale: LocaleCode, menu: MenuView | undefined): NavMenu {
-  const columns = (menu?.columns ?? []).map((column) => ({ id: `column-${column.column}`, groups: column.groups.map((group) => menuGroupOf(catalog, locale, group)) }));
+  const columns = (menu?.columns ?? []).map((column) => ({
+    id: `column-${column.column}`,
+    groups: column.groups.map((group) => menuGroupOf(catalog, locale, group)).filter((g): g is NavMenuGroup => g !== null),
+  }));
   return { defaultImage: columns[0]?.groups[0]?.image ?? null, columns };
 }
 

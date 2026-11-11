@@ -18,7 +18,9 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
   const { title, description, cover, category } = model.context;
 
   useEffect(() => {
-    function detectAndHighlight() {
+    let scrollTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function detectAndHighlight(isHashChangeEvent = false) {
       if (typeof window === "undefined") return;
       const rawHash = window.location.hash;
       if ((rawHash.match(/#/g) || []).length > 1) {
@@ -33,25 +35,52 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
       const target = hash || queryTarget;
       if (!target) return;
 
-      const matched = shapes.find((s) => s.anchor.id === target || s.anchor.aliases.includes(target));
+      let decodedTarget = target;
+      try {
+        decodedTarget = decodeURIComponent(target);
+      } catch {
+        // keep target
+      }
+
+      const matched = shapes.find(
+        (s) =>
+          s.anchor.id === target ||
+          s.anchor.id === decodedTarget ||
+          s.anchor.aliases.includes(target) ||
+          s.anchor.aliases.includes(decodedTarget) ||
+          s.uid === target ||
+          s.uid === decodedTarget
+      );
+
       if (matched) {
         setHighlightedShapeId(matched.uid);
         // A hash that is an old or foreign name of the shape is rewritten to its canonical one.
-        if (target !== matched.anchor.id) {
+        if (target !== matched.anchor.id && !queryTarget) {
           window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${matched.anchor.id}`);
         }
-        setTimeout(() => {
+
+        if (scrollTimer) clearTimeout(scrollTimer);
+
+        // On route change mount: wait out SmoothScroll's top-reset window (350ms)
+        // On in-page hashchange: wait briefly for menu closing/layout (80ms)
+        const delay = isHashChangeEvent ? 80 : 350;
+        scrollTimer = setTimeout(() => {
           const el = findHashTarget(matched.anchor.id);
           if (el) {
             smoothScrollToElement(el);
           }
-        }, 150);
+        }, delay);
       }
     }
 
-    detectAndHighlight();
-    window.addEventListener("hashchange", detectAndHighlight);
-    return () => window.removeEventListener("hashchange", detectAndHighlight);
+    detectAndHighlight(false);
+
+    const onHashChange = () => detectAndHighlight(true);
+    window.addEventListener("hashchange", onHashChange);
+    return () => {
+      if (scrollTimer) clearTimeout(scrollTimer);
+      window.removeEventListener("hashchange", onHashChange);
+    };
   }, [shapes]);
 
   return (
@@ -175,9 +204,9 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
                   }
                 }}
                 className={cn(
-                  "group flex flex-col rounded-2xl bg-white overflow-hidden transition-all duration-300 relative scroll-mt-28 lg:scroll-mt-32 cursor-pointer",
+                  "group flex flex-col rounded-2xl bg-white overflow-hidden transition-all duration-300 relative scroll-mt-28 lg:scroll-mt-36 cursor-pointer",
                   isHighlighted
-                    ? "border-2 border-brand-primary ring-4 ring-brand-primary/20 shadow-2xl shadow-brand-primary/20 -translate-y-1.5"
+                    ? "border-2 border-brand-primary shadow-xl -translate-y-1.5"
                     : "border-2 border-zinc-200/80 hover:border-brand-primary/40 hover:shadow-xl hover:-translate-y-0.5"
                 )}
               >

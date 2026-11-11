@@ -391,7 +391,8 @@
     "needCustomQuoteFor": "Cần báo giá in ấn cho {title}?",
     "getQuoteNow": "Nhận Báo Giá Ngay",
     "allShapesOf": "Xem tất cả hình thức của {title}",
-    "bannerSubtitle": "Đội ngũ kỹ thuật viên Viet Dragon hỗ trợ tính giá tối ưu, tư vấn kích thước và chất liệu trong 30 phút."
+    "bannerSubtitle": "Đội ngũ kỹ thuật viên Viet Dragon hỗ trợ tính giá tối ưu, tư vấn kích thước và chất liệu trong 30 phút.",
+    "shapesSelectedBadge": "Hình thức đang chọn"
   },
   "consultModal": {
     "title": "Tư vấn chi tiết hơn về sản phẩm này",

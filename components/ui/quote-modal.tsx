@@ -90,7 +90,7 @@ export function QuoteModal({
 
     startTransition(async () => {
       try {
-        const itemDescription = note.trim() || productName || "Yêu cầu báo giá nhanh";
+        const itemDescription = note.trim() || productName || t("modalTitle");
 
         const res = await fetch("/api/consult", {
           method: "POST",

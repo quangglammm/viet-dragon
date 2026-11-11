@@ -7,6 +7,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { IconBadge } from "@/components/ui/icon-badge";
 import { useSiteData } from "@/components/providers/site-data-provider";
 import { cn } from "@/lib/utils";
+import { PHONE_NUMBER, PHONE_NUMBER_2 } from "@/lib/contact";
 
 type CompanyLink = { href: string; ns: "nav" | "footer"; key: string };
 const companyLinks: CompanyLink[] = [
@@ -74,7 +75,7 @@ export default function Footer() {
                   VIET <span className="text-brand-primary">DRAGON</span>
                 </p>
                 <p className="text-[11px] font-semibold text-brand-dark/50 tracking-wider uppercase mt-1">
-                  Hơn cả một đối tác
+                  {t("premium")}
                 </p>
               </div>
             </div>
@@ -173,8 +174,8 @@ export default function Footer() {
               <li className="flex items-center gap-3">
                 <IconBadge icon={Phone} size="md" />
                 <span className="flex flex-col">
-                  <a href="tel:0901448377" className="hover:text-brand-primary transition-colors font-medium">{tContact("phone1")}</a>
-                  <a href="tel:0919510543" className="hover:text-brand-primary transition-colors font-medium">{tContact("phone2")}</a>
+                  <a href={`tel:${PHONE_NUMBER}`} className="hover:text-brand-primary transition-colors font-medium">{tContact("phone1")}</a>
+                  <a href={`tel:${PHONE_NUMBER_2}`} className="hover:text-brand-primary transition-colors font-medium">{tContact("phone2")}</a>
                 </span>
               </li>
               <li className="flex items-center gap-3">

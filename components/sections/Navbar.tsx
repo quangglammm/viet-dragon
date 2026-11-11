@@ -14,6 +14,7 @@ import { MegaMenuDesktop } from "@/components/sections/MegaMenuDesktop";
 import { MegaMenuMobile } from "@/components/sections/MegaMenuMobile";
 import { useQuoteModal } from "@/components/providers/quote-modal-provider";
 import { useSiteData } from "@/components/providers/site-data-provider";
+import { PHONE_NUMBER } from "@/lib/contact";
 
 const LANGUAGES: { code: Locale; flag: string; label: string; short: string }[] = [
   { code: "vi", flag: "🇻🇳", label: "Tiếng Việt", short: "VN" },
@@ -213,13 +214,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Mobile floating language switcher (scrolls away with page) */}
-      {isHome && (
-        <div className="lg:hidden absolute top-20 right-6 z-40 shadow-xl rounded-full">
-          <FloatingLocaleSwitcher locale={locale} onSwitch={switchLocale} />
-        </div>
-      )}
-
       <header className="fixed top-0 inset-x-0 z-50">
         {/* Top info bar — desktop only, permanent brand-gradient band (matches the
             template's header-top-section, which sits outside the sticky-toggled
@@ -238,7 +232,7 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
               <FloatingLocaleSwitcher variant="topbar" locale={locale} onSwitch={switchLocale} />
               <span className="w-px h-3.5 bg-white/25" aria-hidden="true" />
-              <a href="tel:0901448377" className="flex items-center gap-2 hover:text-white transition-colors">
+              <a href={`tel:${PHONE_NUMBER}`} className="flex items-center gap-2 hover:text-white transition-colors">
                 <Phone size={13} /> {tContact("phone1")}
               </a>
             </div>
@@ -322,6 +316,13 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            <div className="lg:hidden">
+              <FloatingLocaleSwitcher
+                variant={transparent ? "topbar" : "floating"}
+                locale={locale}
+                onSwitch={switchLocale}
+              />
+            </div>
 
             <WipeButton
               tone="primary"
@@ -373,6 +374,7 @@ export default function Navbar() {
               VIET <span className="text-brand-primary">DRAGON</span>
             </span>
           </Link>
+          <FloatingLocaleSwitcher locale={locale} onSwitch={switchLocale} />
         </div>
         <nav className="flex flex-col px-6 py-6 gap-2 flex-1 overflow-y-auto">
           {categories.map((cat) => {

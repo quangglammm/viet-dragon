@@ -9,6 +9,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { IconBadge } from "@/components/ui/icon-badge";
 import { WipeButton } from "@/components/ui/wipe-button";
 import { useSectionInView } from "@/hooks/use-section-in-view";
+import { PHONE_NUMBER } from "@/lib/contact";
 
 const ABOUT_VIDEO_SRC = "/videos/about.mp4";
 
@@ -126,7 +127,7 @@ export default function About() {
               {t("discoverMore")}
             </WipeButton>
 
-            <a href="tel:0901448377" className="inline-flex items-center gap-3">
+            <a href={`tel:${PHONE_NUMBER}`} className="inline-flex items-center gap-3">
               <IconBadge icon={Phone} size="md" />
               <span>
                 <span className="block text-zinc-400 text-xs">{t("callExpert")}</span>

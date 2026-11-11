@@ -391,7 +391,8 @@
     "needCustomQuoteFor": "{title} 맞춤 인쇄 견적이 필요하신가요?",
     "getQuoteNow": "지금 견적 받기",
     "allShapesOf": "{title}의 모든 형태 보기",
-    "bannerSubtitle": "Viet Dragon 전문 기술팀이 사이즈, 소재 선택 및 최적의 견적 산출을 30분 내 신속히 안내해 드립니다."
+    "bannerSubtitle": "Viet Dragon 전문 기술팀이 사이즈, 소재 선택 및 최적의 견적 산출을 30분 내 신속히 안내해 드립니다.",
+    "shapesSelectedBadge": "선택된 형식"
   },
   "consultModal": {
     "title": "이 제품에 대해 상세 상담 받기",
