@@ -211,18 +211,10 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
                 className={cn(
                   "group flex flex-col rounded-2xl bg-white overflow-hidden transition-all duration-300 relative scroll-mt-28 lg:scroll-mt-36 cursor-pointer",
                   isHighlighted
-                    ? "border-2 border-brand-primary ring-4 ring-brand-primary/25 shadow-2xl shadow-brand-primary/15 -translate-y-1.5"
-                    : "border-2 border-zinc-200/80 hover:border-brand-primary/40 hover:shadow-xl hover:-translate-y-0.5"
+                    ? "border-2 border-brand-primary shadow-md"
+                    : "border-2 border-zinc-200/80 hover:border-brand-primary/40 hover:shadow-md"
                 )}
               >
-                {/* Highlight Badge */}
-                {isHighlighted && (
-                  <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-primary text-white text-xs font-bold shadow-lg shadow-brand-primary/30">
-                    <Sparkles size={12} className="text-amber-300 fill-amber-300" />
-                    <span>{t("shapesSelectedBadge")}</span>
-                  </div>
-                )}
-
                 {/* Image */}
                 <div className="relative h-52 overflow-hidden bg-zinc-100 block">
                   {shape.image ? (
@@ -242,19 +234,14 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
 
                 {/* Body */}
                 <div className="flex flex-col gap-2.5 p-5 flex-1 bg-white">
-                  <div className="flex items-center gap-2">
-                    {isHighlighted && (
-                      <span className="w-2.5 h-2.5 rounded-full bg-brand-primary shrink-0 ring-4 ring-brand-primary/25" />
+                  <p
+                    className={cn(
+                      "font-black text-base lg:text-lg transition-colors leading-snug",
+                      isHighlighted ? "text-brand-primary" : "text-zinc-900 group-hover:text-brand-primary"
                     )}
-                    <p
-                      className={cn(
-                        "font-black text-base lg:text-lg transition-colors leading-snug",
-                        isHighlighted ? "text-brand-primary" : "text-zinc-900 group-hover:text-brand-primary"
-                      )}
-                    >
-                      {shapeName}
-                    </p>
-                  </div>
+                  >
+                    {shapeName}
+                  </p>
 
                   <p className="text-zinc-500 text-xs sm:text-sm leading-relaxed flex-1">
                     {shapeDesc}
@@ -264,12 +251,7 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
                     <Link
                       href={detailHref}
                       onClick={(e) => e.stopPropagation()}
-                      className={cn(
-                        "inline-flex items-center gap-1.5 py-2 px-3 text-xs font-bold transition-all rounded-xl",
-                        isHighlighted
-                          ? "bg-brand-primary text-white shadow-md hover:bg-brand-primary/90"
-                          : "text-brand-primary hover:bg-brand-primary/10"
-                      )}
+                      className="inline-flex items-center gap-1.5 py-1.5 text-xs font-bold text-brand-primary group-hover:text-brand-primary/80 transition-all"
                     >
                       {t("viewMaterialsAndPrice")}{" "}
                       <ArrowRight
