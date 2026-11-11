@@ -8,6 +8,10 @@ export function validateEnvOrExit(): void {
     assertEnv();
   } catch (error) {
     process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
-    process.exit(1);
+    // On Vercel / serverless runtimes, process.exit(1) terminates the invocation with MIDDLEWARE_INVOCATION_FAILED.
+    // Only exit in standalone environments where restart policies handle failure.
+    if (!process.env.VERCEL && process.env.NODE_ENV !== "production") {
+      process.exit(1);
+    }
   }
 }

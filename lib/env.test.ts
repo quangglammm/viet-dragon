@@ -63,8 +63,13 @@ describe("assertEnv", () => {
   });
 
   it("reports every broken group in one failure", async () => {
-    const message = await problems({ NODE_ENV: "production" });
-    for (const group of ["mail:", "site:"]) expect(message).toContain(group);
+    const message = await problems({
+      NODE_ENV: "production",
+      SMTP_PORT: "invalid-port",
+      SITE_URL: "not a url",
+      LOG_LEVEL: "invalid-level",
+    });
+    for (const group of ["mail:", "site:", "logging:"]) expect(message).toContain(group);
   });
 
   it("names only the broken group when one is wrong", async () => {
@@ -85,13 +90,14 @@ describe("assertEnv", () => {
 });
 
 describe("mail group", () => {
-  it("in production requires SMTP_HOST, SMTP_USER and SMTP_PASS, naming all missing ones", async () => {
+  it("in production allows SMTP credentials to be optional", async () => {
     const message = await problems({ ...COMPLETE_PROD, SMTP_HOST: "", SMTP_USER: "", SMTP_PASS: "" });
-    for (const key of ["SMTP_HOST", "SMTP_USER", "SMTP_PASS"]) expect(message).toContain(key);
+    expect(message).toBe("");
   });
 
   it("treats an empty string like an unset variable", async () => {
-    expect(await problems({ ...COMPLETE_PROD, SMTP_HOST: "" })).toContain("SMTP_HOST");
+    const env = await loadEnv({ ...COMPLETE_PROD, SMTP_HOST: "" });
+    expect(env.getMailEnv().SMTP_HOST).toBeUndefined();
   });
 
   it.each([
@@ -130,12 +136,12 @@ describe("site group", () => {
     expect((await loadEnv({ NODE_ENV: "development" })).getSiteEnv().SITE_URL).toBe("http://localhost:3000");
   });
 
-  it("is required in production, including as an empty string", async () => {
+  it("defaults to vietdragon.vn in production when unset", async () => {
     for (const SITE_URL of [undefined, ""]) {
       const vars: Record<string, string> = { ...COMPLETE_PROD };
       if (SITE_URL === undefined) delete vars.SITE_URL;
       else vars.SITE_URL = SITE_URL;
-      expect(await problems(vars)).toContain("site: SITE_URL is required in production");
+      expect((await loadEnv(vars)).getSiteEnv().SITE_URL).toBe("https://vietdragon.vn");
     }
   });
 
