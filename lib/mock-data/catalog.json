@@ -10042,23 +10042,33 @@
           "slugs": {
             "vi": {
               "slug": "giay-my-thuat",
-              "aliases": []
+              "aliases": [
+                "card-art-paper"
+              ]
             },
             "en": {
               "slug": "luxury-art-paper",
-              "aliases": []
+              "aliases": [
+                "card-art-paper"
+              ]
             },
             "zh": {
               "slug": "luxury-art-paper",
-              "aliases": []
+              "aliases": [
+                "card-art-paper"
+              ]
             },
             "ja": {
               "slug": "luxury-art-paper",
-              "aliases": []
+              "aliases": [
+                "card-art-paper"
+              ]
             },
             "ko": {
               "slug": "luxury-art-paper",
-              "aliases": []
+              "aliases": [
+                "card-art-paper"
+              ]
             }
           },
           "shape": null,
@@ -10182,23 +10192,38 @@
           "slugs": {
             "vi": {
               "slug": "giay-nhua-sieu-ben",
-              "aliases": []
+              "aliases": [
+                "the-nhua-pvc",
+                "card-plastic"
+              ]
             },
             "en": {
               "slug": "waterproof-synthetic-plastic-card",
-              "aliases": []
+              "aliases": [
+                "the-nhua-pvc",
+                "card-plastic"
+              ]
             },
             "zh": {
               "slug": "waterproof-synthetic-plastic-card",
-              "aliases": []
+              "aliases": [
+                "the-nhua-pvc",
+                "card-plastic"
+              ]
             },
             "ja": {
               "slug": "waterproof-synthetic-plastic-card",
-              "aliases": []
+              "aliases": [
+                "the-nhua-pvc",
+                "card-plastic"
+              ]
             },
             "ko": {
               "slug": "waterproof-synthetic-plastic-card",
-              "aliases": []
+              "aliases": [
+                "the-nhua-pvc",
+                "card-plastic"
+              ]
             }
           },
           "shape": null,
@@ -11751,23 +11776,38 @@
           "slugs": {
             "vi": {
               "slug": "giay-kraft-tu-nhien-eco-rustic",
-              "aliases": []
+              "aliases": [
+                "bao-thu-kraft",
+                "envelope-kraft"
+              ]
             },
             "en": {
               "slug": "natural-kraft-paper-180-250gsm",
-              "aliases": []
+              "aliases": [
+                "bao-thu-kraft",
+                "envelope-kraft"
+              ]
             },
             "zh": {
               "slug": "natural-kraft-paper-180-250gsm",
-              "aliases": []
+              "aliases": [
+                "bao-thu-kraft",
+                "envelope-kraft"
+              ]
             },
             "ja": {
               "slug": "natural-kraft-paper-180-250gsm",
-              "aliases": []
+              "aliases": [
+                "bao-thu-kraft",
+                "envelope-kraft"
+              ]
             },
             "ko": {
               "slug": "natural-kraft-paper-180-250gsm",
-              "aliases": []
+              "aliases": [
+                "bao-thu-kraft",
+                "envelope-kraft"
+              ]
             }
           },
           "shape": null,
@@ -20493,23 +20533,38 @@
           "slugs": {
             "vi": {
               "slug": "mac-giay-my-thuat-nham-cao-cap",
-              "aliases": []
+              "aliases": [
+                "mac-giay-kraft",
+                "tag-kraft"
+              ]
             },
             "en": {
               "slug": "luxury-art-paper-hang-tag",
-              "aliases": []
+              "aliases": [
+                "mac-giay-kraft",
+                "tag-kraft"
+              ]
             },
             "zh": {
               "slug": "luxury-art-paper-hang-tag",
-              "aliases": []
+              "aliases": [
+                "mac-giay-kraft",
+                "tag-kraft"
+              ]
             },
             "ja": {
               "slug": "luxury-art-paper-hang-tag",
-              "aliases": []
+              "aliases": [
+                "mac-giay-kraft",
+                "tag-kraft"
+              ]
             },
             "ko": {
               "slug": "luxury-art-paper-hang-tag",
-              "aliases": []
+              "aliases": [
+                "mac-giay-kraft",
+                "tag-kraft"
+              ]
             }
           },
           "shape": null,

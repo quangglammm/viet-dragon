@@ -128,6 +128,35 @@ describe("navigationOf", () => {
     expect(shapeCount).toBeGreaterThan(0);
     expect(missingHash).toEqual([]);
   });
+
+  it("resolves material items in mock data menus to option segment URLs instead of bare product URLs", () => {
+    const nav = navigationOf(mockCatalog, mockMenus, "vi");
+    let materialCount = 0;
+    const bareProductHrefs: string[] = [];
+    for (const [catId, menuObj] of Object.entries(mockMenus)) {
+      const cat = nav.categories.find((c) => c.id === catId);
+      for (const col of menuObj.columns || []) {
+        for (const group of col.groups || []) {
+          for (const item of group.items || []) {
+            if (item.target && "option" in item.target) {
+              materialCount++;
+              const optUid = (item.target as { option: string }).option;
+              const navItem = cat?.menu.columns
+                .flatMap((c) => c.groups)
+                .flatMap((g) => g.items)
+                .find((i) => i.id === optUid);
+              const expectedPrefix = `/products/${catId}/${group.product}/`;
+              if (!navItem || !navItem.href.startsWith(expectedPrefix)) {
+                bareProductHrefs.push(`${catId} -> ${group.product} -> option ${optUid} (href: ${navItem?.href})`);
+              }
+            }
+          }
+        }
+      }
+    }
+    expect(materialCount).toBeGreaterThan(0);
+    expect(bareProductHrefs).toEqual([]);
+  });
 });
 
 describe("cardsOf", () => {

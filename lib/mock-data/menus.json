@@ -600,7 +600,7 @@
             "items": [
               {
                 "target": {
-                  "option": "card-art-paper"
+                  "option": "giay-my-thuat"
                 },
                 "kind": "material",
                 "label": {
@@ -675,7 +675,7 @@
               },
               {
                 "target": {
-                  "option": "the-nhua-pvc"
+                  "option": "giay-nhua-sieu-ben"
                 },
                 "kind": "material",
                 "label": {
@@ -850,7 +850,7 @@
               },
               {
                 "target": {
-                  "option": "bao-thu-kraft"
+                  "option": "giay-kraft-tu-nhien-eco-rustic"
                 },
                 "kind": "material",
                 "label": {
@@ -1485,7 +1485,7 @@
               },
               {
                 "target": {
-                  "option": "mac-giay-kraft"
+                  "option": "mac-giay-my-thuat-nham-cao-cap"
                 },
                 "kind": "material",
                 "label": {
