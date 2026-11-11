@@ -18,9 +18,7 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
   const { title, description, cover, category } = model.context;
 
   useEffect(() => {
-    let scrollTimer: ReturnType<typeof setTimeout> | null = null;
-
-    function detectAndHighlight(isHashChangeEvent = false) {
+    function detectAndHighlight() {
       if (typeof window === "undefined") return;
       const rawHash = window.location.hash;
       if ((rawHash.match(/#/g) || []).length > 1) {
@@ -59,31 +57,22 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
           window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${matched.anchor.id}`);
         }
 
-        if (scrollTimer) clearTimeout(scrollTimer);
-
-        const performScroll = () => {
+        // URL hash scrolling is handled centrally by SmoothScroll.
+        // Only trigger scroll here as fallback if the target came from query params (?shape=...) without a URL hash.
+        if (!hash && queryTarget) {
           const el = findHashTarget(matched.anchor.id);
           if (el) {
             smoothScrollToElement(el);
           }
-        };
-
-        // On route change mount: wait out SmoothScroll's top-reset window (350ms)
-        // On in-page hashchange: wait briefly for menu closing/layout (80ms)
-        const delay = isHashChangeEvent ? 80 : 350;
-        scrollTimer = setTimeout(performScroll, delay);
-        if (!isHashChangeEvent) {
-          setTimeout(performScroll, 750);
         }
       }
     }
 
-    detectAndHighlight(false);
+    detectAndHighlight();
 
-    const onHashChange = () => detectAndHighlight(true);
+    const onHashChange = () => detectAndHighlight();
     window.addEventListener("hashchange", onHashChange);
     return () => {
-      if (scrollTimer) clearTimeout(scrollTimer);
       window.removeEventListener("hashchange", onHashChange);
     };
   }, [shapes]);
