@@ -62,13 +62,15 @@ const productOf = (catalog: Catalog, uid: string, categoryId?: string): ProductV
 
 const TARGET_ALIASES: Record<string, string> = {
   // Option (material) aliases from legacy menu targets to canonical slugs
-  "card-art-paper": "giay-my-thuat",
-  "the-nhua-pvc": "giay-nhua-sieu-ben",
-  "card-plastic": "giay-nhua-sieu-ben",
-  "bao-thu-kraft": "giay-kraft-tu-nhien-eco-rustic",
-  "envelope-kraft": "giay-kraft-tu-nhien-eco-rustic",
-  "mac-giay-kraft": "mac-giay-my-thuat-nham-cao-cap",
-  "tag-kraft": "mac-giay-my-thuat-nham-cao-cap",
+  "poster-pp": "poster-chat-lieu-pp",
+  "nhan-decal-xi-bac": "nhan-decal-xi-bac-vang",
+  "card-art-paper": "danh-thiep-giay-my-thuat",
+  "the-nhua-pvc": "danh-thiep-giay-nhua",
+  "card-plastic": "danh-thiep-giay-nhua",
+  "bao-thu-kraft": "bao-thu-giay-kraft",
+  "envelope-kraft": "bao-thu-giay-kraft",
+  "mac-giay-kraft": "mac-san-pham-giay-kraft",
+  "tag-kraft": "mac-san-pham-giay-kraft",
   // Shape aliases
   "ho-so-nang-luc": "profile-company",
 };
@@ -91,16 +93,20 @@ function menuItemOf(catalog: Catalog, locale: LocaleCode, product: ProductView, 
   const uid = item.target.option;
   const resolvedTarget = TARGET_ALIASES[uid] ?? uid;
   const labelText = pickText(locale, item.label).toLowerCase().trim();
-  const option = product.options.find((candidate) => {
-    const candidateName = pickText(locale, candidate.name).toLowerCase().trim();
-    return (
-      candidate.uid === uid ||
-      candidate.uid === resolvedTarget ||
-      Object.values(candidate.slugs).some((s) => s.slug === uid || s.slug === resolvedTarget || s.aliases.includes(uid) || s.aliases.includes(resolvedTarget)) ||
-      candidateName === labelText ||
-      (candidateName.length >= 4 && labelText.includes(candidateName))
-    );
-  });
+  const option =
+    product.options.find((candidate) => {
+      const candidateName = pickText(locale, candidate.name).toLowerCase().trim();
+      return (
+        candidate.uid === uid ||
+        candidate.uid === resolvedTarget ||
+        Object.values(candidate.slugs).some((s) => s.slug === uid || s.slug === resolvedTarget || s.aliases.includes(uid) || s.aliases.includes(resolvedTarget)) ||
+        candidateName === labelText
+      );
+    }) ??
+    product.options.find((candidate) => {
+      const candidateName = pickText(locale, candidate.name).toLowerCase().trim();
+      return candidateName.length >= 4 && labelText.includes(candidateName);
+    });
   const href = option ? segmentPath(catalog, locale, product, { option }) : productPath(catalog, locale, product);
   return { id: uid, label: pickText(locale, item.label), href, image: item.image, isFast: item.isFast };
 }

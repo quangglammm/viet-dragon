@@ -25,7 +25,7 @@
             "items": [
               {
                 "target": {
-                  "option": "poster-pp"
+                  "option": "poster-chat-lieu-pp"
                 },
                 "kind": "material",
                 "label": {
@@ -600,7 +600,7 @@
             "items": [
               {
                 "target": {
-                  "option": "giay-my-thuat"
+                  "option": "danh-thiep-giay-my-thuat"
                 },
                 "kind": "material",
                 "label": {
@@ -675,7 +675,7 @@
               },
               {
                 "target": {
-                  "option": "giay-nhua-sieu-ben"
+                  "option": "danh-thiep-giay-nhua"
                 },
                 "kind": "material",
                 "label": {
@@ -850,7 +850,7 @@
               },
               {
                 "target": {
-                  "option": "giay-kraft-tu-nhien-eco-rustic"
+                  "option": "bao-thu-giay-kraft"
                 },
                 "kind": "material",
                 "label": {
@@ -1205,7 +1205,7 @@
               },
               {
                 "target": {
-                  "option": "nhan-decal-xi-bac"
+                  "option": "nhan-decal-xi-bac-vang"
                 },
                 "kind": "material",
                 "label": {
@@ -1485,7 +1485,7 @@
               },
               {
                 "target": {
-                  "option": "mac-giay-my-thuat-nham-cao-cap"
+                  "option": "mac-san-pham-giay-kraft"
                 },
                 "kind": "material",
                 "label": {
@@ -1890,7 +1890,7 @@
               },
               {
                 "target": {
-                  "option": "nhan-decal-xi-bac"
+                  "option": "nhan-decal-xi-bac-vang"
                 },
                 "kind": "material",
                 "label": {
@@ -1995,7 +1995,7 @@
             "items": [
               {
                 "target": {
-                  "option": "poster-pp"
+                  "option": "poster-chat-lieu-pp"
                 },
                 "kind": "material",
                 "label": {

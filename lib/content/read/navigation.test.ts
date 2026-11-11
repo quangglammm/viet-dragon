@@ -157,6 +157,50 @@ describe("navigationOf", () => {
     expect(materialCount).toBeGreaterThan(0);
     expect(bareProductHrefs).toEqual([]);
   });
+
+  it("ensures the URL segment of material items in the menu matches the slugified label of the material", () => {
+    function slugify(text: string) {
+      return text
+        .toString()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[đĐ]/g, "d")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    }
+
+    const nav = navigationOf(mockCatalog, mockMenus, "vi");
+    const mismatchedSlugs: string[] = [];
+
+    for (const [catId, menuObj] of Object.entries(mockMenus)) {
+      const cat = nav.categories.find((c) => c.id === catId);
+      for (const col of menuObj.columns || []) {
+        for (const group of col.groups || []) {
+          for (const item of group.items || []) {
+            if (item.target && "option" in item.target) {
+              const optUid = (item.target as { option: string }).option;
+              const navItem = cat?.menu.columns
+                .flatMap((c) => c.groups)
+                .flatMap((g) => g.items)
+                .find((i) => i.id === optUid);
+
+              if (!navItem) continue;
+              const segments = navItem.href.split("/").filter(Boolean);
+              const actualSlug = segments[segments.length - 1];
+              const labelVi = item.label.vi ?? "";
+              const expectedSlug = slugify(labelVi);
+
+              if (actualSlug !== expectedSlug) {
+                mismatchedSlugs.push(`${labelVi}: expected "${expectedSlug}", got "${actualSlug}" (${navItem.href})`);
+              }
+            }
+          }
+        }
+      }
+    }
+    expect(mismatchedSlugs).toEqual([]);
+  });
 });
 
 describe("cardsOf", () => {

@@ -10041,9 +10041,10 @@
           "uid": "danh-thiep-giay-my-thuat-2",
           "slugs": {
             "vi": {
-              "slug": "giay-my-thuat",
+              "slug": "danh-thiep-giay-my-thuat",
               "aliases": [
-                "card-art-paper"
+                "card-art-paper",
+                "giay-my-thuat"
               ]
             },
             "en": {
@@ -10085,14 +10086,14 @@
           },
           "ogImage": "/images/product/card-giaymythuat.webp",
           "name": {
-            "vi": "Giấy Mỹ Thuật",
+            "vi": "Danh thiếp Giấy mỹ thuật",
             "en": "Luxury Art Paper",
             "zh": "特种艺术纸（纹理典雅）",
             "ja": "高級ファインアート紙（風合い紙）",
             "ko": "고급 수입 예술지 (질감지)"
           },
           "title": {
-            "vi": "Giấy Mỹ Thuật",
+            "vi": "Danh thiếp Giấy mỹ thuật",
             "en": "Luxury Art Paper",
             "zh": "特种艺术纸（纹理典雅）",
             "ja": "高級ファインアート紙（風合い紙）",
@@ -10191,10 +10192,11 @@
           "uid": "danh-thiep-giay-nhua-sieu-ben-3",
           "slugs": {
             "vi": {
-              "slug": "giay-nhua-sieu-ben",
+              "slug": "danh-thiep-giay-nhua",
               "aliases": [
                 "the-nhua-pvc",
-                "card-plastic"
+                "card-plastic",
+                "giay-nhua-sieu-ben"
               ]
             },
             "en": {
@@ -10240,14 +10242,14 @@
           },
           "ogImage": "/images/product/card-giaynhua.webp",
           "name": {
-            "vi": "Giấy Nhựa (Siêu Bền)",
+            "vi": "Danh Thiếp Giấy Nhựa",
             "en": "Waterproof Synthetic Plastic Card",
             "zh": "防水撕不烂合成塑料卡",
             "ja": "耐水合成プラスチックカード",
             "ko": "방수 합성 플라스틱 카드"
           },
           "title": {
-            "vi": "Giấy Nhựa (Siêu Bền)",
+            "vi": "Danh Thiếp Giấy Nhựa",
             "en": "Waterproof Synthetic Plastic Card",
             "zh": "防水撕不烂合成塑料卡",
             "ja": "耐水合成プラスチックカード",
@@ -11775,10 +11777,11 @@
           "uid": "bao-thu-giay-kraft-tu-nhien-eco-rustic-3",
           "slugs": {
             "vi": {
-              "slug": "giay-kraft-tu-nhien-eco-rustic",
+              "slug": "bao-thu-giay-kraft",
               "aliases": [
                 "bao-thu-kraft",
-                "envelope-kraft"
+                "envelope-kraft",
+                "giay-kraft-tu-nhien-eco-rustic"
               ]
             },
             "en": {
@@ -11824,14 +11827,14 @@
           },
           "ogImage": "/images/product/baothu-giaykraft.webp",
           "name": {
-            "vi": "Giấy Kraft Tự Nhiên (Eco-Rustic)",
+            "vi": "Bao thư giấy Kraft",
             "en": "Natural Kraft Paper 180 - 250gsm",
             "zh": "复古牛皮环保文件档案信封",
             "ja": "クラフト紙レトロ封筒（エコ仕様）",
             "ko": "친환경 크라프트 서류 봉투"
           },
           "title": {
-            "vi": "Giấy Kraft Tự Nhiên (Eco-Rustic)",
+            "vi": "Bao thư giấy Kraft",
             "en": "Natural Kraft Paper 180 - 250gsm",
             "zh": "复古牛皮环保文件档案信封",
             "ja": "クラフト紙レトロ封筒（エコ仕様）",
@@ -20532,10 +20535,11 @@
           "uid": "mac-san-pham-mac-giay-my-thuat-nham-cao-cap-3",
           "slugs": {
             "vi": {
-              "slug": "mac-giay-my-thuat-nham-cao-cap",
+              "slug": "mac-san-pham-giay-kraft",
               "aliases": [
                 "mac-giay-kraft",
-                "tag-kraft"
+                "tag-kraft",
+                "mac-giay-my-thuat-nham-cao-cap"
               ]
             },
             "en": {
@@ -20581,14 +20585,14 @@
           },
           "ogImage": "/images/product/mac-giaymythuat.webp",
           "name": {
-            "vi": "Mác Giấy Mỹ Thuật Nhám Cao Cấp",
+            "vi": "Mác Sản Phẩm Giấy Kraft",
             "en": "Luxury Art Paper Hang Tag",
             "zh": "高端进口粗纹特种纸吊牌",
             "ja": "特殊テクスチャ紙 高級ファッションタグ",
             "ko": "수입 예술 질감지 프리미엄 패션 행택"
           },
           "title": {
-            "vi": "Mác Giấy Mỹ Thuật Nhám Cao Cấp",
+            "vi": "Mác Sản Phẩm Giấy Kraft",
             "en": "Luxury Art Paper Hang Tag",
             "zh": "高端进口粗纹特种纸吊牌",
             "ja": "特殊テクスチャ紙 高級ファッションタグ",
