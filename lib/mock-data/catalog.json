@@ -4,8 +4,10 @@
       "id": "marketing",
       "slugs": {
         "vi": {
-          "slug": "marketing",
-          "aliases": []
+          "slug": "tiep-thi",
+          "aliases": [
+            "marketing"
+          ]
         },
         "en": {
           "slug": "marketing",
@@ -63,8 +65,10 @@
       "id": "office",
       "slugs": {
         "vi": {
-          "slug": "office",
-          "aliases": []
+          "slug": "van-phong",
+          "aliases": [
+            "office"
+          ]
         },
         "en": {
           "slug": "office",
@@ -122,8 +126,10 @@
       "id": "packaging",
       "slugs": {
         "vi": {
-          "slug": "packaging",
-          "aliases": []
+          "slug": "bao-bi",
+          "aliases": [
+            "packaging"
+          ]
         },
         "en": {
           "slug": "packaging",
@@ -181,8 +187,10 @@
       "id": "tet",
       "slugs": {
         "vi": {
-          "slug": "tet",
-          "aliases": []
+          "slug": "an-pham-tet",
+          "aliases": [
+            "tet"
+          ]
         },
         "en": {
           "slug": "tet-publications",

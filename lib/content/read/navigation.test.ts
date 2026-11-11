@@ -145,7 +145,8 @@ describe("navigationOf", () => {
                 .flatMap((c) => c.groups)
                 .flatMap((g) => g.items)
                 .find((i) => i.id === optUid);
-              const expectedPrefix = `/products/${catId}/${group.product}/`;
+              const catSlug = mockCatalog.categories.find((c) => c.id === catId)?.slugs.vi.slug ?? catId;
+              const expectedPrefix = `/products/${catSlug}/${group.product}/`;
               if (!navItem || !navItem.href.startsWith(expectedPrefix)) {
                 bareProductHrefs.push(`${catId} -> ${group.product} -> option ${optUid} (href: ${navItem?.href})`);
               }
