@@ -16,6 +16,8 @@ const eslintConfig = defineConfig([
     "template/**",
     // Local-only design notes and prototype scripts (gitignored; docs/spike is not project source).
     "docs/**",
+    // Local backup directory, not project source.
+    "backup/**",
   ]),
 ]);
 

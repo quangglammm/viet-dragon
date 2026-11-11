@@ -28,8 +28,8 @@ export function MegaMenuMobile({
 
   return (
     <div className="pl-4 pr-2 py-2 flex flex-col gap-4 border-l-2 border-brand-primary/30 ml-4 my-1">
-      {allGroups.map((group) => (
-        <div key={group.id} className="flex flex-col">
+      {allGroups.map((group, groupIdx) => (
+        <div key={`${group.id}-${groupIdx}`} className="flex flex-col">
           <Link
             href={group.href}
             onClick={(e) => handleLinkClick(group.href, e)}
@@ -38,10 +38,10 @@ export function MegaMenuMobile({
             {group.title}
           </Link>
           <ul className="flex flex-col gap-1 pl-1">
-            {group.items.map((item) => {
+            {group.items.map((item, itemIdx) => {
               const isActive = isSubmenuItemActive(item.href, pathname, currentHash);
               return (
-                <li key={item.id}>
+                <li key={`${group.id}-${item.id}-${itemIdx}`}>
                   <Link
                     href={item.href}
                     onClick={(e) => handleLinkClick(item.href, e)}

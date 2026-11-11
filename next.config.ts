@@ -11,9 +11,6 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const CONTENT_CACHE_BUILD = randomUUID();
 
 const nextConfig: NextConfig = {
-  // Self-contained server for the Docker image (.next/standalone). It does not copy
-  // `public/` or `.next/static` — the Dockerfile's runner stage does.
-  output: "standalone",
   env: { CONTENT_CACHE_BUILD },
   // Next would announce itself in `X-Powered-By`; the other security headers are lib/security-headers.ts (Caddy adds the rest).
   poweredByHeader: false,

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { buildLeadEmail } from "@/lib/consult/email";
 import { CONSULT_MESSAGES, MAX_CONSULT_BODY_BYTES, parseConsult } from "@/lib/consult/schema";
-import { getDb } from "@/lib/db";
 import { getMailEnv, getSiteEnv } from "@/lib/env";
 import { BodyTooLarge, readBodyCapped } from "@/lib/http/body";
 import { getLogger, maskPhone } from "@/lib/logger";
@@ -31,7 +30,7 @@ const LIMITS = {
  */
 async function consume(limit: Omit<Limit, "subject">, subject: string): Promise<LimitResult> {
   try {
-    return await consumeLimit(getDb(), { ...limit, subject });
+    return await consumeLimit(null, { ...limit, subject });
   } catch (error) {
     log.error({ err: error, limit: limit.purpose }, "rate limit unavailable: letting the request through");
     return { allowed: true, count: 0, retryAfterSeconds: 1 };
@@ -48,7 +47,7 @@ export async function POST(req: Request) {
     // The address is counted first, whatever the request turns out to be: a bot that sends junk is limited like one that sends leads.
     const byAddress = await consume(LIMITS.ip, clientAddress(req.headers));
     if (!byAddress.allowed) return tooManyRequests(byAddress, CONSULT_MESSAGES.rateLimited);
-    void pruneLimits(getDb()).catch(() => undefined);
+    void pruneLimits().catch(() => undefined);
 
     let raw: Uint8Array;
     try {

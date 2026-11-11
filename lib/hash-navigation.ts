@@ -29,9 +29,28 @@ export const DEEP_LINK_SCROLL_DELAY_MS = Math.max(...TOP_RESET_RETRY_MS) + 50;
  * every other name it has had, in any language, in `data-aliases` — so a hash from an old link or another language still finds it.
  */
 export function findHashTarget(hash: string): HTMLElement | null {
-  const id = hash.replace(/^#+/, "").split("#")[0]?.trim();
-  if (!id) return null;
-  return document.getElementById(id) ?? document.querySelector<HTMLElement>(`[data-aliases~="${CSS.escape(id)}"]`);
+  const rawId = hash.replace(/^#+/, "").split("#")[0]?.trim();
+  if (!rawId) return null;
+  let decodedId = rawId;
+  try {
+    decodedId = decodeURIComponent(rawId);
+  } catch {
+    // keep rawId
+  }
+
+  const byId = document.getElementById(rawId) ?? (decodedId !== rawId ? document.getElementById(decodedId) : null);
+  if (byId) return byId;
+
+  try {
+    const byAlias =
+      document.querySelector<HTMLElement>(`[data-aliases~="${CSS.escape(rawId)}"]`) ??
+      (decodedId !== rawId ? document.querySelector<HTMLElement>(`[data-aliases~="${CSS.escape(decodedId)}"]`) : null);
+    if (byAlias) return byAlias;
+  } catch {
+    // fallback if CSS.escape fails on special characters
+  }
+
+  return null;
 }
 
 /**

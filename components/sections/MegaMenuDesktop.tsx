@@ -59,10 +59,10 @@ export function MegaMenuDesktop({
       <div className="grid grid-cols-3 gap-8 relative z-10">
         {menu.columns.map((col) => (
           <div key={col.id} className="flex flex-col gap-6">
-            {col.groups.map((group) => {
+            {col.groups.map((group, groupIdx) => {
               const isGroupActive = isSubmenuGroupActive(group.href, pathname);
               return (
-                <div key={group.id} className="flex flex-col">
+                <div key={`${group.id}-${groupIdx}`} className="flex flex-col">
                   <Link
                     href={group.href}
                     onClick={(e) => handleLinkClick(group.href, e)}
@@ -91,10 +91,10 @@ export function MegaMenuDesktop({
                   </Link>
 
                   <ul className="flex flex-col space-y-0.5">
-                    {group.items.map((item) => {
+                    {group.items.map((item, itemIdx) => {
                       const isActive = isSubmenuItemActive(item.href, pathname, currentHash);
                       return (
-                        <li key={item.id}>
+                        <li key={`${group.id}-${item.id}-${itemIdx}`}>
                           <Link
                             href={item.href}
                             onClick={(e) => handleLinkClick(item.href, e)}

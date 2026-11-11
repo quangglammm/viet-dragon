@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, ImagePlus } from "lucide-react";
+import { ArrowRight, ImagePlus } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -27,14 +27,9 @@ interface Frame {
   askAbout: string;
   /** Set on the plain product page only: the banner button tells the quote form which product was looked at. */
   quoteProduct?: string;
-  prev: PageLink | null;
-  next: PageLink | null;
-  /** Where «previous» leads when there is no previous page, and the link in the middle. */
-  back: PageLink;
-  all: PageLink;
 }
 
-function frameOf(model: Model, tr: (key: string) => string, allShapes: string): Frame {
+function frameOf(model: Model): Frame {
   const { context } = model;
   if (model.kind === "detail") {
     return {
@@ -46,13 +41,9 @@ function frameOf(model: Model, tr: (key: string) => string, allShapes: string): 
       image: context.cover,
       askAbout: context.title,
       quoteProduct: context.title,
-      prev: model.prev,
-      next: model.next,
-      back: { label: tr("backToCategory"), href: context.category.href },
-      all: { label: tr("viewAllInCategory"), href: context.category.href },
     };
   }
-  const below = { trail: [context.product], pill: context.product, back: context.product, all: { label: allShapes, href: context.product.href } };
+  const below = { trail: [context.product], pill: context.product };
   if (model.kind === "shape") {
     return {
       ...below,
@@ -61,57 +52,14 @@ function frameOf(model: Model, tr: (key: string) => string, allShapes: string): 
       description: model.shape.description,
       image: model.shape.image,
       askAbout: model.shape.name,
-      prev: model.prev,
-      next: model.next,
     };
   }
-  return { ...below, last: model.material.name, heading: context.title, description: context.description, image: context.cover, askAbout: context.title, prev: null, next: null };
-}
-
-function Pagination({ frame, t }: Readonly<{ frame: Frame; t: (key: string) => string }>) {
-  const { prev, next } = frame;
-  const linkClass = "flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group";
-  return (
-    <div className="border-t border-zinc-100">
-      <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between gap-4">
-        {prev ? (
-          <Link href={prev.href} className={linkClass}>
-            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-            <span className="hidden sm:inline">{prev.label}</span>
-            <span className="sm:hidden">{t("prevShort")}</span>
-          </Link>
-        ) : (
-          <Link href={frame.back.href} className={linkClass}>
-            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-            <span>{frame.back.label}</span>
-          </Link>
-        )}
-
-        <Link href={frame.all.href} className="text-xs text-zinc-400 hover:text-zinc-700 transition-colors">
-          {frame.all.label}
-        </Link>
-
-        {next ? (
-          <Link href={next.href} className={linkClass}>
-            <span className="hidden sm:inline">{next.label}</span>
-            <span className="sm:hidden">{t("nextShort")}</span>
-            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
-        ) : (
-          <Link href="/#cta" className="flex items-center gap-2 text-sm font-semibold text-brand-primary hover:opacity-80 transition-opacity group">
-            <span>{t("getQuote")}</span>
-            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
-        )}
-      </div>
-    </div>
-  );
+  return { ...below, last: model.material.name, heading: context.title, description: context.description, image: context.cover, askAbout: context.title };
 }
 
 export async function ProductDetailView({ locale, model, traits }: Readonly<{ locale: Locale; model: Model; traits: readonly GlossaryTrait[] }>) {
   const t = await getTranslations({ locale, namespace: "productDetailPage" });
-  const tShapes = await getTranslations({ locale, namespace: "subgroupShapes" });
-  const frame = frameOf(model, t, tShapes("allShapesOf", { title: model.context.title }));
+  const frame = frameOf(model);
   const { context, cards } = model;
   const target = model.kind === "material" ? model.material : null;
 
@@ -232,8 +180,6 @@ export async function ProductDetailView({ locale, model, traits }: Readonly<{ lo
           </div>
         </div>
       </div>
-
-      <Pagination frame={frame} t={t} />
     </div>
   );
 }

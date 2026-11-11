@@ -33,7 +33,7 @@ interface Page {
 }
 
 /** The pages with no single record behind them (a gallery, a list of everything, a price table): no date rather than a guessed one. */
-const FIXED_PAGES: readonly Page[] = ["/", "/products", "/blog", "/products/fast-print"].map((path) => ({ paths: samePath(path) }));
+const FIXED_PAGES: readonly Page[] = ["/", "/products", "/blog"].map((path) => ({ paths: samePath(path) }));
 
 function catalogPages(catalog: Catalog, modified: Modified): Page[] {
   return catalog.categories.flatMap((category) => {

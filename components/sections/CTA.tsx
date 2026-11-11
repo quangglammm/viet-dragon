@@ -7,7 +7,7 @@ import { useSectionInView } from "@/hooks/use-section-in-view";
 import { IconBadge } from "@/components/ui/icon-badge";
 import { WipeButton } from "@/components/ui/wipe-button";
 import { useQuoteModal } from "@/components/providers/quote-modal-provider";
-import { PHONE_NUMBER_FORMATTED } from "@/lib/contact";
+import { PHONE_NUMBER, PHONE_NUMBER_2, PHONE_NUMBER_FORMATTED } from "@/lib/contact";
 
 export default function CTA() {
   const { ref, inView } = useSectionInView();
@@ -83,11 +83,11 @@ export default function CTA() {
           <span className="flex items-center gap-2">
             <IconBadge icon={Phone} size="sm" className="bg-white/15 shrink-0" />
             <span className="flex flex-col lg:flex-row lg:items-center text-left leading-tight lg:leading-normal">
-              <a href="tel:0901448377" className="hover:text-white transition-colors whitespace-nowrap">
+              <a href={`tel:${PHONE_NUMBER}`} className="hover:text-white transition-colors whitespace-nowrap">
                 {tContact("phone1")}
               </a>
               <span className="hidden lg:inline mx-1.5 opacity-60">-</span>
-              <a href="tel:0919510543" className="hover:text-white transition-colors whitespace-nowrap">
+              <a href={`tel:${PHONE_NUMBER_2}`} className="hover:text-white transition-colors whitespace-nowrap">
                 {tContact("phone2")}
               </a>
             </span>

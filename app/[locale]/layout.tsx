@@ -9,7 +9,6 @@ import { QuoteModalProvider } from "@/components/providers/quote-modal-provider"
 import { SiteDataProvider } from "@/components/providers/site-data-provider";
 import { FloatingContact } from "@/components/ui/floating-contact";
 import { LanguageDetectorToast } from "@/components/ui/language-detector-toast";
-import { PreviewNotice } from "@/components/ui/preview-notice";
 import { routing } from "@/i18n/routing";
 import { getNavigation } from "@/lib/content/read/site";
 import { getSiteEnv } from "@/lib/env";
@@ -88,7 +87,6 @@ export default async function RootLayout({
               <SmoothScroll>{children}</SmoothScroll>
               <FloatingContact />
               <LanguageDetectorToast />
-              <PreviewNotice />
             </QuoteModalProvider>
           </SiteDataProvider>
         </NextIntlClientProvider>

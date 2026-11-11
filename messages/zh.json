@@ -391,7 +391,8 @@
     "needCustomQuoteFor": "需要 {title} 的定制印刷报价？",
     "getQuoteNow": "立即获取报价",
     "allShapesOf": "查看 {title} 的全部款式",
-    "bannerSubtitle": "Viet Dragon 专业团队协助提供最佳报价方案、材质与尺寸咨询，30分钟内极速响应。"
+    "bannerSubtitle": "Viet Dragon 专业团队协助提供最佳报价方案、材质与尺寸咨询，30分钟内极速响应。",
+    "shapesSelectedBadge": "已选规格形式"
   },
   "consultModal": {
     "title": "咨询此产品的详细定制方案",

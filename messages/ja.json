@@ -391,7 +391,8 @@
     "needCustomQuoteFor": "{title} の特注印刷見積もりが必要ですか？",
     "getQuoteNow": "今すぐ見積もり依頼",
     "allShapesOf": "{title} のすべての仕様を見る",
-    "bannerSubtitle": "Viet Dragon の専門スタッフが、サイズや素材の選定から最適なお見積もりまで30分以内にご案内します。"
+    "bannerSubtitle": "Viet Dragon の専門スタッフが、サイズや素材の選定から最適なお見積もりまで30分以内にご案内します。",
+    "shapesSelectedBadge": "選択中の形式"
   },
   "consultModal": {
     "title": "この製品について詳しく相談する",
