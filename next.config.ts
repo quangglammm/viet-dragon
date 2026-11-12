@@ -3,10 +3,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
-// Admin routes import lib/content-store.ts, which builds `public/` from
-// process.cwd() and scans it. File tracing then bundles the whole directory
-// (~290 MB) into every admin function and blows Vercel's 250 MB limit. On
-// Vercel `public/` is served from the CDN, so the functions never need it.
+// Exclude public/ from serverless function tracing on Vercel
 const EXCLUDE_PUBLIC_FROM_TRACE = ["./public/**/*"];
 
 const nextConfig: NextConfig = {

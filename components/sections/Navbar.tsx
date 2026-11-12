@@ -284,7 +284,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden lg:flex items-center justify-center flex-1 gap-1.5 xl:gap-3 2xl:gap-5 px-2 xl:px-4">
+          <div className="hidden lg:flex items-center justify-center flex-1 gap-6 xl:gap-9 2xl:gap-12 px-3 xl:px-6">
             {MAIN_CATEGORIES.map((cat) => {
               const Icon = iconMap[cat.icon] ?? Briefcase;
               const isActiveCat = pathname.startsWith(`/products/${cat.id}`);
@@ -298,7 +298,7 @@ export default function Navbar() {
                   <Link
                     href={`/products/${cat.id}`}
                     className={cn(
-                      "flex items-center gap-1 xl:gap-1.5 py-2 text-[11px] xl:text-[13px] 2xl:text-sm font-bold uppercase tracking-wide whitespace-nowrap transition-colors duration-300",
+                      "flex items-center gap-1.5 py-2 px-1 text-[12px] xl:text-[13.5px] 2xl:text-sm font-bold uppercase tracking-wide whitespace-nowrap transition-colors duration-300",
                       transparent
                         ? "text-white/90 hover:text-white"
                         : "text-zinc-800 hover:text-brand-primary",
@@ -306,7 +306,7 @@ export default function Navbar() {
                       (activeDesktopCat === cat.id || isActiveCat) && transparent && "text-white"
                     )}
                   >
-                    <Icon size={13} className="shrink-0" strokeWidth={2.5} />
+                    <Icon size={14} className="shrink-0" strokeWidth={2.5} />
                     <span>{pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)}</span>
                   </Link>
 
@@ -398,7 +398,7 @@ export default function Navbar() {
             </span>
           </Link>
         </div>
-        <nav className="flex flex-col px-6 py-6 gap-2 flex-1 overflow-y-auto">
+        <nav className="flex flex-col px-6 py-6 gap-3.5 flex-1 overflow-y-auto">
           {MAIN_CATEGORIES.map((cat) => {
             const Icon = iconMap[cat.icon] ?? Briefcase;
             const isActiveCat = pathname.startsWith(`/products/${cat.id}`);
