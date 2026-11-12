@@ -208,14 +208,18 @@ export function MaterialGlossaryFab({ traits }: Readonly<{ traits: readonly Glos
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-label={open ? t("closeLabel") : t("openLabel")}
+          title={open ? t("closeLabel") : t("title")}
           initial={{ opacity: 0, scale: 0.6 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.6, duration: 0.35, ease: "easeOut" }}
-          whileHover={{ scale: 1.08 }}
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.94 }}
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-dark shadow-lg shadow-brand-dark/25 sm:h-14 sm:w-14 cursor-pointer"
+          className="group relative flex h-11 min-w-11 sm:h-14 sm:min-w-14 items-center justify-center rounded-full bg-brand-dark hover:bg-brand-primary shadow-lg shadow-brand-dark/25 hover:shadow-brand-primary/40 hover:ring-4 hover:ring-brand-primary/20 px-3 sm:px-4 transition-all duration-300 ease-out cursor-pointer overflow-hidden"
         >
-          <Library className="h-5 w-5 text-white sm:h-6 sm:w-6" strokeWidth={1.75} />
+          <Library className="h-5 w-5 sm:h-6 sm:w-6 text-white shrink-0 transition-transform duration-300 group-hover:scale-110" strokeWidth={1.75} />
+          <span className="max-w-0 overflow-hidden whitespace-nowrap opacity-0 group-hover:max-w-44 group-hover:opacity-100 group-hover:ml-2 text-xs sm:text-sm font-bold text-white transition-all duration-300 ease-out select-none">
+            {open ? t("closeLabel") : t("title")}
+          </span>
         </motion.button>
       </div>
     </>
