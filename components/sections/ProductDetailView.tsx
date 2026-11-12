@@ -156,34 +156,24 @@ export async function ProductDetailView({ locale, model, traits }: Readonly<{ lo
       </div>
 
       {cards.length > 0 && (() => {
-        // Synchronize the material glossary with the materials present on this page:
-        // Show only traits used by the cards on this page, with the active/target material's traits first.
-        const targetCard = target ? cards.find((c) => c.uid === target.uid) : cards[0];
-        const orderedTraitKeys: string[] = [];
-        const seenTraitKeys = new Set<string>();
+        // Synchronize the material glossary with the materials inside this material page:
+        // Use the exact material names (heading), icons, and feature summaries of the page's cards.
+        const materialGlossary: GlossaryTrait[] = cards.map((card) => {
+          const description =
+            card.features.length > 0
+              ? card.features.map((f) => f.text).join(". ")
+              : card.tagline;
 
-        const collectTraitKeys = (card?: (typeof cards)[number]) => {
-          if (!card) return;
-          for (const f of card.features) {
-            if (f.trait && !seenTraitKeys.has(f.trait)) {
-              seenTraitKeys.add(f.trait);
-              orderedTraitKeys.push(f.trait);
-            }
-          }
-        };
+          return {
+            key: card.uid,
+            anchorId: card.anchor.id,
+            icon: card.icon ?? "Layers",
+            label: card.heading,
+            description,
+          };
+        });
 
-        collectTraitKeys(targetCard);
-        for (const card of cards) {
-          collectTraitKeys(card);
-        }
-
-        const traitByKey = new Map(traits.map((trait) => [trait.key, trait]));
-        const synchronizedTraits = orderedTraitKeys
-          .map((key) => traitByKey.get(key))
-          .filter((trait): trait is GlossaryTrait => Boolean(trait));
-
-        const finalTraits = synchronizedTraits.length > 0 ? synchronizedTraits : traits;
-        return <MaterialGlossaryFab traits={finalTraits} />;
+        return <MaterialGlossaryFab traits={materialGlossary} />;
       })()}
 
       {/* ── Quote CTA ── */}

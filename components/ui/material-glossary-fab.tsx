@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Library, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { NamedIcon } from "@/components/ui/named-icon";
+import { cn } from "@/lib/utils";
 import type { GlossaryTrait } from "@/lib/content/read/pages";
 
 /**
@@ -53,7 +54,22 @@ export function MaterialGlossaryFab({ traits }: Readonly<{ traits: readonly Glos
               </div>
               <ul className="max-h-[60vh] overflow-y-auto divide-y divide-zinc-100">
                 {traits.map((trait) => (
-                  <li key={trait.key} className="flex items-start gap-3 px-5 py-3.5">
+                  <li
+                    key={trait.key}
+                    onClick={() => {
+                      if (trait.anchorId) {
+                        const el = document.getElementById(trait.anchorId);
+                        if (el) {
+                          setOpen(false);
+                          el.scrollIntoView({ behavior: "smooth" });
+                        }
+                      }
+                    }}
+                    className={cn(
+                      "flex items-start gap-3 px-5 py-3.5 transition-colors",
+                      trait.anchorId && "cursor-pointer hover:bg-zinc-50"
+                    )}
+                  >
                     <span className="shrink-0 inline-flex items-center justify-center size-8 rounded-full bg-brand-soft text-brand-primary">
                       <NamedIcon name={trait.icon} size={15} strokeWidth={1.75} />
                     </span>

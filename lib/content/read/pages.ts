@@ -69,9 +69,10 @@ export interface ShapeCardView {
 
 export interface GlossaryTrait {
   key: string;
-  icon: string;
+  icon: string | null;
   label: string;
   description: string;
+  anchorId?: string;
 }
 
 interface PageBase {
