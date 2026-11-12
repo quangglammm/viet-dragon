@@ -6,6 +6,7 @@ import { Library, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { NamedIcon } from "@/components/ui/named-icon";
 import { cn } from "@/lib/utils";
+import { findHashTarget, smoothScrollToElement } from "@/lib/hash-navigation";
 import type { GlossaryTrait } from "@/lib/content/read/pages";
 
 /**
@@ -16,6 +17,22 @@ import type { GlossaryTrait } from "@/lib/content/read/pages";
 export function MaterialGlossaryFab({ traits }: Readonly<{ traits: readonly GlossaryTrait[] }>) {
   const [open, setOpen] = useState(false);
   const t = useTranslations("materialGlossary");
+
+  const handleTraitClick = (anchorId?: string) => {
+    if (!anchorId) return;
+    setOpen(false);
+
+    const cleanBase = window.location.pathname + window.location.search;
+    window.history.pushState(null, "", `${cleanBase}#${anchorId}`);
+    window.dispatchEvent(new Event("hashchange"));
+
+    setTimeout(() => {
+      const el = findHashTarget(anchorId) ?? document.getElementById(anchorId);
+      if (el) {
+        smoothScrollToElement(el);
+      }
+    }, 50);
+  };
 
   return (
     <>
@@ -52,31 +69,37 @@ export function MaterialGlossaryFab({ traits }: Readonly<{ traits: readonly Glos
                   <X size={14} strokeWidth={1.75} />
                 </button>
               </div>
-              <ul className="max-h-[60vh] overflow-y-auto divide-y divide-zinc-100">
+              <ul
+                data-lenis-prevent="true"
+                className="max-h-[60vh] overflow-y-auto divide-y divide-zinc-100 custom-scrollbar overscroll-contain"
+              >
                 {traits.map((trait) => (
-                  <li
-                    key={trait.key}
-                    onClick={() => {
-                      if (trait.anchorId) {
-                        const el = document.getElementById(trait.anchorId);
-                        if (el) {
-                          setOpen(false);
-                          el.scrollIntoView({ behavior: "smooth" });
-                        }
-                      }
-                    }}
-                    className={cn(
-                      "flex items-start gap-3 px-5 py-3.5 transition-colors",
-                      trait.anchorId && "cursor-pointer hover:bg-zinc-50"
+                  <li key={trait.key}>
+                    {trait.anchorId ? (
+                      <button
+                        type="button"
+                        onClick={() => handleTraitClick(trait.anchorId)}
+                        className="w-full text-left flex items-start gap-3 px-5 py-3.5 transition-colors cursor-pointer hover:bg-zinc-50 active:bg-zinc-100"
+                      >
+                        <span className="shrink-0 inline-flex items-center justify-center size-8 rounded-full bg-brand-soft text-brand-primary">
+                          <NamedIcon name={trait.icon} size={15} strokeWidth={1.75} />
+                        </span>
+                        <div className="min-w-0">
+                          <p className="font-bold text-zinc-900 text-sm">{trait.label}</p>
+                          <p className="text-zinc-500 text-xs leading-relaxed mt-0.5">{trait.description}</p>
+                        </div>
+                      </button>
+                    ) : (
+                      <div className="flex items-start gap-3 px-5 py-3.5">
+                        <span className="shrink-0 inline-flex items-center justify-center size-8 rounded-full bg-brand-soft text-brand-primary">
+                          <NamedIcon name={trait.icon} size={15} strokeWidth={1.75} />
+                        </span>
+                        <div className="min-w-0">
+                          <p className="font-bold text-zinc-900 text-sm">{trait.label}</p>
+                          <p className="text-zinc-500 text-xs leading-relaxed mt-0.5">{trait.description}</p>
+                        </div>
+                      </div>
                     )}
-                  >
-                    <span className="shrink-0 inline-flex items-center justify-center size-8 rounded-full bg-brand-soft text-brand-primary">
-                      <NamedIcon name={trait.icon} size={15} strokeWidth={1.75} />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="font-bold text-zinc-900 text-sm">{trait.label}</p>
-                      <p className="text-zinc-500 text-xs leading-relaxed mt-0.5">{trait.description}</p>
-                    </div>
                   </li>
                 ))}
               </ul>
@@ -93,7 +116,7 @@ export function MaterialGlossaryFab({ traits }: Readonly<{ traits: readonly Glos
           transition={{ delay: 0.6, duration: 0.35, ease: "easeOut" }}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.94 }}
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-dark shadow-lg shadow-brand-dark/25 sm:h-14 sm:w-14"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-dark shadow-lg shadow-brand-dark/25 sm:h-14 sm:w-14 cursor-pointer"
         >
           <Library className="h-5 w-5 text-white sm:h-6 sm:w-6" strokeWidth={1.75} />
         </motion.button>

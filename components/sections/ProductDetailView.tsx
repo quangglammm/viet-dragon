@@ -132,6 +132,7 @@ export async function ProductDetailView({ locale, model, traits }: Readonly<{ lo
                       key={card.uid}
                       id={card.anchor.id}
                       data-aliases={card.anchor.aliases.join(" ")}
+                      data-material-heading={card.heading.toLowerCase()}
                       className={cn(
                         "scroll-mt-28 lg:scroll-mt-32 relative transition-all duration-300",
                         target?.uid === card.uid && "ring-2 ring-brand-primary ring-offset-4 rounded-2xl p-1"
