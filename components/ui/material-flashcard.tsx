@@ -9,6 +9,7 @@ import { NamedIcon } from "@/components/ui/named-icon";
 import type { CardSize, CardView } from "@/lib/content/read/card";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
+import { findHashTarget, smoothScrollToElement } from "@/lib/hash-navigation";
 import { ZaloIcon } from "@/components/ui/zalo-icon";
 import { ConsultBottomSheet } from "@/components/ui/consult-bottom-sheet";
 
@@ -190,10 +191,48 @@ export function MaterialFlashcard({
     }
   };
 
+  const handleMaterialScroll = (matName: string) => {
+    const lower = matName.toLowerCase().trim();
+    // 1. Try finding container with matching data-material-heading
+    const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-material-heading]"));
+    let targetEl: HTMLElement | null = cards.find((el) => el.dataset.materialHeading === lower) ?? null;
+    if (!targetEl) {
+      targetEl = cards.find((el) => {
+        const heading = el.dataset.materialHeading || "";
+        return heading.includes(lower) || lower.includes(heading);
+      }) ?? null;
+    }
+
+    // 2. Try findHashTarget with slug
+    if (!targetEl) {
+      const slug = lower.replace(/\s+/g, "-");
+      targetEl = findHashTarget(slug);
+    }
+
+    if (targetEl) {
+      if (targetEl.id) {
+        const cleanBase = window.location.pathname + window.location.search;
+        window.history.pushState(null, "", `${cleanBase}#${targetEl.id}`);
+        window.dispatchEvent(new Event("hashchange"));
+      }
+      smoothScrollToElement(targetEl);
+    }
+  };
+
   const selectedSizeItem = selectedSizeIndex !== null ? sizes[selectedSizeIndex] : undefined;
   const printTechList = card.techniques;
   const materialList = card.materials;
   const finishingList = card.finishing;
+
+  const hasCurrentMaterial = materialList.some(
+    (mat) =>
+      mat.toLowerCase() === name.toLowerCase() ||
+      name.toLowerCase().includes(mat.toLowerCase()) ||
+      mat.toLowerCase().includes(name.toLowerCase())
+  );
+  const displayMaterials = hasCurrentMaterial || materialList.length === 0
+    ? materialList
+    : [...materialList, name];
 
   const rawImages = card.images;
 
@@ -588,28 +627,32 @@ export function MaterialFlashcard({
         )}
 
         {/* 3. Chất liệu */}
-        {materialList.length > 0 && (
+        {displayMaterials.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-bold text-zinc-900 shrink-0">
               {t("formMaterial")}
             </span>
-            {materialList.map((mat, idx) => {
+            {displayMaterials.map((mat, idx) => {
               const isCurrent =
                 mat.toLowerCase() === name.toLowerCase() ||
                 name.toLowerCase().includes(mat.toLowerCase()) ||
                 mat.toLowerCase().includes(name.toLowerCase());
-              return (
+              return isCurrent ? (
                 <span
                   key={`${mat}-${idx}`}
-                  className={cn(
-                    "inline-flex items-center px-3 py-1.5 rounded-lg border text-xs select-none cursor-default transition-colors whitespace-nowrap",
-                    isCurrent
-                      ? "bg-[#ede8ff] border-brand-primary text-brand-primary font-semibold ring-1 ring-brand-primary/40 shadow-2xs"
-                      : "border-[#7000fe]/30 bg-transparent text-zinc-700 font-medium"
-                  )}
+                  className="inline-flex items-center px-3 py-1.5 rounded-lg border text-xs select-none cursor-default transition-colors whitespace-nowrap bg-[#ede8ff] border-brand-primary text-brand-primary font-semibold ring-1 ring-brand-primary/40 shadow-2xs"
                 >
                   {mat}
                 </span>
+              ) : (
+                <button
+                  key={`${mat}-${idx}`}
+                  type="button"
+                  onClick={() => handleMaterialScroll(mat)}
+                  className="inline-flex items-center px-3 py-1.5 rounded-lg border border-[#7000fe]/30 bg-transparent text-xs font-medium text-zinc-700 select-none cursor-pointer transition-colors whitespace-nowrap hover:bg-[#ede8ff]/50 hover:border-brand-primary hover:text-brand-primary"
+                >
+                  {mat}
+                </button>
               );
             })}
           </div>

@@ -132,6 +132,7 @@ export async function ProductDetailView({ locale, model, traits }: Readonly<{ lo
                       key={card.uid}
                       id={card.anchor.id}
                       data-aliases={card.anchor.aliases.join(" ")}
+                      data-material-heading={card.heading.toLowerCase()}
                       className={cn(
                         "scroll-mt-28 lg:scroll-mt-32 relative transition-all duration-300",
                         target?.uid === card.uid && "ring-2 ring-brand-primary ring-offset-4 rounded-2xl p-1"
@@ -155,7 +156,37 @@ export async function ProductDetailView({ locale, model, traits }: Readonly<{ lo
         </div>
       </div>
 
-      {cards.length > 0 && <MaterialGlossaryFab traits={traits} />}
+      {cards.length > 0 && (() => {
+        // Synchronize the material glossary with the materials inside this material page:
+        // Use the exact material names (heading with product prefix stripped), icons, and feature summaries of the page's cards.
+        const baseProduct = (context.title || frame.heading || "").split(/\s*[-–—]\s*/)[0].trim();
+        const prefixRegex = baseProduct ? new RegExp(`^${baseProduct}\\s*[-–—:]*\\s*`, "i") : null;
+
+        const materialGlossary: GlossaryTrait[] = cards.map((card) => {
+          const description =
+            card.features.length > 0
+              ? card.features.map((f) => f.text).join(". ")
+              : card.tagline;
+
+          let label = card.heading;
+          if (prefixRegex) {
+            const stripped = label.replace(prefixRegex, "").trim();
+            if (stripped) {
+              label = stripped.charAt(0).toUpperCase() + stripped.slice(1);
+            }
+          }
+
+          return {
+            key: card.uid,
+            anchorId: card.anchor.id,
+            icon: card.icon ?? "Layers",
+            label,
+            description,
+          };
+        });
+
+        return <MaterialGlossaryFab traits={materialGlossary} />;
+      })()}
 
       {/* ── Quote CTA ── */}
       <div className="max-w-7xl mx-auto px-6 pb-16">
