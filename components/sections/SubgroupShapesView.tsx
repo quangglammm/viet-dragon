@@ -2,55 +2,20 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowRight, Layers, Sparkles } from "lucide-react";
+import { ArrowRight, ImagePlus, Layers, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { pickLocale } from "@/lib/locale";
-import type { Locale } from "@/i18n/routing";
-import type { SubgroupCategory } from "@/data/subgroups-catalog";
-import { SHAPE_DESCS, ITEM_DESCS } from "@/data/translations";
-import { SHAPE_ALIASES } from "@/lib/shape-aliases";
-import { smoothScrollToElement } from "@/lib/hash-navigation";
+import type { ShapesPageModel } from "@/lib/content/read/pages";
+import { findHashTarget, smoothScrollToElement } from "@/lib/hash-navigation";
 
-export function SubgroupShapesView({
-  locale,
-  subgroup,
-  categoryName,
-}: Readonly<{
-  locale: Locale;
-  subgroup: SubgroupCategory;
-  categoryName: string;
-}>) {
+export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel }>) {
   const router = useRouter();
   const t = useTranslations("subgroupShapes");
   const [highlightedShapeId, setHighlightedShapeId] = useState<string | null>(null);
 
-  const title = pickLocale(
-    locale,
-    subgroup.titleVi,
-    subgroup.titleEn,
-    subgroup.titleZh,
-    subgroup.titleJa,
-    subgroup.titleKo
-  );
-  const description = pickLocale(
-    locale,
-    subgroup.descriptionVi,
-    subgroup.descriptionEn,
-    subgroup.descriptionZh ?? ITEM_DESCS[subgroup.id]?.zh,
-    subgroup.descriptionJa ?? ITEM_DESCS[subgroup.id]?.ja,
-    subgroup.descriptionKo ?? ITEM_DESCS[subgroup.id]?.ko
-  );
-
-  const bannerSubtitle = pickLocale(
-    locale,
-    "Đội ngũ kỹ thuật viên Viet Dragon hỗ trợ tính giá tối ưu, tư vấn kích thước và chất liệu trong 30 phút.",
-    "Viet Dragon specialists assist with size, material choice, and prompt quotation within 30 minutes.",
-    "Viet Dragon 专业团队协助提供最佳报价方案、材质与尺寸咨询，30分钟内极速响应。",
-    "Viet Dragon の専門スタッフが、サイズや素材の選定から最適なお見積もりまで30分以内にご案内します。",
-    "Viet Dragon 전문 기술팀이 사이즈, 소재 선택 및 최적의 견적 산출을 30분 내 신속히 안내해 드립니다."
-  );
+  const { shapes } = model;
+  const { title, description, cover, category } = model.context;
 
   useEffect(() => {
     function detectAndHighlight() {
@@ -68,38 +33,64 @@ export function SubgroupShapesView({
       const target = hash || queryTarget;
       if (!target) return;
 
-      const targetId = SHAPE_ALIASES[target] || target;
-      const matched = subgroup.shapes.find(
-        (s) => s.id === targetId || s.id === target
+      let decodedTarget = target;
+      try {
+        decodedTarget = decodeURIComponent(target);
+      } catch {
+        // keep target
+      }
+
+      const matched = shapes.find(
+        (s) =>
+          s.anchor.id === target ||
+          s.anchor.id === decodedTarget ||
+          s.anchor.aliases.includes(target) ||
+          s.anchor.aliases.includes(decodedTarget) ||
+          s.uid === target ||
+          s.uid === decodedTarget
       );
+
       if (matched) {
-        setHighlightedShapeId(matched.id);
-        setTimeout(() => {
-          const el = document.getElementById(matched.id);
+        setHighlightedShapeId(matched.uid);
+        // A hash that is an old or foreign name of the shape is rewritten to its canonical one.
+        if (target !== matched.anchor.id && !queryTarget) {
+          window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${matched.anchor.id}`);
+        }
+
+        // URL hash scrolling is handled centrally by SmoothScroll.
+        // Only trigger scroll here as fallback if the target came from query params (?shape=...) without a URL hash.
+        if (!hash && queryTarget) {
+          const el = findHashTarget(matched.anchor.id);
           if (el) {
             smoothScrollToElement(el);
           }
-        }, 150);
+        }
       }
     }
 
     detectAndHighlight();
-    window.addEventListener("hashchange", detectAndHighlight);
-    return () => window.removeEventListener("hashchange", detectAndHighlight);
-  }, [subgroup.shapes]);
+
+    const onHashChange = () => detectAndHighlight();
+    window.addEventListener("hashchange", onHashChange);
+    return () => {
+      window.removeEventListener("hashchange", onHashChange);
+    };
+  }, [shapes]);
 
   return (
     <div className="bg-white">
       {/* ── Subgroup Hero banner ── */}
       <div className="relative h-[320px] lg:h-[400px] w-full overflow-hidden">
-        <Image
-          src={subgroup.coverImage}
-          alt={title}
-          fill
-          sizes="100vw"
-          className="object-cover"
-          priority
-        />
+        {cover && (
+          <Image
+            src={cover}
+            alt={title}
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/95 via-zinc-950/65 to-zinc-950/25" />
         <div className="absolute inset-0 flex items-end">
           <div className="max-w-7xl mx-auto px-6 pb-10 w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
@@ -120,10 +111,10 @@ export function SubgroupShapesView({
               </Link>
               <span className="text-white/70">/</span>
               <Link
-                href={`/products/${subgroup.categoryId}`}
+                href={category.href}
                 className="hover:text-white transition-colors"
               >
-                {categoryName}
+                {category.label}
               </Link>
               <span className="text-white/70">/</span>
               <span className="text-white font-bold">{title}</span>
@@ -174,44 +165,32 @@ export function SubgroupShapesView({
             </h2>
           </div>
           <span className="px-3 py-1 bg-zinc-100 text-zinc-600 text-xs font-semibold rounded-full">
-            {subgroup.shapes.length} {t("shapesCount")}
+            {shapes.length} {t("shapesCount")}
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {subgroup.shapes.map((shape) => {
-            const isHighlighted = highlightedShapeId === shape.id;
-            const shapeName = pickLocale(
-              locale,
-              shape.nameVi,
-              shape.nameEn,
-              shape.nameZh,
-              shape.nameJa,
-              shape.nameKo
-            );
-            const shapeDesc = pickLocale(
-              locale,
-              shape.descriptionVi,
-              shape.descriptionEn,
-              shape.descriptionZh ?? SHAPE_DESCS[shape.id]?.zh,
-              shape.descriptionJa ?? SHAPE_DESCS[shape.id]?.ja,
-              shape.descriptionKo ?? SHAPE_DESCS[shape.id]?.ko
-            );
-            const detailHref = `/products/${subgroup.categoryId}/${subgroup.id}/${shape.id}`;
+          {shapes.map((shape) => {
+            const isHighlighted = highlightedShapeId === shape.uid;
+            const shapeName = shape.name;
+            const shapeDesc = shape.description;
+            const detailHref = shape.href;
+            const anchorId = shape.anchor.id;
 
             return (
               <div
-                key={shape.id}
-                id={shape.id}
+                key={shape.uid}
+                id={anchorId}
+                data-aliases={shape.anchor.aliases.join(" ")}
                 onClick={() => {
                   if (isHighlighted) {
                     router.push(detailHref);
                   } else {
-                    setHighlightedShapeId(shape.id);
+                    setHighlightedShapeId(shape.uid);
                     if (typeof window !== "undefined") {
                       const cleanBase = window.location.pathname + window.location.search;
-                      window.history.replaceState(null, "", `${cleanBase}#${shape.id}`);
-                      const el = document.getElementById(shape.id);
+                      window.history.replaceState(null, "", `${cleanBase}#${anchorId}`);
+                      const el = document.getElementById(anchorId);
                       if (el) {
                         smoothScrollToElement(el);
                       }
@@ -219,21 +198,27 @@ export function SubgroupShapesView({
                   }
                 }}
                 className={cn(
-                  "group flex flex-col rounded-2xl bg-white overflow-hidden transition-all duration-300 relative scroll-mt-28 lg:scroll-mt-32 cursor-pointer",
+                  "group flex flex-col rounded-2xl bg-white overflow-hidden transition-all duration-300 relative scroll-mt-28 lg:scroll-mt-36 cursor-pointer",
                   isHighlighted
-                    ? "border-2 border-brand-primary ring-4 ring-brand-primary/20 shadow-2xl shadow-brand-primary/20 -translate-y-1.5"
-                    : "border-2 border-zinc-200/80 hover:border-brand-primary/40 hover:shadow-xl hover:-translate-y-0.5"
+                    ? "border-2 border-brand-primary shadow-md"
+                    : "border-2 border-zinc-200/80 hover:border-brand-primary/40 hover:shadow-md"
                 )}
               >
                 {/* Image */}
                 <div className="relative h-52 overflow-hidden bg-zinc-100 block">
-                  <Image
-                    src={shape.image}
-                    alt={shapeName}
-                    fill
-                    sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+                  {shape.image ? (
+                    <Image
+                      src={shape.image}
+                      alt={shapeName}
+                      fill
+                      sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-zinc-50 via-zinc-100 to-zinc-200/50">
+                      <ImagePlus size={28} strokeWidth={1.5} className="text-zinc-400" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Body */}
@@ -255,12 +240,7 @@ export function SubgroupShapesView({
                     <Link
                       href={detailHref}
                       onClick={(e) => e.stopPropagation()}
-                      className={cn(
-                        "inline-flex items-center gap-1.5 py-1.5 text-xs font-bold transition-all",
-                        isHighlighted
-                          ? "px-3.5 bg-brand-primary text-white rounded-xl shadow-sm hover:bg-brand-primary/90"
-                          : "text-brand-primary group-hover:text-brand-primary/80"
-                      )}
+                      className="inline-flex items-center gap-1.5 py-1.5 text-xs font-bold text-brand-primary group-hover:text-brand-primary/80 transition-all"
                     >
                       {t("viewMaterialsAndPrice")}{" "}
                       <ArrowRight
@@ -296,7 +276,7 @@ export function SubgroupShapesView({
                 {t("needCustomQuoteFor", { title })}
               </h3>
               <p className="text-white/60 text-sm mt-1 max-w-xl">
-                {bannerSubtitle}
+                {t("bannerSubtitle")}
               </p>
             </div>
             <Link

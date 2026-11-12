@@ -14,6 +14,10 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Third-party theme reference, not project source.
     "template/**",
+    // Local-only design notes and prototype scripts (gitignored; docs/spike is not project source).
+    "docs/**",
+    // Local backup directory, not project source.
+    "backup/**",
   ]),
 ]);
 

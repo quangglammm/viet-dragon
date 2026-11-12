@@ -1,0 +1,176 @@
+import type { LocaleCode } from "../schemas";
+import { pickText } from "./text";
+import type { Catalog, CategoryView, MenuGroupView, MenuItemView, MenuView, ProductView } from "./types";
+import { categoryPath, productPath, segmentPath } from "./urls";
+
+// The site's navigation for ONE language, resolved on the server: plain strings and ready hrefs, so the client components that draw
+// the mega-menu, the footer and the shop strips need no translation or URL logic of their own. Pure.
+
+export interface NavMenuItem {
+  /** Stable key: the shape or option uid. */
+  id: string;
+  label: string;
+  /** A shape links to its anchor on the product page, an option to its own page. */
+  href: string;
+  image: string | null;
+  isFast: boolean;
+}
+
+export interface NavMenuGroup {
+  id: string;
+  title: string;
+  href: string;
+  image: string | null;
+  items: NavMenuItem[];
+}
+
+export interface NavMenu {
+  /** What the desktop menu shows behind the links until one is hovered: the first group's picture. */
+  defaultImage: string | null;
+  columns: { id: string; groups: NavMenuGroup[] }[];
+}
+
+/** One product as a card on a category page, the home shop strip or the products index. */
+export interface ProductCard {
+  id: string;
+  title: string;
+  description: string;
+  image: string | null;
+  href: string;
+  /** The picture the gallery strip under the cards shows for it. */
+  referenceImage: string | null;
+}
+
+export interface NavCategory {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  cover: string | null;
+  href: string;
+  cards: ProductCard[];
+  menu: NavMenu;
+}
+
+export interface Navigation {
+  categories: NavCategory[];
+}
+
+const productOf = (catalog: Catalog, uid: string, categoryId?: string): ProductView | undefined =>
+  (categoryId ? catalog.products.find((product) => product.uid === uid && product.category === categoryId) : undefined) ??
+  catalog.products.find((product) => product.uid === uid);
+
+const TARGET_ALIASES: Record<string, string> = {
+  // Option (material) aliases from legacy menu targets to canonical slugs
+  "poster-pp": "poster-chat-lieu-pp",
+  "nhan-decal-xi-bac": "nhan-decal-xi-bac-vang",
+  "card-art-paper": "danh-thiep-giay-my-thuat",
+  "the-nhua-pvc": "danh-thiep-giay-nhua",
+  "card-plastic": "danh-thiep-giay-nhua",
+  "bao-thu-kraft": "bao-thu-giay-kraft",
+  "envelope-kraft": "bao-thu-giay-kraft",
+  "mac-giay-kraft": "mac-san-pham-giay-kraft",
+  "tag-kraft": "mac-san-pham-giay-kraft",
+  // Shape aliases
+  "ho-so-nang-luc": "profile-company",
+};
+
+function menuItemOf(catalog: Catalog, locale: LocaleCode, product: ProductView, item: MenuItemView): NavMenuItem {
+  if ("shape" in item.target) {
+    const uid = item.target.shape;
+    const resolvedTarget = TARGET_ALIASES[uid] ?? uid;
+    const labelText = pickText(locale, item.label).toLowerCase().trim();
+    const shape = product.shapes.find(
+      (candidate) =>
+        candidate.uid === uid ||
+        candidate.uid === resolvedTarget ||
+        Object.values(candidate.slugs).some((s) => s.slug === uid || s.slug === resolvedTarget || s.aliases.includes(uid) || s.aliases.includes(resolvedTarget)) ||
+        pickText(locale, candidate.name).toLowerCase().trim() === labelText
+    );
+    const href = shape ? `${productPath(catalog, locale, product)}#${shape.slugs[locale].slug}` : productPath(catalog, locale, product);
+    return { id: uid, label: pickText(locale, item.label), href, image: item.image, isFast: item.isFast };
+  }
+  const uid = item.target.option;
+  const resolvedTarget = TARGET_ALIASES[uid] ?? uid;
+  const labelText = pickText(locale, item.label).toLowerCase().trim();
+  const option =
+    product.options.find((candidate) => {
+      const candidateName = pickText(locale, candidate.name).toLowerCase().trim();
+      return (
+        candidate.uid === uid ||
+        candidate.uid === resolvedTarget ||
+        Object.values(candidate.slugs).some((s) => s.slug === uid || s.slug === resolvedTarget || s.aliases.includes(uid) || s.aliases.includes(resolvedTarget)) ||
+        candidateName === labelText
+      );
+    }) ??
+    product.options.find((candidate) => {
+      const candidateName = pickText(locale, candidate.name).toLowerCase().trim();
+      return candidateName.length >= 4 && labelText.includes(candidateName);
+    });
+  const href = option ? segmentPath(catalog, locale, product, { option }) : productPath(catalog, locale, product);
+  return { id: uid, label: pickText(locale, item.label), href, image: item.image, isFast: item.isFast };
+}
+
+function menuGroupOf(catalog: Catalog, locale: LocaleCode, group: MenuGroupView, categoryId?: string): NavMenuGroup | null {
+  const product = productOf(catalog, group.product, categoryId);
+  if (!product) return null;
+  return {
+    id: product.uid,
+    title: pickText(locale, group.title),
+    href: productPath(catalog, locale, product),
+    image: group.image,
+    items: group.items.map((item) => menuItemOf(catalog, locale, product, item)),
+  };
+}
+
+export function menuOf(catalog: Catalog, locale: LocaleCode, menu: MenuView | undefined, categoryId?: string): NavMenu {
+  const columns = (menu?.columns ?? []).map((column) => ({
+    id: `column-${column.column}`,
+    groups: column.groups.map((group) => menuGroupOf(catalog, locale, group, categoryId)).filter((g): g is NavMenuGroup => g !== null),
+  }));
+  return { defaultImage: columns[0]?.groups[0]?.image ?? null, columns };
+}
+
+/**
+ * The picture under a product card in the gallery strip: the first shape picture that is not the card's own; for a product with no
+ * shape pictures, the second photo of its own options (else the first), else the card's picture.
+ */
+export function referenceImageOf(product: ProductView, image: string | null): string | null {
+  const pictures = [image, ...product.shapes.map((shape) => shape.image)].filter((path): path is string => path !== null);
+  if (pictures.length > 1) return pictures.find((path) => path !== image) ?? image;
+  const optionImages = product.options.filter((option) => option.shape === null).flatMap((option) => [...option.images, ...option.pureImages]).filter((path) => path !== image);
+  if (optionImages.length >= 2) return optionImages[1];
+  return optionImages[0] ?? image;
+}
+
+/**
+ * The cards of a category: its published products in position order, each with its own title, description and cover — the words and
+ * picture of the product page the card leads to. (The mega-menu has wording of its own; it is not the products'.)
+ */
+export function cardsOf(catalog: Catalog, locale: LocaleCode, category: CategoryView): ProductCard[] {
+  return catalog.products
+    .filter((product) => product.category === category.id)
+    .map((product) => ({
+      id: product.uid,
+      title: pickText(locale, product.title),
+      description: pickText(locale, product.description),
+      image: product.cover,
+      href: productPath(catalog, locale, product),
+      referenceImage: referenceImageOf(product, product.cover),
+    }));
+}
+
+export function navigationOf(catalog: Catalog, menus: Readonly<Record<string, MenuView>>, locale: LocaleCode): Navigation {
+  return {
+    categories: catalog.categories.map((category) => ({
+      id: category.id,
+      name: pickText(locale, category.name),
+      description: pickText(locale, category.description),
+      icon: category.icon,
+      cover: category.cover,
+      href: categoryPath(locale, category),
+      cards: cardsOf(catalog, locale, category),
+      menu: menuOf(catalog, locale, menus[category.id], category.id),
+    })),
+  };
+}

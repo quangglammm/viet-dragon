@@ -2,13 +2,12 @@
 
 import Image from "next/image";
 import { Phone, Mail, MapPin } from "lucide-react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import type { Locale } from "@/i18n/routing";
-import { pickLocale } from "@/lib/locale";
-import { MAIN_CATEGORIES } from "@/data/subgroups-catalog";
 import { IconBadge } from "@/components/ui/icon-badge";
+import { useSiteData } from "@/components/providers/site-data-provider";
 import { cn } from "@/lib/utils";
+import { PHONE_NUMBER, PHONE_NUMBER_2 } from "@/lib/contact";
 
 type CompanyLink = { href: string; ns: "nav" | "footer"; key: string };
 const companyLinks: CompanyLink[] = [
@@ -50,26 +49,11 @@ const socialLinks = [
   { icon: YoutubeIcon, href: "https://youtube.com", name: "YouTube" },
 ];
 
-const ALL_PRODUCTS_LABEL: Record<Locale, string> = {
-  vi: "Tất cả sản phẩm",
-  en: "All Products",
-  zh: "全部产品",
-  ja: "全製品一覧",
-  ko: "전체 제품",
-};
-
-const CATEGORY_NAMES: Record<string, { zh: string; ja: string; ko: string }> = {
-  marketing: { zh: "营销物料", ja: "マーケティング", ko: "마케팅" },
-  office: { zh: "办公文具", ja: "オフィス用品", ko: "오피스/사무" },
-  packaging: { zh: "包装制品", ja: "パッケージ包装", ko: "패키지/포장" },
-  tet: { zh: "新年年品", ja: "テト・新年", ko: "새해 인쇄물" },
-};
-
 export default function Footer() {
   const t = useTranslations("footer");
   const tNav = useTranslations("nav");
   const tContact = useTranslations("contact");
-  const locale = useLocale() as Locale;
+  const { categories } = useSiteData();
   const pathname = usePathname();
 
   return (
@@ -91,7 +75,7 @@ export default function Footer() {
                   VIET <span className="text-brand-primary">DRAGON</span>
                 </p>
                 <p className="text-[11px] font-semibold text-brand-dark/50 tracking-wider uppercase mt-1">
-                  Hơn cả một đối tác
+                  {t("premium")}
                 </p>
               </div>
             </div>
@@ -114,7 +98,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Products — categories from data */}
+          {/* Products — the categories of the content database */}
           <div>
             <p className="text-xs font-semibold tracking-widest uppercase text-brand-dark/50 mb-4">
               {t("productsLabel")}
@@ -130,17 +114,15 @@ export default function Footer() {
                       : "text-brand-dark/70 hover:text-brand-primary hover:translate-x-1 font-medium"
                   )}
                 >
-                  {ALL_PRODUCTS_LABEL[locale] || "All Products"}
+                  {t("allProducts")}
                 </Link>
               </li>
-              {MAIN_CATEGORIES.map((cat) => {
-                const isActive =
-                  pathname === `/products/${cat.id}` ||
-                  pathname.startsWith(`/products/${cat.id}/`);
+              {categories.map((cat) => {
+                const isActive = pathname === cat.href || pathname.startsWith(`${cat.href}/`);
                 return (
                   <li key={cat.id}>
                     <Link
-                      href={`/products/${cat.id}`}
+                      href={cat.href}
                       className={cn(
                         "inline-block text-sm py-1 transition-all duration-200",
                         isActive
@@ -148,7 +130,7 @@ export default function Footer() {
                           : "text-brand-dark/70 hover:text-brand-primary hover:translate-x-1 font-medium"
                       )}
                     >
-                      {pickLocale(locale, cat.nameVi, cat.nameEn, CATEGORY_NAMES[cat.id]?.zh, CATEGORY_NAMES[cat.id]?.ja, CATEGORY_NAMES[cat.id]?.ko)}
+                      {cat.name}
                     </Link>
                   </li>
                 );
@@ -192,8 +174,8 @@ export default function Footer() {
               <li className="flex items-center gap-3">
                 <IconBadge icon={Phone} size="md" />
                 <span className="flex flex-col">
-                  <a href="tel:0901448377" className="hover:text-brand-primary transition-colors font-medium">{tContact("phone1")}</a>
-                  <a href="tel:0919510543" className="hover:text-brand-primary transition-colors font-medium">{tContact("phone2")}</a>
+                  <a href={`tel:${PHONE_NUMBER}`} className="hover:text-brand-primary transition-colors font-medium">{tContact("phone1")}</a>
+                  <a href={`tel:${PHONE_NUMBER_2}`} className="hover:text-brand-primary transition-colors font-medium">{tContact("phone2")}</a>
                 </span>
               </li>
               <li className="flex items-center gap-3">

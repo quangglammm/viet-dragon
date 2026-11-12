@@ -1,0 +1,2062 @@
+{
+  "marketing": {
+    "category": "marketing",
+    "columns": [
+      {
+        "column": 0,
+        "groups": [
+          {
+            "product": "poster-bangron-standee",
+            "title": {
+              "vi": "Poster - Băng rôn - Standee",
+              "en": "Posters - Banners - Standees",
+              "zh": "海报 - 横幅 - 展架",
+              "ja": "ポスター・横断幕・スタンド看板",
+              "ko": "포스터 - 현수막 - 배너거치대"
+            },
+            "description": {
+              "vi": "Poster - Băng rôn - Standee",
+              "en": "Posters - Banners - Standees",
+              "zh": "海报 - 横幅 - 展架",
+              "ja": "ポスター・横断幕・スタンド看板",
+              "ko": "포스터 - 현수막 - 배너거치대"
+            },
+            "image": "/images/category/poster-bangron-standee.webp",
+            "items": [
+              {
+                "target": {
+                  "option": "poster-chat-lieu-pp"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Poster chất liệu PP",
+                  "en": "PP Material Posters",
+                  "zh": "PP材质高清海报",
+                  "ja": "PP合成紙ポスター",
+                  "ko": "PP 합성지 포스터"
+                },
+                "image": "/images/category/poster-bangron-standee.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "bang-ron-hiflex"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Băng rôn Hiflex",
+                  "en": "Hiflex Banners",
+                  "zh": "Hiflex喷绘布横幅",
+                  "ja": "ターポリン・ハイフレックス幕",
+                  "ko": "하이플렉스 대형 현수막"
+                },
+                "image": "/images/category/poster-bangron-standee.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "hashtag-cam-tay"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Hashtag cầm tay",
+                  "en": "Handheld Event Hashtags",
+                  "zh": "手持拍照手牌Hashtag",
+                  "ja": "手持ちフォトプロップス",
+                  "ko": "핸드헬드 촬영 해시태그 피켓"
+                },
+                "image": "/images/category/hashtagcamtay.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "hashtag-tay-cam-roi"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Hashtag tay cầm rời",
+                  "en": "Detachable Handle Hashtags",
+                  "zh": "可拆卸手柄手牌",
+                  "ja": "持ち手分離型フォトプロップス",
+                  "ko": "분리형 손잡이 해시태그 피켓"
+                },
+                "image": "/images/category/hashtagtaycamroi.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "tranh-canvas"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tranh Canvas chất lượng cao",
+                  "en": "High-Quality Canvas Prints",
+                  "zh": "高端油画微喷Canvas",
+                  "ja": "高精細キャンバスプリント",
+                  "ko": "최고급 캔버스 아트 액자"
+                },
+                "image": "/images/product/canvascotton.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "decal-luoi"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Decal Lưới",
+                  "en": "Perforated One-Way Mesh Vinyl",
+                  "zh": "单透网格透光贴",
+                  "ja": "シースルーメッシュシート",
+                  "ko": "원웨이 타공 메쉬 시트지"
+                },
+                "image": "/images/product/decalluoi.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "decal-kho-lon"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Decal Khổ Lớn",
+                  "en": "Large Format Vinyl Decals",
+                  "zh": "大幅面户外车贴/背胶",
+                  "ja": "大判インクジェットステッカー",
+                  "ko": "대형 실사출력 데칼 시트지"
+                },
+                "image": "/images/category/decalkholon.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "backlit-film"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Backlit Film",
+                  "en": "Backlit Film for Lightboxes",
+                  "zh": "超清灯箱片Backlit Film",
+                  "ja": "電飾用バックライトフィルム",
+                  "ko": "조명용 백릿 필름 (와이드컬러)"
+                },
+                "image": "/images/category/poster-bangron-standee.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "bang-treo"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Bảng treo",
+                  "en": "Hanging Boards & Wobblers",
+                  "zh": "超市促销吊牌/吊旗",
+                  "ja": "POP吊り下げボード",
+                  "ko": "매장 천장 행잉 배너 / 보드"
+                },
+                "image": "/images/category/bangtreo.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "pp-boi-format"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "PP bồi Format",
+                  "en": "PP Mounted on Foam Board",
+                  "zh": "PP背胶裱KT板/雪弗板",
+                  "ja": "PPスチレンボード貼り",
+                  "ko": "폼보드 합지 PP 실사출력"
+                },
+                "image": "/images/category/ppboiformat.webp",
+                "isFast": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "column": 1,
+        "groups": [
+          {
+            "product": "to-roi",
+            "title": {
+              "vi": "Tờ rơi - Flyers",
+              "en": "Flyers",
+              "zh": "单页传单 - Flyers",
+              "ja": "チラシ - Flyers",
+              "ko": "전단지 - Flyers"
+            },
+            "description": {
+              "vi": "Tờ rơi - Flyers",
+              "en": "Flyers",
+              "zh": "单页传单 - Flyers",
+              "ja": "チラシ - Flyers",
+              "ko": "전단지 - Flyers"
+            },
+            "image": "/images/category/toroi.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "to-roi-gia-re"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tờ rơi giá rẻ",
+                  "en": "Budget Economy Flyers",
+                  "zh": "经济实惠促销传单",
+                  "ja": "格安チラシ印刷",
+                  "ko": "가성비 전단지"
+                },
+                "image": "/images/category/toroigiare.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "to-roi-so-luong-it"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tờ rơi số lượng ít",
+                  "en": "Short-run Digital Flyers",
+                  "zh": "少量数码快印传单",
+                  "ja": "小ロットオンデマンドチラシ",
+                  "ko": "소량 디지털 전단지"
+                },
+                "image": "/images/category/toroisoluongit.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "shape": "to-roi-so-luong-lon"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tờ rơi số lượng lớn",
+                  "en": "Bulk Offset Flyers",
+                  "zh": "批量胶印高品质传单",
+                  "ja": "大ロットオフセットチラシ",
+                  "ko": "대량 오프셋 인쇄 전단지"
+                },
+                "image": "/images/category/toroisoluonglon.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "to-roi-cao-cap"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tờ rơi cao cấp",
+                  "en": "Premium Luxury Flyers",
+                  "zh": "高档加厚覆膜传单",
+                  "ja": "プレミアム高級チラシ",
+                  "ko": "고급 코팅 프리미엄 전단지"
+                },
+                "image": "/images/category/toroicaocap.webp",
+                "isFast": true
+              }
+            ]
+          },
+          {
+            "product": "to-gap",
+            "title": {
+              "vi": "Tờ gấp - Leaflets, Brochures",
+              "en": "Leaflets & Brochures",
+              "zh": "折页手册 - Brochures",
+              "ja": "折りパンフレット - Brochures",
+              "ko": "리플렛 / 접지 브로슈어"
+            },
+            "description": {
+              "vi": "Tờ gấp - Leaflets, Brochures",
+              "en": "Leaflets & Brochures",
+              "zh": "折页手册 - Brochures",
+              "ja": "折りパンフレット - Brochures",
+              "ko": "리플렛 / 접지 브로슈어"
+            },
+            "image": "/images/category/togap.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "to-gap-so-luong-it"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tờ gấp số lượng ít",
+                  "en": "Short-run Folded Brochures",
+                  "zh": "少量数码折页",
+                  "ja": "小ロット折りパンフレット",
+                  "ko": "소량 디지털 접지 리플렛"
+                },
+                "image": "/images/category/togapsoluongit.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "shape": "to-gap-ba"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tờ gấp ba",
+                  "en": "Tri-fold Brochures",
+                  "zh": "标准三折页",
+                  "ja": "巻き三つ折り・Z折り",
+                  "ko": "3단 접지 리플렛"
+                },
+                "image": "/images/category/togap3.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "to-gap-doi-a4"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tờ gấp đôi A4",
+                  "en": "Bi-fold A4 Leaflets",
+                  "zh": "A4对折单页",
+                  "ja": "A4二つ折りリーフレット",
+                  "ko": "A4 반접지 리플렛"
+                },
+                "image": "/images/category/togapdoi.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "to-gap-cao-cap"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tờ gấp cao cấp",
+                  "en": "Premium Luxury Brochures",
+                  "zh": "烫金UV奢华折页",
+                  "ja": "特種紙・箔押し高級折パンフ",
+                  "ko": "고급 가공 프리미엄 리플렛"
+                },
+                "image": "/images/category/togapcaocap.webp",
+                "isFast": false
+              }
+            ]
+          },
+          {
+            "product": "ve-tickets",
+            "title": {
+              "vi": "Vé - Tickets",
+              "en": "Tickets & Event Passes",
+              "zh": "门票/入场券 - Tickets",
+              "ja": "チケット・入場券",
+              "ko": "티켓 / 입장권"
+            },
+            "description": {
+              "vi": "Vé - Tickets",
+              "en": "Tickets & Event Passes",
+              "zh": "门票/入场券 - Tickets",
+              "ja": "チケット・入場券",
+              "ko": "티켓 / 입장권"
+            },
+            "image": "/images/category/ve.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "ve-moi-su-kien"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Vé mời sự kiện",
+                  "en": "Event Invitation Tickets",
+                  "zh": "贵宾活动邀请门票",
+                  "ja": "イベント招待状チケット",
+                  "ko": "행사 VIP 초청 티켓"
+                },
+                "image": "/images/category/vemoisukien.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "shape": "vong-tay-su-kien"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Vòng tay sự kiện",
+                  "en": "Event Wristbands",
+                  "zh": "年会活动防水手环",
+                  "ja": "イベント用リストバンド",
+                  "ko": "행사용 방수 손목 밴드"
+                },
+                "image": "/images/category/vongtaysukien.webp",
+                "isFast": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "column": 2,
+        "groups": [
+          {
+            "product": "vouchers",
+            "title": {
+              "vi": "Phiếu Quà Tặng - Gift Vouchers",
+              "en": "Gift Vouchers & Cards",
+              "zh": "礼券卡券 - Gift Vouchers",
+              "ja": "ギフト券・引换券",
+              "ko": "기프트 상품권 / 바우처"
+            },
+            "description": {
+              "vi": "Phiếu Quà Tặng - Gift Vouchers",
+              "en": "Gift Vouchers & Cards",
+              "zh": "礼券卡券 - Gift Vouchers",
+              "ja": "ギフト券・引换券",
+              "ko": "기프트 상품권 / 바우처"
+            },
+            "image": "/images/category/phieuquatang.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "phieu-qua-tang-pho-thong"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Phiếu quà tặng phổ thông",
+                  "en": "Standard Gift Vouchers",
+                  "zh": "标准代金券/礼品券",
+                  "ja": "スタンダード商品券",
+                  "ko": "일반 상품권 바우처"
+                },
+                "image": "/images/category/phieuquatangphothong.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "gift-vouchers"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Gift Vouchers",
+                  "en": "Premium Gift Vouchers",
+                  "zh": "精装定制Gift Vouchers",
+                  "ja": "高級ギフトバウチャー",
+                  "ko": "프리미엄 기프트 바우처"
+                },
+                "image": "/images/category/giftvouchers.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "the-tich-diem"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Thẻ Tích Điểm",
+                  "en": "Loyalty / Stamp Cards",
+                  "zh": "会员积分/集点卡",
+                  "ja": "スタンプカード・ポイントカード",
+                  "ko": "스탬프 쿠폰 / 포인트 적립 카드"
+                },
+                "image": "/images/category/thetichdiem.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "shape": "the-cao-khuyen-mai"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Thẻ cào khuyến mãi",
+                  "en": "Scratch-off Promo Cards",
+                  "zh": "促销刮刮卡/中奖卡",
+                  "ja": "スクラッチくじカード",
+                  "ko": "프로모션 스크래치 복권 카드"
+                },
+                "image": "/images/category/thecaokhuyenmai.webp",
+                "isFast": false
+              }
+            ]
+          },
+          {
+            "product": "catalogues",
+            "title": {
+              "vi": "Catalogue - Cẩm Nang",
+              "en": "Catalogues & Booklets",
+              "zh": "产品画册/手册 - Catalogue",
+              "ja": "カタログ・小冊子",
+              "ko": "카탈로그 / 핸드북"
+            },
+            "description": {
+              "vi": "Catalogue - Cẩm Nang",
+              "en": "Catalogues & Booklets",
+              "zh": "产品画册/手册 - Catalogue",
+              "ja": "カタログ・小冊子",
+              "ko": "카탈로그 / 핸드북"
+            },
+            "image": "/images/category/catalogue-camnang.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "catalogue-tieu-chuan"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Catalogue Tiêu Chuẩn",
+                  "en": "Standard Product Catalogues",
+                  "zh": "标准企业产品画册",
+                  "ja": "標準製品カタログ",
+                  "ko": "표준 제품 카탈로그"
+                },
+                "image": "/images/category/cataloguetieuchuan.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "catalogue-gia-re"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Catalogue Giá Rẻ",
+                  "en": "Economy Budget Catalogues",
+                  "zh": "高性价比宣传画册",
+                  "ja": "格安カタログ製本",
+                  "ko": "실속형 가성비 카탈로그"
+                },
+                "image": "/images/category/cataloguegiare.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "catalogue-cao-cap"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Catalogue Cao Cấp",
+                  "en": "Premium Luxury Catalogues",
+                  "zh": "精装锁线特种纸画册",
+                  "ja": "上製本・高級アートカタログ",
+                  "ko": "최고급 양장 Hardcover 카탈로그"
+                },
+                "image": "/images/category/cataloguecaocap.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "ho-so-nang-luc"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Hồ sơ năng lực",
+                  "en": "Company Profile Booklets",
+                  "zh": "企业简介/资质实力画册",
+                  "ja": "会社案内・事業実績パンフレット",
+                  "ko": "기업 회사소개서 / 지명원"
+                },
+                "image": "/images/category/hosonangluc.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "cam-nang-cam-tay"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Cẩm Nang Cầm Tay",
+                  "en": "Pocket Handbooks & Guides",
+                  "zh": "便携口袋手册/使用指南",
+                  "ja": "ポケットハンドブック・携帯ガイド",
+                  "ko": "포켓용 핸드북 / 가이드북"
+                },
+                "image": "/images/category/camnangcamtay.webp",
+                "isFast": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "office": {
+    "category": "office",
+    "columns": [
+      {
+        "column": 0,
+        "groups": [
+          {
+            "product": "danh-thiep",
+            "title": {
+              "vi": "Danh thiếp - Namecards",
+              "en": "Namecards - Business Cards",
+              "zh": "名片 - Namecards",
+              "ja": "名刺 - Namecards",
+              "ko": "명함 - Namecards"
+            },
+            "description": {
+              "vi": "Danh thiếp - Namecards",
+              "en": "Namecards - Business Cards",
+              "zh": "名片 - Namecards",
+              "ja": "名刺 - Namecards",
+              "ko": "명함 - Namecards"
+            },
+            "image": "/images/category/danhthiep.webp",
+            "items": [
+              {
+                "target": {
+                  "option": "danh-thiep-giay-my-thuat"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Danh thiếp Giấy mỹ thuật",
+                  "en": "Art Paper Business Cards",
+                  "zh": "特种艺术纸名片",
+                  "ja": "高級アート紙名刺",
+                  "ko": "고급 수입지 명함"
+                },
+                "image": "/images/product/art.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "shape": "danh-thiep-chuan"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Danh thiếp chuẩn",
+                  "en": "Standard Business Cards",
+                  "zh": "标准商务名片",
+                  "ja": "標準ビジネス名刺",
+                  "ko": "표준 비즈니스 명함"
+                },
+                "image": "/images/category/danhthiep.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "ky-thuat-so"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Danh Thiếp Kỹ Thuật Số",
+                  "en": "Digital Express Business Cards",
+                  "zh": "数码快印名片",
+                  "ja": "オンデマンド名刺",
+                  "ko": "디지털 인쇄 명함"
+                },
+                "image": "/images/category/card-kithuatso.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "shape": "thong-minh"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Danh Thiếp Thông Minh",
+                  "en": "Smart NFC Business Cards",
+                  "zh": "智能电子名片",
+                  "ja": "スマート名刺",
+                  "ko": "스마트 NFC 명함"
+                },
+                "image": "/images/category/card-thongminh.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "dap-noi-chim"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Danh Thiếp Dập Nổi/ Chìm",
+                  "en": "Embossed / Debossed Cards",
+                  "zh": "起凸/击凹名片",
+                  "ja": "型押し・エンボス名刺",
+                  "ko": "엠보싱/형압 명함"
+                },
+                "image": "/images/category/card-dapnoichim.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "danh-thiep-giay-nhua"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Danh Thiếp Giấy Nhựa",
+                  "en": "Synthetic Plastic Cards",
+                  "zh": "撕不烂防水塑料名片",
+                  "ja": "耐水合成紙名刺",
+                  "ko": "방수 찢어지지 않는 플라스틱 명함"
+                },
+                "image": "/images/product/thenhuapvc.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "bo-goc-chuan"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Danh Thiếp Bo Góc Chuẩn",
+                  "en": "Standard Rounded Corner Cards",
+                  "zh": "标准圆角名片",
+                  "ja": "角丸加工名刺",
+                  "ko": "귀도리 라운딩 명함"
+                },
+                "image": "/images/category/card-bogocchuan.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "highlight"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Danh Thiếp Highlight",
+                  "en": "Spot UV Highlight Cards",
+                  "zh": "局部UV高光名片",
+                  "ja": "部分光沢UV名刺",
+                  "ko": "부분 코팅 하이라이트 명함"
+                },
+                "image": "/images/category/card-highlight.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "vuong-bo-goc"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Danh Thiếp Vuông Bo Góc",
+                  "en": "Square Rounded Corner Cards",
+                  "zh": "方形圆角名片",
+                  "ja": "正方形角丸名刺",
+                  "ko": "정사각 라운딩 명함"
+                },
+                "image": "/images/category/card-vuongbogoc.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "vuong"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Danh Thiếp Vuông",
+                  "en": "Square Business Cards",
+                  "zh": "正方形个性名片",
+                  "ja": "スクエア名刺",
+                  "ko": "정사각 명함"
+                },
+                "image": "/images/category/card-vuong.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "gap-doi"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Danh Thiếp Gấp Đôi",
+                  "en": "Folded Business Cards",
+                  "zh": "折叠双面名片",
+                  "ja": "二つ折り名刺",
+                  "ko": "접이식 명함"
+                },
+                "image": "/images/category/card-gapdoi.webp",
+                "isFast": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "column": 1,
+        "groups": [
+          {
+            "product": "bao-thu",
+            "title": {
+              "vi": "Bao thư - Envelopes",
+              "en": "Envelopes",
+              "zh": "信封 - Envelopes",
+              "ja": "封筒 - Envelopes",
+              "ko": "봉투 - Envelopes"
+            },
+            "description": {
+              "vi": "Bao thư - Envelopes",
+              "en": "Envelopes",
+              "zh": "信封 - Envelopes",
+              "ja": "封筒 - Envelopes",
+              "ko": "봉투 - Envelopes"
+            },
+            "image": "/images/category/baothu.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "bao-thu-lay-ngay"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Bao thư lấy ngay",
+                  "en": "Express Envelopes",
+                  "zh": "加急速印信封",
+                  "ja": "即日仕上げ封筒",
+                  "ko": "당일 급행 봉투"
+                },
+                "image": "/images/category/baothulayngay.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "shape": "bao-thu-nho"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Bao thư nhỏ",
+                  "en": "Small Envelopes (12x22cm)",
+                  "zh": "小号信封 (12x22cm)",
+                  "ja": "小サイズ封筒 (長3)",
+                  "ko": "소봉투 (12x22cm)"
+                },
+                "image": "/images/category/baothunho.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "bao-thu-trung"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Bao thư trung",
+                  "en": "Medium Envelopes (16x23cm)",
+                  "zh": "中号信封 (16x23cm)",
+                  "ja": "中サイズ封筒 (角3)",
+                  "ko": "중봉투 (16x23cm)"
+                },
+                "image": "/images/category/baothutrung.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "bao-thu-lon"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Bao thư lớn",
+                  "en": "Large Envelopes (25x35cm)",
+                  "zh": "大号信封 (25x35cm)",
+                  "ja": "大サイズ封筒 (角2)",
+                  "ko": "대봉투 (25x35cm)"
+                },
+                "image": "/images/category/baothulon.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "bao-thu-giay-kraft"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Bao thư giấy Kraft",
+                  "en": "Kraft Paper Envelopes",
+                  "zh": "复古牛皮纸信封",
+                  "ja": "クラフト紙封筒",
+                  "ko": "크라프트지 봉투"
+                },
+                "image": "/images/product/bag-kraft1.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "bao-thu-cua-so"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Bao thư cửa sổ kính",
+                  "en": "Window Envelopes",
+                  "zh": "开窗透视信封",
+                  "ja": "窓付き封筒",
+                  "ko": "창문 투명 봉투"
+                },
+                "image": "/images/category/baothucuasokinh.webp",
+                "isFast": false
+              }
+            ]
+          },
+          {
+            "product": "ao-thun",
+            "title": {
+              "vi": "Áo thun đồng phục",
+              "en": "Uniform T-Shirts",
+              "zh": "企业制服T恤",
+              "ja": "ユニフォームTシャツ",
+              "ko": "단체 유니폼 티셔츠"
+            },
+            "description": {
+              "vi": "Áo thun đồng phục",
+              "en": "Uniform T-Shirts",
+              "zh": "企业制服T恤",
+              "ja": "ユニフォームTシャツ",
+              "ko": "단체 유니폼 티셔츠"
+            },
+            "image": "/images/category/aothundongphuc.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "ao-thun-co-tru"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Áo thun đồng phục cổ trụ",
+                  "en": "Polo Collar Uniform T-Shirts",
+                  "zh": "翻领POLO企业工装",
+                  "ja": "ポロシャツユニフォーム",
+                  "ko": "카라 폴로 단체 티셔츠"
+                },
+                "image": "/images/category/aothundongphuccotru.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "ao-thun-co-tron"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Áo thun đồng phục cổ tròn",
+                  "en": "Round Neck Uniform T-Shirts",
+                  "zh": "圆领纯棉企业工服",
+                  "ja": "クルーネックTシャツ",
+                  "ko": "라운드넥 단체 티셔츠"
+                },
+                "image": "/images/category/aothundongphuccotron.webp",
+                "isFast": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "column": 2,
+        "groups": [
+          {
+            "product": "giay-ghi-chu",
+            "title": {
+              "vi": "Giấy ghi chú - Block notes",
+              "en": "Block Notes & Memo Pads",
+              "zh": "便签本 - Block notes",
+              "ja": "メモ帳 - Block notes",
+              "ko": "메모지 - Block notes"
+            },
+            "description": {
+              "vi": "Giấy ghi chú - Block notes",
+              "en": "Block Notes & Memo Pads",
+              "zh": "便签本 - Block notes",
+              "ja": "メモ帳 - Block notes",
+              "ko": "메모지 - Block notes"
+            },
+            "image": "/images/category/giayghichu.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "giay-ghi-chu-block"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Giấy ghi chú",
+                  "en": "Block Notes / Memo Pads",
+                  "zh": "定制办公便签纸",
+                  "ja": "デスク用ブロックメモ",
+                  "ko": "사무용 떡메모지"
+                },
+                "image": "/images/category/blocknote.webp",
+                "isFast": false
+              }
+            ]
+          },
+          {
+            "product": "giay-tieu-de",
+            "title": {
+              "vi": "Giấy tiêu đề - Letterheads",
+              "en": "Letterheads",
+              "zh": "信纸便笺 - Letterheads",
+              "ja": "レターヘッド - Letterheads",
+              "ko": "레터헤드 - Letterheads"
+            },
+            "description": {
+              "vi": "Giấy tiêu đề - Letterheads",
+              "en": "Letterheads",
+              "zh": "信纸便笺 - Letterheads",
+              "ja": "レターヘッド - Letterheads",
+              "ko": "레터헤드 - Letterheads"
+            },
+            "image": "/images/category/giaytieude.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "giay-tieu-de-it"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Giấy tiêu đề số lượng ít",
+                  "en": "Short-run Letterheads",
+                  "zh": "少量数码信笺",
+                  "ja": "小ロットレターヘッド",
+                  "ko": "소량 레터헤드"
+                },
+                "image": "/images/category/giaytieudesoluongit.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "shape": "giay-tieu-de-lon"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Giấy tiêu đề số lượng lớn",
+                  "en": "Bulk Offset Letterheads",
+                  "zh": "批量胶印高品质信笺",
+                  "ja": "大ロットオフセット便箋",
+                  "ko": "대량 오프셋 레터헤드"
+                },
+                "image": "/images/category/giaytieudesoluonglon.webp",
+                "isFast": false
+              }
+            ]
+          },
+          {
+            "product": "bia-dung-ho-so",
+            "title": {
+              "vi": "Bìa đựng hồ sơ - Folders",
+              "en": "Folders & Presentation Folders",
+              "zh": "文件夹封套 - Folders",
+              "ja": "フォルダ - Folders",
+              "ko": "서류 홀더 - Folders"
+            },
+            "description": {
+              "vi": "Bìa đựng hồ sơ - Folders",
+              "en": "Folders & Presentation Folders",
+              "zh": "文件夹封套 - Folders",
+              "ja": "フォルダ - Folders",
+              "ko": "서류 홀더 - Folders"
+            },
+            "image": "/images/product/vd-item-folder.jpeg",
+            "items": [
+              {
+                "target": {
+                  "shape": "bia-ho-so-1-tay-gap"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Bìa đựng hồ sơ 1 tay gấp",
+                  "en": "1-Pocket Presentation Folders",
+                  "zh": "单口袋商务文件夹",
+                  "ja": "1ポケットホルダー",
+                  "ko": "1단 접이식 서류 홀더"
+                },
+                "image": "/images/category/biadunghoso1taygap.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "bia-ho-so-2-tay-gap"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Bìa đựng hồ sơ 2 tay gấp",
+                  "en": "2-Pocket Presentation Folders",
+                  "zh": "双口袋厚款文件夹",
+                  "ja": "2ポケットホルダー",
+                  "ko": "2단 접이식 서류 홀더"
+                },
+                "image": "/images/category/biadunghoso2taygap.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "bia-ho-so-cao-cap"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Bìa đựng hồ sơ cao cấp",
+                  "en": "Premium Luxury Folders",
+                  "zh": "烫金UV奢华封套",
+                  "ja": "高級特アート紙フォルダ",
+                  "ko": "최고급 특수가공 홀더"
+                },
+                "image": "/images/category/biadunghosocaocap.webp",
+                "isFast": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "packaging": {
+    "category": "packaging",
+    "columns": [
+      {
+        "column": 0,
+        "groups": [
+          {
+            "product": "nhan-dan",
+            "title": {
+              "vi": "Nhãn Dán - Decal Label",
+              "en": "Decal Labels & Stickers",
+              "zh": "不干胶标签 - Decal Label",
+              "ja": "ラベル・シール - Decal Label",
+              "ko": "라벨 스티커 - Decal Label"
+            },
+            "description": {
+              "vi": "Nhãn Dán - Decal Label",
+              "en": "Decal Labels & Stickers",
+              "zh": "不干胶标签 - Decal Label",
+              "ja": "ラベル・シール - Decal Label",
+              "ko": "라벨 스티커 - Decal Label"
+            },
+            "image": "/images/product/vd-item-decal.jpeg",
+            "items": [
+              {
+                "target": {
+                  "option": "nhan-decal-giay"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Nhãn decal giấy",
+                  "en": "Paper Decal Labels",
+                  "zh": "铜版纸不干胶贴纸",
+                  "ja": "上質紙・アート紙シール",
+                  "ko": "아트지 종이 라벨 스티커"
+                },
+                "image": "/images/product/lable-couche1.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "option": "nhan-decal-nhua"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Nhãn decal nhựa",
+                  "en": "Plastic / PVC Decal Labels",
+                  "zh": "防水PVC塑料标签",
+                  "ja": "ユポ・PVC耐水プラシール",
+                  "ko": "방수 플라스틱 데칼 라벨"
+                },
+                "image": "/images/product/lable-PVC1.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "option": "nhan-decal-giay-kraft"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Nhãn decal giấy Kraft",
+                  "en": "Kraft Paper Decal Labels",
+                  "zh": "复古牛皮纸不干胶",
+                  "ja": "クラフト紙シール",
+                  "ko": "크라프트지 데칼 라벨"
+                },
+                "image": "/images/product/bag-kraft1.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "shape": "decal-uv-dtf"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Nhãn Decal UV nổi - UV DTF",
+                  "en": "3D Raised UV DTF Decals",
+                  "zh": "水晶标立体UV转印贴",
+                  "ja": "立体UV転写シール (UV DTF)",
+                  "ko": "입체 UV 전사 스티커 (UV DTF)"
+                },
+                "image": "/images/category/nhandecaluvnoi.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "sticker-sheets"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Nhãn Sticker dạng Tờ - Sticker Sheets",
+                  "en": "Kiss-cut Sticker Sheets",
+                  "zh": "拼版多图贴纸套装",
+                  "ja": "シートタイプステッカー",
+                  "ko": "시트형 멀티 스티커 팩"
+                },
+                "image": "/images/category/nhanstickerdangto.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "nhan-decal-giay-my-thuat"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Nhãn decal giấy mỹ thuật",
+                  "en": "Art Paper Decal Labels",
+                  "zh": "特种艺术纸质感标签",
+                  "ja": "高級アート紙ラベル",
+                  "ko": "고급 수입지 감성 라벨"
+                },
+                "image": "/images/product/art.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "nhan-decal-xi-bac-vang"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Nhãn decal xi bạc/vàng",
+                  "en": "Metallic Silver / Gold Decals",
+                  "zh": "拉丝金/哑银耐磨标签",
+                  "ja": "金・銀ホイル耐熱ラベル",
+                  "ko": "은데드롱 / 금광 데칼 라벨"
+                },
+                "image": "/images/product/art-foil.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "decal-tem-be"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Nhãn Decal Tem Bể/ Tem Vỡ",
+                  "en": "Destructible Tamper / Warranty Seals",
+                  "zh": "易碎防伪质保封条",
+                  "ja": "改ざん防止・脆性質保シール",
+                  "ko": "파손형 봉인 / 정품인증 씰"
+                },
+                "image": "/images/category/temvo.webp",
+                "isFast": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "column": 1,
+        "groups": [
+          {
+            "product": "tui-giay",
+            "title": {
+              "vi": "Túi giấy - Paper bags",
+              "en": "Paper Bags",
+              "zh": "纸质手提袋 - Paper bags",
+              "ja": "紙袋・ショッパー - Paper bags",
+              "ko": "종이 쇼핑백 - Paper bags"
+            },
+            "description": {
+              "vi": "Túi giấy - Paper bags",
+              "en": "Paper Bags",
+              "zh": "纸质手提袋 - Paper bags",
+              "ja": "紙袋・ショッパー - Paper bags",
+              "ko": "종이 쇼핑백 - Paper bags"
+            },
+            "image": "/images/category/tuigiay.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "tui-giay-chuan"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Túi giấy chuẩn",
+                  "en": "Standard Paper Shopping Bags",
+                  "zh": "标准铜版纸手提袋",
+                  "ja": "標準コート紙ショッパー",
+                  "ko": "표준 쇼핑백"
+                },
+                "image": "/images/category/tuigiaychuan.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "tui-giay-kraft"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Túi giấy kraft",
+                  "en": "Eco Kraft Paper Bags",
+                  "zh": "环保牛皮纸袋",
+                  "ja": "クラフト紙袋",
+                  "ko": "친환경 크라프트 쇼핑백"
+                },
+                "image": "/images/product/bag-kraft1.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "tui-giay-co-nap"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Túi giấy có nắp/ nắp gập",
+                  "en": "Flap-closure Paper Bags",
+                  "zh": "折叠盖式礼品纸袋",
+                  "ja": "フタ付きギフトバッグ",
+                  "ko": "덮개형 기프트 종이백"
+                },
+                "image": "/images/category/tuigiayconap.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "tui-giay-ep-kim"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Túi giấy ép kim",
+                  "en": "Foil Stamped Luxury Bags",
+                  "zh": "烫金高档精品纸袋",
+                  "ja": "箔押しプレミアム紙袋",
+                  "ko": "박가공 럭셔리 쇼핑백"
+                },
+                "image": "/images/category/tuigiayepkim.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "tui-giay-quai-hot-xoai"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Túi giấy quai hột xoài",
+                  "en": "Die-cut Handle Bags",
+                  "zh": "冲孔提手便利纸袋",
+                  "ja": "小判抜き・くり手紙袋",
+                  "ko": "타공 손잡이 종이백"
+                },
+                "image": "/images/category/tuigiayquaihopxoai.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "tui-giay-co-san"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Túi Giấy Có Sẵn",
+                  "en": "In-Stock Ready-made Bags",
+                  "zh": "现货空白即印纸袋",
+                  "ja": "既製品即納バッグ",
+                  "ko": "기성 완제품 쇼핑백"
+                },
+                "image": "/images/category/tuigiaycosan.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "tui-giay-banh-mi"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Túi giấy bánh mì",
+                  "en": "Bread & Bakery Bags",
+                  "zh": "防油烘焙面包纸袋",
+                  "ja": "ベーカリー・パン用紙袋",
+                  "ko": "베이커리 빵 종이봉투"
+                },
+                "image": "/images/category/tuigiaybanhmi.webp",
+                "isFast": false
+              }
+            ]
+          },
+          {
+            "product": "hop-giay",
+            "title": {
+              "vi": "Hộp Giấy - Paper box",
+              "en": "Paper Boxes & Packaging",
+              "zh": "纸盒包装 - Paper box",
+              "ja": "化粧箱・ペーパーボックス",
+              "ko": "종이 상자 / 패키지 박스"
+            },
+            "description": {
+              "vi": "Hộp Giấy - Paper box",
+              "en": "Paper Boxes & Packaging",
+              "zh": "纸盒包装 - Paper box",
+              "ja": "化粧箱・ペーパーボックス",
+              "ko": "종이 상자 / 패키지 박스"
+            },
+            "image": "/images/category/hopgiay.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "hop-giay-thong-dung"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Hộp Giấy Thông Dụng",
+                  "en": "Standard Folding Cartons",
+                  "zh": "通用折叠彩盒",
+                  "ja": "汎用折りたたみ化粧箱",
+                  "ko": "일반 접이式 단상자"
+                },
+                "image": "/images/category/hopgiaythongdung.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "hop-giay-kraft"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Hộp giấy kraft",
+                  "en": "Kraft Paper Boxes",
+                  "zh": "复古牛皮纸盒",
+                  "ja": "クラフトペーパーボックス",
+                  "ko": "크라프트 종이 상자"
+                },
+                "image": "/images/product/box-kraft1.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "hop-giay-carton"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Hộp giấy carton",
+                  "en": "Corrugated Shipping Cartons",
+                  "zh": "瓦楞纸运输飞机盒",
+                  "ja": "段ボール配送ボックス",
+                  "ko": "골판지 택배 박스"
+                },
+                "image": "/images/product/box-board1.webp",
+                "isFast": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "column": 2,
+        "groups": [
+          {
+            "product": "mac-san-pham",
+            "title": {
+              "vi": "Mác sản phẩm - Product Tags",
+              "en": "Product Tags & Hangtags",
+              "zh": "商品吊牌 - Product Tags",
+              "ja": "下げ札・タグ - Product Tags",
+              "ko": "의류 행택 / 태그 - Product Tags"
+            },
+            "description": {
+              "vi": "Mác sản phẩm - Product Tags",
+              "en": "Product Tags & Hangtags",
+              "zh": "商品吊牌 - Product Tags",
+              "ja": "下げ札・タグ - Product Tags",
+              "ko": "의류 행택 / 태그 - Product Tags"
+            },
+            "image": "/images/category/macsanpham.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "mac-pho-thong"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Mác sản phẩm phổ thông",
+                  "en": "Standard Hangtags",
+                  "zh": "常规商品价格吊牌",
+                  "ja": "スタンダード下げ札",
+                  "ko": "일반 상품 행택"
+                },
+                "image": "/images/category/macsanphamphothong.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "mac-cao-cap"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Mác Sản Phẩm Cao Cấp",
+                  "en": "Premium Luxury Hangtags",
+                  "zh": "加厚特种纸高档吊牌",
+                  "ja": "高級特殊紙下げ札",
+                  "ko": "고급 프리미엄 브랜드 택"
+                },
+                "image": "/images/category/macsanphamcaocap.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "mac-san-pham-giay-kraft"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Mác Sản Phẩm Giấy Kraft",
+                  "en": "Kraft Paper Hangtags",
+                  "zh": "复古环保牛皮纸吊牌",
+                  "ja": "クラフト紙下げ札",
+                  "ko": "크라프트지 의류 행택"
+                },
+                "image": "/images/product/bag-kraft3.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "tag-thoi-trang"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tag thời trang",
+                  "en": "Fashion Apparel Tags",
+                  "zh": "服装服饰专属标签",
+                  "ja": "アパレル・ファッションタグ",
+                  "ko": "패션 브랜드 의류 태그"
+                },
+                "image": "/images/category/tagthoitrang.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "tag-trang-suc"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tag trang sức",
+                  "en": "Jewelry & Accessory Tags",
+                  "zh": "精美首饰珠宝小标签",
+                  "ja": "ジュエリー・アクセサリータグ",
+                  "ko": "주얼리 / 액세서리 미니 택"
+                },
+                "image": "/images/category/tagtrangsuc.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "tag-cam-on"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tag cảm ơn",
+                  "en": "Thank You Gift Tags",
+                  "zh": "精美感恩感谢卡吊牌",
+                  "ja": "サンキュー・感謝タグ",
+                  "ko": "감사 땡큐 기프트 택"
+                },
+                "image": "/images/category/tagcamon.webp",
+                "isFast": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "tet": {
+    "category": "tet",
+    "columns": [
+      {
+        "column": 0,
+        "groups": [
+          {
+            "product": "lich-tet",
+            "title": {
+              "vi": "Lịch Để Bàn - Calendars",
+              "en": "Desk Calendars",
+              "zh": "台历桌历 - Calendars",
+              "ja": "卓上カレンダー - Calendars",
+              "ko": "탁상 달력 - Calendars"
+            },
+            "description": {
+              "vi": "Lịch Để Bàn - Calendars",
+              "en": "Desk Calendars",
+              "zh": "台历桌历 - Calendars",
+              "ja": "卓上カレンダー - Calendars",
+              "ko": "탁상 달력 - Calendars"
+            },
+            "image": "/images/category/lichdeban.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "lich-de-ban"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Lịch để bàn",
+                  "en": "Desk Calendars",
+                  "zh": "企业定制台历",
+                  "ja": "スタンダード卓上カレンダー",
+                  "ko": "기업 맞춤 탁상 달력"
+                },
+                "image": "/images/category/lichdebancon.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "lich-ban-2026"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Lịch để bàn 2026",
+                  "en": "Desk Calendars 2026",
+                  "zh": "2026迎春新年台历",
+                  "ja": "2026年 新春卓上カレンダー",
+                  "ko": "2026 신년 탁상 달력"
+                },
+                "image": "/images/category/lichdeban2026.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "lich-nam-cham"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Lịch ảnh nam châm dẻo",
+                  "en": "Flexible Magnetic Photo Calendars",
+                  "zh": "冰箱贴软磁相片日历",
+                  "ja": "マグネットフォトカレンダー",
+                  "ko": "자석 포토 캘린더 (냉장고용)"
+                },
+                "image": "/images/category/lichanhnamchamdeo.webp",
+                "isFast": false
+              }
+            ]
+          },
+          {
+            "product": "bao-li-xi",
+            "title": {
+              "vi": "Bao Lì Xì",
+              "en": "Lucky Money Envelopes",
+              "zh": "新年利是封/红包",
+              "ja": "お年玉・ポチ袋",
+              "ko": "새해 세뱃돈 봉투"
+            },
+            "description": {
+              "vi": "Bao Lì Xì",
+              "en": "Lucky Money Envelopes",
+              "zh": "新年利是封/红包",
+              "ja": "お年玉・ポチ袋",
+              "ko": "새해 세뱃돈 봉투"
+            },
+            "image": "/images/category/baolixi.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "bao-li-xi-chuan"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Bao Lì Xì",
+                  "en": "Standard Red Envelopes",
+                  "zh": "经典新年红包",
+                  "ja": "定番お年玉袋",
+                  "ko": "클래식 세뱃돈 봉투"
+                },
+                "image": "/images/category/baolixi.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "bao-li-xi-2026"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Bao lì xì 2026",
+                  "en": "Year 2026 Red Envelopes",
+                  "zh": "2026蛇年专属利是封",
+                  "ja": "2026年 干支ポチ袋",
+                  "ko": "2026 신년 세뱃돈 봉투"
+                },
+                "image": "/images/category/baolixi2026.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "bao-li-xi-ep-kim"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Bao lì xì ép kim cao cấp",
+                  "en": "Premium Foil-Stamped Red Envelopes",
+                  "zh": "烫金奢华特种纸红包",
+                  "ja": "箔押し高級ポチ袋",
+                  "ko": "금박 프리미엄 세뱃돈 봉투"
+                },
+                "image": "/images/category/baolixiepkimcaocap.webp",
+                "isFast": false
+              }
+            ]
+          },
+          {
+            "product": "thiep-tet",
+            "title": {
+              "vi": "Thiệp Mời - Invitation Cards",
+              "en": "Invitation Cards",
+              "zh": "邀请函请柬 - Invitation Cards",
+              "ja": "招待状 - Invitation Cards",
+              "ko": "초대장 - Invitation Cards"
+            },
+            "description": {
+              "vi": "Thiệp Mời - Invitation Cards",
+              "en": "Invitation Cards",
+              "zh": "邀请函请柬 - Invitation Cards",
+              "ja": "招待状 - Invitation Cards",
+              "ko": "초대장 - Invitation Cards"
+            },
+            "image": "/images/category/thiepmoi.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "thiep-su-kien"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Thiệp sự kiện",
+                  "en": "Event & Gala Invitations",
+                  "zh": "企业年会晚宴请柬",
+                  "ja": "イベント・パーティー招待状",
+                  "ko": "행사 및 송년회 초대장"
+                },
+                "image": "/images/category/thiepsukien.webp",
+                "isFast": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "column": 1,
+        "groups": [
+          {
+            "product": "mac-san-pham",
+            "title": {
+              "vi": "Mác sản phẩm - Product Tags",
+              "en": "Product Tags & Hangtags",
+              "zh": "商品吊牌 - Product Tags",
+              "ja": "下げ札・タグ - Product Tags",
+              "ko": "상품 행택 - Product Tags"
+            },
+            "description": {
+              "vi": "Mác sản phẩm - Product Tags",
+              "en": "Product Tags & Hangtags",
+              "zh": "商品吊牌 - Product Tags",
+              "ja": "下げ札・タグ - Product Tags",
+              "ko": "상품 행택 - Product Tags"
+            },
+            "image": "/images/category/tagsanphamtet.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "tag-san-pham"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tag sản phẩm",
+                  "en": "Standard Product Tags",
+                  "zh": "年货商品专属吊牌",
+                  "ja": "商品ブランドタグ",
+                  "ko": "설 선물 상품 태그"
+                },
+                "image": "/images/category/tagsanpham.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "tag-cam-on"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tag cảm ơn",
+                  "en": "Thank You Gift Tags",
+                  "zh": "新年感谢感恩吊牌",
+                  "ja": "サンキュー・感謝タグ",
+                  "ko": "새해 감사 카드 택"
+                },
+                "image": "/images/category/tagcamontet.webp",
+                "isFast": false
+              }
+            ]
+          },
+          {
+            "product": "vouchers",
+            "title": {
+              "vi": "Phiếu Quà Tặng - Gift Vouchers",
+              "en": "Gift Vouchers",
+              "zh": "新年礼品券 - Gift Vouchers",
+              "ja": "ギフト券・引换券",
+              "ko": "설 선물 상품권 / 바우처"
+            },
+            "description": {
+              "vi": "Phiếu Quà Tặng - Gift Vouchers",
+              "en": "Gift Vouchers",
+              "zh": "新年礼品券 - Gift Vouchers",
+              "ja": "ギフト券・引换券",
+              "ko": "설 선물 상품권 / 바우처"
+            },
+            "image": "/images/category/phieuquatang.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "phieu-qua-tang-pho-thong"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Phiếu quà tặng phổ thông",
+                  "en": "Standard Gift Vouchers",
+                  "zh": "通用春节代金券",
+                  "ja": "スタンダード商品券",
+                  "ko": "일반 명절 상품권 바우처"
+                },
+                "image": "/images/category/phieuquatangphothong.webp",
+                "isFast": false
+              }
+            ]
+          },
+          {
+            "product": "nhan-dan",
+            "title": {
+              "vi": "Nhãn Dán - Decal Label",
+              "en": "Decal Labels & Stickers",
+              "zh": "新年贴纸 - Decal Label",
+              "ja": "ラベル・シール - Decal Label",
+              "ko": "라벨 스티커 - Decal Label"
+            },
+            "description": {
+              "vi": "Nhãn Dán - Decal Label",
+              "en": "Decal Labels & Stickers",
+              "zh": "新年贴纸 - Decal Label",
+              "ja": "ラベル・シール - Decal Label",
+              "ko": "라벨 스티커 - Decal Label"
+            },
+            "image": "/images/category/nhandan.webp",
+            "items": [
+              {
+                "target": {
+                  "option": "nhan-decal-giay"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Nhãn decal giấy",
+                  "en": "Paper Decal Labels",
+                  "zh": "铜版纸年品标签",
+                  "ja": "上质纸・アート纸シール",
+                  "ko": "아트지 종이 라벨 스티커"
+                },
+                "image": "/images/product/decalgiay.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "option": "nhan-decal-nhua"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Nhãn decal nhựa",
+                  "en": "Plastic / PVC Decal Labels",
+                  "zh": "防水塑料年品贴纸",
+                  "ja": "ユポ・PVC耐水プラシール",
+                  "ko": "방수 플라스틱 데칼 라벨"
+                },
+                "image": "/images/product/decalnhua.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "option": "nhan-decal-giay-kraft"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Nhãn decal giấy Kraft",
+                  "en": "Kraft Paper Decal Labels",
+                  "zh": "复古牛皮纸贴纸",
+                  "ja": "ヴィンテージクラフトシール",
+                  "ko": "크라프트지 데칼 라벨"
+                },
+                "image": "/images/product/decalgiaykraft.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "nhan-decal-giay-my-thuat"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Nhãn decal giấy mỹ thuật",
+                  "en": "Fine Art Paper Decal Labels",
+                  "zh": "特种艺术纸质感标签",
+                  "ja": "高级アート纸ラベル",
+                  "ko": "고급 수입지 감성 라벨"
+                },
+                "image": "/images/product/decalgiaymythuat.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "nhan-decal-xi-bac-vang"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Nhãn decal xi bạc/vàng",
+                  "en": "Metallic Silver / Gold Decals",
+                  "zh": "烫金银箔高端年品贴纸",
+                  "ja": "金・银ホイル耐热ラベル",
+                  "ko": "은데드롱 / 금광 데칼 라벨"
+                },
+                "image": "/images/product/decalxibac.webp",
+                "isFast": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "column": 2,
+        "groups": [
+          {
+            "product": "to-roi",
+            "title": {
+              "vi": "Tờ rơi - Flyers",
+              "en": "Flyers & Certificates",
+              "zh": "宣传单/证书 - Flyers",
+              "ja": "チラシ・表彰状 - Flyers",
+              "ko": "전단지 / 상장 - Flyers"
+            },
+            "description": {
+              "vi": "Tờ rơi - Flyers",
+              "en": "Flyers & Certificates",
+              "zh": "宣传单/证书 - Flyers",
+              "ja": "チラシ・表彰状 - Flyers",
+              "ko": "전단지 / 상장 - Flyers"
+            },
+            "image": "/images/category/toroi.webp",
+            "items": [
+              {
+                "target": {
+                  "shape": "to-roi-so-luong-it"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Tờ rơi số lượng ít",
+                  "en": "Short-run Digital Flyers",
+                  "zh": "少量数码快印传单",
+                  "ja": "小ロットオンデマンドチラシ",
+                  "ko": "소량 디지털 전단지"
+                },
+                "image": "/images/category/toroisoluongit.webp",
+                "isFast": true
+              },
+              {
+                "target": {
+                  "shape": "bang-khen"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Bằng khen",
+                  "en": "Certificates of Merit & Awards",
+                  "zh": "企业年终荣誉证书/奖状",
+                  "ja": "表彰状・感謝状・ディプロマ",
+                  "ko": "연말 표창장 / 상장"
+                },
+                "image": "/images/category/bangkhen.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "vong-tay-su-kien"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Vòng tay sự kiện",
+                  "en": "Event Wristbands",
+                  "zh": "年会活动防水手环",
+                  "ja": "イベント用リストバンド",
+                  "ko": "행사용 방수 손목 밴드"
+                },
+                "image": "/images/category/vongtaysukien.webp",
+                "isFast": false
+              }
+            ]
+          },
+          {
+            "product": "poster-bangron-standee",
+            "title": {
+              "vi": "Poster - Băng rôn - Standee",
+              "en": "Posters - Banners - Standees",
+              "zh": "海报 - 横幅 - 展架",
+              "ja": "ポスター・横断幕・看板",
+              "ko": "포스터 - 현수막 - 배너거치대"
+            },
+            "description": {
+              "vi": "Poster - Băng rôn - Standee",
+              "en": "Posters - Banners - Standees",
+              "zh": "海报 - 横幅 - 展架",
+              "ja": "ポスター・横断幕・看板",
+              "ko": "포스터 - 현수막 - 배너거치대"
+            },
+            "image": "/images/category/poster-bangron-standee.webp",
+            "items": [
+              {
+                "target": {
+                  "option": "poster-chat-lieu-pp"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Poster chất liệu PP",
+                  "en": "PP Material Posters",
+                  "zh": "PP材质高清海报",
+                  "ja": "PP合成紙ポスター",
+                  "ko": "PP 합성지 포스터"
+                },
+                "image": "/images/category/poster-bangron-standee.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "option": "bang-ron-hiflex"
+                },
+                "kind": "material",
+                "label": {
+                  "vi": "Băng rôn Hiflex",
+                  "en": "Hiflex Banners",
+                  "zh": "Hiflex喷绘布横幅",
+                  "ja": "ターポリン・ハイフレックス幕",
+                  "ko": "하이플렉스 대형 현수막"
+                },
+                "image": "/images/category/poster-bangron-standee.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "hashtag-cam-tay"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Hashtag cầm tay",
+                  "en": "Handheld Photo Hashtags",
+                  "zh": "新年拍照手牌Hashtag",
+                  "ja": "手持ちフォトプロップス",
+                  "ko": "신년 촬영 해시태그 피켓"
+                },
+                "image": "/images/category/hashtagcamtay.webp",
+                "isFast": false
+              },
+              {
+                "target": {
+                  "shape": "hashtag-tay-cam-roi"
+                },
+                "kind": "shape",
+                "label": {
+                  "vi": "Hashtag tay cầm rời",
+                  "en": "Detachable Handle Hashtags",
+                  "zh": "可拆卸手柄新年手牌",
+                  "ja": "持ち手分離型フォトプロップス",
+                  "ko": "분리형 손잡이 해시태그 피켓"
+                },
+                "image": "/images/category/hashtagtaycamroi.webp",
+                "isFast": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

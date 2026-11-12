@@ -109,8 +109,8 @@ export default function Hero() {
                     </h1>
                   </div>
 
-                  {/* Fixed-height description container */}
-                  <div className="h-[88px] sm:h-[84px] lg:h-[88px] flex items-start overflow-hidden">
+                  {/* Description container */}
+                  <div className="min-h-[88px] sm:min-h-[84px] lg:h-[88px] flex items-start">
                     <p className="text-sm sm:text-base lg:text-lg text-white/95 leading-relaxed max-w-lg [text-shadow:_0_2px_12px_rgba(9,5,47,0.8),_0_1px_4px_rgba(9,5,47,0.8)]">
                       {slide.desc}
                     </p>

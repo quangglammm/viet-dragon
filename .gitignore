@@ -32,6 +32,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# images uploaded through the admin in development (the production volume is /data/uploads)
+/.uploads/
 
 # vercel
 .vercel
@@ -53,3 +57,22 @@ Thumbs.db
 
 # temp screenshot scripts
 screenshot*.mjs
+
+# codegraph
+.codegraph
+
+# local planning docs (admin CMS design notes) — not committed
+!/docs/
+/docs/*
+!/docs/admin-manual-testing.md
+!/docs/admin-manual-testing.vi.md
+
+# page-text parity corpus (generated from a local build; large)
+/.parity/
+
+# browser-smoke artifacts (Playwright MCP output and screenshots)
+/.playwright-mcp/
+/smoke-*.png
+
+# Credentials of the off-box backup remote (compose.yaml `backup` service env_file) — never committed.
+/backup-offsite.env

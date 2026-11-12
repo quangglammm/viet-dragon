@@ -1,0 +1,187 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+// lib/env.ts memoizes per module instance, so every case loads a fresh copy under a clean process.env.
+const MANAGED = [
+  "NODE_ENV",
+  "SMTP_HOST",
+  "SMTP_USER",
+  "SMTP_PASS",
+  "SMTP_PORT",
+  "SMTP_SECURE",
+  "SMTP_FROM",
+  "CONSULT_RECEIVER_EMAIL",
+  "SITE_URL",
+  "LOG_LEVEL",
+] as const;
+
+const FULL_SMTP = { SMTP_HOST: "smtp.example.com", SMTP_USER: "u@example.com", SMTP_PASS: "smtp-secret-value" };
+const SECRETS = ["smtp-secret-value"];
+
+let saved: Record<string, string | undefined>;
+
+beforeEach(() => {
+  saved = Object.fromEntries(MANAGED.map((key) => [key, process.env[key]]));
+});
+
+afterEach(() => {
+  for (const key of MANAGED) {
+    if (saved[key] === undefined) delete process.env[key];
+    else Object.assign(process.env, { [key]: saved[key] });
+  }
+});
+
+async function loadEnv(vars: Record<string, string>) {
+  vi.resetModules();
+  for (const key of MANAGED) delete process.env[key];
+  Object.assign(process.env, vars);
+  return import("./env");
+}
+
+async function problems(vars: Record<string, string>): Promise<string> {
+  const env = await loadEnv(vars);
+  try {
+    env.assertEnv();
+    return "";
+  } catch (error) {
+    return (error as Error).message;
+  }
+}
+
+const COMPLETE_PROD = {
+  NODE_ENV: "production",
+  ...FULL_SMTP,
+  SITE_URL: "https://vietdragon.vn",
+};
+
+describe("assertEnv", () => {
+  it("passes a complete production configuration", async () => {
+    expect(await problems(COMPLETE_PROD)).toBe("");
+  });
+
+  it("passes the minimum development configuration (SMTP optional, SITE_URL defaulted)", async () => {
+    expect(await problems({ NODE_ENV: "development" })).toBe("");
+  });
+
+  it("reports every broken group in one failure", async () => {
+    const message = await problems({
+      NODE_ENV: "production",
+      SMTP_PORT: "invalid-port",
+      SITE_URL: "not a url",
+      LOG_LEVEL: "invalid-level",
+    });
+    for (const group of ["mail:", "site:", "logging:"]) expect(message).toContain(group);
+  });
+
+  it("names only the broken group when one is wrong", async () => {
+    const message = await problems({ ...COMPLETE_PROD, SITE_URL: "not a url" });
+    expect(message).toContain("site: SITE_URL");
+    expect(message).not.toContain("mail:");
+  });
+
+  it("never echoes a secret value in its messages", async () => {
+    const message = await problems({
+      NODE_ENV: "production",
+      SMTP_PORT: "abc",
+      SITE_URL: "https://user:pw@vietdragon.vn",
+    });
+    expect(message).not.toBe("");
+    for (const secret of [...SECRETS, "pw@"]) expect(message).not.toContain(secret);
+  });
+});
+
+describe("mail group", () => {
+  it("in production allows SMTP credentials to be optional", async () => {
+    const message = await problems({ ...COMPLETE_PROD, SMTP_HOST: "", SMTP_USER: "", SMTP_PASS: "" });
+    expect(message).toBe("");
+  });
+
+  it("treats an empty string like an unset variable", async () => {
+    const env = await loadEnv({ ...COMPLETE_PROD, SMTP_HOST: "" });
+    expect(env.getMailEnv().SMTP_HOST).toBeUndefined();
+  });
+
+  it.each([
+    ["SMTP_PORT", "abc"],
+    ["SMTP_PORT", "70000"],
+    ["SMTP_SECURE", "yes"],
+    ["CONSULT_RECEIVER_EMAIL", "nope"],
+  ])("rejects %s=%s", async (key, value) => {
+    expect(await problems({ ...COMPLETE_PROD, [key]: value })).toContain(key);
+  });
+
+  it("falls back from empty strings: port 587, secure false, receiver = CONTACT_EMAIL", async () => {
+    const env = await loadEnv({ NODE_ENV: "development", SMTP_PORT: "", SMTP_SECURE: "", CONSULT_RECEIVER_EMAIL: "" });
+    expect(env.getMailEnv()).toMatchObject({ SMTP_PORT: 587, SMTP_SECURE: false, CONSULT_RECEIVER_EMAIL: "contact@vietdragon.vn" });
+  });
+
+  it("parses explicit values into numbers and booleans", async () => {
+    const env = await loadEnv({
+      NODE_ENV: "development",
+      SMTP_PORT: "465",
+      SMTP_SECURE: "true",
+      CONSULT_RECEIVER_EMAIL: "x@y.vn",
+      ...FULL_SMTP,
+    });
+    expect(env.getMailEnv()).toMatchObject({ SMTP_PORT: 465, SMTP_SECURE: true, CONSULT_RECEIVER_EMAIL: "x@y.vn" });
+  });
+
+  it("works in development without SMTP credentials", async () => {
+    const env = await loadEnv({ NODE_ENV: "development" });
+    expect(() => env.getMailEnv()).not.toThrow();
+  });
+});
+
+describe("site group", () => {
+  it("defaults to localhost outside production", async () => {
+    expect((await loadEnv({ NODE_ENV: "development" })).getSiteEnv().SITE_URL).toBe("http://localhost:3000");
+  });
+
+  it("defaults to vietdragon.vn in production when unset", async () => {
+    for (const SITE_URL of [undefined, ""]) {
+      const vars: Record<string, string> = { ...COMPLETE_PROD };
+      if (SITE_URL === undefined) delete vars.SITE_URL;
+      else vars.SITE_URL = SITE_URL;
+      expect((await loadEnv(vars)).getSiteEnv().SITE_URL).toBe("https://vietdragon.vn");
+    }
+  });
+
+  it("normalises to the bare origin", async () => {
+    expect((await loadEnv({ ...COMPLETE_PROD, SITE_URL: "https://vietdragon.vn/" })).getSiteEnv().SITE_URL).toBe(
+      "https://vietdragon.vn",
+    );
+    expect((await loadEnv({ ...COMPLETE_PROD, SITE_URL: "https://vietdragon.vn:8443" })).getSiteEnv().SITE_URL).toBe(
+      "https://vietdragon.vn:8443",
+    );
+  });
+
+  it.each([
+    "https://vietdragon.vn/vi",
+    "https://vietdragon.vn/?x=1",
+    "https://vietdragon.vn/#top",
+    "ftp://vietdragon.vn",
+    "vietdragon.vn",
+    "not a url",
+    "https://user:pw@vietdragon.vn",
+  ])("rejects %s", async (url) => {
+    expect(await problems({ ...COMPLETE_PROD, SITE_URL: url })).toContain("origin without a path");
+  });
+});
+
+describe("logging group", () => {
+  it.each([
+    ["production", "info"],
+    ["development", "debug"],
+    ["test", "silent"],
+  ])("defaults to %s -> %s", async (nodeEnv, level) => {
+    expect((await loadEnv({ NODE_ENV: nodeEnv })).getLogEnv().LOG_LEVEL).toBe(level);
+  });
+
+  it("honours an explicit level and treats empty as unset", async () => {
+    expect((await loadEnv({ NODE_ENV: "production", LOG_LEVEL: "warn" })).getLogEnv().LOG_LEVEL).toBe("warn");
+    expect((await loadEnv({ NODE_ENV: "production", LOG_LEVEL: "" })).getLogEnv().LOG_LEVEL).toBe("info");
+  });
+
+  it("rejects an unknown level", async () => {
+    expect(await problems({ ...COMPLETE_PROD, LOG_LEVEL: "verbose" })).toContain("logging: LOG_LEVEL");
+  });
+});

@@ -1,0 +1,37 @@
+# Weekly update PRs. CI (ci.yml) decides whether each one is safe; nothing merges itself.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "03:00"
+      timezone: Asia/Ho_Chi_Minh
+    open-pull-requests-limit: 5
+    groups:
+      # These must move together (AGENTS.md): Next pins @next/env and eslint-config-next to its own version, and the three Better Auth packages are kept in lockstep.
+      next:
+        patterns: ["next", "@next/*", "eslint-config-next"]
+      better-auth:
+        patterns: ["better-auth", "@better-auth/*", "auth"]
+      development-tooling:
+        dependency-type: development
+        update-types: [minor, patch]
+      production-minor-and-patch:
+        dependency-type: production
+        update-types: [minor, patch]
+        exclude-patterns: ["next", "@next/*", "eslint-config-next", "better-auth", "@better-auth/*", "auth"]
+
+  - package-ecosystem: docker
+    directory: /
+    schedule: { interval: weekly, day: monday }
+  - package-ecosystem: docker
+    directory: /deploy/backup
+    schedule: { interval: weekly, day: monday }
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule: { interval: weekly, day: monday }
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly, day: monday }

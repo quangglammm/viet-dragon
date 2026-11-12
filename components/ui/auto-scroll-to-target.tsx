@@ -5,28 +5,20 @@ import { DEEP_LINK_SCROLL_DELAY_MS, findHashTarget, smoothScrollToElement } from
 
 interface AutoScrollToTargetProps {
   readonly targetId?: string;
-  readonly altTargetId?: string;
 }
 
-export function AutoScrollToTarget({
-  targetId,
-  altTargetId,
-}: AutoScrollToTargetProps) {
+export function AutoScrollToTarget({ targetId }: AutoScrollToTargetProps) {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // A URL hash that resolves to an element is handled by SmoothScroll; this
     // covers deep links without a hash, and a stale hash that matches nothing.
     if (findHashTarget(window.location.hash)) return;
-    const rawId = targetId || altTargetId;
-    if (!rawId) return;
-    const idToScroll: string = rawId;
+    if (!targetId) return;
+    const idToScroll: string = targetId;
 
     function executeScroll() {
-      const el =
-        document.getElementById(idToScroll) ||
-        (altTargetId ? document.getElementById(altTargetId) : null);
-
+      const el = document.getElementById(idToScroll);
       if (el) {
         smoothScrollToElement(el);
       }
@@ -40,7 +32,7 @@ export function AutoScrollToTarget({
         clearTimeout(timerRef.current);
       }
     };
-  }, [targetId, altTargetId]);
+  }, [targetId]);
 
   return null;
 }

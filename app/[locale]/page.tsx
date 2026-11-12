@@ -16,14 +16,38 @@ import Brands from "@/components/sections/Brands";
 import CTA from "@/components/sections/CTA";
 import PartnerLogos from "@/components/sections/PartnerLogos";
 import Footer from "@/components/sections/Footer";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
+import { getBlog, getCatalog } from "@/lib/content/read/load";
+import { blogPreviewOf } from "@/lib/content/read/posts";
+import { canonicalCatalogHref } from "@/lib/content/read/urls";
+import { metadataFor, siteLd } from "@/lib/content/read/page-seo";
+import { samePath } from "@/lib/content/read/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { localeOf } from "@/lib/route-locale";
 
-export default function Home() {
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale: localeSegment } = await params;
+  const locale = localeOf(localeSegment);
+  const t = await getTranslations({ locale, namespace: "siteMeta" });
+  return metadataFor({ locale, meta: { title: t("title"), description: t("description"), image: null }, paths: samePath("/") });
+}
+
+export default async function Home({ params }: Readonly<{ params: Promise<{ locale: Locale }> }>) {
+  const { locale: localeSegment } = await params;
+  const locale = localeOf(localeSegment);
+  const posts = blogPreviewOf(await getBlog(), locale);
+  const bannerCopy = (await getTranslations({ locale, namespace: "shopBanner" })).raw("banners") as { href: string }[];
+  const catalog = await getCatalog();
+  const bannerHrefs = bannerCopy.map((banner) => canonicalCatalogHref(catalog, locale, banner.href));
   return (
     <>
+      <JsonLd data={await siteLd(locale)} />
       <Navbar />
       <Hero />
       <ShopCategories />
-      <ShopBanner />
+      <ShopBanner hrefs={bannerHrefs} />
       <About />
       <Services />
       <Shop />
@@ -33,7 +57,7 @@ export default function Home() {
       <FAQ />
       <Quality />
       <Process />
-      <BlogPreview />
+      <BlogPreview posts={posts} />
       <Brands />
       <CTA />
       <PartnerLogos />

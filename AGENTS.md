@@ -1,22 +1,33 @@
 # Viet Dragon – Agent Instructions
 
 ## Read the docs before touching Next.js APIs
-This project uses **Next.js 16.2.9** — breaking changes from earlier versions are real.
+This project uses **Next.js 16.4.x** (16.4.3 installed; moved from 16.2.12 in Phase 6 M1 because 16.2.12 has critical advisories) — breaking changes from earlier versions are real.
 Read `node_modules/next/dist/docs/` before writing any Next.js-specific code.
 Most important breaking change: **`params` is now `Promise<{...}>`** — always `await params` in page and metadata functions.
+
+Other v16 facts, verified against those docs:
+- `proxy.ts` (not `middleware.ts`) defaults to the **Node.js runtime**.
+- `revalidateTag(tag, profile)` needs the second argument (`{ expire: 0 }` for immediate expiry
+  from a Route Handler); the one-argument form is deprecated.
+- `output: "standalone"` does **not** copy `public/` or `.next/static` — a Docker image must copy them itself.
 
 ---
 
 ## Stack & exact versions
 | Package | Version | Notes |
 |---|---|---|
-| Next.js | 16.2.9 | App Router, React Server Components |
+| Next.js | 16.4.x (16.4.3 installed; `@next/env` and `eslint-config-next` are pinned to the same version) | App Router, React Server Components |
 | React | 19.2.4 | |
 | Tailwind CSS | v4 | `@theme inline` syntax — no `tailwind.config.ts` |
 | Motion | 12.x | Import from `"motion/react"` — NOT `"framer-motion"` |
-| next-intl | 4.13.x | `/[locale]` routing — see Internationalization below |
+| next-intl | 4.14.x | `/[locale]` routing — see Internationalization below |
 | Lenis | 1.3.x | Smooth scroll — desktop only (see below) |
 | Swiper | 14.x | Hero and Testimonials carousels — `swiper/react` + `swiper/modules` |
+| zod | 4.x | Env validation (`lib/env.ts`); request-body validation in the admin API (planned) |
+| pino | 10.x | Server logging — only through `lib/logger.ts`, see **Logging** below |
+| Drizzle ORM · drizzle-kit · `pg` | 0.45.x · 0.31.x · 8.x | PostgreSQL access (`lib/db`) and migrations (`drizzle.config.ts`); schema = auth + audit + the CMS content model (45 tables, Phase 3a — see **Content model**) |
+| Better Auth · `@better-auth/drizzle-adapter` · `auth` CLI | 1.7.12 (exact, keep all three in lockstep) | Invite-only accounts, DB sessions, admin plugin (roles). `@node-rs/argon2` hashes passwords. See **Authentication** below |
+| tsx | 4.x | Runs `scripts/admin-cli.ts` (`admin:create` / `admin:reset-password`). Dev dependency, also used inside the Docker `tools` image |
 
 GSAP/ScrollTrigger and the old pin/cover scroll rig (`PanelContainer.tsx`) were removed —
 do not reintroduce them or look for that file; see **Scroll & entrance animation** below
@@ -29,7 +40,8 @@ This project uses **pnpm** (pinned via `packageManager` in `package.json`) — n
 - Install deps: `pnpm install` — never `npm install`/`yarn install`. Running the wrong tool
   regenerates `package-lock.json`/`yarn.lock` as a second, conflicting lockfile.
 - Add a dependency: `pnpm add <pkg>` · dev dependency: `pnpm add -D <pkg>`
-- Run scripts: `pnpm dev`, `pnpm build`, `pnpm start`, `pnpm lint`
+- Run scripts: `pnpm dev`, `pnpm build` (runs `next build --webpack`), `pnpm start`, `pnpm lint`, `pnpm test`, `pnpm test:int`,
+  `pnpm admin:create`, `pnpm admin:reset-password <email>` (see **Authentication**), `pnpm seed` (see **Content model**)
 - `pnpm-lock.yaml` is the only lockfile committed — if `package-lock.json` or `yarn.lock`
   ever reappear (e.g. an editor auto-ran `npm install`), delete them, don't commit them.
 - `pnpm-workspace.yaml` holds `allowBuilds` approvals for deps with native build scripts
@@ -41,46 +53,128 @@ This project uses **pnpm** (pinned via `packageManager` in `package.json`) — n
 
 ---
 
+## Dependency security (Phase 6 M1)
+- **The gate is `pnpm audit --prod --audit-level=high` (exit 0)** — what ships in the image. CI runs the same command (and weekly). A plain `pnpm audit` also lists the dev tooling (`shadcn` CLI, drizzle-kit's old esbuild-kit,
+  Tailwind's toolchain…): those never reach the image and are tracked, not gated.
+- **Why it was not clean before:** Next 16.2.12 had critical advisories (unauthenticated RCE in the Image Optimization API — `/_next/image` is public here, and serves uploads —, SSRF in image optimization, RCE in `next/og`, DoS in Server Actions;
+  fixed from 16.4.1), `nodemailer` < 10.1.4, Next's bundled `sharp` 0.34 (libvips / libheif / librsvg), and ~60 advisories under the `shadcn` CLI, which sat in `dependencies`. Phase 6 M1: Next 16.4.3, `next-intl` 4.14, `nodemailer` 10.2.1, `shadcn` → `devDependencies`,
+  one `sharp` (0.35.5); 79 advisories → 0 in `--prod`. Verified on the upgraded production build: parity unchanged (331 / 1,491 / 43 / 0), the Preview smoke, the media smoke (the optimizer reads `/uploads/…`), the optimizer refuses a foreign host, an unlisted quality and an internal URL (400).
+- **`overrides` in `pnpm-workspace.yaml`** pin transitive packages whose parent has not moved yet (`nanoid`, `source-map-js` under postcss; `esbuild` under drizzle-kit's old kit). Each names the vulnerable range; remove a line when the parent's own range passes it
+  (the way to check: delete it, `pnpm install`, `pnpm audit --prod`).
+- Upgrading Next: read the docs in `node_modules/next/dist/docs/` first (copy the old folder, `diff -rq` the pages this app depends on: proxy, draft mode, `unstable_cache`, `revalidateTag`, image, headers, output), then run the whole gate set plus both real-runtime smokes. Next 16.4 added a lint rule
+  (`@next/next/no-location-assign-relative-destination`) — `lib/auth-client.ts` navigates with `new URL(…)` because a full-page load is deliberate there.
+
+---
+
+## Public endpoints, headers and CSP (Phase 6 M2)
+- **Rate limits** (`lib/rate-limit.ts`): fixed windows in Postgres, in Better Auth's `rate_limit` table under keys `vd:<purpose>:<subject>` (they never meet Better Auth's `<ip>|<path>` keys). `consumeLimit(db, { purpose, subject, windowSeconds, max })`
+  is ONE atomic `INSERT … ON CONFLICT DO UPDATE` using the database clock, so concurrent requests count exactly and a restart does not forget an abuser. The client address is `x-real-ip` only (Caddy overwrites it). **It fails OPEN**: the callers
+  (`/api/consult`, `/api/csp-report`) let a request through and log when the database cannot be asked — a lost lead costs more than a few extra requests. `tooManyRequests()` answers 429 + `Retry-After` + `{ error, code: "RATE_LIMITED" }`.
+  Limits: consult **5 / 10 min per address** (counted first, junk and honeypot included), **3 / hour per phone** (hashed in the key), **100 / hour overall**; uploads **30 / 10 min per account**; CSP reports **30 / min per address**.
+- **`/api/consult`** (`app/api/consult/route.ts`; logic in `lib/consult/{schema,email}.ts`, phone rules in `lib/phone.ts`): body read through `lib/http/body.ts` `readBodyCapped` (**8 KB**, declared length first, then the stream is counted → 413), broken JSON → 400
+  `INVALID_JSON`, a strict zod schema with a cap per field (`parseConsult` → `lead | honeypot | invalid`; control characters are stripped, so a CRLF cannot reach the subject), and a **honeypot** (`website` in the JSON; the input in `components/ui/honeypot-field.tsx` has an
+  unguessable HTML name, `autoComplete="off"` and password-manager opt-outs so a customer's autofill never fills it) — a filled one gets the normal success answer and no mail. **Every visitor value is HTML-escaped** in the mail, and the «Nhắn tin qua Zalo»
+  link is built from `SITE_URL` only: a `productUrl` of another origin is dropped (not an error), `Origin` is never read. The phone pattern is `PHONE_PATTERN` in `lib/phone.ts` (the old `[3|5|7|8|9]` class accepted a `|`); both forms import it. Both forms show
+  `tooManyRequests` (UI copy, five languages) on a 429 and never the server's Vietnamese text.
+- **Uploads:** `POST /api/admin/content/media` is throttled per account (above) before the body is read, and `uploadImage` refuses a picture that would take all uploads past **`MEDIA_MAX_TOTAL_MB`** (default 2048; 422 «Thư viện ảnh đã đầy…» with the figures). The quota is checked
+  AFTER the dedupe lookup, so the same picture again costs nothing and a full library still answers «already here». It is soft: two different pictures arriving at once may overshoot by one.
+- **Response headers** are the pure table in `lib/security-headers.ts`, returned by `next.config.ts` `headers()` (plus `poweredByHeader: false`); `security-headers.test.ts` pins it. Every response: `X-Frame-Options: DENY`, a `Permissions-Policy` that switches off the
+  features the site never uses (camera, microphone, geolocation, payment, usb… — **not** autoplay or the clipboard: the About video starts on a click and the admin copies text). `/admin/*` and `/api/*`: `Cache-Control: no-store` + `X-Robots-Tag: noindex, nofollow`;
+  `/zalo-reply`: noindex. **Caddy owns** `Strict-Transport-Security`, `X-Content-Type-Options`, `Referrer-Policy` and removing `Server` — the app does not repeat them, so none appears twice (a test checks). A new header goes in the table, and a test line.
+- **CSP, in two parts.** **Enforced** on every page (`ENFORCED_CSP`): `frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'` — four directives that need no knowledge of what a page loads. **Report-Only** in production builds only (`REPORT_ONLY_CSP`, dev needs
+  `eval`): the full policy the site is expected to satisfy — `default-src 'self'`, `'unsafe-inline'` for scripts and styles ONLY, `img-src 'self'` plus the two picsum hosts, `connect-src 'self'`, `frame-src 'none'`, `report-uri /api/csp-report`. **No nonces, on purpose:**
+  Next needs a per-request nonce to be dynamic, which would end the ISR everything here is built on; the stricter step later is dropping `'unsafe-inline'` with Next's experimental SRI hashes. The CSP rule skips `/uploads/*` (its own `default-src 'none'; sandbox`) and
+  `/_next/*` (the image optimizer sends its own `sandbox` policy) — a second policy there would only replace theirs. No `frame-ancestors` in the report-only policy (browsers ignore it there and warn).
+- **`POST /api/csp-report`** (`app/api/csp-report/route.ts`, parser `lib/csp-report.ts`): public by necessity (browsers post without cookies). Accepts `application/csp-report`, `application/reports+json` and `application/json`, reads at most 16 KB, **answers 204 to everything**
+  (including a limit, junk and an oversize body), and logs one `warn` per violation under scope `csp` with only `{ directive, blocked (an origin or keyword, never a URL), document (PATH only), disposition, source, line }`; at most 10 reports per request; reports caused by
+  browser extensions are dropped. Read the soak with `jq 'select(.scope=="csp")'` on the container log.
+- **Survey (production build, Chromium, every page type in five languages, quote modal, About video, admin lists, an editor with every tab, the media page + an upload, the media picker):** public pages and the admin produce **no violation of the policy above except two, both explained.**
+  (1) The testimonial avatars are `picsum.photos/seed/…` placeholders, which redirect to `fastly.picsum.photos`; CSP is checked on every hop, so both hosts are listed (and the report names the FIRST url, `picsum.photos`, not the hop that failed). They go when the avatars are replaced.
+  (2) Every admin page reports `script-src` / `eval` from one chunk: zod's feature test `try { Function("") } catch {}` (`allowsEval`) in the editors' bundle. Zod catches the refusal and uses its non-JIT path — verified by loading an editor under a REAL enforced `script-src 'self' 'unsafe-inline'`:
+  all fields and tabs render, no page error. It is an explained report, not a reason for `'unsafe-eval'`; filter it when reading the soak (`blocked == "eval"` and `document` starting `/admin`). No `data:`/`blob:` image, worker or manifest exists anywhere, so none is allowed.
+- **Promotion rule:** enforce the whole policy only after a production soak with no unexplained report, and before that load an editor, autosave, publish and upload under the enforced policy (the survey only loaded it). Do not add `'unsafe-eval'`, a wildcard or a third-party host without a survey line saying why.
+
+---
+
 ## Project overview
 **Viet Dragon** (vietdragon.vn) — professional printing company, TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương.
-- Two real language **modes** — Vietnamese (default, unprefixed URLs) and English
-  (`/en/...`) — switchable via the flag toggle in `Navbar.tsx`. Content shows in ONE
-  language at a time; never render both inline (`"VI · EN"` strings) — see
-  **Internationalization** below.
+- Five locales — Vietnamese (`vi`, default, unprefixed URLs), English (`en`), Chinese (`zh`),
+  Japanese (`ja`) and Korean (`ko`), all non-default ones prefixed (`/en/...`, `/zh/...`) —
+  switchable via the flag dropdown in `Navbar.tsx`. Content shows in ONE language at a
+  time; never render both inline (`"VI · EN"` strings) — see **Internationalization** below.
 - Primary CTA everywhere: **"Nhận Báo Giá" / "Get a Quote"** → `/#cta`
 - Visual direction: white/neutral backgrounds, printed product images take the spotlight
 - Real photos live under `public/images/<section>/` (hero, about, category, product,
   portfolio, service, quality, cta, faq, blog) — these `<Image>`s render without an
   `unoptimized` prop. Exception: **testimonial avatars** (`Testimonials.tsx`) still hit
   `picsum.photos/seed/vdt{1,2,3}/80/80`, so `next.config.ts`'s `images.remotePatterns`
-  entry for `picsum.photos` must stay until those are replaced. See
-  `docs/image-shotlist.md` for the generation prompts if regenerating/replacing any shot.
-- `public/videos/about.mp4` — background/loop video used by the About section.
+  entry for `picsum.photos` must stay until those are replaced.
+- `public/videos/about.mp4` — the About section shows a poster and plays this video (with controls) after a click; it is not a background loop.
 - Floating chrome rendered outside the section stack: `FloatingContact` (Zalo + phone
   buttons, bottom-right, global in `app/[locale]/layout.tsx`) and `MaterialGlossaryFab`
-  (bottom-left icon-legend popover, product detail page only, when the product has
-  `optionGroups`). Shared phone/Zalo constants live in `lib/contact.ts` — reuse those
-  instead of re-hardcoding the number.
+  (bottom-left icon-legend popover, on the pages that show material cards). Shared phone/Zalo constants live in `lib/contact.ts` — reuse those
+  instead of re-hardcoding the number. `app/[locale]/layout.tsx` also mounts
+  `SiteDataProvider` (the navigation read from the content database), `QuoteModalProvider` (the quote modal) and `LanguageDetectorToast`.
+- Consult leads: `QuoteModal` and `ConsultBottomSheet` both POST to `/api/consult`, which emails
+  the lead via nodemailer (SMTP env vars — see **Environment variables**; limits, escaping and the honeypot are in **Public endpoints, headers and CSP**). `/zalo-reply` is a
+  standalone client page (outside `[locale]`) that copies a prepared reply and opens Zalo.
 
 ---
 
 ## Routes
-Every route is nested under `app/[locale]/` — `locale` is `"vi"` (default, unprefixed:
-`/`, `/products`) or `"en"` (prefixed: `/en`, `/en/products`).
+Public routes are nested under `app/[locale]/` — `locale` is `"vi"` (default, unprefixed:
+`/`, `/products`) or one of `"en"`, `"zh"`, `"ja"`, `"ko"` (prefixed: `/en`, `/en/products`,
+`/zh/products`, …).
 
 | Route | Type | Notes |
 |---|---|---|
-| `/[locale]` | Server | 16 stacked sections (Hero → Footer), no scroll pinning |
-| `/[locale]/products` | Server async | `await params` for `{ locale }` |
-| `/[locale]/products/[categoryId]` | Server async | `await params`; `generateStaticParams` pre-generates all 4 categories (locales handled by the parent layout) |
-| `/[locale]/products/[categoryId]/[productId]` | Server async | `await params`; `generateStaticParams` pre-generates every product across all categories; renders `MaterialFlashcard` per option and, when the product has `optionGroups`, `MaterialGlossaryFab` |
-| `/[locale]/blog` | Server async | `await params` for `{ locale }` |
-| `/[locale]/blog/[slug]` | Server async | `await params`; `generateStaticParams` pre-generates all 6 posts |
+| `/[locale]` | Server | Navbar + 17 stacked sections (Hero → Footer, including `PartnerLogos`), no scroll pinning |
+| `/[locale]/products` | Server async | `await params`; showcase gallery + one card per category from the content database |
+| `/[locale]/products/fast-print` | Server + client | "In nhanh lấy liền" page: the items are `fast_print_item` rows (`getFastPrint`), every word of the page is the `fastPrint` UI-copy namespace; markup in `FastPrintClient.tsx` |
+| `/[locale]/products/[category]` | Server async, **dynamic** | `await params`; `resolvePage` (`lib/content/read/resolve-page.ts`) → `categoryPageOf`; the segment is the category's slug in the page's language |
+| `/[locale]/products/[category]/[product]` | Server async, **dynamic** | a product's shapes grid (`SubgroupShapesView`) or, with no shapes, its materials (`ProductDetailView`) |
+| `/[locale]/products/[category]/[product]/[segment]` | Server async, **dynamic** | one shape of the product, or one of its materials scrolled to; both through `ProductDetailView` |
+| `/[locale]/blog` | Server async | the published posts from the content database, newest first (`getBlog` → `blogIndexOf`) |
+| `/[locale]/blog/[slug]` | Server async, **dynamic** | `resolvePost` (`lib/content/read/resolve-post.ts`): canonical slug → the post (`postPageOf`, body by `PostBody`), an old / other-language slug → 308 to the canonical, unknown or archived → 404 |
+| `/[locale]/[...rest]` | Server | Catch-all that only calls `notFound()`, so unknown URLs (and every other `notFound()` under `[locale]`) render `[locale]/not-found.tsx` — a localized 404 (namespace `notFound`, Navbar + Footer). Without it `[locale]` as the top-level segment never reaches that file |
 
-Both `/products` and `/blog` have their own `layout.tsx` that wraps Navbar + Footer
-(the `[categoryId]/[productId]` detail page nests under the `/products` layout).
-Root `app/[locale]/layout.tsx` calls `generateStaticParams` for both locales and
-`setRequestLocale` — every nested page/layout under it is statically generated per locale.
+Routes **outside** `[locale]` (excluded from the next-intl `proxy.ts` matcher):
+
+| Route | Notes |
+|---|---|
+| `/admin/*` | CMS UI — own root layout, Vietnamese only: sign-in, account, users, audit and `/admin/content/[type]` (list) / `/admin/content/[type]/[id]` (editor), the editors on the content database. See **Admin CMS** |
+| `/api/admin/*` | CMS API — `content/**` (drafts, publish, revisions, delete — see **Content model**; `content/media` is the library: list, upload, delete — see **Media**) and `preview` (turns Draft Mode on/off — see **Preview**). Every handler starts with `requireApiUser` (a test enforces it) |
+| `/api/auth/*` | Better Auth (`app/api/auth/[...all]/route.ts`): sign-in/out, session, password change, admin-plugin user management. Sign-in must use this HTTP surface — only HTTP requests are rate limited, not `auth.api.*` calls |
+| `/api/consult` | Public. Receives quote/consult leads from `QuoteModal` / `ConsultBottomSheet`, emails them. 8 KB cap, zod-validated, honeypot, escaped mail, 5 / 10 min per address · 3 / hour per phone · 100 / hour overall (429 + `Retry-After`) |
+| `/api/csp-report` | Public. Receives the browsers' Content-Security-Policy reports (Report-Only); 16 KB cap, 30 / min per address, always 204, logs a trimmed record |
+| `/zalo-reply` | Client page that copies a prepared reply message and opens Zalo (`noindex`) |
+| `/uploads/<year>/<name>-<hash>.webp` | `app/uploads/[...key]/route.ts` — serves the images uploaded through the admin from the uploads volume (`lib/media`); the site's own pictures are in `public/`. See **Media** under Admin CMS. `proxy.ts` skips it (the path has a file extension) |
+| `/api/health` | Liveness for the Docker healthcheck: always 200 while the process serves, body `{ status, db: "ok" \| "down" }` — a database outage must not mark the app unhealthy |
+| `/robots.txt` | `app/robots.ts` — disallows `/admin`, `/api/`, `/zalo-reply`; names `<SITE_URL>/sitemap.xml` (static, baked at build) |
+| `/sitemap.xml` | `app/sitemap.ts` — `force-dynamic` (so `next build` needs no database), built by the pure `lib/content/read/sitemap.ts` from the cached catalog, blog and revision dates: every canonical page in five languages (~1,130 entries today) with `hreflang` alternates + `x-default` and a `lastmod` only where one record decides it |
+
+`/products` and `/blog` have their own `layout.tsx` that wraps Navbar + Footer
+(the `[category]/[product]` detail pages nest under the `/products` layout).
+Root `app/[locale]/layout.tsx` reads the navigation from the content database (`getNavigation`) and calls `setRequestLocale`;
+its `generateStaticParams` returns `[]`, so **nothing under `[locale]` is prerendered**: `next build` needs no database, the home page and
+the other static pages are generated on their first request and cached until a publish touches what they read (tags), and the three
+catalog routes above are plain dynamic routes (no `generateStaticParams`) that render per request from the tag-cached reads
+(~15–30 ms measured). Why dynamic: when a cached (ISR) page throws a redirect, Next 16.2.12 sent the `Location` header twice on the first
+response (not re-tested on 16.4.3 — the routes stay dynamic, so it cannot show), and clients that join repeated headers (Node's `fetch`, some crawlers) follow «/a, /a» to a 404 — found by the parity run; a
+dynamic render sends it once, and an alias released in the admin stops redirecting at once. Do not add `generateStaticParams` or
+`connection()` to those routes (a dynamic API under ISR is a 500, `DYNAMIC_SERVER_USAGE`).
+
+**SEO (Phase 4 M4):** every page's `generateMetadata` goes through `metadataFor` (`lib/content/read/page-seo.ts`) → `pageMetadata` (`seo.ts`): `title` +
+`description`, **canonical**, **`hreflang`** for the five languages plus **`x-default` = the Vietnamese page**, Open Graph (`og:locale` / `alternateLocale`,
+image, `article` + `publishedTime` for a post) and a `summary_large_image` Twitter card. `metadataBase` comes from `SITE_URL`; the home page is the bare
+origin (`absoluteUrl`, the form Next writes) in the canonical, the sitemap and the JSON-LD alike. **The SEO fields are used:** a product / shape / option /
+category / post takes its `seoTitle` / `seoDescription` / `ogImage` only for **the exact language** it was written in (never another language's text; blank
+= the page's own title / description), and the image falls back to the entity's cover, then the site default (`seo.defaultOgImage`). Site-wide facts are the
+UI-copy namespace `seo` (`siteName`, `defaultOgImage`), editable in the UI-copy editor. **JSON-LD** (`components/seo/json-ld.tsx`, escapes `< > & U+2028/9`):
+`Organization` + `WebSite` on the home page, `BreadcrumbList` on the catalog pages / blog / posts / Fast Print, `BlogPosting` on a post; **no `Product`
+markup** (no public prices) and no `sameAs` (the footer's social links are placeholders). `alternateLinks: false` in `i18n/routing.ts` (next-intl's automatic
+`Link: rel="alternate"` headers name the SAME path in every language, which is wrong now that each language has its own slugs), `noindex` on `/admin` and
+`/zalo-reply`.
 
 ---
 
@@ -148,55 +242,76 @@ element inside the existing column/grid div instead of appending it as a row sib
 ---
 
 ## Data files
-- `data/categories.ts` — `ProductCategory[]` (4 categories: Tiếp thị/Marketing, Văn phòng/Office,
-  Bao bì/Packaging, Ấn phẩm Tết/Tet Publications — item counts vary per category); exports
-  `showcaseImages`. Every name/description field is split `xVi`/`x` (English) — read with
-  `pickLocale()`, never both at once.
-- `data/posts.ts` — `BlogPost[]` (6 posts); exports `categoryColors`. Same split pattern,
-  including full article bodies (`content` / `contentEn`).
-- `data/material-traits.ts` — `Record<MaterialTraitKey, MaterialTrait>` icon glossary for
-  `ProductOption.descriptionTraits` bullets (in `data/categories.ts`); consumed by
-  `MaterialFlashcard` (per-bullet icon) and `MaterialGlossaryFab` (full legend popover).
+- **`scripts/seed/legacy/`** — the static sources the content database replaced. Nothing but the seed (`pnpm seed`, `scripts/seed/sources.ts`) and a few
+  seed-parity tests read them; a test (`lib/content/read/legacy-sources.test.ts`) fails if any public entry point imports anything under `scripts/`.
+  They were `data/*.ts` and three `lib/` heuristics until Phase 4 M5 moved them here (the old admin's `data/content/*.json` snapshots were deleted — they were an
+  older copy of the catalog, last edited before the final `.ts` edits, and the seed never read them). What is there:
+  - `subgroups-catalog.ts` (≈9,200 lines) — `MAIN_CATEGORIES` (4: Tiếp thị/Marketing, Văn phòng/Office, Bao bì/Packaging, Ấn phẩm Tết/Tet Publications) and
+    `SUBGROUPS_CATALOG` (25 subgroups — 7 marketing, 6 office, 4 packaging, 8 tet — with 77 shapes and 101 materials in total); lookups via `getSubgroupById()`.
+  - `categories.ts` — the **types** (`ProductCategory`, `ProductItem`, `ProductOption`, `ProductOptionGroup`). Every name/description field is split `xVi`/`x`
+    (English) with optional `xZh`/`xJa`/`xKo` — the old convention, kept only here.
+  - `translations.ts` — extra zh/ja/ko text kept outside the records (`SHOWCASE_LABELS`, `CATEGORY_NAMES`, `CATEGORY_DESCS`, `ITEM_NAMES`, `ITEM_DESCS`, `SHAPE_DESCS`, keyed by id).
+  - `posts.ts` + `posts.json` — `BlogPost` type and the 6 posts with full article bodies. `showcase.ts`, `fast-print.ts` — the `/products` gallery and the Fast Print items.
+  - `marketing-menu.ts`, `office-menu.ts`, `packaging-menu.ts`, `tet-menu.ts` — the old Navbar mega-menu definitions. `material-traits.ts` — the old icon glossary for the option bullets.
+  - `product-sizes.ts`, `product-specs.ts`, `shape-aliases.ts` — the old name-matching size / spec heuristics and the shape-id dictionary (the seed measured owner decision 1 with them).
+- The catalog, categories, menus, blog, Fast Print, showcase and UI copy the **public site** shows come from the content database (see **Content model**); the UI copy's
+  *structure* from `messages/*.json`.
 - `coverImage` / `image` fields are real local paths (`/images/category/...`,
   `/images/product/...`, `/images/blog/...`) served straight from `public/` — no
   `unoptimized` prop needed on those `<Image>`s. The one picsum reference in the
-  codebase is the testimonial avatar seeds in `Testimonials.tsx` (not a `data/*.ts` field —
+  codebase is the testimonial avatar seeds in `Testimonials.tsx` (not a catalog field —
   those live inline in the component, zipped with `messages/*.json` `t.raw("items")`).
-- **`data/*.ts` vs `messages/*.json`**: structured records with a stable shape (categories,
-  products, blog posts, material traits) live in `data/` with `xVi`/`x` field pairs. Pure UI
-  copy (headings, buttons, FAQ, checklists) lives in `messages/vi.json` + `messages/en.json` —
-  see Internationalization below. Don't move one into the other's convention.
+- **Content database vs `messages/*.json`**: structured records (products, categories, posts, Fast Print, showcase, menus) live in the content database; pure UI
+  copy (headings, buttons, FAQ, checklists) lives in `messages/<locale>.json` (all five), whose texts the database may override — see Internationalization below.
 
 ---
 
 ## Internationalization
-`next-intl` with `/[locale]` App Router segment routing. `vi` is default/unprefixed
-(`/`, `/products`), `en` is prefixed (`/en`, `/en/products`) — `localePrefix: "as-needed"`
-in `i18n/routing.ts`.
+`next-intl` with `/[locale]` App Router segment routing. Locales: `vi` (default/unprefixed:
+`/`, `/products`), `en`, `zh`, `ja`, `ko` (prefixed: `/en`, `/zh/products`, …) —
+`localePrefix: "as-needed"` and `localeDetection: false` in `i18n/routing.ts`.
 
-- **Always import `Link`, `usePathname`, `useRouter` from `@/i18n/navigation`** for internal
-  links/navigation — never `next/link` or `next/navigation`. Using the plain Next.js versions
-  is the single easiest way to break EN-locale navigation (links silently drop the `/en`
-  prefix). `WipeButton` already does this internally.
+- **Always import `Link`, `usePathname`, `useRouter` (and `redirect` / `permanentRedirect`, `getPathname`) from `@/i18n/navigation`** for internal
+  links/navigation — never `next/link` or `next/navigation`. It is a thin wrapper over next-intl's `createNavigation(routing)` (`i18n/navigation.tsx`, no `pathnames`):
+  **every href in the code is the INTERNAL path** (`/products/…`, `/blog/…`) and the wrapper writes the language's own fixed words (`lib/routes.ts`), so
+  `usePathname()` returns the internal path too — active-menu / footer checks and `hash-navigation.ts` compare internal paths, never `/san-pham`. Using the plain Next.js versions
+  is the single easiest way to break non-default-locale navigation (links silently drop the
+  `/en`, `/zh`, … prefix). `WipeButton` already does this internally. (The admin and
+  `/zalo-reply` live outside `[locale]` and correctly use the plain Next.js versions.)
 - **UI copy** (headings, buttons, checklists, FAQ, etc.) lives in
-  `messages/vi.json` / `messages/en.json`, namespaced per section (`about`, `shop`, `faq`, …).
+  `messages/{vi,en,zh,ja,ko}.json`, namespaced per section (`about`, `shop`, `faq`, …).
   Read with `useTranslations("namespace")` (client components) or
-  `getTranslations({ locale, namespace })` (server/async). Both files must stay in sync —
-  diff their flattened key sets after editing either one (a missing key throws at runtime).
+  `getTranslations({ locale, namespace })` (server/async). **All five files must stay in
+  sync** — `i18n/messages.test.ts` fails when a key, an empty text or a `{variable}` the Vietnamese text lacks differs (a missing key
+  throws at runtime). **The files own the STRUCTURE, the content database the WORDING (Phase 4 M3):** `i18n/request.ts` returns
+  `getMessages(locale)` (`lib/content/read/load.ts`) = the file's tree with the published `site_message` texts laid over it
+  (`mergeMessages`: an empty text keeps the file's, a namespace or key the files lack is ignored), cached under the `site_message` tags, so a
+  UI-copy publish in the admin shows on the next request. One publish expires EVERY language's merged tree (the tag is per namespace, a document
+  holds all five languages); each is rebuilt on its next request. A new namespace needs a name in `lib/content/editor/site-message-labels.ts`
+  (a test checks) and a database seeded after it was added to be editable in the admin (the site works without: the files stand).
+  No per-language dictionary belongs in a component — add keys here.
 - **List content** (arrays of translated objects — FAQ items, process steps) — use
   `t.raw("key")`, which returns the JSON array/object unprocessed. Keep non-translatable
   metadata (icons, hrefs, image seeds, `highlighted` flags) in the component as a
   locale-agnostic array and zip it with `t.raw()` by index — see `Portfolio.tsx` for the
   pattern.
-- **`data/*.ts` fields** (not UI copy) — read via `pickLocale(locale, viValue, enValue)`
-  from `lib/locale.ts`, with `locale` from `useLocale()` (client) or the page's own
-  `params.locale` (server).
-- **Never render both languages inline** (`"VI · EN"` or `{vi} / {en}`) — one locale
+- **Fields that carry one text per language outside the database** — read via
+  `pickLocale(locale, viValue, enValue, zhValue?, jaValue?, koValue?)` from `lib/locale.ts`
+  (falls back to the English value when a zh/ja/ko value is `undefined`), with `locale` from
+  `useLocale()` (client) or the page's own `params.locale` (server).
+- **Never render several languages inline** (`"VI · EN"` or `{vi} / {en}`) — one locale
   renders at a time.
-- Date formatting: `toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {...})` — see
-  `formatDate()` in the blog pages.
+- Date formatting: map the locale to a BCP-47 code (`vi-VN`, `en-US`, `zh-CN`, `ja-JP`,
+  `ko-KR`) before `toLocaleDateString` — see `formatDate()` in the blog pages.
 - `proxy.ts` (project root, **not** `middleware.ts` — Next 16 renamed the convention)
-  runs `next-intl`'s `createMiddleware(routing)`.
+  first asks `decideRoute()` (`lib/routes.ts`, pure, table-tested) what to do with the fixed words, then runs `next-intl`'s `createMiddleware(routing)`.
+  The Vietnamese words (`/san-pham`, `/bai-viet`, `/san-pham/in-nhanh`) are **rewritten** to the internal route; the English ones in Vietnamese
+  (every URL the old site had), another language's word (`/en/san-pham`) and an explicit `/vi/…` are answered with a **308** to the canonical address
+  (absolute, from `SITE_URL`, query kept). A legacy catalog URL whose slug also changed takes two hops (word, then the page's own slug redirect); a test
+  and `pnpm parity:compare` cap it at 2. Its `matcher` skips `api`, `admin`, `zalo-reply`, `_next`, `_vercel` and any path containing a file extension
+  (so `sitemap.xml` / `robots.txt` never reach it).
+- **Language switcher:** `lib/locale-switch.ts` reads the page's own `<link rel="alternate" hreflang>` (Next replaces them on every client navigation) and
+  goes straight to the other language's canonical address; with none (a 404) it keeps the path and lets the resolver redirect.
 
 ## Reusable UI primitives
 Introduced to stop re-implementing the same JSX per section — reach for these before
@@ -208,8 +323,9 @@ writing a new eyebrow/heading/button/badge block:
 - `components/ui/icon-badge.tsx` — icon-in-circle badge (`size`: sm/md/lg, `rounded`: full/xl).
 - `hooks/use-section-in-view.ts` — the `useRef` + `useInView(ref, { once: true, margin: "-80px" })`
   pair, for sections where multiple children must reveal off one shared trigger.
-- `lib/locale.ts` — `pickLocale(locale, vi, en)` for `data/*.ts` field selection.
-- `lib/contact.ts` — `PHONE_NUMBER` / `ZALO_CHAT_URL` constants; reuse these instead of
+- `lib/locale.ts` — `pickLocale(locale, vi, en, zh?, ja?, ko?)` for per-language field selection.
+- `lib/contact.ts` — phone / Zalo / email constants (`PHONE_NUMBER`, `PHONE_NUMBER_2`,
+  `ZALO_CHAT_URL`, `CONTACT_EMAIL`, plus `*_FORMATTED` variants); reuse these instead of
   re-hardcoding the phone/Zalo number in a new component (`FloatingContact` and
   `MaterialFlashcard` already do).
 
@@ -221,6 +337,497 @@ wrapper would need as many props as it saves.
 - Hash links must always be absolute: `/#cta`, `/#services`, `/#vision` — never bare `#cta`
 - Bare hashes (e.g. `#cta`) resolve relative to the current URL, breaking navigation from `/products` or `/blog`
 - Navbar breakpoint: `lg` (1024px) — hamburger shows on mobile AND tablet; full nav at desktop only
+- **Never hard-code `/san-pham`, `/bai-viet` or `/in-nhanh` in a component, model, builder or UI-copy file** (tests may assert them) — write the internal path (`/products/…`, `/blog/…`, `/products/fast-print`) and let `Link` / `getPathname` / `publicPath` write the language's words. A catalog link typed into UI copy goes through `canonicalCatalogHref` on the server before it reaches a component (see `ShopBanner`).
+
+---
+
+## Admin CMS
+**Status: rebuilt on the content database** on branch `feature/admin-cms` — Phases 0–4 are done (auth, content model, editors, the public site reading the database,
+Preview), 5 (media) and 6 (hardening, backups, CI) are done; Phase 7 (the cutover to the VPS) is next. Decisions, phases and acceptance
+criteria live in `docs/admin-architecture.md`; the auth checklist in `docs/security.md`;
+the VPS/Docker runbook in `docs/deployment.md`. Sections marked **(planned)** describe what is still to come.
+
+### Current state
+- UI: the admin has its own root layout (`app/admin/layout.tsx`, Vietnamese-only UI) and sits
+  **outside** `app/[locale]` and outside next-intl. `app/admin/login` and `app/admin/account/password`
+  (the forced change) are standalone dark-card pages (`AuthCardShell`); everything else lives in the
+  route group `app/admin/(console)/`, whose server layout calls `requireUser()` and renders
+  `components/admin/admin-shell.tsx`. Console pages: `account`, `users` and `audit` (Phase 2), the **content
+  editors** `content/[type]` + `content/[type]/[id]` (Phase 3d — see **Content model → Editors**) and the **picture library** `media` (Phase 5 — see **Media**). The five pre-database
+  editors (`site-content`, `products`, `blog`, `media`, `translations`), their API (`/api/admin/{blog,media,products,translations,translate}`) and
+  `lib/content-store.ts` (which wrote `data/content/*.json`, `messages/*.json` and `public/uploads/` on the local filesystem) were **deleted in Phase 4 M5**.
+- API: `app/api/admin/content/**` (drafts, publish, revisions, delete) and `app/api/admin/preview`. Auth: Better Auth guards the pages and every handler
+  (`requireApiUser`: content routes need `content:edit` / `content:publish` / `content:delete`). The old shared-password
+  session (`lib/admin-auth.ts`, a hardcoded fallback password and a forgeable base64 cookie) is deleted; those
+  credentials remain in git history until Phase 7 rotates anything that ever used them.
+- **What the public site sees of admin edits:** everything — the catalog (products, categories, shapes, materials, traits, sizes, specs), the whole navigation
+  (mega-menus, footer, home shop strips), the blog (posts, categories, URLs), Fast Print (items, prices, units), the `/products` showcase gallery and the UI copy
+  (`messages/*.json` + the published `site_message` texts) come from the content database, so a publish shows on the next request, no rebuild. What is
+  still in code: the structure of the UI copy (`messages/*.json`) and the fixed path words (`lib/routes.ts`). **Drafts are visible to editors through Preview** (below).
+- **Preview (Phase 4 M5).** «Xem trước» in an editor (open draft, saved) → `POST /api/admin/preview {type, id, locale}` (`requireApiUser`, `content:edit`) refuses a draft
+  that is missing or invalid (422 with the editor's issues), turns **Draft Mode** on (`__prerender_bypass`, `Secure; SameSite=None` — plain-HTTP `localhost` works in Chrome/Firefox
+  only because they treat it as secure) and answers `{ url }`: the draft's own page in the chosen language (`lib/content/read/preview-target.ts`, on the overlaid catalog and blog, so a
+  never-published product gets its draft URL). The editor opens it in ONE named tab (`vd-preview`, opened synchronously in the click so the pop-up blocker allows it).
+  - **The preview is the published site with EVERY valid open draft laid over it** (drafts are per entity, not per user): `lib/content/read/preview.ts` — `overlayOf` (pure: valid
+    drafts apply, the rest are skipped and named with their first issue) and `loadPreviewOverlay` (every `content_draft` through `validateSnapshot`). The `load*` functions in
+    `load.ts` take the overlay (`documentsOf`: the live documents in order, a draft standing in for its entity, then the drafts of entities not published yet) and the pure builders
+    after them cannot tell. The `get*` the pages call are `previewable(...)`: with an overlay they read the database directly — **never through `cachedRead`, so a preview cannot reach
+    the data cache** — otherwise the cached published read. `getPublishedCatalog` / `getPublishedBlog` are what `app/sitemap.ts` reads (a preview cookie must not put drafts in `sitemap.xml`).
+  - **The gate** (`lib/content/read/preview-session.ts`, `previewOverlay()`, once per request): Draft Mode on AND a signed-in user past the forced password change AND `content:edit`; anything
+    short of that reads the published site. The bypass cookie alone is a switch, never an identity. `components/ui/preview-notice.tsx` (server) → `preview-banner.tsx` (client) draw the strip
+    «Đang xem bản nháp · N đang hiển thị» (applied / skipped drafts with links to their editors, «Thoát xem trước» = `DELETE /api/admin/preview` + reload) only for a request that passes the gate,
+    so the ISR pages every visitor gets carry no trace of it (verified in production mode: ISR `HIT` with `s-maxage` for visitors before, during and after an editor's preview of the same URL).
+  - Limits to know: a draft that is valid alone but refers to something that exists only as another draft (a new material used by a new product) is skipped until the first is published
+    (references are checked against the live rows, like publish); the preview recomposes catalog + menus + messages uncached (hundreds of ms — editors only).
+
+- **Media (Phase 5 M1).** The library is the `media` table: the site's own files (`source = 'static'`, served from `public/` at `/<storage_key>`, read-only) and uploads
+  (`source = 'upload'`, key `uploads/<year>/<readable-name>-<8 hex of sha256>.webp`, served by `app/uploads/[...key]/route.ts`). Documents refer to a file by its key; `checkReferences` /
+  `draft_reference` already understood `media`. **Upload** — `POST /api/admin/content/media` (multipart, ONE `file` part, `requireApiUser(["media","upload"])`, body read through a cap, `lib/media/request.ts`):
+  `lib/media/formats.ts` sniffs the bytes (jpeg / png / gif / webp / avif; SVG, HTML, exe, pdf, zip, HEIC and video are refused with a reason in Vietnamese — the name and MIME type the browser claims are never
+  looked at), `lib/media/process.ts` decodes with sharp (`failOn: "warning"`, 80 MP pixel limit, 2 decodes at a time) and ENCODES A NEW WebP from the pixels: EXIF/GPS/XMP dropped, orientation applied,
+  longest side ≤ 3000 px (never enlarged), colours in sRGB, a GIF keeps its first frame — nothing of the original survives, so a polyglot or appended payload dies here. `lib/media/service.ts` `uploadImage`
+  dedupes by the sha256 of the stored bytes (`200 { existing: true }`), writes the file (temp name + rename, `lib/media/store.ts`, every path through `isUploadKey` + a `path.relative` check) BEFORE inserting
+  the row, and removes the file if anything after the write fails. The duplicate check + insert run in ONE transaction that first takes `pg_advisory_xact_lock(hashtextextended(sha256))`, so the same picture uploaded at the same moment under different names (different keys) still becomes one file and one row (found in Phase 6 M1: the earlier check-then-insert let several through when requests interleaved — `media-api.int.test.ts` now fires 5 at once, 4 rounds, and fails 3/3 without the lock); a key that already belongs to a DIFFERENT picture (an 8-hex prefix collision) is answered with 422. **Delete** — `DELETE /api/admin/content/media {key}`, `media:delete` (admin only): the row must be an
+  upload (`READ_ONLY` otherwise), `usedBy(tx, "media", key)` (`lib/content/used-by.ts` — the 14 FK columns into `media`, checked against `pg_constraint` by `draft-lifecycle.int.test.ts`, plus open drafts via
+  `draft_reference`) must be 0 live + 0 drafts (`IN_USE` 409 with the counts), the row goes in one transaction (FK RESTRICT is the last line), the file after COMMIT (failure logged, never served without its row).
+  **Serving** — `GET`/`HEAD /uploads/<year>/<file>`: the path must match `parseUploadPath` exactly (the traversal guard: year `\d{4}`, file `<slug>-<8 hex>.webp`), the row must be an upload; content type and ETag
+  (`"<sha256>"`, 304 supported) from the row, `Cache-Control: public, max-age=31536000, immutable`, `nosniff`, `Content-Security-Policy: default-src 'none'; sandbox`; a row whose file is missing is logged and a 404.
+  Audit actions `media.uploaded` (not for a repeat) / `media.deleted`. **Images only for now** (decided 2026-10-25): no page can play an uploaded video. Deleting a file that an old REVISION names is allowed — restoring
+  that revision shows the usual «Không tìm thấy ảnh». Not in this phase: alt-text / rename editing, a storage quota, upload throttling (Phase 6).
+  **Media UI (Phase 5 M2).** `GET /api/admin/content/media` also answers `maxUploadBytes` and takes `order=newest|name`. **The UI refuses a file BEFORE sending it** when it can only fail
+  (`lib/content/editor/media-upload.ts` `checkFile`: empty, over the cap, an SVG or another non-photo MIME type; an unknown type such as AVIF in some browsers is left to the server) — above all the size, because a body over the cap makes
+  the server answer 413 and close the connection while the browser is still sending, which `fetch` reports as a dead network. The queue (`uploadQueueReducer`, pure and unit-tested) sends ONE file at a time, a failure never stops the
+  rest, every file ends with its own result line (stored / already in the library / the reason — server refusals are prefixed with the file name); the hook (`use-media-upload`) keeps the `File` objects under the ids it counts.
+  **Library page** `/admin/media` (`app/admin/(console)/media/page.tsx`, `content:edit`; «Thư viện ảnh» in the sidebar): upload panel (editors and admins: several files, drag and drop), filters (search, folder, source — default «Đã tải lên», newest first),
+  tiles with a source badge and «Mở ảnh»; «Xóa» only for an admin on an upload, in a dialog that shows the server's refusal («đang được dùng (n mục đang hiển thị, m bản nháp)») and stays open.
+  **Picker** (`MediaPickerDialog` in `media-field.tsx`): the same source filter and, for a user with `media:upload` (`canUploadMedia` through `EditorContext`), «Tải ảnh lên» — ONE file, and the new image fills the slot at once.
+  **Evidence:** `media-upload.test.ts` (20: every check, the whole queue incl. out-of-order results; 8 mutations of the cap, the type hints, the one-at-a-time rule, the state guards, the multipart header and the nav permission all caught), `api.test.ts` (multipart without a content type, delete body), `admin-nav.test.ts`, int tests for `maxUploadBytes` / `order`; a browser run in production mode on a scratch
+  seeded database: a batch of six files (two stored; an SVG, an HTML file and an 11 MB file refused in the browser with no request; an exe renamed `.jpg` refused by the server), the editor sees no «Xóa», a banner uploaded through the product's cover picker (3600×1200 → 3000×1000)
+  fills the slot, autosaves, shows in «Xem trước» and, once published, on the visitor's page through `/_next/image?url=%2Fuploads%2F…`; an admin's delete is refused while the product uses it (dialog stays open) and works for an unused upload (tile, row, file gone, URL 404); mobile width.
+  **Evidence:** `lib/media/{formats,process}.test.ts` (51 + 16 unit tests incl. real sharp: GPS EXIF gone, orientation, CMYK, animated GIF, pixel bomb, truncated JPEG), `app/api/admin/content/media/media-api.int.test.ts`
+  (41: 401 / 403 / 415 / 413 by length and by streaming / 422 for SVG, sized SVG, HTML, exe-as-jpg, pdf, zip, garbage, cut PNG; storage + row + no EXIF; dedupe, also concurrent; serving headers, HEAD, 304, 11 traversal
+  cases with a decoy file outside the volume, non-upload and file-less rows; delete 403 / 404 / READ_ONLY / in-use by a published product / by a draft only / success; audit) and 16 mutations of the sniffing, the guard,
+  the decoder settings, the dedupe, the in-use refusal, the source checks and the body cap (the survivors are equivalent: `toColourspace` was redundant and was removed, the declared-length check only saves reading).
+  Production-mode smoke on a scratch seeded database (41 checks over real HTTP): refusals write nothing; a GPS-tagged photo is stored as a 1600×1200 WebP without EXIF; served to a visitor with the right headers, 304, HEAD;
+  **`/_next/image?url=/uploads/…` optimises it through the route handler**; the same picture again is `existing`; a CMYK JPEG uploads; 7 traversal probes (`curl --path-as-is`) never answer 200; the file survives a server restart
+  (it is on the volume, not in `.next`); an open draft, then a published product, block the delete (409 with the counts), an editor gets 403, a built-in file `READ_ONLY`; after the cover is restored the delete removes row + file and the URL 404s;
+  audit rows. **Findings fixed on the way:** (1) the seed labelled `public/uploads/*` as `source = 'upload'` — all seeded files are `static` now, and `deleteUpload` also requires `isUploadKey(key)` (a test inserts such a row);
+  (2) **any unknown path with a file extension (`/wp-login.php`, `/nope.png`) was a 500**, not a 404: `proxy.ts` skips such paths, so `[locale]` arrived as `"wp-login.php"` and the pages indexed the catalog by it (the layout's `hasLocale` check
+  renders alongside the page, too late). Every page under `app/[locale]` now reads its segment through `localeOf()` (`lib/route-locale.ts`, 404 for anything that is not one of the five languages); parity unchanged (331 / 1,491 / 43 / 0).
+  (3) the standalone output held two sharp copies (ours 0.35, Next's 0.34): ~78 MB — one copy since Phase 6 M1. A client that sends a body over the cap sees the connection closed after the 413 — the editor UI (M2) checks the size before sending.
+
+### Target **(planned — see the phases in `docs/admin-architecture.md`)**
+PostgreSQL + Drizzle ORM · Better Auth with invite-only named accounts and `admin` /
+`editor` roles · public pages reading content through `lib/content/read/*` (tag-cached, no static fallback) ·
+validated media pipeline served from a volume (Phase 5) · Docker Compose +
+Caddy on one VPS. **The customer must be able to edit every product attribute in all 5
+languages**, and edits are **drafts until published** (draft → preview → publish, every publish a
+restorable revision). The relational schema (validated against the real data), the draft/publish
+design, the seed rules and the owner-review list are in `docs/data-model.md` (+ `docs/data-model.sql`).
+
+### Content model (Phase 3a schema + 3b seed + localized URLs + 3c draft / publish / delete services and the `/api/admin/content` API landed; the editors (3d) use it; the public catalog pages and navigation read it since Phase 4 M2, blog / UI copy / Fast Print / showcase since M3)
+The full design is `docs/data-model.md` (local); this is what the code now guarantees.
+- **Tables:** `lib/db/content/*.ts` (foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog,
+  site-message, drafts; shared builders in `columns.ts`, SEO/Open Graph columns in `seo.ts`), re-exported by `lib/db/schema.ts`.
+  Relative imports only (drizzle-kit loads them outside Next). 46 tables; products are the aggregate root; every
+  translated entity has an `*_i18n` table keyed `(owner, locale)`.
+- **Migrations:** `0002_content_tables` is drizzle-kit output plus ONE hand-added function at the top (`nonblank()`, which
+  the table CHECKs call); `0003_content_integrity` is hand-written: immutable-key/uid triggers, frozen slug owners,
+  TRUNCATE guards, the commit-time (deferred) checks, the deferrable `menu_item` foreign keys and the 5 `locale` rows. Add
+  future columns with `pnpm db:generate`; put triggers/functions in a `--custom` migration. Trap: `drizzle-kit generate --custom`
+  snapshots the WHOLE current schema, so a custom migration needs to come AFTER the table migration it depends on (generating
+  it first leaves the next `generate` with nothing to do). `0004_localized_slugs` (table changes, hand-reordered; it refuses to run if the
+  content tables hold data — reset the database instead) and `0005_localized_slug_integrity` (custom) made every slug per language.
+- **Identity:** anything an editor may rename (product, shape, option, post, Fast Print / showcase item) has an immutable
+  `uid`; vocabulary (material, trait, unit, spec item, category, post category, UI-copy namespace, media) an immutable key.
+  Slugs are attributes owned by `product_slug` / `product_segment` / `post_slug` / `category_slug` (canonical + aliases), **one
+  namespace per language**: PKs include `locale`; the same text may exist in two languages, never twice in one.
+- **Localized URLs (decided 2026-10-24, live since Phase 4 M4):** every product, shape, option, post and category has a slug in EACH language; slugs are
+  Latin letters, digits and dashes only, in every language, forever (the CHECK stays ASCII kebab-case). Vietnamese keeps today's
+  slugs, English is generated from the English name, zh/ja/ko start as a copy of English; today's shared slug stays valid in every
+  language as a 308 alias. **The fixed words are code, not content:** `lib/routes.ts` `WORDS` — vi `san-pham` / `bai-viet` / `in-nhanh`, en/zh/ja/ko keep
+  `products` / `blog` / `fast-print` (next-intl `pathnames` was rejected: it localizes only a template key + params, redirects with 307 and makes
+  `usePathname()` return the template). `localizePath` / `toInternalPath` / `publicPath` / `parsePublicPath` / `decideRoute` are the whole API; a new word
+  or language is a change to that table, its test and the proxy decision together. Switch all URLs in ONE step at cutover: the Vietnamese move is the
+  largest SEO risk of the project.
+- **Master languages:** Vietnamese AND English must be complete (document schemas require both; the database requires only `vi`).
+  zh/ja/ko follow English: slugs are copies, text that exists is kept, and the gaps are filled with AI-suggested translations
+  (`scripts/seed/suggested-translations.ts`, applied as revision 2 with the comment «Bản dịch đề xuất (AI) — cần người bản ngữ duyệt»;
+  revision 1 keeps the original) that need a native reader.
+- **Rules that live in the database, not in code:** non-blank Unicode-aware text, one canonical slug per product / shape /
+  option / post / category **in every language of the `locale` table** (a new language is refused until its slugs exist, in the same
+  transaction) and a default-language (`vi`) translation for every translated entity (all checked at COMMIT), frozen
+  slug owners (and languages), `TRUNCATE` refused on the namespace/revision tables, photo slots accept images only. Never `TRUNCATE` them in
+  code; a migration that must disables the guard trigger explicitly. The app role has no TRUNCATE or DDL anyway.
+- **Documents** (`lib/content/schemas/`): zod schemas for the whole-entity documents that drafts, revisions and publishes carry
+  (`snapshot_schema` = `DOCUMENT_SCHEMA` = 2, unchanged by the move to per-language `slugs` because no document was ever stored
+  outside throwaway databases): product, menu (one per category), post, category, material, trait, unit, spec
+  item, Fast Print / showcase item, post category, site message. Strict objects, Vietnamese messages for editors; slugs are
+  `slugs: { vi, en, zh, ja, ko }` (all five required).
+  `DOCUMENT_SCHEMAS`, `parseDocument()` and `documentIdentity()` are the entry points.
+- **Column registry** (`lib/content/column-registry.ts`): every content column is either carried by a document path or
+  system-owned. `lib/db/column-registry.int.test.ts` fails when the database and the registry disagree, and
+  `lib/content/column-registry.test.ts` when a path is not in the zod schema. **A new column is not done until it is
+  registered**, carried by the document schema, and (Phase 3d) has an editor control.
+- **Icons:** `lib/icons.ts` is the one name → component registry (the DB stores names); public components draw a stored name with
+  `<NamedIcon name={…} />` (`components/ui/named-icon.tsx`) — not `const Icon = resolveIcon(name)`, which the React compiler lint rejects
+  as «component created during render». The old per-component maps are gone from the catalog pages, the navbar and the flashcard.
+- **Site-wide facts** (business, address, social links, default OG image, JSON-LD Organization) go in the reserved
+  `site_message` namespaces `seo` and `business`.
+- **Seed (3b):** `pnpm seed [--dry-run] [--report <path>]` (`scripts/seed-cli.ts`, logic in `scripts/seed/`) loads the site's own
+  data — read from the source modules, `messages/*.json`, `public/` and the three literals lifted from `subgroups-catalog.ts` /
+  `FastPrintClient.tsx` — into an EMPTY content database in one transaction, writes revision 1 of every entity (author NULL; no
+  fake user; one `content.seeded` audit row) and the 41 `legacy_import` archive rows, and writes the Vietnamese owner-review
+  report (default `docs/seed-report.md`, gitignored). **Seed-if-empty, never merge:** editors change content afterwards, so a
+  second run does nothing (advisory lock; two at once seed once). Re-seeding means dropping the database and migrating.
+  The seed only READS the site's sources, which live in `scripts/seed/legacy/` since Phase 4 M5 — production gets the owner-approved content by restoring a full `pg_dump` of a
+  seeded database at cutover (decided; nothing is built for it). After seeding it applies the suggested zh/ja/ko translations (revision 2
+  of 12 traits and the Tet flyer product). Pitfalls found while porting it: 13 `ProductOption` objects
+  are shared between products, so option lookups are per product (`optionRecordFor`), never a global identity map; `pg`
+  returns `bigint` as a string in raw SQL, so test code must `Number()` ids before using them as map keys.
+- **Compose** (`lib/content/compose/`): rows → the zod documents (`composeEntity(db, type, id)`, `listEntities`); the read side
+  that revision 1, 3c's publish and Phase 4's queries share. `lib/content/revision.ts` writes a `content_revision` row.
+  `lib/db/types.ts` has `Db` / `Tx` / `DbExecutor` — code that only reads and writes rows takes `DbExecutor`.
+- **Drafts, publish, restore, delete (Phase 3c: all twelve entity types).** A live entity
+  changes ONLY by publishing a draft: a whole-entity document in `content_draft`, saved as often as the editor likes and however
+  incomplete (`GET` advice comes from `validateSnapshot`: zod + references; publish enforces it). Services in `lib/content/` take a
+  `Db` and throw `Conflict` (409, with a `code`: `STALE_BASE` carries a field-level `changes` diff live → draft, `DRAFT_CHANGED`,
+  `ALREADY_EXISTS`, `GONE`, `DRAFT_EXISTS`), `Invalid` (422, `issues: {path, message}[]`, Vietnamese) or `NotFound` (404):
+  `drafts.ts` (open / resume, create, save, discard, rebase, `draftChanges`), `publish.ts`, `restore.ts` (revisions; restore =
+  open a revision as a draft, `note = "restore:N"`), `aliases.ts` (`releaseAlias`), `used-by.ts`, `validate.ts`, `references.ts`,
+  `diff.ts`, `humanize.ts`, `identity.ts` (URL type names, `spec_item` key `kind.key` in paths), `cache-tags.ts`, `delete.ts`,
+  `summaries.ts` (the admin list rows: live entities + drafts of entities not published yet), `apply/`.
+  - **Publish = ONE transaction:** lock the draft (`FOR UPDATE`) → check `draft_version` (what was previewed is what is published)
+    → zod → lock the live row (`FOR NO KEY UPDATE`) → check `base_version` → `checkReferences` → apply → write the revision with the
+    STORED document (it contains the aliases kept automatically) → delete the draft. Any failure rolls back and the draft survives.
+    No silent merge: a stale base is a 409 with the diff; `rebaseDraft` is the explicit "keep my draft, overwrite live".
+  - **Appliers** (`apply/`, one per type, all twelve; `applierFor`) upsert children BY UID so shape / option database ids survive every publish
+    (menus point at them), and replace what has no identity (translations, bullets, photos, sizes, specs). **URLs are never lost:**
+    per language a publish keeps canonical + the aliases the document names + every alias already held + the previous canonical
+    (`planProductSlugs`, `planSegments`); only `releaseAlias` (per language, never a canonical URL) lets one go. Shapes, options and
+    their aliases share one namespace per product per language; priority: canonical, explicit aliases, held.
+  - **Versions:** `ApplyContext.startVersion` — a new entity starts at 1, but revisions outlive the entity (unique per entity and
+    version), so a re-created key or the restore of a deleted entity continues after its last revision (`latestRevisionVersion`).
+    A `site_message` document is one namespace in every language: its version is the highest row version and a publish moves every
+    language it contains to the next one; a language missing from the document is removed (the site falls back to `messages/*.json`).
+  - **Delete** (`delete.ts`, admin-only once 3c-3 wires `content:delete`): categories and menus are never deleted (a menu belongs to its
+    category); products, posts and Fast Print items are archived first (a normal publish with `status: "archived"`, revision action
+    `archive`); a record that something still uses is refused — live rows and open drafts (`used-by.ts` covers material, unit, trait,
+    spec item and blog category; a product still in a menu also blocks); an entity with an open draft is refused. The deletion is a
+    revision (`delete`) holding the last document, so `startRestore` can bring it back. Conflicts: `NOT_ARCHIVED`, `IN_USE`, `DRAFT_EXISTS`.
+  - A canonical slug cannot also be an alias in the document (zod), so a product moved into a category where it already has an
+    alias of the same slug must drop that alias in the same edit — the 3d editor should do it for the editor.
+  - `cacheTags` takes `Affected` entries (a type without an `id` = every entity of it): a category change touches its menu and all
+    products, a trait / material / unit / spec item the products (and Fast Print for units) that show it, a blog category the posts.
+  - A product move out of a category takes it out of that category's mega-menu and bumps BOTH `menu_version`s (categories are locked
+    in id order), so an older menu draft is refused. `affectedBy` / `cacheTags` name what to `revalidateTag(tag, { expire: 0 })`
+    (a product publish also touches the menus it left and joined); the HTTP layer (3c-3) calls them after COMMIT.
+  - `used-by` counts live rows (`USAGES`, checked against the foreign keys in the catalog by a test) plus open drafts
+    (`draft_reference`, rewritten on every autosave by the tolerant `collectReferences`): the foreign keys cannot see drafts.
+  - Database errors are mapped to editor-readable `Invalid` by `humanize` (it unwraps Drizzle's `cause`; deferred constraints fail at
+    COMMIT, so wrap the whole transaction). Unmapped errors pass through untouched.
+- **HTTP API** (`app/api/admin/content/[type]/[id]/…`, contract in `docs/admin-api.md`, local): thin handlers — `requireApiUser` first,
+  then `handle(async () => …)` from `lib/content/http.ts`, which turns `NotFound` / `Invalid` / `Conflict` / `HttpError` into
+  404 / 422 / 409 / 4xx with the admin API's error shape `{ error: <Vietnamese message>, code, issues?, changes? }` and anything else into a
+  logged 500 without details. Bodies are read by `readJson(request, schema)` (zod, strict, capped at 2 MB → 413; `requests.ts`), never
+  `request.json() as T`. Saving and publishing REQUIRE `If-Match: "<draftVersion>"` (428 when missing). Permissions: `content:edit` for
+  drafts and reads, `content:publish` for publish / release-alias, new `content:delete` (admin only) for deleting. After a commit,
+  `effects.ts` revalidates `cacheTags(result.affected)` and writes the audit row (`content.published | restored | discarded | deleted |
+  alias_released`; autosave is not audited); a failure there is logged, never thrown. **Caddy still blocks all of `/api/admin/*` in
+  production**: 3d adds the paths together with the editors. Entity types in URLs are kebab-case (`spec-item`), a spec item's key
+  `technique/offset` is `technique.offset` in a path.
+- **Editors (Phase 3d complete: an editor for all twelve entity types — 3d-1 foundation + the seven simple ones, 3d-2 the product,
+  3d-3 post, category, menu and UI copy).** `app/admin/(console)/content/[type]/page.tsx` lists a type
+  (`listSummaries`), `…/[id]/page.tsx` loads the live document, the open draft, the vocabularies and the author names and renders the
+  client `components/admin/content/entity-editor.tsx` (remounted by a `key` of `live version : draft?` after a publish; a discard
+  resets the session locally because the server props do not change when the draft was opened in the browser). **Everything an editor
+  does is the `/api/admin/content` API** (`lib/content/editor/api.ts`, never throws). Pure, unit-tested logic lives in
+  `lib/content/editor/`: `paths.ts` (immutable get/set by `a.b[2].c`; `setText` turns blank into "not provided" and drops a language
+  row left empty so it falls back to English), `session.ts` (the draft state machine — saves never overlap; typing during a save is
+  not lost; `DRAFT_CHANGED`/`GONE` = conflict), `completeness.ts` (texts vi/en have that a language lacks), `templates.ts` (the
+  "Tạo mới" request), `entity-meta.ts` (labels, `editable`, vocabularies), `vocabulary.ts`. `use-draft-session.ts` runs the effects
+  (1.2 s debounced autosave, retry after 5 s, `beforeunload` guard). Controls are bound to a PATH through `EditorContext`
+  (`TextField`, `NumberField`, `SwitchField`, `SelectField`, `MediaField`, `IconField`; a `*` in a path = the language tab being
+  edited) and draw `data-field` (registry path) / `data-path` (concrete path).
+  **The field registry** (`lib/content/field-registry.ts`) gives every editable leaf of every document schema a Vietnamese label and a
+  control; `field-registry.test.ts` ties it to the zod schemas (`documentLeafPaths`) and `components/admin/content/forms/forms.test.ts`
+  renders each editor on a full document and requires a `data-field` for every registered path — **a field cannot exist without
+  an editor control**. To add an editor: a form in `components/admin/content/forms/`, register it in `FORMS`, set
+  `ENTITY_META[type].editable`, add a sample document to `forms.test.ts`, give it a nav look in `admin-nav.ts`.
+  `client-bundle.test.ts` fails if the browser code reaches a server-only module through its imports. Media: `GET
+  /api/admin/content/media` (read-only; uploads are Phase 5, files are served at `/<storage_key>`). zod messages reach the editor in
+  Vietnamese (`parseOptions`, passed per parse — never `z.config`, which would change env validation too). The header has a «Xem trước» button
+  (enabled while a draft is open and saved — it waits for the autosave; `api.previewDraft(ref, language)`, see **Preview** under Admin CMS) next to «Hủy bản nháp» / «Xuất bản…»;
+  the publish dialog's field-level diff stays the review of what changes. There is no DOM test
+  library: interaction is covered by the reducers' tests and a browser smoke (see docs/verification), rendering by server-side
+  rendering in tests.
+  **The product editor (3d-2)** is one draft edited in six tabs (`components/admin/content/forms/product/`: general, URLs & SEO, shapes,
+  options, sizes, specs; only the open tab is drawn, a tab shows its problem count, and "go to this problem" opens the tab, the language
+  and the card that hold the field — `use-open-cards.ts`; a card the editor just added opens itself). List edits are pure functions on the
+  typed document (`lib/content/editor/product-ops.ts`: add / remove / move / scope for shapes, options, bullets, sizes, specs; `lists.ts`
+  renumbers `position` by array order per group; an option that changes scope goes to the END of the array so it ends its new group).
+  URLs: `slugs.ts` suggests a slug per language (vi from the Vietnamese name, en from English, zh/ja/ko copy English), a NEW shape/option
+  slug follows its name while it is the placeholder or the old name's slug (a published URL never changes by itself), typed slugs are
+  cleaned as typed; **moving a product to another category drops the alias that would equal the new canonical URL in the same edit**
+  (`moveToCategory`); old URLs are listed read-only and released («Gỡ») only from the live view with no draft open. The create dialog asks
+  for category + vi/en name (`templates.ts`), and the product list shows a «Danh mục» column (`Summary.group`, also for never-published
+  drafts). `fieldLabel` names a container or a whole row in words («Tên hình thức (en) · hình thức 4», «Dòng nội dung»;
+  `LIST_ELEMENT_NOUNS`, a test requires every list in the registry to have one). **The publish diff is `publishChanges`, not
+  `diffDocuments`:** an old URL missing from a draft (a restored old version lacks the aliases made since) is not listed as removed,
+  because a publish keeps every alias it holds. Browser-smoke findings kept in mind: restoring an old version after a category move
+  and publishing it keeps every URL (19 rows for one product, none lost).
+  **Post, category, menu and UI copy (3d-3).** A **post** (`forms/post-form.tsx`): text per language (the content box is tall; format
+  `plain` | `markdown`), category from the post categories, a `DateField`, read time, cover, slug + SEO. A post that was
+  never published follows its titles for its slugs (`slug-ops.ts`: `setRootSlug`, `followRootNames`, the same rules as a product's); a
+  published post's URL never changes by typing. The create dialog dates a new post in Vietnam (`vietnamToday`) and files it under a post
+  category (`ENTITY_META.group` drives the list column and the dialog's select for products and posts alike). A **category**
+  (`forms/category-form.tsx`): renaming a slug warns that it moves the address of every product in the category in that language (old
+  addresses keep working). **Structure is edited, never deleted:** `ENTITY_META.deletable` is false for category, menu and site_message
+  (no danger card). A **menu** (`forms/menu/`, pure ops in `lib/content/editor/menu-ops.ts`): columns → groups (one per product) → items
+  (a shape or an option); column numbers are the place in the list and are renumbered after every edit; a group's product is chosen among the
+  category's published products not already in the menu, an item's target among that product's **published** shapes and options (the server
+  resolves targets from live rows) — the pickers come from `loadVocabulary(db, kinds, { category })` (`VocabOption.group` = the product uid);
+  **a column with no group is refused by the schema** (a column is stored only on its groups, so it would silently vanish at publish). Group
+  cards open by identity (`use-open-keys.ts`, shared with the product cards), not by index, so reordering keeps them open; the language tabs of a
+  menu show no «% translated» (`ENTITY_META.noCoverage`: its texts are overrides). A diff reads a menu column's number as its identity
+  (`fieldLabel(type, path, keyed)`) and names products/shapes/options by id from the vocabulary (`DiffView names`). **UI copy**
+  (`forms/site-message-form.tsx`, pure parts in `lib/content/editor/message-tree.ts`): one box per text the namespace already has, drawn for
+  the language tab with the Vietnamese text and the `{variables}` to keep underneath; the structure is the site's (nothing added or
+  removed, `leafPaths` = the union over languages). **A blank text is stored as `""`, never by removing the key** (18 of the 297 texts are
+  plain list items; removing one would shift the list); `""` means «not translated, use English» and only zh/ja/ko may have it — an empty vi/en
+  text is an issue. **Schema rule (`siteMessageDocumentSchema`, `lib/content/icu.ts`):** braces must balance and a `{variable}` must exist in the
+  Vietnamese text of the same line (a wrong one makes next-intl throw at render time in Phase 4); no master-language *requirement* (a namespace
+  may hold one language, the site then falls back to `messages/*.json`). The 30 namespaces have Vietnamese names in
+  `site-message-labels.ts` (a test keeps them equal to the keys of `messages/vi.json`). A missing required text reads «Bắt buộc phải nhập.»
+  (`MESSAGES.required`), not zod's default. Known gaps: aliases of posts and categories are listed but cannot be released (the service only
+  releases product URLs); the reserved `seo` / `business` namespaces cannot be created from the UI (site_message is not creatable).
+- **Public read layer (Phase 4 — complete: M1 foundation, M2 catalog pages + navigation, M3 blog / Fast Print / showcase / UI copy, M4 URL words + SEO + sitemap, M5 Preview + cleanup).** `lib/content/read/`: `catalog.ts` / `menus.ts` /
+  `selectors.ts` / `urls.ts` / `messages.ts` are PURE functions from the documents (`composeEntity`, proven lossless) to the public site's view
+  models (`types.ts`: `CategoryView`, `ProductView` with shapes / options / sizes / specs, `MenuView`, traits, materials); `load.ts` has the
+  database loaders (`loadCatalog`, `loadMenus`, `loadPublishedMessages`, any executor — the tests use a seeded scratch database) and the cached
+  reads the pages will call (`getCatalog`, `getMenus`, `getPublishedMessages`), wrapped by `cache.ts` (`unstable_cache` + tags, logs
+  «content read rebuilt» on a miss). **View models hold one object for all languages** (`Localized` = a text per language that has one; `pickText`
+  falls back requested → en → vi, per bullet for lists) — a deliberate refinement of "keep the old `xVi/xEn` shapes": the old suffix fields are not
+  rebuilt. **Cache tags:** a read carries `readTags(...)` (`lib/content/cache-tags.ts`), never `cacheTags`, because every publish revalidates the root
+  `content` tag; verified in a real Next runtime that a publish rebuilds exactly the reads it touches (a product publish → catalog + menus, a UI-copy
+  publish → only that language's messages) and a direct database edit does not show (cached). The catalog is one entry (~590 KB; the data cache limits
+  an entry to 2 MB — a test fails at 1.5 MB). **Rules:** shape-scoped options/sizes/specs REPLACE the product's for that shape (`selectors.ts`); an
+  archived product is not in the catalog (404, not in menus); `resolveUrl(catalog, locale, parts)` answers `ok`, `redirect` (an alias, or a slug of
+  another language, to the canonical URL of the page's language) or `notFound`, and every internal link is built by `categoryPath` / `productPath` /
+  `segmentPath` (the fixed word `products` is `PRODUCTS_SEGMENT`, localized in the routing milestone); UI copy = `mergeMessages(file defaults,
+  published)`: the files own the structure, `""` leaves the default. **Equivalence:** `lib/content/read/catalog.int.test.ts` compares the views with the old
+  static files on a seeded database — titles, descriptions, 110 options (names, card headings, bullets, traits, photos, prices), sizes and specs
+  (the 510 canonical contexts and the owner-decision measure, 4,045 renders / 2,163 differ), the four menus, and every candidate URL segment and
+  `/products/…` link in every language; 11 mutations are caught. `scripts/parity/` (`pnpm parity:capture`) keeps the old site's prerendered pages
+  (1,867, text + links) in `.parity/legacy.json` (gitignored) for the page-text comparison after each page milestone. Files meant for the browser
+  (`text.ts`, `types.ts`, `selectors.ts`, `urls.ts`) are guarded by `lib/content/read/client-bundle.test.ts` (`tests/helpers/import-graph.ts`).
+  **M2 — page models and chrome.** Pure, language-resolved models on top of the views: `navigation.ts` (`navigationOf`: categories, product `cards`, the
+  mega-menu as columns → groups → items with ready hrefs; `cardsOf` words a card as the PRODUCT — title, description, cover — never as the menu
+  group, `referenceImageOf` = the gallery picture), `card.ts` (`cardOf`: everything one flashcard draws — heading, tagline, features with trait icon
+  names, photos, sizes `{id,label,dims}`, technique / material / finishing lists, `consultName`; `TIER_LABELS` = the seed's `BASE_LABEL`, a test keeps
+  them equal), `pages.ts` (`categoryPageOf`, `productPageOf` → `shapes` | `detail` | `shape` | `material`, `glossaryOf`; metadata titles
+  `… | Viet Dragon`), `site.ts` (`getNavigation(locale)`), `resolve-page.ts` (`peekPage` for metadata, `resolvePage`: `resolveUrl` →
+  `notFound()` / `permanentRedirect` to the canonical / the page). Hash anchors are DOM-level: a card has `id=<canonical slug in the page's language>`
+  and `data-aliases="<every other slug or alias in any language>"` (`anchorOf`); `findHashTarget` (`lib/hash-navigation.ts`) falls back to
+  `[data-aliases~=…]`, `useCurrentHash` reports the canonical id, the shapes grid rewrites an alias hash to the canonical one — there is no
+  alias dictionary any more. Client chrome (`Navbar`, `Footer`, `Shop`, `ShopCategories`) reads `useSiteData()` (`components/providers/site-data-provider.tsx`,
+  mounted by the locale layout); ONE `MegaMenuDesktop` + `MegaMenuMobile` replace the eight per-category submenus (the desktop backdrop defaults to
+  the first group's picture — a test pins the four old pictures); `ProductDetailView` draws the three material pages (product without shapes, a shape,
+  a material) and `SubgroupShapesView` the shapes grid, both from the models; `MaterialFlashcard` / `MaterialGlossaryFab` take `CardView` /
+  `GlossaryTrait[]` as props. **Equivalence:** `lib/content/read/pages.int.test.ts` (navigation vs the four old menus — all 100 links equal, 8
+  material links now name the canonical slug and 1 shape anchor its own id, each proven to redirect / still scroll; cards, shapes grid, shape and
+  material pages vs the old page logic, 77 shape pages); `pnpm parity:compare [--base http://localhost:3105]` (`scripts/parity/compare.ts`) requests
+  every URL of `.parity/legacy.json` from a running server and classifies it: on the scratch database 1,865 pages = 361 identical + 1,491 that differ
+  only in the cards' sizes / specs form (owner decision 1, measured) + 13 explained (Tet category cards worded as the products; the
+  title-precedence pages; AI-suggested translations of one Tet option) + 0 unexplained. **Known small changes:** the glossary lists traits by key
+  (traits have no stored order; the old popover used the authored order).
+  **M3 — blog, Fast Print, showcase, UI copy.** `posts.ts` (pure: `buildBlog` — published posts NEWEST FIRST, ties by the Vietnamese slug, because the old
+  file order was not date order and the database has no post position; `postPath` / `resolvePostUrl` = the catalog's rule for `/blog/<slug>`;
+  `blogIndexOf`, `blogPreviewOf`, `postPageOf` → cards with the title, excerpt, category label, date `10/06/2026` and cover already resolved;
+  `formatPostDate` is UTC so the day never depends on the server's zone), `markdown.ts` (a post's text → blocks: `plain` = today's rule, `markdown` = a safe
+  SUBSET — headings drawn h2–h4, paragraphs, bold / italic, links on an allow-list, lists, quotes; no raw HTML, an unsafe link keeps only its words),
+  `merchandising.ts` (`buildFastPrint` / `fastPrintCardsOf` — a card carries `price: { amount, unit }`, the page's `fastPrint.price` template
+  `{amount, number}…{unit}` writes the line in each language; `buildShowcase` / `showcaseSlotsOf` — the desktop gallery takes one tall, two square and two wide
+  pictures **by each item's aspect**), cached reads `getBlog` / `getFastPrint` / `getShowcase` / `getMessages`. `/blog/[slug]` is dynamic like the catalog
+  routes. The card's sizes carry the tier and the editor's note; `materialCard.tier.*` and `sizeLabel` (UI copy) word
+  them — a test keeps the tier names equal to the seed's `BASE_LABEL`. The Fast Print items the seed loads moved to `scripts/seed/legacy/fast-print.ts` (the
+  first resident of the M5 legacy folder; the seed scans it for media references). **Equivalence:** `blog.int.test.ts` (titles, excerpts, category labels, dates,
+  covers and bodies of the six posts in five languages, the old URLs), `merchandising.int.test.ts` (Fast Print items and every language's price line, the
+  showcase captions and slots, the UI copy merge on a seeded database); parity on the scratch database: 1,865 pages = 331 identical + 1,491
+  sizes-/specs-form-only + 43 explained (the 13 of M2 + 30 for the newest-first post order) + 0 unexplained.
+  **M4 — localized URL words, redirects, SEO, sitemap.** `lib/routes.ts` (see **Localized URLs**), `seo.ts` (`seoMeta`, `alternatesOf`, `pageMetadata`,
+  `absoluteUrl`), `jsonld.ts` (pure builders + `serializeJsonLd`), `page-seo.ts` (server: `metadataFor`, breadcrumbs, `siteLd`), `sitemap.ts` (`sitemapOf`,
+  `revisionKey`), `loadRevisionDates` / `getRevisionDates` (newest `content_revision` per product / category / post → `lastmod`; a category is dated by the
+  newest of itself and its products; the four fixed pages have no date), `urls.ts` `canonicalCatalogHref` (a catalog link typed into UI copy —
+  `shopBanner.banners[i].href` — is followed to the page's canonical internal path, a missing page falls back to `/products`).
+  **The data cache is keyed by build:** `cachedRead` adds `process.env.CONTENT_CACHE_BUILD` (a UUID `next.config.ts` generates per build and inlines via `env`) to
+  every key, because `.next/cache` is a volume that survives a deploy and an entry holds what the code of ITS build computed (view models, the defaults of
+  `messages/*.json`) — found when a cached merged-messages tree from before the `seo` namespace served `seo.siteName` as a raw key. A restart of the same build
+  reuses the cache; a new build starts clean (old entries are never read again — clear the volume when disk matters). A publish still expires by tag.
+  **Evidence:** `sitemap.test.ts` / `sitemap.int.test.ts` (every URL answers on its own in its language, five alternates each, dates equal the revisions,
+  archived and renamed pages), `routes.test.ts`, `seo.test.ts`, `jsonld.test.ts`, `locale-switch.test.ts`; on the scratch database in production mode: parity over
+  1,865 legacy pages = 331 identical + 1,491 forms-only + 43 explained + 0 other, every legacy URL ends in a 200 within 2 redirects (29 × 0, 1,473 × 1, 363 × 2),
+  every `Location` sent once; all 1,130 sitemap URLs 200 with no redirect and a head that agrees with the sitemap (canonical, five hreflang + x-default,
+  og:url / locale / image, Twitter card, JSON-LD parses, title = og:title); a vi-only `seoTitle` shows in Vietnamese only; a `shopBanner` link and `seo.siteName`
+  publish show without a rebuild; the switcher lands on the other language's canonical in one request from a product, material, post, Fast Print and the home
+  page; hash deep links and in-page hash navigation work on `/san-pham/…`.
+  **M5 — Preview and cleanup.** Preview is described under **Admin CMS → Preview**; the loaders' `overlay` argument and the `previewable` wrapper are in `load.ts`. Cleanup: the
+  seed-only sources moved to `scripts/seed/legacy/`, the five pre-database editors, their API and `lib/content-store.ts` were deleted, the Caddy list lost the legacy paths
+  (and bare `/api/admin`), `outputFileTracingExcludes` is gone. **Evidence:** `preview.test.ts`, `preview-target.test.ts`, `preview.int.test.ts` (an edited product, a draft-only product at its draft
+  URL, an invalid draft held back, an archived draft, post / menu / UI copy / Fast Print drafts, an empty preview equal to the published read), `app/api/admin/preview/preview.int.test.ts` (route:
+  401 / 403 / 415 / 422 / 404, Draft Mode switched on only for a valid draft, the landing page of each kind; the gate: Draft Mode off, no session, temporary password) with 7 mutations of the loader,
+  the gate and the route caught; production-mode smoke on a scratch seeded database (34 checks: the editor sees drafts, visitors never do — ISR `HIT` before / during / after, the bypass cookie
+  alone shows nothing, the sitemap lists no draft, the removed admin paths 404, publish makes preview and site agree) and a browser run of the editor button (disabled while unsaved, named tab,
+  banner, in-preview navigation, exit, the refusal closing the blank tab); `pnpm parity:compare` unchanged (331 identical + 1,491 forms-only + 43 explained + 0 other, hops 29 × 0, 1,473 × 1, 363 × 2);
+  the Caddy list probed with the caddy image.
+- **Tests:** `app/api/admin/content/content-api.int.test.ts` (who may call what, preconditions, error shapes, cache tags, audit rows —
+  with the app's own database pointed at a seeded scratch one by setting `DATABASE_URL` before the first `getDb()`),
+  `lib/content/http.test.ts`; `lib/content/entities.int.test.ts` (all 202 seeded entities publish unchanged; each of the nine creatable types is created,
+  edited, archived, deleted and brought back; URL renames; site-message versions; lists) and `delete.int.test.ts` (every refusal next to
+  the deletions that must work); `lib/content/{product,draft,menu}-lifecycle.int.test.ts` run the prototype's lifecycle (docs/spike) through the shipped
+  services on the seeded scratch database (all 25 products and 4 menus round-trip losslessly with every id preserved; renames, swaps,
+  category moves; stale / invalid / concurrent publishes; restore after renames; every document field survives a publish);
+  `tests/helpers/content-lifecycle.ts` is the open → edit → save → publish cycle. Pure logic has unit tests beside it.
+- **Schema tests:** `lib/db/content-schema*.int.test.ts` (173 constraint cases, each naming the rule that must fire),
+  `tests/helpers/content-db.ts` (one fixture; every test rolls back after `SET CONSTRAINTS ALL IMMEDIATE`, which runs the
+  COMMIT-time checks) and `tests/helpers/db.ts` (`createScratchDatabase`, for suites that need their own database). On
+  PostgreSQL a RESTRICT violation reports SQLSTATE 23503 like any foreign key (23001 only on the PGlite prototype), so the
+  tests read `confdeltype` from the catalog instead.
+
+### Rules for admin / CMS code
+- **Server-side access control only.** Every admin page and every `/api/admin/*` handler
+  must authenticate on the server; a client-side redirect is not access control.
+  Pages call `requireUser()`, Route Handlers `requireApiUser()` (both in `lib/dal.ts`);
+  `app/api/admin/route-guards.test.ts` fails if a handler under `app/api/admin` does not call it first.
+- **Validate every write body** with zod; never `await request.json() as SomeType`.
+- **No secrets or default credentials in source.** Read config through `lib/env.ts`
+  (never `process.env` directly) and fail fast when it is missing.
+- **Mutations must invalidate the public site** — `revalidateTag(tag, { expire: 0 })`
+  (two-argument form) from a Route Handler.
+- **Public code imports nothing under `scripts/`** (the seed and its legacy sources) — `lib/content/read/legacy-sources.test.ts` enforces it.
+- **Never write content to the filesystem at runtime** in new code — content goes to the
+  database (Phase 3), uploaded images to the uploads volume through `lib/media` (Phase 5), never into `public/`.
+- **No product attribute in code.** Names, text, sizes, spec lists, icons, prices and menu
+  placement belong in the database and must have an editor control (a registry test enforces
+  it). Don't add new `if (name.includes(...))` heuristics, inline per-locale dictionaries, or
+  `xVi`/`x`/`xZh` suffix fields — new text goes in a `*_i18n` table or `messages/`.
+- Admin text is Vietnamese-only and the admin stays outside `app/[locale]`.
+
+### Authentication (Phase 2 — complete)
+**Landed (M1–M5):** Better Auth core (`lib/auth.ts`), schema + migrations, roles (`lib/permissions.ts`), `/api/auth/*`,
+the security hooks (`lib/auth/hooks.ts`), the DAL (`lib/dal.ts`), the `proxy.ts` admin branch, and the admin UI (login,
+forced password change, account/sessions, users, audit), the `/api/admin/*` guards (M4) and the admin CLI (M5).
+- **Admin CLI** (`scripts/admin-cli.ts`, logic in `scripts/admin/`): `pnpm admin:create` makes an `admin` (the first one, or
+  recovery when every admin is locked out) and `pnpm admin:reset-password <email>` sets a new password. Shell access to the
+  server IS the authorization, so neither needs a session. Passwords are typed twice at a hidden raw-mode prompt and are never
+  accepted from arguments, the environment or a pipe (no TTY → refuses). `create` goes through Better Auth's session-less
+  `createUser`, so the policy hook and the `user.created` audit row (actor `cli`) apply and the new admin is NOT forced to
+  change the password. `reset-password` cannot use `setUserPassword` (it needs a session), so it works on the auth context
+  directly and repeats what the admin-UI reset does: forced change, all sessions ended, lockout lifted, `user.password_reset`
+  audit row (actor `cli`); a deactivated account stays deactivated. In Docker:
+  `docker compose --env-file <env> run --rm admin-cli create` (never `-T`); it connects as the DML-only app role.
+- **Admin UI conventions:** sign-in and every account/user action go through the browser client `lib/auth-client.ts`
+  (HTTP `/api/auth/*`, so rate limit + hooks + audit apply). Error codes become Vietnamese text in
+  `lib/auth/error-messages.ts` — unknown codes get a generic line, never the server's English message. A
+  `SESSION_NOT_FRESH` failure shows `FailureNotice`'s "Đăng nhập lại", which calls `reauthenticate()` (sign out →
+  `/admin/login?next=…&reason=fresh`). Temporary passwords are generated in the admin's browser
+  (`lib/auth/temp-password.ts`), shown once in a dialog that cannot be dismissed by accident, and never stored. The shell
+  gets its colours from `dark:` variants (the inline script in `app/admin/layout.tsx` sets `dark` on `<html>` before paint),
+  not from React state — state-driven colours flash light on every full load.
+- **Access control lives in the DAL, close to the data** — never only in a layout (it does not re-render on client
+  navigation) or the proxy (it sees cookie presence, nothing more). Every admin page calls `requireUser({ permission? })`;
+  every `/api/admin/*` handler calls `requireApiUser(request, permission?, { contentType? })` and returns `auth.response` when
+  `!auth.ok`. On mutations it also enforces a same-origin `Origin` (or Fetch Metadata) and the declared body type.
+- **Lockout** (`lib/auth/lockout.ts`): 5 consecutive credential failures lock an address — one with no account too, so
+  it never reveals which addresses exist — for 5 min, doubling per further lock up to 24 h; the quiet period that resets the
+  ladder (24 h) runs from the lock's END. Validation errors and bans are not counted. A visitor can lock any address by
+  failing on purpose; that is the accepted cost, bounded by the per-IP rate limit.
+- **Proxy redirects must be absolute URLs built from `SITE_URL`**: Next rejects a relative `Location` in `proxy.ts`, and behind
+  Caddy `request.url` is `http://`, which would downgrade the redirect.
+- Better Auth skips its origin check when `NODE_ENV=test`; `lib/auth.ts` pins `disableOriginCheck`/`disableCSRFCheck` to
+  `false` so the protection is identical everywhere.
+- **Tests:** `pnpm test` (unit, no database) and `pnpm test:int` (needs `docker compose -f compose.dev.yaml up -d`; it
+  creates and drops a throwaway database per run). `audit_log` is append-only, so integration tests use unique emails/IPs
+  (`tests/helpers/auth.ts`) instead of cleaning up. Run both before committing auth changes.
+- Accounts are **invite-only** (`disableSignUp`); the first admin comes from `pnpm admin:create`, never from a default.
+  New accounts get a temporary password and `mustChangePassword` (forced change at first login).
+- Roles: `admin` (users, audit, media delete, content) and `editor` (content, media upload). **Deactivate (ban), never
+  delete** — `audit_log` and the content tables foreign-key `app_user`. Impersonation and `user:delete` exist in no role.
+- `audit_log` is append-only (triggers bind every role; the app role also lacks UPDATE/DELETE/TRUNCATE). Don't work around it.
+- Better Auth does **not** enforce `freshAge` and `createUser` skips the password minimum — our before-hooks do
+  (`lib/auth/hooks.ts`: sensitive actions need a session < 15 min old; `SESSION_NOT_FRESH` means "sign in again").
+  `admin:update-user` is removed from every role (it could rewrite `role`/`banned` around those guards); an admin cannot
+  change their own role or ban themselves. Session tokens are stored in plaintext, which is why the database must stay on
+  the internal network.
+- After changing a Better Auth plugin/option that affects the schema: `pnpm auth:schema`, then `pnpm db:generate`;
+  never edit `lib/db/auth-schema.ts` by hand. Migrations run as the schema owner (`pnpm db:migrate`), never as the app role.
+
+---
+
+## Environment variables
+All config goes through `lib/env.ts` (zod) — never read `process.env` directly in new code. It has
+six independently validated groups, each behind its own lazy accessor so one group's problem never
+breaks an unrelated consumer: `getDatabaseEnv()`, `getMailEnv()`, `getLogEnv()`, `getSiteEnv()`, `getAuthEnv()`, `getMediaEnv()`.
+`assertEnv()` validates all six at once at server start (`instrumentation.ts` →
+`instrumentation-node.ts`) and **exits with code 1** on a bad config, printing variable names, never
+values. It is skipped during `next build`, so the Docker build stage needs no secrets.
+
+| Variable | Group | Notes |
+|---|---|---|
+| `DATABASE_URL` | database | `postgres://` URL, required; in production its password must be ≥ 12 characters |
+| `BETTER_AUTH_SECRET` | auth | ≥ 32 characters, required in **every** environment (no dev default): `openssl rand -hex 32`. Signs session cookies; rotating it signs everyone out |
+| `SITE_URL` | site | Public origin, no path. Required in production (dev default `http://localhost:3000`). **Needed at build time too** — pages are prerendered, so it is baked in (docker build arg) |
+| `LOG_LEVEL` | logging | `fatal` … `trace` / `silent`; default `info` in production, `debug` in dev, `silent` under test |
+| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | mail | **Required in production.** Elsewhere, if any is unset a consult lead is only logged (phone masked) and never emailed |
+| `UPLOADS_DIR`, `MEDIA_MAX_IMAGE_MB`, `MEDIA_MAX_TOTAL_MB` | media | `UPLOADS_DIR`: absolute path of the uploads volume — **required in production** (compose sets `/data/uploads`), default `./.uploads` elsewhere (gitignored). `MEDIA_MAX_IMAGE_MB`: largest upload, whole MB 1–11, default 10 (Caddy lets 12 MB through to the upload route, so the cap cannot go higher without raising it there). `MEDIA_MAX_TOTAL_MB`: all uploads together, whole MB, default 2048 — past it an upload is refused (422) until something is deleted; size the uploads volume above it |
+| `SMTP_PORT` (587), `SMTP_SECURE`, `SMTP_FROM`, `CONSULT_RECEIVER_EMAIL` | mail | Optional; the receiver defaults to `CONTACT_EMAIL` in `lib/contact.ts` |
+| `POSTGRES_PASSWORD`, `APP_DB_PASSWORD`, `SITE_ADDRESS`, `HTTP_PORT`, `HTTPS_PORT`, `APP_TAG` | compose only | Interpolated by `compose.yaml` / `compose.dev.yaml`; the app never reads them. See `.env.example` |
+| `BACKUP_HOUR`, `BACKUP_TZ`, `BACKUP_KEEP_DAYS`, `BACKUP_MAX_AGE_HOURS`, `BACKUP_RCLONE_REMOTE`, `BACKUP_OFFSITE_ENV_FILE` | compose only | The `backup` service's schedule, retention, health threshold and optional off-box copy (credentials as `RCLONE_CONFIG_OFFSITE_*` in `./backup-offsite.env`, gitignored). The app never reads them |
+
+`.env*` is gitignored except `.env.example` — never commit real values. `pnpm dev` needs
+`DATABASE_URL` (and `SITE_URL` for `pnpm build`) in the local `.env` and exits at start-up without
+`DATABASE_URL`; the database container itself is optional (`/api/health` reports `db: "down"`).
+The local `.env` may still hold `PAYLOAD_SECRET` / `DATABASE_URI` from the abandoned Payload
+branch; nothing reads them.
+
+### Logging
+Server code logs with `getLogger("scope")` from `lib/logger.ts` (pino, JSON lines on stdout) —
+no `console.*` on the server (client components may use `console.error`). Pass errors as
+`{ err }`. Values under keys named `password`, `token`, `secret`, `authorization` or `cookie` are
+censored to depth 2, but still never log request bodies or headers wholesale; mask phone numbers
+with `maskPhone()`. `instrumentation.ts` logs uncaught request errors through `onRequestError`
+(method, path without query string, route, error — no headers).
+
+---
+
+## Docker & deployment
+Production target: Docker Compose on a single VPS. Files: `Dockerfile` (stages `deps` → `build` →
+`runner`, plus `tools` for the migrate job and the admin CLI), `compose.yaml` (`caddy` → `app` → `db`, a one-shot
+`migrate`, the nightly `backup` sidecar, and the on-demand `admin-cli` and `restore` under profile `tools`), `deploy/Caddyfile`, `deploy/db-init/` (creates the DML-only `vietdragon_app` role on
+first init), `deploy/backup/` (the backup / restore image), `.env.example`. `compose.dev.yaml` is Postgres only, on `127.0.0.1:5432`, for `pnpm dev`.
+Runbook and rationale: `docs/deployment.md`.
+- The app connects as `vietdragon_app` (SELECT/INSERT/UPDATE/DELETE only — no DDL, no TRUNCATE);
+  `migrate` runs as the owner. Never point the app at the owner role.
+- App container: non-root, read-only root FS (writable: `/tmp` and the `.next/cache` volume — the data cache is keyed by build, so a deploy never reads the previous build's entries),
+  `cap_drop: ALL`, no published ports. `db` sits on an `internal` network. **One app instance only.**
+- Building needs internet (`next/font/google`) and `--build-arg SITE_URL=…` — nothing else.
+- `deploy/Caddyfile` is fail-closed for the admin (`@admin_unlisted`): under `/admin` only `login`, `account`, `users`, `audit`,
+  `content` and `media` are reachable, and under `/api/admin` only `content` and `preview`; every other `/admin*` and `/api/admin*` path 404s — **a new admin page or API
+  path must be added to the `not path` list** (test it with the caddy image and no upstream: 502 = passes, 404 = blocked). `/api/auth/*` is
+  open (sign-in). It also 404s `/api/health` (internal healthcheck only) and overwrites `X-Real-IP` with the TCP peer.
+- Uploads: the `uploads` volume is mounted at `/data/uploads` (compose; the Dockerfile creates the directory owned by `node` so the named volume inherits it, and its native-module check also loads OUR `sharp` — since Phase 6 M1 there is ONE copy (0.35.5, shared with Next's image optimizer: `.next/standalone` is ~63 MB)). Back it up **together with the database**. Caddy caps bodies at 2 MB except `/api/admin/content/media` (12 MB, `@upload` / `@not_upload` matchers — two `request_body` directives with different matchers; a second unmatched one would not raise the first). Tested with the caddy image and a node stand-in upstream (3 MB: 413 elsewhere, 200 on the upload route; 13 MB: 413 everywhere, chunked too).
+- **Backups (Phase 6 M3)** — `backup` service (`deploy/backup/`, `postgres:17-alpine` + bash + rclone; uid 70, no capabilities, read-only root FS, `uploads` mounted read-only, owner DB credentials because the check needs `CREATE DATABASE`): every night at `BACKUP_HOUR` (03:00 `Asia/Ho_Chi_Minh`) and once at start if none is verified,
+  `backup.sh` writes `/backups/<UTC stamp>/` = `db.dump` (`pg_dump -Fc`) THEN `uploads.tar.gz` (so every row has its file) + checksums + row counts, built as `<stamp>.partial` and renamed only after `verify.sh` restored the dump into a scratch database, matched **every table's row count** (between the counts taken just before and just after the dump) and found every uploaded picture
+  in the archive (`VERIFIED` is the last file written). Retention `BACKUP_KEEP_DAYS` (14), the newest 3 always kept. Optional off-box copy (`BACKUP_RCLONE_REMOTE`, credentials in the gitignored `backup-offsite.env`); the healthcheck is "newest verified backup < `BACKUP_MAX_AGE_HOURS` (26) old and, if configured, copied". It waits for `migrate` (an empty database is not a backup; `verify.sh` refuses to bless a comparison that counted nothing).
+  The decisions are plain functions in `deploy/backup/lib.sh`, unit-tested through bash (`lib.test.ts`); everything that touches Postgres or volumes was proven by the performed restore drill (`docs/deployment.md`).
+- **Restore** — `docker compose … --profile tools run --rm restore latest|<stamp>` (database + uploads) or `restore --dump <file>` (database only: **the way the first content is loaded at cutover**), with the app STOPPED. It verifies checksums, **refuses while the app runs** (asks `app:3000/api/health`; database sessions alone prove nothing — the pool closes idle connections), loads a SIDE database in one transaction, runs
+  `deploy/backup/app-role-grants.sql`, compares counts with the backup's, then swaps by `ALTER DATABASE … RENAME` (the previous one is kept as `vietdragon_before_restore_<time>` until dropped) and refills the uploads volume as root with `CHOWN`/`DAC_OVERRIDE`/`FOWNER` only. **Never restore a seeded development dump with a bare `pg_restore`:** it carries no grants for `vietdragon_app` (0 ACL entries) and the app could not read a table.
+  `app-role-grants.sql` states what the app role may do (DML, sequences, `audit_log` insert-only, no `TRUNCATE`/DDL); `grants.test.ts` ties it to `db-init` and migration `0001`. The backup image owns `/data/uploads` as uid 1000 so a volume first mounted by a sidecar is still writable by the app.
+- **CI** (`.github/workflows/ci.yml`; `dependabot.yml`): `verify` (tsc, eslint 0 warnings, unit, integration on a `postgres:17` service, `pnpm build`, `pnpm db:generate` must change nothing in `drizzle/`), `docker` (shellcheck on `deploy/`, `docker compose config`, `caddy validate`, `docker build` of runner / tools / backup), `audit` (`pnpm audit --prod --audit-level=high`; the whole workflow also weekly).
+  GitHub Actions cannot run locally: every command was run by hand and the YAML passes `actionlint`; actions are pinned by major tag. A new shell script under `deploy/` must pass `shellcheck -x` (run it through `koalaman/shellcheck`; right after writing a file the Docker Desktop mount can show a half-written copy and report parse errors that are not there — rerun).
+- `output: "standalone"` does not copy `public/` or `.next/static`; the runner stage does. The Vercel-era `outputFileTracingExcludes` workaround for `public/` is gone
+  (its cause, `content-store` scanning `public/`, was deleted in Phase 4 M5; the trace no longer pulls `public/` in). Measured at M5: `.next/standalone` 59 MB (it was 67 MB
+  with `data/` traced in), `.next/server/app` 3.8 MB — nothing under `[locale]` is prerendered any more, so the old ~1,700 prerendered pages no longer ship.
 
 ---
 
@@ -256,33 +863,108 @@ zero warnings.
 
 ## Component map
 ```
+app/
+  [locale]/                 public site — layout mounts SiteDataProvider, SmoothScroll, QuoteModalProvider, FloatingContact, LanguageDetectorToast; products/[category]/[product]/[segment] are dynamic routes
+  admin/                    CMS UI — own root layout, Vietnamese only, outside next-intl (see Admin CMS); login/, account/password/ standalone; (console)/ = shell + account, users, audit + content/[type]/[id] editors
+  [locale]/not-found.tsx    localized 404 (Navbar + Footer); reached via the [locale]/[...rest] catch-all
+  api/consult/              public lead endpoint (nodemailer)
+  api/health/               liveness for the Docker healthcheck (always 200; db state in the body)
+  uploads/                  `[...key]/route.ts` — serves uploaded images (GET/HEAD) from the uploads volume
+  api/admin/                CMS API: content/** (drafts, publish, revisions, delete, media library) and preview (Draft Mode switch) — route-guards.test.ts enforces the guard; preview.int.test.ts the switch and the gate
+  robots.ts                 robots.txt (names the sitemap)
+  sitemap.ts                sitemap.xml — dynamic, built by lib/content/read/sitemap.ts
+  zalo-reply/               client page: copy a prepared reply, open Zalo
+instrumentation.ts          register(): env fail-fast (Node runtime only, skipped at build) · onRequestError → lib/logger
+instrumentation-node.ts     validateEnvOrExit() — Node-only, imported dynamically so the Edge bundle stays clean
+drizzle.config.ts, drizzle/ drizzle-kit config (loads .env via @next/env) · migrations 0000–0003 (auth, audit_log append-only, content tables, content integrity)
+Dockerfile, compose.yaml, compose.dev.yaml, .env.example, .dockerignore, deploy/   see Docker & deployment
+deploy/backup/              the backup / restore image: lib.sh (pure decisions, lib.test.ts), backup.sh, verify.sh, restore.sh, entrypoint.sh (nightly scheduler), healthcheck.sh, app-role-grants.sql (grants.test.ts), Dockerfile
+.github/                    workflows/ci.yml (verify · docker · audit) and dependabot.yml
 i18n/
-  routing.ts               defineRouting({ locales: [vi, en], defaultLocale: vi })
-  navigation.ts             Locale-aware Link/usePathname/useRouter/redirect — import from here, not next/*
-  request.ts                getRequestConfig — loads messages/<locale>.json
+  routing.ts               defineRouting({ locales: [vi, en, zh, ja, ko], defaultLocale: vi })
+  navigation.tsx            Locale-aware Link/usePathname/useRouter/redirect/permanentRedirect/getPathname over createNavigation — internal paths in, the language's words out; import from here, not next/*
+  request.ts                getRequestConfig — messages = getMessages(locale): messages/<locale>.json + the published UI copy of the database (cached)
+  messages.test.ts          the five message files have the same texts, no empty one, only the Vietnamese text's {variables}
 messages/
-  vi.json, en.json          UI copy, namespaced per section — keep key sets in sync
-proxy.ts                    next-intl createMiddleware (Next 16 "proxy" convention, not middleware.ts)
+  vi, en, zh, ja, ko .json  UI copy, namespaced per section — keep all five key sets in sync
+proxy.ts                    Next 16 "proxy" (not middleware.ts): `/admin/*` → optimistic session-cookie check (lib/admin-access.ts); everything else → `decideRoute()` (fixed URL words: rewrite / 308) then next-intl createMiddleware; the intl matcher still skips api/admin/zalo-reply
+vitest.config.mts, vitest.int.config.mts, tests/   unit config · integration config (throwaway DB via tests/db-setup.ts + tests/migrate.ts) · shared helpers (auth, db, content-db) and document fixtures; `*.test.ts` live beside the code, `*.int.test.ts` need the dev DB
 hooks/
   use-section-in-view.ts    Shared useRef + useInView(once, margin -80px)
+  use-current-hash.ts, use-hash-pulse.ts   Current-hash tracking (reports a card's canonical id for an alias hash) and hash-target pulse highlight
 lib/
-  locale.ts                 pickLocale(locale, vi, en) for data/*.ts fields
-  contact.ts                PHONE_NUMBER, ZALO_CHAT_URL constants
+  security-headers.ts       the response-header table next.config.ts returns (X-Frame-Options, Permissions-Policy, enforced CSP subset, report-only CSP, no-store / noindex for admin + API) — import-free
+  csp-report.ts             pure parser of CSP reports (legacy + Reporting API) → trimmed, extension-free violations; MAX_CSP_REPORT_BYTES
+  rate-limit.ts             consumeLimit (atomic fixed window in the `rate_limit` table), limitKey / digest / clientAddress, pruneLimits, tooManyRequests (429)
+  phone.ts                  PHONE_PATTERN, cleanPhone, isPhoneNumber, zaloNumber — one phone rule for both forms and the API
+  http/body.ts              readBodyCapped(request, limit) + BodyTooLarge — declared length first, then the stream is counted
+  consult/                  schema.ts (parseConsult: caps, cleaning, same-site url, honeypot) · email.ts (escapeHtml, buildLeadEmail — Zalo link from SITE_URL only)
+  env.ts                    zod-validated config: getDatabaseEnv/getMailEnv/getLogEnv/getSiteEnv/getAuthEnv + assertEnv (relative imports: drizzle.config.ts loads it outside Next)
+  auth.ts                   createAuth() / lazy getAuth() — Better Auth config (argon2id, 12 h DB sessions, `vd` strict cookies, DB rate limit, admin plugin). Importing it reads no env
+  auth.cli.ts               eager `auth` export for the Better Auth CLI only (`pnpm auth:schema` regenerates lib/db/auth-schema.ts)
+  auth/constants.ts, password.ts   cookie prefix + session/lockout/rate-limit tuning (import-free) · hashPassword/verifyPassword (argon2id), password policy
+  auth/hooks.ts             Better Auth before/after hooks: lockout, session freshness, password policy, self-action rule, audit trail
+  auth/lockout.ts, audit.ts per-account lock state machine (pure `applyFailure` + transactional persistence) · `recordAudit` + `AUDIT_ACTIONS`/`AUDIT_ACTION_LABELS` (append-only audit_log, never throws)
+  auth/error-messages.ts, temp-password.ts   auth error code → Vietnamese text (+ Retry-After parsing) · browser-side temporary password generator — both client-safe
+  auth-client.ts            browser Better Auth client (`adminClient({ ac, roles })`) + `reauthenticate()`
+  audit-query.ts            read side of audit_log for /admin/audit: `parseAuditFilters`, `queryAuditLog` (filters, paging, resolves the target's email), `auditPageHref`
+  format-date.ts, user-agent.ts, search-params.ts   Asia/Ho_Chi_Minh date formatting (same output on server and client) · "Chrome trên macOS" device label · `firstParam()` for `searchParams`
+  dal.ts                    the authorization point: getSessionUser, requireUser (pages), requireApiUser (Route Handlers: 401/403/415, same-origin check)
+  admin-access.ts           pure /admin routing decision for proxy.ts + `safeAdminNextPath` (open-redirect guard) + the shared admin paths — import-free
+  permissions.ts            access control: roles `admin` / `editor`, `can()` / `hasPermission()`, Vietnamese `ROLE_LABELS` — one source of truth for DAL, UI and the admin plugin
+  db/schema.ts, auth-schema.ts   Drizzle schema: auth-schema.ts is GENERATED (never hand-edit); schema.ts adds login_attempt + audit_log (append-only) and re-exports db/content/*
+  db/types.ts               Db / Tx / DbExecutor (types only)
+  content/compose/, revision.ts   rows → zod documents for every entity type · writes a content_revision row
+  content/drafts.ts, publish.ts, restore.ts, aliases.ts, used-by.ts   the write side (3c): drafts, publish, revisions + restore, releasing old URLs, "used by"
+  content/validate.ts, references.ts, diff.ts, humanize.ts, identity.ts, errors.ts, cache-tags.ts   advice + checks, what a document points at, field-level diff, DB error → Vietnamese, URL type names / ids, Conflict / Invalid / NotFound, cache tags
+  content/delete.ts, summaries.ts   delete / archive-first rules (+ the "delete" revision) · admin list rows
+  content/editor/           the editors' client-safe logic: paths, session reducer, API client, media-upload (file checks + the upload queue reducer), completeness, create templates, entity meta, vocabulary, product ops / menu ops / lists / slugs / slug ops / message tree / sections / uid (no server imports — client-bundle.test.ts)
+  content/read/             the PUBLIC site's reads (Phase 4): pure document → view-model builders (catalog, menus, selectors, urls, messages, posts, merchandising, markdown), language-resolved page models (navigation, card, pages, posts), the loaders and cached reads (load.ts, cache.ts, site.ts) and resolve-page.ts / resolve-post.ts — pages call the `get*` ones
+  content/field-registry.ts, entity-types.ts, slugify.ts, media-library.ts, authors.ts, vocabulary.ts   every editable leaf → label + control · the 12 entity types (database-free) · URL slugs · media picker data · account names for the history · picker lists
+  content/http.ts, requests.ts, effects.ts   the HTTP layer of app/api/admin/content: URL / If-Match / capped JSON body / error mapping · zod request bodies · cache tags + audit after commit
+  content/apply/            one applier per entity type (all twelve): document → live rows, plus the per-language slug planning (`planSegments` also serves posts and categories)
+  db/content/*.ts           the CMS content model: foundations, library, catalog, shapes-options, sizes-specs, menus, merchandising, blog, site-message, drafts (+ columns.ts, seo.ts builders)
+  content/schemas/          zod document schemas (product, menu, post, library entities) + DOCUMENT_SCHEMAS / parseDocument / documentIdentity
+  content/column-registry.ts, schema-paths.ts   every content column → the document path that carries it (or system-owned) · resolver that checks the paths against the zod schemas
+  icons.ts                  the icon registry: stored name → lucide component (ICONS, ICON_NAMES, resolveIcon); draw with components/ui/named-icon.tsx
+  logger.ts                 getLogger(scope) (pino, redaction), maskPhone(), logRequestError()
+  db/index.ts               lazy pg Pool + drizzle handle (getPool/getDb/pingDatabase)
+  locale.ts                 pickLocale(locale, vi, en, zh?, ja?, ko?) for per-language fields
+  routes.ts                 the fixed URL words per language + localizePath / toInternalPath / publicPath / parsePublicPath / decideRoute (import-free: browser, proxy, tests)
+  locale-switch.ts          client: the other language's address from the page's own <link rel=alternate hreflang>
+  contact.ts                Phone / Zalo / email constants
   motion.ts                 imageWipeReveal Motion variant (clip-path wipe-down reveal)
   utils.ts                  cn()
-data/
-  categories.ts             ProductCategory[] (4 categories) + showcaseImages
-  posts.ts                  BlogPost[] (6 posts) + categoryColors
-  material-traits.ts        MaterialTrait icon glossary for product-option bullets
+  hash-navigation.ts, menu-active.ts   Safe hash navigation (aliases through `data-aliases`), active-menu detection (plain comparison of canonical links)
+  route-locale.ts           localeOf(segment): the language a [locale] segment names, or notFound() — every page under app/[locale] reads its param through it
+  media/                    Phase 5: formats.ts (pure — sniffing, safe names, `uploadKey`, `parseUploadPath` = the traversal guard), process.ts (sharp: decode → new WebP), store.ts (the uploads volume), service.ts (`uploadImage`, `deleteUpload`, `readUploadRecord`), request.ts (capped multipart reader)
+  content/read/preview*.ts  Preview: preview.ts (overlayOf / loadPreviewOverlay — valid drafts laid over the published reads), preview-session.ts (the gate: Draft Mode + editor session), preview-target.ts (the page an editor's draft lands on)
+scripts/
+  admin-cli.ts, admin/      `pnpm admin:create` / `admin:reset-password` — entry + prompt.ts (hidden raw-mode input), commands.ts (testable logic), rules.ts, errors.ts
+  parity/                   `pnpm parity:capture` / `parity:compare` — page text + links of the old site vs the new (classify.ts, compare.ts, text.ts, capture.ts)
+  seed-cli.ts, seed/        `pnpm seed` — entry · index.ts (seed-if-empty, dry run) · run.ts (the order of the steps) · sources.ts · steps/* · measures.ts · report/* (Vietnamese owner report) · legacy/ (the static sources the database replaced: catalog, translations, posts, showcase, Fast Print, menus, traits, size / spec heuristics, shape aliases — seed input only) · *.int.test.ts (counts, parity with the source, URLs, menus)
+  optimize-images.mjs       sharp-based image optimization script (run by hand)
 components/
+  blog/                     post-body.tsx (a post's blocks in the article's classes), post-category-badge.tsx (category colors by key, neutral default)
   providers/
     SmoothScroll.tsx        Lenis init (desktop only, ≥1024px) — no GSAP, no pinning
+    quote-modal-provider.tsx  Context that opens the QuoteModal from anywhere
+    site-data-provider.tsx  SiteDataProvider / useSiteData(): the language's navigation (categories, cards, menus) for the client chrome
+  admin/                    admin-shell (+ admin-nav.ts role-filtered sidebar, admin-theme.tsx), auth-card-shell, password-field, notice, failure-notice, modal, page-parts (PageHeader, AdminCard, button/input classes)
+    media/                  the picture library (Phase 5 M2): media-library (the page: filters, tiles, paging), upload-panel (button + drop zone + a result line per file), delete-media-dialog, use-media-page (the filtered, paged list — also the picker's), use-media-upload (runs the queue)
+    content/                the content editors: entity-editor, entity-list, create-dialog, editor-context, field primitives (fields, media-field, icon-field, field-shell), language-tabs, publish-dialog, history-panel, danger-card, diff-view, issue-list, use-draft-session; forms/ = one form per entity type (forms/product/ = the six-tab product editor, forms/menu/ = the menu editor, post-form, category-form, site-message-form) + forms.test.ts (coverage of all twelve); list-card, slug-field, alias-list, media-list-field, use-open-keys = the building blocks of the nested editors
+    account/, users/, audit/   sessions panel · users manager (cards, create / confirm / one-time-password dialogs, user-actions.ts) · audit filter form + table
   sections/                 all "use client"; landing page order = page.tsx import order
-    Navbar.tsx              Fixed top nav, mobile hamburger drawer, VI/EN flag switcher
+    Navbar.tsx              Fixed top nav, mobile hamburger drawer, 5-locale flag switcher (reads useSiteData)
+    MegaMenuDesktop.tsx, MegaMenuMobile.tsx   the ONE mega-menu pair, driven by a category's NavMenu
+    ShowcaseGallery.tsx     The /products editorial gallery (mobile grid + desktop slots by aspect)
+    SubgroupShapesView.tsx  Shapes grid of a product (ShapesPageModel)
+    ProductDetailView.tsx   Server component: product without shapes / one shape / one material page (DetailPageModel | ShapePageModel | MaterialPageModel)
+    PartnerLogos.tsx        Partner logo strip (between CTA and Footer)
     Hero.tsx                Swiper fade-effect autoplay carousel, per-slide gradient bg
     ShopCategories.tsx      Horizontal category rail (scroll-snap on mobile)
     ShopBanner.tsx          2-up promo banner
-    About.tsx               Looping video + stat card, checklist, CTA
+    About.tsx               Poster that plays the video on click + stat card, checklist, CTA
     Services.tsx            4 free-service cards
     Shop.tsx                 Tabbed product grid by category
     CtaBanner.tsx            Full-bleed image banner, 2 CTAs
@@ -299,7 +981,11 @@ components/
     section-heading.tsx, wipe-button.tsx, icon-badge.tsx   Reusable primitives — see above
     accordion.tsx, avatar.tsx, badge.tsx, button.tsx, card.tsx, separator.tsx, tabs.tsx   shadcn/ui primitives
     floating-contact.tsx      Global Zalo/phone floating buttons (root layout)
-    material-flashcard.tsx    Per-option flip card on product detail — image/traits, foil &
-                               double-sided checkboxes, copy-to-Zalo consult flow
-    material-glossary-fab.tsx Bottom-left icon-legend popover for material-flashcard traits
+    quote-modal.tsx, consult-bottom-sheet.tsx   Lead-capture UIs; both POST to /api/consult (with honeypot-field.tsx, the hidden trap input)
+    language-detector-toast.tsx, auto-scroll-to-target.tsx, zalo-icon.tsx   Locale suggestion toast, hash auto-scroll helper, Zalo glyph
+    preview-notice.tsx, preview-banner.tsx   Draft Mode strip (server decides via the gate, client draws applied / skipped drafts and «Thoát xem trước»)
+  seo/json-ld.tsx           <script type="application/ld+json"> that cannot be closed by editor text (serializeJsonLd)
+    named-icon.tsx            <NamedIcon name> — draws an icon the database names (lib/icons.ts)
+    material-flashcard.tsx    Per-option flip card (takes a CardView): images, traits, sizes / specs form, copy-to-Zalo consult flow
+    material-glossary-fab.tsx Bottom-left icon-legend popover (takes GlossaryTrait[])
 ```

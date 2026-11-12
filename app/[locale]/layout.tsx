@@ -2,13 +2,16 @@ import type { Metadata } from "next";
 import { Be_Vietnam_Pro, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import "../globals.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import { QuoteModalProvider } from "@/components/providers/quote-modal-provider";
+import { SiteDataProvider } from "@/components/providers/site-data-provider";
 import { FloatingContact } from "@/components/ui/floating-contact";
 import { LanguageDetectorToast } from "@/components/ui/language-detector-toast";
 import { routing } from "@/i18n/routing";
+import { getNavigation } from "@/lib/content/read/site";
+import { getSiteEnv } from "@/lib/env";
 
 const sans = Be_Vietnam_Pro({
   variable: "--font-sans",
@@ -30,8 +33,10 @@ const mono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Nothing under [locale] is prerendered: every page reads the content database, so each is rendered on its first request and cached
+// until a publish revalidates what it read (and `next build` needs no database).
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
+  return [];
 }
 
 export async function generateMetadata({
@@ -42,37 +47,11 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
 
-  const meta: Record<string, { title: string; description: string }> = {
-    vi: {
-      title: "Viet Dragon – In Ấn Chuyên Nghiệp | Premium Printing Services",
-      description:
-        "Viet Dragon – dịch vụ in ấn chuyên nghiệp tại TP. Hồ Chí Minh, Đồng Nai, Vũng Tàu & Bình Dương. Danh thiếp, catalogue, hộp giấy, decal. Tư vấn, thiết kế, in thử, giao hàng miễn phí.",
-    },
-    en: {
-      title: "Viet Dragon – Professional Printing Services",
-      description:
-        "Viet Dragon – professional printing services in Ho Chi Minh City, Dong Nai, Vung Tau & Binh Duong. Business cards, catalogues, paper boxes, decals. Free consultation, design, and sample printing.",
-    },
-    zh: {
-      title: "Viet Dragon – 越南高端专业印刷服务商",
-      description:
-        "Viet Dragon – 胡志明市、同奈、头顿与平阳省专业高品质印刷服务。商务名片、企业画册、精品礼盒、不干胶贴纸。免费咨询、设计、打样及配送。",
-    },
-    ja: {
-      title: "Viet Dragon – ベトナム・プロフェッショナル高品質印刷",
-      description:
-        "Viet Dragon – ホーチミン市・ドンナイ・ブンタウ・ビンズオン省のプロフェッショナル印刷サービス。名刺、カタログ、化粧箱、シール印刷。無料相談・デザイン・サンプル校正・無料配送。",
-    },
-    ko: {
-      title: "Viet Dragon – 베트남 전문 프리미엄 인쇄 제작 서비스",
-      description:
-        "Viet Dragon – 호치민시, 동나이, 붕따우 및 빈증성 전문 프리미엄 인쇄 서비스. 명함, 카탈로그, 종이 박스, 스티커 라벨. 1:1 무료 상담, 디자인, 샘플 인쇄 및 직배송.",
-    },
-  };
-
-  const baseMeta = meta[locale] ?? meta.en;
+  const t = await getTranslations({ locale, namespace: "siteMeta" });
   return {
-    ...baseMeta,
+    title: t("title"),
+    description: t("description"),
+    metadataBase: new URL(getSiteEnv().SITE_URL),
     icons: {
       icon: [
         { url: "/favicon.ico", sizes: "any" },
@@ -94,6 +73,7 @@ export default async function RootLayout({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
+  const navigation = await getNavigation(locale);
 
   return (
     <html
@@ -102,11 +82,13 @@ export default async function RootLayout({
     >
       <body suppressHydrationWarning>
         <NextIntlClientProvider>
-          <QuoteModalProvider>
-            <SmoothScroll>{children}</SmoothScroll>
-            <FloatingContact />
-            <LanguageDetectorToast />
-          </QuoteModalProvider>
+          <SiteDataProvider navigation={navigation}>
+            <QuoteModalProvider>
+              <SmoothScroll>{children}</SmoothScroll>
+              <FloatingContact />
+              <LanguageDetectorToast />
+            </QuoteModalProvider>
+          </SiteDataProvider>
         </NextIntlClientProvider>
       </body>
     </html>
