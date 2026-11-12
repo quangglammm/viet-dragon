@@ -14,6 +14,11 @@ const intlMiddleware = createMiddleware(routing);
 export default function proxy(request: NextRequest) {
   try {
     const { pathname, search } = request.nextUrl;
+    const cleanPath = pathname.replace(/^\/(vi|en|zh|ja|ko)(?=\/|$)/, "") || "/";
+    if (cleanPath === "/admin" || cleanPath.startsWith("/admin/")) {
+      return NextResponse.redirect(new URL(`/${search}`, getSiteEnv().SITE_URL), 308);
+    }
+
     const decision = decideRoute(pathname);
     if (decision.action === "redirect") {
       return NextResponse.redirect(new URL(`${decision.pathname}${search}`, getSiteEnv().SITE_URL), 308);
