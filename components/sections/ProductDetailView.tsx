@@ -158,18 +158,29 @@ export async function ProductDetailView({ locale, model, traits }: Readonly<{ lo
 
       {cards.length > 0 && (() => {
         // Synchronize the material glossary with the materials inside this material page:
-        // Use the exact material names (heading), icons, and feature summaries of the page's cards.
+        // Use the exact material names (heading with product prefix stripped), icons, and feature summaries of the page's cards.
+        const baseProduct = (context.title || frame.heading || "").split(/\s*[-–—]\s*/)[0].trim();
+        const prefixRegex = baseProduct ? new RegExp(`^${baseProduct}\\s*[-–—:]*\\s*`, "i") : null;
+
         const materialGlossary: GlossaryTrait[] = cards.map((card) => {
           const description =
             card.features.length > 0
               ? card.features.map((f) => f.text).join(". ")
               : card.tagline;
 
+          let label = card.heading;
+          if (prefixRegex) {
+            const stripped = label.replace(prefixRegex, "").trim();
+            if (stripped) {
+              label = stripped.charAt(0).toUpperCase() + stripped.slice(1);
+            }
+          }
+
           return {
             key: card.uid,
             anchorId: card.anchor.id,
             icon: card.icon ?? "Layers",
-            label: card.heading,
+            label,
             description,
           };
         });
