@@ -15,6 +15,18 @@ const nextConfig: NextConfig = {
   // Next would announce itself in `X-Powered-By`; the other security headers are lib/security-headers.ts (Caddy adds the rest).
   poweredByHeader: false,
   headers: async () => securityHeaders({ reportOnly: process.env.NODE_ENV === "production" }),
+  redirects: async () => [
+    {
+      source: "/admin",
+      destination: "/",
+      permanent: true,
+    },
+    {
+      source: "/admin/:path*",
+      destination: "/",
+      permanent: true,
+    },
+  ],
   images: {
     qualities: [30, 75, 85],
     formats: ["image/avif", "image/webp"],

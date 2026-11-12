@@ -17,4 +17,18 @@ describe("proxy public routing", () => {
     expect(response.status).toBe(308);
     expect(response.headers.get("location")).toBe(`${origin()}/en/products`);
   });
+
+  it("redirects /admin and /admin/* to the home page", async () => {
+    const res1 = await proxy(request("/admin"));
+    expect(res1.status).toBe(308);
+    expect(res1.headers.get("location")).toBe(`${origin()}/`);
+
+    const res2 = await proxy(request("/admin/login"));
+    expect(res2.status).toBe(308);
+    expect(res2.headers.get("location")).toBe(`${origin()}/`);
+
+    const res3 = await proxy(request("/vi/admin"));
+    expect(res3.status).toBe(308);
+    expect(res3.headers.get("location")).toBe(`${origin()}/`);
+  });
 });
