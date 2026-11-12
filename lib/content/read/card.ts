@@ -16,6 +16,8 @@ export interface CardSize {
 }
 
 export interface CardFeature {
+  /** The trait key; null when the bullet has none. */
+  trait?: string | null;
   /** A trait's icon name; null for a bullet without one. */
   icon: string | null;
   text: string;
@@ -59,7 +61,11 @@ export function cardOf(catalog: Catalog, locale: LocaleCode, product: ProductVie
     icon: option.icon,
     heading: pickText(locale, option.title) || pickText(locale, option.name),
     tagline: pickText(locale, option.tagline),
-    features: option.features.map((feature) => ({ icon: feature.trait ? (catalog.traits[feature.trait]?.icon ?? null) : null, text: pickText(locale, feature.text) })),
+    features: option.features.map((feature) => ({
+      trait: feature.trait ?? null,
+      icon: feature.trait ? (catalog.traits[feature.trait]?.icon ?? null) : null,
+      text: pickText(locale, feature.text),
+    })),
     bestFor: option.bestFor.map((line) => pickText(locale, line)),
     images: optionImages.length > 0 ? optionImages : fallback,
     sizes: sizesFor(product, shape).map((size) => sizeOf(size, locale)),

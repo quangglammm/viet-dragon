@@ -195,6 +195,16 @@ export function MaterialFlashcard({
   const materialList = card.materials;
   const finishingList = card.finishing;
 
+  const hasCurrentMaterial = materialList.some(
+    (mat) =>
+      mat.toLowerCase() === name.toLowerCase() ||
+      name.toLowerCase().includes(mat.toLowerCase()) ||
+      mat.toLowerCase().includes(name.toLowerCase())
+  );
+  const displayMaterials = hasCurrentMaterial || materialList.length === 0
+    ? materialList
+    : [...materialList, name];
+
   const rawImages = card.images;
 
   // Ensure 3 slots are always present for the collage
@@ -588,12 +598,12 @@ export function MaterialFlashcard({
         )}
 
         {/* 3. Chất liệu */}
-        {materialList.length > 0 && (
+        {displayMaterials.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-bold text-zinc-900 shrink-0">
               {t("formMaterial")}
             </span>
-            {materialList.map((mat, idx) => {
+            {displayMaterials.map((mat, idx) => {
               const isCurrent =
                 mat.toLowerCase() === name.toLowerCase() ||
                 name.toLowerCase().includes(mat.toLowerCase()) ||

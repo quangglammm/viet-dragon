@@ -39,10 +39,10 @@ describe("cardOf", () => {
 
   it("takes the icon of each feature from its trait, and none for a bullet without one", () => {
     const card = cardOf(catalog(), "vi", product(), option(UID.option), null, "x");
-    expect(card.features).toEqual([{ icon: "Sparkles", text: "Bóng" }]);
+    expect(card.features).toEqual([{ trait: "glossy-coat", icon: "Sparkles", text: "Bóng" }]);
     expect(card.bestFor).toEqual(["Sự kiện"]);
     const noTrait = { ...option(UID.option), features: [{ trait: null, text: { vi: "Giá tốt" } }, { trait: "unknown-trait", text: { vi: "Lạ" } }] };
-    expect(cardOf(catalog(), "vi", product(), noTrait, null, "x").features).toEqual([{ icon: null, text: "Giá tốt" }, { icon: null, text: "Lạ" }]);
+    expect(cardOf(catalog(), "vi", product(), noTrait, null, "x").features).toEqual([{ trait: null, icon: null, text: "Giá tốt" }, { trait: "unknown-trait", icon: null, text: "Lạ" }]);
   });
 
   it("shows the plain-stock photos when the option has them, the others otherwise", () => {
