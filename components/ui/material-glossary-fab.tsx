@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Library, X } from "lucide-react";
+import { ChevronDown, Library, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { NamedIcon } from "@/components/ui/named-icon";
 import { cn } from "@/lib/utils";
@@ -18,7 +18,75 @@ export function MaterialGlossaryFab({ traits }: Readonly<{ traits: readonly Glos
   const [open, setOpen] = useState(false);
   const t = useTranslations("materialGlossary");
 
+  const listRef = useRef<HTMLUListElement>(null);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+  const isDraggingRef = useRef(false);
+  const mouseStartRef = useRef<{ y: number; scrollTop: number } | null>(null);
+  const touchStartPosRef = useRef<{ y: number } | null>(null);
+
+  const checkScroll = useCallback(() => {
+    const el = listRef.current;
+    if (el) {
+      setCanScrollDown(el.scrollHeight - el.scrollTop - el.clientHeight > 12);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      const timer = setTimeout(checkScroll, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [open, checkScroll, traits]);
+
+  // Mouse drag-to-scroll handlers (desktop gesture)
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!listRef.current) return;
+    mouseStartRef.current = { y: e.clientY, scrollTop: listRef.current.scrollTop };
+    isDraggingRef.current = false;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!mouseStartRef.current || !listRef.current) return;
+    const deltaY = e.clientY - mouseStartRef.current.y;
+    if (Math.abs(deltaY) > 5) {
+      isDraggingRef.current = true;
+      listRef.current.scrollTop = mouseStartRef.current.scrollTop - deltaY;
+    }
+  };
+
+  const handleMouseUp = () => {
+    mouseStartRef.current = null;
+    setTimeout(() => {
+      isDraggingRef.current = false;
+    }, 60);
+  };
+
+  // Touch swipe handlers (mobile gesture)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      touchStartPosRef.current = { y: e.touches[0].clientY };
+      isDraggingRef.current = false;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartPosRef.current && e.touches.length === 1) {
+      const deltaY = Math.abs(e.touches[0].clientY - touchStartPosRef.current.y);
+      if (deltaY > 8) {
+        isDraggingRef.current = true;
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    touchStartPosRef.current = null;
+    setTimeout(() => {
+      isDraggingRef.current = false;
+    }, 60);
+  };
+
   const handleTraitClick = (anchorId?: string) => {
+    if (isDraggingRef.current) return;
     if (!anchorId) return;
     setOpen(false);
 
@@ -52,11 +120,13 @@ export function MaterialGlossaryFab({ traits }: Readonly<{ traits: readonly Glos
         <AnimatePresence>
           {open && (
             <motion.div
+              data-lenis-prevent="true"
+              onWheel={(e) => e.stopPropagation()}
               initial={{ opacity: 0, y: 12, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 12, scale: 0.96 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="w-[min(88vw,320px)] rounded-2xl border border-zinc-100 bg-white shadow-xl overflow-hidden"
+              className="relative w-[min(88vw,320px)] rounded-2xl border border-zinc-100 bg-white shadow-xl overflow-hidden select-none"
             >
               <div className="flex items-center justify-between gap-2 px-5 py-4 bg-zinc-50 border-b border-zinc-100">
                 <h3 className="font-black text-zinc-900 text-sm">{t("title")}</h3>
@@ -64,14 +134,24 @@ export function MaterialGlossaryFab({ traits }: Readonly<{ traits: readonly Glos
                   type="button"
                   onClick={() => setOpen(false)}
                   aria-label={t("closeLabel")}
-                  className="shrink-0 inline-flex items-center justify-center size-7 rounded-full text-zinc-400 hover:text-zinc-900 hover:bg-white transition-colors"
+                  className="shrink-0 inline-flex items-center justify-center size-7 rounded-full text-zinc-400 hover:text-zinc-900 hover:bg-white transition-colors cursor-pointer"
                 >
                   <X size={14} strokeWidth={1.75} />
                 </button>
               </div>
+
               <ul
+                ref={listRef}
                 data-lenis-prevent="true"
-                className="max-h-[60vh] overflow-y-auto divide-y divide-zinc-100 custom-scrollbar overscroll-contain"
+                onScroll={checkScroll}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                className="max-h-[60vh] overflow-y-auto divide-y divide-zinc-100 custom-scrollbar overscroll-contain touch-pan-y cursor-grab active:cursor-grabbing"
+                style={{ WebkitOverflowScrolling: "touch" }}
               >
                 {traits.map((trait) => (
                   <li key={trait.key}>
@@ -103,6 +183,23 @@ export function MaterialGlossaryFab({ traits }: Readonly<{ traits: readonly Glos
                   </li>
                 ))}
               </ul>
+
+              {/* Scroll indicator overlay at bottom */}
+              {canScrollDown && (
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (listRef.current) {
+                      listRef.current.scrollBy({ top: 90, behavior: "smooth" });
+                    }
+                  }}
+                  className="absolute inset-x-0 bottom-0 h-9 bg-gradient-to-t from-white via-white/85 to-transparent flex items-end justify-center pb-1 cursor-pointer z-10 select-none"
+                >
+                  <span className="text-[10px] font-semibold text-brand-primary bg-white/95 backdrop-blur-xs px-2 py-0.5 rounded-full shadow-2xs border border-brand-primary/20 flex items-center gap-1 hover:bg-brand-soft transition-colors">
+                    <ChevronDown size={11} className="animate-bounce" />
+                  </span>
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
