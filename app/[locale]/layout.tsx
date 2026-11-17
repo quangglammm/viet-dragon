@@ -5,6 +5,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import "../globals.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { QuoteModalProvider } from "@/components/providers/quote-modal-provider";
 import { SiteDataProvider } from "@/components/providers/site-data-provider";
 import { FloatingContact } from "@/components/ui/floating-contact";
@@ -90,6 +91,7 @@ export default async function RootLayout({
             </QuoteModalProvider>
           </SiteDataProvider>
         </NextIntlClientProvider>
+        <GoogleAnalytics />
       </body>
     </html>
   );
