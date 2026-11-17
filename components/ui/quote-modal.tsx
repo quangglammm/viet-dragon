@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cleanPhone, isPhoneNumber } from "@/lib/phone";
+import { trackEvent } from "@/lib/analytics";
 import { HoneypotField } from "@/components/ui/honeypot-field";
 import {
   PHONE_NUMBER,
@@ -107,6 +108,12 @@ export function QuoteModal({
           setError(res.status === 429 ? t("tooManyRequests") : t("phoneError"));
           return;
         }
+
+        trackEvent("generate_lead", {
+          event_category: "Consultation",
+          event_label: itemDescription,
+          form_name: "quote_modal",
+        });
 
         setIsSuccess(true);
       } catch (err) {

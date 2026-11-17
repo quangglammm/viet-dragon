@@ -6,6 +6,7 @@ import { X, Phone, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { ZALO_CHAT_URL } from "@/lib/contact";
 import { cleanPhone, isPhoneNumber } from "@/lib/phone";
+import { trackEvent } from "@/lib/analytics";
 import { HoneypotField } from "@/components/ui/honeypot-field";
 import { ZaloIcon } from "@/components/ui/zalo-icon";
 import { pickLocale } from "@/lib/locale";
@@ -123,6 +124,14 @@ export function ConsultBottomSheet({
           setError(res.status === 429 ? t("tooManyRequests") : t("errorGeneric"));
           return;
         }
+
+        trackEvent("generate_lead", {
+          event_category: "Consultation",
+          event_label: productName,
+          form_name: "consult_bottom_sheet",
+          material: materialName,
+          size: sizeLabel,
+        });
 
         setIsSuccess(true);
 

@@ -12,6 +12,19 @@ export const CSP_REPORT_PATH = "/api/csp-report";
 /** The testimonial avatars (Testimonials.tsx) are still picsum.photos placeholders, and picsum answers with a redirect to its CDN: both hosts are loaded. */
 export const PLACEHOLDER_AVATAR_HOSTS = ["https://picsum.photos", "https://fastly.picsum.photos"] as const;
 
+/** Google Analytics (GA4) remote hosts: script loader, analytics data collection, doubleclick signals, and fallback beacon pixels. */
+export const GOOGLE_ANALYTICS_SCRIPT_HOSTS = ["https://www.googletagmanager.com"] as const;
+export const GOOGLE_ANALYTICS_CONNECT_HOSTS = [
+  "https://www.google-analytics.com",
+  "https://analytics.google.com",
+  "https://region1.google-analytics.com",
+  "https://stats.g.doubleclick.net",
+] as const;
+export const GOOGLE_ANALYTICS_IMG_HOSTS = [
+  "https://www.google-analytics.com",
+  "https://www.googletagmanager.com",
+] as const;
+
 /**
  * ENFORCED on every page. These four need no knowledge of what a page loads, so they cannot break one: nobody may frame the site, a `<base>`
  * cannot redirect relative URLs, no plugins, and a form only posts to the site itself.
@@ -24,16 +37,16 @@ export const ENFORCED_CSP = ["frame-ancestors 'none'", "base-uri 'self'", "objec
  * It has `'unsafe-inline'` for scripts on purpose: Next writes inline scripts into every page (the flight payload), and a nonce or hash
  * would make every page dynamic, which ends the ISR the site is built on (docs/security.md has the full reasoning).
  * Derived from what the production build really loads (the survey is in docs/security.md): no `data:` or `blob:` image, worker or manifest
- * exists anywhere, so none is allowed. The only remote origin is the testimonial avatars.
+ * exists anywhere, so none is allowed. The remote origins are the testimonial avatars and Google Analytics (GA4).
  */
 export const REPORT_ONLY_CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline' ${GOOGLE_ANALYTICS_SCRIPT_HOSTS.join(" ")}`,
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' ${PLACEHOLDER_AVATAR_HOSTS.join(" ")}`,
+  `img-src 'self' ${[...PLACEHOLDER_AVATAR_HOSTS, ...GOOGLE_ANALYTICS_IMG_HOSTS].join(" ")}`,
   "font-src 'self'",
   "media-src 'self'",
-  "connect-src 'self'",
+  `connect-src 'self' ${GOOGLE_ANALYTICS_CONNECT_HOSTS.join(" ")}`,
   "frame-src 'none'",
   "object-src 'none'",
   "base-uri 'self'",

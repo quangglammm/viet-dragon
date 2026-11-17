@@ -1,5 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { CSP_REPORT_PATH, CSP_SKIPPED_PREFIXES, ENFORCED_CSP, PERMISSIONS_POLICY, PLACEHOLDER_AVATAR_HOSTS, REPORT_ONLY_CSP, securityHeaders, type HeaderRule } from "./security-headers";
+import {
+  CSP_REPORT_PATH,
+  CSP_SKIPPED_PREFIXES,
+  ENFORCED_CSP,
+  GOOGLE_ANALYTICS_CONNECT_HOSTS,
+  GOOGLE_ANALYTICS_IMG_HOSTS,
+  GOOGLE_ANALYTICS_SCRIPT_HOSTS,
+  PERMISSIONS_POLICY,
+  PLACEHOLDER_AVATAR_HOSTS,
+  REPORT_ONLY_CSP,
+  securityHeaders,
+  type HeaderRule,
+} from "./security-headers";
 
 const keysOf = (rule: HeaderRule) => rule.headers.map((header) => header.key);
 const ruleFor = (rules: HeaderRule[], source: string): HeaderRule => {
@@ -48,9 +60,15 @@ describe("the header table", () => {
     expect(keysOf(ruleFor(development, DOCUMENTS))).toEqual(["Content-Security-Policy"]);
   });
 
-  it("allows the site itself and the placeholder avatar hosts, nothing else", () => {
+  it("allows the site itself, the placeholder avatar hosts, and Google Analytics hosts, nothing else", () => {
     const hosts = REPORT_ONLY_CSP.match(/https?:\/\/[^\s;]+/g) ?? [];
-    expect(hosts).toEqual([...PLACEHOLDER_AVATAR_HOSTS]);
+    const expectedHosts = [
+      ...GOOGLE_ANALYTICS_SCRIPT_HOSTS,
+      ...PLACEHOLDER_AVATAR_HOSTS,
+      ...GOOGLE_ANALYTICS_IMG_HOSTS,
+      ...GOOGLE_ANALYTICS_CONNECT_HOSTS,
+    ];
+    expect(hosts).toEqual(expectedHosts);
     expect(REPORT_ONLY_CSP).not.toMatch(/\*|unsafe-eval|data:|blob:/);
   });
 
