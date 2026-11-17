@@ -18,6 +18,8 @@ interface QuoteModalOptions {
 interface QuoteModalContextValue {
   isOpen: boolean;
   productName: string | undefined;
+  pageProduct: string | undefined;
+  setPageProduct: (product: string | undefined) => void;
   openQuote: (options?: QuoteModalOptions) => void;
   closeQuote: () => void;
 }
@@ -41,11 +43,12 @@ export function QuoteModalProvider({
 }: Readonly<QuoteModalProviderProps>) {
   const [isOpen, setIsOpen] = useState(false);
   const [productName, setProductName] = useState<string | undefined>(undefined);
+  const [pageProduct, setPageProduct] = useState<string | undefined>(undefined);
 
   const openQuote = useCallback((options?: QuoteModalOptions) => {
-    setProductName(options?.productName);
+    setProductName(options?.productName ?? pageProduct);
     setIsOpen(true);
-  }, []);
+  }, [pageProduct]);
 
   const closeQuote = useCallback(() => {
     setIsOpen(false);
@@ -88,10 +91,12 @@ export function QuoteModalProvider({
     () => ({
       isOpen,
       productName,
+      pageProduct,
+      setPageProduct,
       openQuote,
       closeQuote,
     }),
-    [isOpen, productName, openQuote, closeQuote]
+    [isOpen, productName, pageProduct, setPageProduct, openQuote, closeQuote]
   );
 
   return (
@@ -105,4 +110,20 @@ export function QuoteModalProvider({
       />
     </QuoteModalContext.Provider>
   );
+}
+
+export function RegisterPageProduct({
+  product,
+}: Readonly<{ product?: string | null }>) {
+  const { setPageProduct } = useQuoteModal();
+
+  useEffect(() => {
+    if (!product) return;
+    setPageProduct(product);
+    return () => {
+      setPageProduct(undefined);
+    };
+  }, [product, setPageProduct]);
+
+  return null;
 }

@@ -340,20 +340,36 @@ export function QuoteModal({
 
                   {/* Note / Product input */}
                   <div>
-                    <label
-                      htmlFor="quote-modal-note"
-                      className="block text-xs font-bold text-zinc-700 mb-1.5"
-                    >
-                      {t("noteLabel")}
-                    </label>
-                    <input
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                      <label
+                        htmlFor="quote-modal-note"
+                        className="block text-xs font-bold text-zinc-700 shrink-0"
+                      >
+                        {t("noteLabel")}
+                      </label>
+                      {Boolean(productName) && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setNote((prev) =>
+                              prev === productName ? "" : (productName ?? "")
+                            )
+                          }
+                          title={productName}
+                          className="text-[11px] sm:text-xs text-brand-primary font-medium hover:text-[#5b00cf] hover:underline transition-colors cursor-pointer text-right line-clamp-2"
+                        >
+                          {t("interestedInThisProduct")}
+                        </button>
+                      )}
+                    </div>
+                    <textarea
                       id="quote-modal-note"
-                      type="text"
+                      rows={2}
                       value={note}
                       onChange={(e) => setNote(e.target.value)}
                       placeholder={t("notePlaceholder")}
                       disabled={isPending}
-                      className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium text-zinc-900 placeholder:text-zinc-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition-all"
+                      className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium text-zinc-500 placeholder:text-zinc-400 focus:bg-white focus:text-zinc-900 focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition-all resize-none leading-relaxed"
                     />
                   </div>
 

@@ -8,6 +8,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import type { ShapesPageModel } from "@/lib/content/read/pages";
 import { findHashTarget, smoothScrollToElement } from "@/lib/hash-navigation";
+import { RegisterPageProduct } from "@/components/providers/quote-modal-provider";
 
 export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel }>) {
   const router = useRouter();
@@ -79,6 +80,7 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
 
   return (
     <div className="bg-white">
+      <RegisterPageProduct product={title} />
       {/* ── Subgroup Hero banner ── */}
       <div className="relative h-[320px] lg:h-[400px] w-full overflow-hidden">
         {cover && (
@@ -281,6 +283,7 @@ export function SubgroupShapesView({ model }: Readonly<{ model: ShapesPageModel 
             </div>
             <Link
               href="/#cta"
+              data-quote-product={title}
               className="shrink-0 inline-flex items-center gap-2 px-7 py-3.5 bg-brand-primary text-white font-bold uppercase tracking-wide btn-wipe whitespace-nowrap text-sm rounded-xl shadow-lg"
             >
               {t("getQuoteNow")} <ArrowRight size={16} />

@@ -425,6 +425,7 @@
     "phonePlaceholder": "E.g. 0901 448 377",
     "noteLabel": "Product / printing specifications",
     "notePlaceholder": "E.g. 500 business cards C300, kraft paper bags, gift boxes...",
+    "interestedInThisProduct": "Are you interested in this product?",
     "submit": "Submit Quote Request",
     "submitting": "Submitting request...",
     "trust1": "Quote in 30 minutes",
@@ -454,6 +455,7 @@
     "scrollMore": "Scroll for more",
     "previousPhoto": "Previous photo",
     "nextPhoto": "Next photo",
+    "fullscreen": "View fullscreen",
     "sizeLabel": "{tier} ({note})",
     "tier": {
       "large": "Large",

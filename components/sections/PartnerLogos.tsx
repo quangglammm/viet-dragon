@@ -62,6 +62,14 @@ const partners: PartnerItem[] = [
     height: 1254,
     className: "max-h-10 sm:max-h-13 lg:max-h-16 w-auto max-w-[80px] sm:max-w-[125px] lg:max-w-[150px]",
   },
+  {
+    id: "yeah1",
+    name: "Yeah1 Network",
+    src: "/images/partner/doitac7.webp",
+    width: 1500,
+    height: 600,
+    className: "max-h-8 sm:max-h-11 lg:max-h-14 w-auto max-w-[100px] sm:max-w-[160px] lg:max-w-[190px]",
+  },
 ];
 
 export default function PartnerLogos() {
@@ -85,9 +93,9 @@ export default function PartnerLogos() {
           <span className="hidden sm:block h-px w-12 bg-zinc-200" />
         </motion.div>
 
-        {/* 6 logos arranged in 2 rows (3 columns per row) */}
+        {/* Partner logos: 4 on top, 3 centered below (or 3+3+1 centered on mobile) */}
         <motion.div
-          className="grid grid-cols-3 gap-x-4 sm:gap-x-8 lg:gap-x-14 gap-y-6 sm:gap-y-8 lg:gap-10 items-center justify-items-center max-w-4xl mx-auto"
+          className="flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-8 lg:gap-x-12 gap-y-6 sm:gap-y-8 lg:gap-10 max-w-5xl mx-auto"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-30px" }}
@@ -96,7 +104,7 @@ export default function PartnerLogos() {
           {partners.map((partner) => (
             <div
               key={partner.id}
-              className="flex items-center justify-center w-full h-14 sm:h-18 lg:h-22 px-2 sm:px-4"
+              className="flex items-center justify-center w-[calc(33.333%-1rem)] sm:w-[calc(25%-2rem)] h-14 sm:h-18 lg:h-22 px-2 sm:px-4"
             >
               <Image
                 src={partner.src}

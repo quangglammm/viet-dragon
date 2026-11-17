@@ -11,6 +11,7 @@ import { alternatePaths, categoryPath } from "@/lib/content/read/urls";
 import { JsonLd } from "@/components/seo/json-ld";
 import { peekPage, resolvePage } from "@/lib/content/read/resolve-page";
 import { localeOf } from "@/lib/route-locale";
+import { RegisterPageProduct } from "@/components/providers/quote-modal-provider";
 
 type CategoryParams = { locale: Locale; category: string };
 
@@ -37,6 +38,7 @@ export default async function CategoryPage({ params }: Readonly<{ params: Promis
 
   return (
     <div className="bg-white">
+      <RegisterPageProduct product={name} />
       <JsonLd data={breadcrumbLd(locale, crumbs)} />
       {/* ── Full-width hero image ── */}
       <div className="relative h-[420px] lg:h-[520px] w-full overflow-hidden">

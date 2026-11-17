@@ -425,6 +425,7 @@
     "phonePlaceholder": "例如：0901 448 377",
     "noteLabel": "所需产品 / 印刷规格",
     "notePlaceholder": "例如：500张名片、牛皮纸手提袋、礼盒...",
+    "interestedInThisProduct": "您是否对这款产品感兴趣？",
     "submit": "提交报价需求",
     "submitting": "正在提交需求...",
     "trust1": "30分钟极速报价",
@@ -454,6 +455,7 @@
     "scrollMore": "向下滚动查看更多",
     "previousPhoto": "上一张",
     "nextPhoto": "下一张",
+    "fullscreen": "全屏查看",
     "sizeLabel": "{tier} ({note})",
     "tier": {
       "large": "大号",

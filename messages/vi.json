@@ -425,6 +425,7 @@
     "phonePlaceholder": "Ví dụ: 0901 448 377",
     "noteLabel": "Sản phẩm / quy cách cần in",
     "notePlaceholder": "Ví dụ: 500 danh thiếp C300, túi giấy kraft, hộp quà...",
+    "interestedInThisProduct": "Có phải bạn đang quan tâm sản phẩm này?",
     "submit": "Gửi Yêu Cầu Báo Giá",
     "submitting": "Đang gửi yêu cầu...",
     "trust1": "Báo giá nhanh 30 phút",
@@ -454,6 +455,7 @@
     "scrollMore": "Cuộn xem tiếp",
     "previousPhoto": "Ảnh trước",
     "nextPhoto": "Ảnh tiếp theo",
+    "fullscreen": "Xem toàn màn hình",
     "sizeLabel": "{tier} ({note})",
     "tier": {
       "large": "Lớn",

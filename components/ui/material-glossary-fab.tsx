@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "motion/react";
 import { ChevronDown, Library, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { NamedIcon } from "@/components/ui/named-icon";
-import { cn } from "@/lib/utils";
 import { findHashTarget, smoothScrollToElement } from "@/lib/hash-navigation";
 import type { GlossaryTrait } from "@/lib/content/read/pages";
 
