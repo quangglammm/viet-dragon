@@ -425,6 +425,7 @@
     "phonePlaceholder": "예: 0901 448 377",
     "noteLabel": "제작 상품 / 인쇄 사양 (선택)",
     "notePlaceholder": "예: 명함 500장, 크라프트 쇼핑백, 선물 상자...",
+    "interestedInThisProduct": "이 제품에 관심이 있으신가요?",
     "submit": "견적 요청 제출하기",
     "submitting": "요청 전송 중...",
     "trust1": "30분 이내 빠른 견적",
@@ -454,6 +455,7 @@
     "scrollMore": "아래로 스크롤하여 더보기",
     "previousPhoto": "이전 사진",
     "nextPhoto": "다음 사진",
+    "fullscreen": "전체 화면 보기",
     "sizeLabel": "{tier} ({note})",
     "tier": {
       "large": "대",

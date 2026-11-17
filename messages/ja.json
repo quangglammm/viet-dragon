@@ -425,6 +425,7 @@
     "phonePlaceholder": "例: 0901 448 377",
     "noteLabel": "商品 / 印刷仕様（任意）",
     "notePlaceholder": "例: 名刺500枚、クラフト紙袋、ギフトボックス...",
+    "interestedInThisProduct": "こちらの製品をご検討中ですか？",
     "submit": "お見積りリクエストを送信",
     "submitting": "送信中...",
     "trust1": "30分以内のスピード見積もり",
@@ -454,6 +455,7 @@
     "scrollMore": "スクロールして続きを見る",
     "previousPhoto": "前の写真",
     "nextPhoto": "次の写真",
+    "fullscreen": "全画面表示",
     "sizeLabel": "{tier} ({note})",
     "tier": {
       "large": "大",

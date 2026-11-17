@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeftRight, ImagePlus, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { ArrowLeftRight, ImagePlus, ChevronLeft, ChevronRight, ChevronDown, Maximize2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { NamedIcon } from "@/components/ui/named-icon";
 import type { CardSize, CardView } from "@/lib/content/read/card";
@@ -110,6 +111,8 @@ export function MaterialFlashcard({
   const [selectedSizeIndex, setSelectedSizeIndex] = useState<number | null>(null);
   const [consultOpen, setConsultOpen] = useState(false);
   const [mobileImageIdx, setMobileImageIdx] = useState(0);
+  const [fullscreenOpen, setFullscreenOpen] = useState(false);
+  const [fullscreenIdx, setFullscreenIdx] = useState(0);
 
   const touchStartX = useRef<number>(0);
   const touchStartY = useRef<number>(0);
@@ -310,6 +313,81 @@ export function MaterialFlashcard({
     }
   };
 
+  const handleOpenFullscreen = (e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation();
+    ignoreClickUntil.current = Date.now() + 400;
+    setFullscreenIdx(currentMobileIdx);
+    setFullscreenOpen(true);
+  };
+
+  const handleCloseFullscreen = useCallback(() => {
+    setFullscreenOpen(false);
+    ignoreClickUntil.current = Date.now() + 400;
+  }, []);
+
+  const handlePrevFullscreen = useCallback(
+    (e?: React.MouseEvent) => {
+      e?.stopPropagation();
+      setFullscreenIdx((prev) => (prev === 0 ? displayImages.length - 1 : prev - 1));
+    },
+    [displayImages.length]
+  );
+
+  const handleNextFullscreen = useCallback(
+    (e?: React.MouseEvent) => {
+      e?.stopPropagation();
+      setFullscreenIdx((prev) => (prev === displayImages.length - 1 ? 0 : prev + 1));
+    },
+    [displayImages.length]
+  );
+
+  useEffect(() => {
+    if (!fullscreenOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleCloseFullscreen();
+      } else if (e.key === "ArrowLeft") {
+        handlePrevFullscreen();
+      } else if (e.key === "ArrowRight") {
+        handleNextFullscreen();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [fullscreenOpen, handleCloseFullscreen, handlePrevFullscreen, handleNextFullscreen]);
+
+  const fsTouchStartX = useRef<number>(0);
+  const fsTouchStartY = useRef<number>(0);
+
+  const handleFsTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      fsTouchStartX.current = e.touches[0].clientX;
+      fsTouchStartY.current = e.touches[0].clientY;
+    }
+  };
+
+  const handleFsTouchEnd = (e: React.TouchEvent) => {
+    if (e.changedTouches.length === 1) {
+      const deltaX = e.changedTouches[0].clientX - fsTouchStartX.current;
+      const deltaY = e.changedTouches[0].clientY - fsTouchStartY.current;
+      if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX < 0) {
+          handleNextFullscreen();
+        } else {
+          handlePrevFullscreen();
+        }
+      }
+    }
+  };
+
   return (
     <div className="w-full rounded-2xl border border-zinc-100 overflow-hidden">
       {/* Flip control — material photo view (default) <-> description/best-for view. */}
@@ -450,9 +528,20 @@ export function MaterialFlashcard({
               onClick={handleCardFlip}
               className="absolute inset-x-0 bottom-0 px-5 pt-4 pb-3 md:pb-4 flex flex-col gap-2 z-10 cursor-pointer"
             >
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2 sm:gap-2.5">
                 <NamedIcon name={card.icon} size={16} className="text-white shrink-0" />
                 <span className="text-white font-black text-base line-clamp-2 flex-1">{name}</span>
+                <button
+                  type="button"
+                  aria-label={t("fullscreen")}
+                  title={t("fullscreen")}
+                  onClick={handleOpenFullscreen}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  onTouchEnd={(e) => e.stopPropagation()}
+                  className="p-1 text-white/60 hover:text-purple-300 active:text-purple-200 transition-colors cursor-pointer shrink-0 flex items-center justify-center"
+                >
+                  <Maximize2 size={14} strokeWidth={2} />
+                </button>
                 <ArrowLeftRight size={14} strokeWidth={2} className="text-white/60 shrink-0" />
               </div>
 
@@ -701,6 +790,157 @@ export function MaterialFlashcard({
         sizeDims={selectedSizeItem?.dims}
         locale={locale}
       />
+
+      {/* Fullscreen Lightbox Modal */}
+      {typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {fullscreenOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between select-none"
+                onClick={handleCloseFullscreen}
+                onTouchStart={handleFsTouchStart}
+                onTouchEnd={handleFsTouchEnd}
+              >
+                {/* Header */}
+                <div
+                  className="relative z-10 flex items-center justify-between px-4 sm:px-6 py-4 bg-gradient-to-b from-black/80 to-transparent"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="flex items-center gap-3 min-w-0 pr-4">
+                    <div className="size-8 rounded-lg bg-white/10 text-white flex items-center justify-center shrink-0">
+                      <NamedIcon name={card.icon} size={18} />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-white font-black text-sm sm:text-base truncate leading-tight">
+                        {name}
+                      </h4>
+                      {productName && (
+                        <p className="text-white/60 text-xs truncate mt-0.5">
+                          {productName}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                    {displayImages.length > 1 && (
+                      <span className="text-white/70 text-xs px-2.5 py-1 rounded-full bg-white/10 font-semibold tracking-wider">
+                        {fullscreenIdx + 1} / {displayImages.length}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      aria-label={t("fullscreen")}
+                      title={t("fullscreen")}
+                      onClick={handleCloseFullscreen}
+                      className="p-1.5 text-white/70 hover:text-purple-300 active:text-purple-200 transition-colors cursor-pointer flex items-center justify-center shrink-0"
+                    >
+                      <Maximize2 size={18} strokeWidth={2} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Main Viewport Image Area */}
+                <div
+                  className="relative flex-1 flex items-center justify-center p-4 sm:p-8 min-h-0 cursor-pointer"
+                  onClick={handleCloseFullscreen}
+                >
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={fullscreenIdx}
+                      initial={{ opacity: 0, scale: 0.96 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.96 }}
+                      transition={{ duration: 0.2 }}
+                      className="relative flex items-center justify-center pointer-events-auto"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {displayImages[fullscreenIdx] ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                          src={displayImages[fullscreenIdx]}
+                          alt={`${name} — ${fullscreenIdx + 1}`}
+                          className="max-h-[75vh] sm:max-h-[82vh] max-w-[90vw] sm:max-w-[85vw] w-auto h-auto object-contain rounded-lg drop-shadow-2xl select-none cursor-default"
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center text-zinc-500 gap-2">
+                          <ImagePlus size={48} strokeWidth={1.5} />
+                          <span className="text-sm">{t("photoMain")}</span>
+                        </div>
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+
+                  {/* Previous / Next buttons */}
+                  {displayImages.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        aria-label={t("previousPhoto")}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePrevFullscreen();
+                        }}
+                        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 size-10 sm:size-12 rounded-full bg-black/60 hover:bg-black/85 text-white border border-white/20 flex items-center justify-center transition-all cursor-pointer backdrop-blur-sm z-20 hover:scale-105 active:scale-95 shadow-xl"
+                      >
+                        <ChevronLeft size={24} strokeWidth={2.5} />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={t("nextPhoto")}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleNextFullscreen();
+                        }}
+                        className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 size-10 sm:size-12 rounded-full bg-black/60 hover:bg-black/85 text-white border border-white/20 flex items-center justify-center transition-all cursor-pointer backdrop-blur-sm z-20 hover:scale-105 active:scale-95 shadow-xl"
+                      >
+                        <ChevronRight size={24} strokeWidth={2.5} />
+                      </button>
+                    </>
+                  )}
+                </div>
+
+                {/* Bottom thumbnail strip */}
+                {displayImages.length > 1 && (
+                  <div
+                    className="relative z-10 px-4 py-3 bg-gradient-to-t from-black/80 to-transparent flex items-center justify-center gap-2 sm:gap-3 overflow-x-auto"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {displayImages.map((img, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setFullscreenIdx(idx)}
+                        className={cn(
+                          "relative size-12 sm:size-14 rounded-xl overflow-hidden border-2 transition-all cursor-pointer shrink-0",
+                          idx === fullscreenIdx
+                            ? "border-brand-primary scale-105 shadow-lg ring-2 ring-brand-primary/40"
+                            : "border-white/20 opacity-50 hover:opacity-90"
+                        )}
+                      >
+                        {img ? (
+                          <Image
+                            src={img}
+                            alt=""
+                            fill
+                            sizes="56px"
+                            className="object-cover"
+                          />
+                        ) : null}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
     </div>
   );
 }

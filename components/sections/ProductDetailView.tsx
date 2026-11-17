@@ -9,6 +9,7 @@ import type { DetailPageModel, GlossaryTrait, Link as PageLink, MaterialPageMode
 import { MaterialFlashcard } from "@/components/ui/material-flashcard";
 import { MaterialGlossaryFab } from "@/components/ui/material-glossary-fab";
 import { AutoScrollToTarget } from "@/components/ui/auto-scroll-to-target";
+import { RegisterPageProduct } from "@/components/providers/quote-modal-provider";
 
 // The page of a product's materials: a product without shapes, one shape of a product, or a material of one (the same cards, scrolled
 // to the one the URL named). The three differ in their trail, heading and footer links — nothing else — so one view draws them all.
@@ -52,19 +53,33 @@ function frameOf(model: Model): Frame {
       description: model.shape.description,
       image: model.shape.image,
       askAbout: model.shape.name,
+      quoteProduct: model.shape.name,
     };
   }
-  return { ...below, last: model.material.name, heading: context.title, description: context.description, image: context.cover, askAbout: context.title };
+  return {
+    ...below,
+    last: model.material.name,
+    heading: context.title,
+    description: context.description,
+    image: context.cover,
+    askAbout: context.title,
+    quoteProduct: context.title,
+  };
 }
 
-export async function ProductDetailView({ locale, model, traits }: Readonly<{ locale: Locale; model: Model; traits: readonly GlossaryTrait[] }>) {
+export async function ProductDetailView({ locale, model }: Readonly<{ locale: Locale; model: Model; traits?: readonly GlossaryTrait[] }>) {
   const t = await getTranslations({ locale, namespace: "productDetailPage" });
   const frame = frameOf(model);
   const { context, cards } = model;
   const target = model.kind === "material" ? model.material : null;
+  const lastCard = cards.length > 0 ? cards[cards.length - 1] : null;
+  const lastCardSpec = lastCard
+    ? (lastCard.tagline ? `${lastCard.heading} - ${lastCard.tagline}` : lastCard.heading)
+    : frame.askAbout;
 
   return (
     <div className="bg-white">
+      <RegisterPageProduct product={lastCardSpec} />
       {/* The URL named a material: scroll to its card once the page has settled (a URL hash is handled by SmoothScroll). */}
       {target && <AutoScrollToTarget targetId={target.anchor.id} />}
 
@@ -203,7 +218,7 @@ export async function ProductDetailView({ locale, model, traits }: Readonly<{ lo
             </div>
             <Link
               href="/#cta"
-              data-quote-product={frame.quoteProduct}
+              data-quote-product={lastCardSpec}
               className="shrink-0 inline-flex items-center gap-2 px-7 py-3.5 bg-brand-primary text-white font-bold uppercase tracking-wide btn-wipe whitespace-nowrap text-sm"
             >
               {t("ctaButton")} <ArrowRight size={16} />
