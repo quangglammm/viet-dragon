@@ -361,22 +361,7 @@ export default function Navbar() {
           menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}
       >
-        <div className="px-6 py-3 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/60">
-          <Link href="/" onClick={closeAllMenu} className="flex items-center gap-2.5">
-            <Image
-              src="/logo-icon.webp"
-              alt="Viet Dragon - In Ấn Chuyên Nghiệp"
-              width={42}
-              height={34}
-              className="h-9 w-auto object-contain shrink-0"
-            />
-            <span className="text-lg font-black tracking-tight text-zinc-900">
-              VIET <span className="text-brand-primary">DRAGON</span>
-            </span>
-          </Link>
-          <FloatingLocaleSwitcher locale={locale} onSwitch={switchLocale} />
-        </div>
-        <nav className="flex flex-col px-6 py-6 gap-3.5 flex-1 overflow-y-auto">
+        <nav className="flex flex-col px-6 py-5 gap-3.5 flex-1 overflow-y-auto">
           {categories.map((cat) => {
             const isActiveCat = pathname.startsWith(cat.href);
             return (
@@ -450,7 +435,6 @@ export default function Navbar() {
           >
             <Phone size={15} className="shrink-0" />
             <span>{t("quote")}</span>
-            <span className="opacity-85 text-xs font-normal tracking-normal">({tContact("phone1")})</span>
           </WipeButton>
           <p className="flex items-center justify-center gap-1.5 text-center text-zinc-400 text-xs mt-4">
             <Phone size={13} /> {tContact("phone1")} · <Mail size={13} /> {tContact("email")}

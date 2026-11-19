@@ -73,9 +73,10 @@ export async function ProductDetailView({ locale, model }: Readonly<{ locale: Lo
   const { context, cards } = model;
   const target = model.kind === "material" ? model.material : null;
   const lastCard = cards.length > 0 ? cards[cards.length - 1] : null;
-  const lastCardSpec = lastCard
-    ? (lastCard.tagline ? `${lastCard.heading} - ${lastCard.tagline}` : lastCard.heading)
-    : frame.askAbout;
+  const lastCardTagline = lastCard?.tagline
+    ? lastCard.tagline.split(/\r?\n/).filter(Boolean).slice(0, 2).join("\n").trim()
+    : (lastCard?.heading ?? frame.askAbout);
+  const lastCardSpec = lastCardTagline;
 
   return (
     <div className="bg-white">

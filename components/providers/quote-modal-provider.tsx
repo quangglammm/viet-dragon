@@ -103,7 +103,6 @@ export function QuoteModalProvider({
     <QuoteModalContext.Provider value={value}>
       {children}
       <QuoteModal
-        key={isOpen ? `${isOpen}-${productName ?? "general"}` : "closed"}
         isOpen={isOpen}
         onClose={closeQuote}
         productName={productName}
