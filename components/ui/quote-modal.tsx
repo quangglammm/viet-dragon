@@ -33,6 +33,12 @@ interface QuoteModalProps {
   productName?: string;
 }
 
+function getInitialNote(productName?: string) {
+  if (!productName) return "";
+  const lines = productName.split(/\r?\n/);
+  return lines.length > 2 ? lines.slice(0, 2).join("\n") : productName;
+}
+
 export function QuoteModal({
   isOpen,
   onClose,
@@ -41,19 +47,19 @@ export function QuoteModal({
   const t = useTranslations("quoteModal");
   const [phone, setPhone] = useState("");
   const [trap, setTrap] = useState("");
-  const [note, setNote] = useState(productName ?? "");
+  const [note, setNote] = useState(() => getInitialNote(productName));
+  const [prevTrigger, setPrevTrigger] = useState({ isOpen, productName });
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
   const dragControls = useDragControls();
 
-  useEffect(() => {
+  if (prevTrigger.isOpen !== isOpen || prevTrigger.productName !== productName) {
+    setPrevTrigger({ isOpen, productName });
     if (isOpen) {
-      const initial = productName ?? "";
-      const lines = initial.split(/\r?\n/);
-      setNote(lines.length > 2 ? lines.slice(0, 2).join("\n") : initial);
+      setNote(getInitialNote(productName));
     }
-  }, [isOpen, productName]);
+  }
 
   const handleClose = useCallback(() => {
     setError(null);
