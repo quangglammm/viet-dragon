@@ -29,7 +29,8 @@ const nextConfig: NextConfig = {
   ],
   images: {
     qualities: [30, 75, 85],
-    formats: ["image/avif", "image/webp"],
+    formats: ["image/webp"],
+    minimumCacheTTL: 31536000,
     remotePatterns: [
       { protocol: "https", hostname: "picsum.photos" },
     ],

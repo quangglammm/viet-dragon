@@ -111,6 +111,7 @@ export default function PartnerLogos() {
                 alt={partner.name}
                 width={partner.width}
                 height={partner.height}
+                sizes="(max-width: 640px) 95px, (max-width: 1024px) 150px, 180px"
                 className={`${partner.className} object-contain transition-transform duration-300 hover:scale-105 select-none`}
               />
             </div>

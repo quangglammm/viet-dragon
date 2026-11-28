@@ -54,7 +54,7 @@ export default function Shop() {
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.2 }}
           >
-            {cat.cards.map((item, idx) => {
+            {cat.cards.map((item) => {
               const itemName = item.title;
               const productHref = item.href;
               return (
@@ -67,7 +67,6 @@ export default function Shop() {
                           alt={itemName}
                           fill
                           sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                          priority={idx < 4}
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       )}
