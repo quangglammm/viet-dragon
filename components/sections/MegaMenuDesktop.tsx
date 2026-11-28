@@ -25,6 +25,11 @@ export function MegaMenuDesktop({
   const currentHash = useCurrentHash();
   const [bgImage, setBgImage] = useState<string | null>(menu.defaultImage);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [hasBeenOpened, setHasBeenOpened] = useState(isOpen);
+
+  if (isOpen && !hasBeenOpened) {
+    setHasBeenOpened(true);
+  }
 
   const handleLinkClick = (href: string, e: React.MouseEvent) => {
     navigateToShapeHash(href, e);
@@ -42,7 +47,7 @@ export function MegaMenuDesktop({
       )}
     >
       {/* Layer 1: Background Image with smooth transition */}
-      {bgImage && (
+      {hasBeenOpened && bgImage && (
         <Image
           src={bgImage}
           alt=""
